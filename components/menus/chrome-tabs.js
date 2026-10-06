@@ -75,7 +75,7 @@ export default {
     .chip:hover { background: rgba(31,31,31,.08); }
     .url { flex: 1; min-width: 0; padding-left: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .url span { color: #474747; }
-    .av { flex: none; width: 24px; height: 24px; margin: 0 5px; border-radius: 50%; background: linear-gradient(135deg, #ff8a65, #e8505b); color: #fff; font: 600 12px/24px -apple-system, system-ui, sans-serif; text-align: center; }
+    .av { flex: none; display: block; width: 24px; height: 24px; margin: 0 5px; border-radius: 50%; object-fit: cover; background: #e3e3e3; }
     .pb { width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: none; display: grid; place-items: center; cursor: default; outline: 0; }
     .pb:hover { background: rgba(31,31,31,.06); }
     @container (max-width: 460px) { .fwd { display: none; } .lights { padding: 0 10px 0 12px; gap: 6px; } }
@@ -96,7 +96,7 @@ export default {
           <span class="url"></span>
           <button class="chip star" type="button" aria-label="Bookmark this tab" aria-pressed="false">${MS(ICON.star, 18)}</button>
         </div>
-        <button class="pb" type="button" aria-label="Profile"><span class="av">A</span></button>
+        <button class="pb" type="button" aria-label="Profile"><img class="av" src="assets/portraits/women-27.jpg" alt="" width="24" height="24" draggable="false"></button>
         <button class="nb" type="button" aria-label="Customize and control Google Chrome">${MS(ICON.more)}</button>
       </div>
     </div>`,

@@ -21,11 +21,11 @@ export default {
     .map path { fill: none; stroke: #5d6b80; stroke-width: 6; }
     .map .rt { stroke: #3c8fff; stroke-width: 3; }
     .w > * { position: relative; }
-    .art { width: 34px; height: 34px; border-radius: 6px; background: linear-gradient(135deg, #c8102e, #3a0610); box-shadow: 0 2px 6px rgba(0,0,0,.5); }
+    .art { display: block; width: 34px; height: 34px; border-radius: 6px; object-fit: cover; background: #2f3846; box-shadow: 0 2px 6px rgba(0,0,0,.5); }
     .prog { height: 3px; border-radius: 2px; background: rgba(255,255,255,.18); overflow: hidden; }
     .prog i { display: block; width: 38%; height: 100%; background: #fff; }
     .av { display: flex; gap: 4px; }
-    .av i { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 600; font-size: 9px; background: #2f3846; }
+    .av img { display: block; width: 22px; height: 22px; border-radius: 50%; object-fit: cover; background: #2f3846; box-shadow: 0 0 0 1.5px rgba(20,24,30,.9); }
   `,
   html: `
     <div class="stage">
@@ -38,12 +38,12 @@ export default {
             <div><b>Navigation</b><span>12 min · 6.4 km</span></div>
           </button>
           <button class="w" type="button" aria-pressed="false">
-            <div class="art"></div>
+            <img class="art" src="assets/square/31.webp" alt="" width="34" height="34">
             <div><b>Bad Habits</b><span>Ed Sheeran</span><div class="prog"><i></i></div></div>
           </button>
           <button class="w" type="button" aria-pressed="false">
             <svg class="i" viewBox="0 0 24 24"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
-            <div><div class="av"><i>AK</i><i>MB</i></div><b>Favourites</b></div>
+            <div><div class="av"><img src="assets/portraits/men-22.jpg" alt="" width="22" height="22"><img src="assets/portraits/women-32.jpg" alt="" width="22" height="22"></div><b>Favourites</b></div>
           </button>
         </div>
       </div>

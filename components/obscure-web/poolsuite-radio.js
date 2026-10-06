@@ -12,6 +12,9 @@ export default {
     .tb { display: flex; align-items: center; gap: 8px; height: 26px; }
     .tb .x { width: 12px; height: 12px; }
     .tb .logo { margin-left: auto; font: 900 15px/1 "Playfair Display", "Bodoni 72", Didot, Georgia, serif; letter-spacing: -.3px; transform: scaleX(.78); transform-origin: right center; }
+    .scr { position: relative; height: 120px; margin-bottom: 4px; border: 1px solid #000; border-radius: 3px; overflow: hidden; background: #f6d5d5; }
+    .scr img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .4s; filter: saturate(1.15) contrast(1.04); }
+    .scr img.on { opacity: 1; }
     .card { background: #fff; border: 1px solid #000; border-radius: 3px; padding: 7px 8px 6px; }
     .st { font-weight: 700; font-size: 12px; display: flex; align-items: center; gap: 6px; }
     .st i { width: 4px; height: 4px; border-radius: 50%; background: #f16060; }
@@ -43,6 +46,7 @@ export default {
     <div class="desk">
       <div class="win">
         <div class="tb"><svg class="x" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="#000" stroke-width="1.2"/></svg><span class="logo" aria-hidden="true">POOLSUITE</span></div>
+        <div class="scr" aria-hidden="true"><img src="assets/wide/21.webp" alt="" width="300" height="120" class="on"><img src="assets/wide/17.webp" alt="" width="300" height="120"><img src="assets/wide/26.webp" alt="" width="300" height="120"><img src="assets/wide/35.webp" alt="" width="300" height="120"></div>
         <div class="card"><div class="st">Poolsuite: <span class="cn">ON AIR</span><i aria-hidden="true"></i></div><div class="tr">Tensnake – Holding Back (My Love)</div></div>
         <div class="row">
           <div class="stat" aria-live="polite"><small class="tm"></small><b class="s">Stopped</b></div>
@@ -59,6 +63,7 @@ export default {
     </div>`,
   init(root) {
     const host = root.host, play = root.querySelector('.play'), stopB = root.querySelector('.stop'), s = root.querySelector('.s'), tm = root.querySelector('.tm');
+    const shots = [...root.querySelectorAll('.scr img')];
     const tr = root.querySelector('.tr'), cn = root.querySelector('.cn'), chN = root.querySelector('.ch .n'), add = root.querySelector('.add');
     const chans = [['ON AIR', 'Poolsuite ON AIR', ['Tensnake – Holding Back (My Love)', 'Poolside – Harvest Moon', 'Yacht Rock Revue – Summer Breeze']], ['Indie Summer', 'Indie Summer', ['Phoenix – Lisztomania', 'Real Estate – Darling']], ['Hangover Club', 'Hangover Club', ['Air – La Femme d\'Argent', 'Khruangbin – Maria También']], ['Tokyo Disco', 'Tokyo Disco', ['Mariya Takeuchi – Plastic Love', 'Tatsuro Yamashita – Ride on Time']]];
     let playing = false, ci = 0, ti = 0, secs = 0, iv = 0;
@@ -70,6 +75,7 @@ export default {
       s.textContent = playing ? 'Playing' : 'Stopped'; tm.textContent = playing ? fmt() : '';
       cn.textContent = chans[ci][0]; chN.textContent = 'Channel: ' + chans[ci][1]; tr.textContent = chans[ci][2][ti % chans[ci][2].length];
       add.setAttribute('aria-pressed', 'false');
+      shots.forEach((im, k) => im.classList.toggle('on', k === ci));
       run();
     };
     play.addEventListener('click', () => { playing = true; render(); });

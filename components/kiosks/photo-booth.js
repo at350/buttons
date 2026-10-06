@@ -8,7 +8,7 @@ export default {
     .curtain { width: 34px; border-radius: 4px; background: repeating-linear-gradient(90deg, #b3121b 0 6px, #d72430 6px 9px, #8c0d14 9px 12px); box-shadow: inset -4px 0 8px rgba(0,0,0,.5); }
     .main { display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .scr { position: relative; width: 150px; height: 112px; border-radius: 6px; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #3b4a5c, #151b24 75%); box-shadow: 0 0 0 4px #000, 0 0 0 6px #555; display: grid; place-items: center; }
-    .scr svg.me { width: 70px; height: 70px; color: rgba(255,255,255,.22); grid-area: 1 / 1; }
+    .scr img.me { grid-area: 1 / 1; display: block; width: 150px; height: 112px; object-fit: cover; object-position: 50% 30%; transform: scaleX(-1); filter: brightness(.92); }
     .cd { grid-area: 1 / 1; font-size: 52px; font-weight: 800; color: #fff; text-shadow: 0 0 12px rgba(255,255,255,.6); opacity: 0; }
     .cd.on { animation: cd .9s ease-out; }
     @keyframes cd { 0% { opacity: 0; transform: scale(1.6); } 20% { opacity: 1; transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; } }
@@ -23,24 +23,24 @@ export default {
     .go:focus-visible { outline: 2px solid #fff; outline-offset: 11px; }
     .go:disabled { animation: none; filter: brightness(.6); cursor: default; }
     .strip { display: flex; flex-direction: column; gap: 4px; padding: 5px; width: 48px; border-radius: 2px; background: #f5f2ea; box-shadow: 0 2px 6px rgba(0,0,0,.5); }
-    .strip i { flex: 1; min-height: 38px; border-radius: 1px; background: #d5d0c4; display: grid; place-items: center; transition: background .3s; }
-    .strip i svg { width: 22px; height: 22px; color: #fff; opacity: 0; transition: opacity .3s; }
-    .strip i.on svg { opacity: .85; }
-    .strip i.on:nth-child(1) { background: linear-gradient(#6d5a4f, #3b2f29); } .strip i.on:nth-child(2) { background: linear-gradient(#5b6670, #2c3238); }
-    .strip i.on:nth-child(3) { background: linear-gradient(#77665a, #3f342c); } .strip i.on:nth-child(4) { background: linear-gradient(#636a5d, #30352c); }
+    .strip i { flex: 1; min-height: 38px; border-radius: 1px; background: #d5d0c4; overflow: hidden; }
+    .strip i img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.15) brightness(1.05); opacity: 0; transition: opacity .5s ease-out; }
+    .strip i.on img { opacity: 1; }
+    .strip i:nth-child(2) img { transform: scale(1.18); object-position: 50% 35%; } .strip i:nth-child(3) img { transform: scale(1.1) translateX(-6%); }
+    .strip i:nth-child(4) img { transform: scale(1.3); object-position: 50% 30%; }
   `,
   html: `
     <div class="stage">
       <div class="curtain"></div>
       <div class="main">
-        <div class="scr"><svg class="me" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><div class="cd" aria-live="polite"></div><div class="flash"></div></div>
+        <div class="scr"><img class="me" src="assets/portraits/women-03.jpg" alt="" width="150" height="112"><div class="cd" aria-live="polite"></div><div class="flash"></div></div>
         <button class="go" type="button">START</button>
       </div>
       <div class="strip" aria-hidden="true"></div>
     </div>`,
   init(root) {
     const go = root.querySelector('.go'), cd = root.querySelector('.cd'), fl = root.querySelector('.flash'), strip = root.querySelector('.strip');
-    const me = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>';
+    const me = '<img src="assets/portraits/women-03.jpg" alt="" width="38" height="38">';
     strip.innerHTML = ('<i>' + me + '</i>').repeat(4);
     const frames = [...strip.children];
     let timers = [];

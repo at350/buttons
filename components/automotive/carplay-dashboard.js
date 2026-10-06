@@ -1,4 +1,4 @@
-const TRACKS = [['Espresso', 'Sabrina Carpenter', '#c9a27a', '#5a3b22'], ['Flowers', 'Miley Cyrus', '#f0b6c8', '#7a2c4a'], ['As It Was', 'Harry Styles', '#e9c46a', '#264653']];
+const TRACKS = [['Espresso', 'Sabrina Carpenter', '#6b5a2e', 'square/50'], ['Flowers', 'Miley Cyrus', '#8a4a5c', 'square/23'], ['As It Was', 'Harry Styles', '#8a5a26', 'square/59']];
 const APP = (cls, bg, ic, label) => `<button class="app ${cls}" type="button" aria-label="${label}" style="background:${bg}"><svg viewBox="0 0 24 24">${ic}</svg></button>`;
 
 export default {
@@ -34,7 +34,7 @@ export default {
     .np, .cal { border-radius: 10px; background: #1c1c1e; padding: 7px; min-width: 0; }
     .np { flex: 1.5; display: flex; flex-direction: column; justify-content: space-between; }
     .row { display: flex; gap: 6px; align-items: center; min-width: 0; }
-    .art { flex: none; width: 34px; height: 34px; border-radius: 5px; background: linear-gradient(135deg, var(--a), var(--b)); }
+    .art { flex: none; display: block; width: 34px; height: 34px; border-radius: 5px; object-fit: cover; background: #2c2c2e; }
     .t { min-width: 0; }
     .t b, .t span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .t span { color: #8e8e93; }
@@ -47,7 +47,7 @@ export default {
     .cal { flex: 1; border-left: 3px solid #ff9f0a; }
     .cal b, .cal span { display: block; white-space: nowrap; }
     .cal span { color: #8e8e93; }
-    .big { width: 64px; height: 64px; border-radius: 8px; background: linear-gradient(135deg, var(--a), var(--b)); box-shadow: 0 8px 18px rgba(0,0,0,.5); margin-bottom: 8px; }
+    .big { display: block; width: 64px; height: 64px; border-radius: 8px; object-fit: cover; background: #2c2c2e; box-shadow: 0 8px 18px rgba(0,0,0,.5); margin-bottom: 8px; }
     .np-full .t { text-align: center; margin-bottom: 6px; }
     .np-full .ctls { width: 140px; }
     .bar { width: 160px; height: 3px; border-radius: 2px; background: rgba(255,255,255,.25); margin-bottom: 6px; overflow: hidden; }
@@ -64,11 +64,11 @@ export default {
         <div class="v dashv">
           <div class="map"><svg viewBox="0 0 140 180" preserveAspectRatio="xMidYMid slice"><path class="rd" d="M-10 120 150 90M40 -10 60 200M110 -10 96 200"/><path class="rt" d="M54 170 50 116 98 102 104 30"/><circle cx="54" cy="150" r="5" fill="#0a84ff" stroke="#fff" stroke-width="2"/></svg><div class="eta"><b>9:58</b> · 17 min</div></div>
           <div class="col">
-            <div class="np"><div class="row"><span class="art"></span><span class="t"><b class="tt"></b><span class="ta"></span></span></div><div class="ctls">CTL</div></div>
+            <div class="np"><div class="row"><img class="art" src="assets/square/50.webp" alt="" width="34" height="34"><span class="t"><b class="tt"></b><span class="ta"></span></span></div><div class="ctls">CTL</div></div>
             <div class="cal"><b>Design Review</b><span>10:30 AM</span></div>
           </div>
         </div>
-        <div class="v np-full"><span class="big"></span><span class="t"><b class="tt"></b><span class="ta"></span></span><span class="bar"><i></i></span><div class="ctls">CTL</div></div>
+        <div class="v np-full"><img class="big" src="assets/square/50.webp" alt="" width="64" height="64"><span class="t"><b class="tt"></b><span class="ta"></span></span><span class="bar"><i></i></span><div class="ctls">CTL</div></div>
       </div>
     </div>`,
   init(root) {
@@ -77,10 +77,11 @@ export default {
     root.querySelectorAll('.ctls').forEach((c) => (c.innerHTML = CTL));
     let i = 0;
     const paint = () => {
-      const [t, a, c1, c2] = TRACKS[i];
+      const [t, a, c1, img] = TRACKS[i];
       root.querySelectorAll('.tt').forEach((e) => (e.textContent = t));
       root.querySelectorAll('.ta').forEach((e) => (e.textContent = a));
-      stage.style.setProperty('--a', c1); stage.style.setProperty('--b', c2);
+      root.querySelectorAll('.art, .big').forEach((e) => (e.src = 'assets/' + img + '.webp'));
+      stage.style.setProperty('--a', c1);
     };
     root.querySelectorAll('.pp').forEach((b) => b.addEventListener('click', () => { const on = stage.classList.toggle('playing'); root.querySelectorAll('.pp').forEach((p) => p.setAttribute('aria-pressed', String(on))); }));
     root.querySelectorAll('.next').forEach((b) => b.addEventListener('click', () => { i = (i + 1) % TRACKS.length; paint(); }));

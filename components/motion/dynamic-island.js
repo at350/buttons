@@ -10,7 +10,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 300px; height: 124px; max-width: 100%; border-radius: 12px; overflow: hidden; font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; background: radial-gradient(120% 90% at 20% 0%, #c9d8ff 0%, transparent 60%), radial-gradient(100% 90% at 100% 100%, #ffc7e0 0%, transparent 60%), linear-gradient(160deg, #e8ecff, #fde4f0); }
+    .stage { position: relative; width: 300px; height: 124px; max-width: 100%; border-radius: 12px; overflow: hidden; font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; background: #dcdcdc url(assets/tall/07.webp) center 44% / 100% auto no-repeat; }
     .sb { position: absolute; top: 15px; left: 26px; right: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; color: #000; letter-spacing: -.01em; }
     .sb svg { height: 11px; fill: #000; }
     .isl {
@@ -26,7 +26,7 @@ export default {
     .lay { position: absolute; inset: 0; display: flex; align-items: center; opacity: 0; filter: blur(6px); transform: scale(.86); transition: opacity .18s, filter .18s, transform .35s ${BOUNCY}; pointer-events: none; }
     .isl[data-s="ring"] .ringing, .isl[data-s="call"] .incall { opacity: 1; filter: none; transform: none; transition: opacity .3s .14s, filter .3s .14s, transform .6s .1s ${BOUNCY}; pointer-events: auto; }
     .ringing { padding: 0 18px 0 18px; gap: 12px; }
-    .av { width: 46px; height: 46px; border-radius: 50%; flex: none; background: linear-gradient(160deg, #a5b4fc, #6366f1); display: grid; place-items: center; font-size: 17px; font-weight: 600; }
+    .av { display: block; width: 46px; height: 46px; border-radius: 50%; flex: none; object-fit: cover; background: #2c2c2e; }
     .who { display: flex; flex-direction: column; flex: 1; min-width: 0; text-align: left; }
     .who small { font-size: 12px; color: #98989f; } .who b { font-size: 16px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
     .ringing button { width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer; flex: none; transition: transform .25s ${BOUNCY}, filter .2s; }
@@ -44,7 +44,7 @@ export default {
       <div class="isl" data-s="idle">
         <button class="tap" type="button" aria-label="Simulate incoming call"></button>
         <div class="lay ringing" role="group" aria-label="Incoming call">
-          <span class="av">MJ</span><span class="who"><small>mobile</small><b>Mia Jones</b></span>
+          <img class="av" src="assets/portraits/women-04.jpg" alt="" width="46" height="46"><span class="who"><small>mobile</small><b>Mia Jones</b></span>
           <button class="dec" type="button" aria-label="Decline" tabindex="-1">${PHONE}</button><button class="acc" type="button" aria-label="Accept" tabindex="-1">${PHONE}</button>
         </div>
         <div class="lay incall" aria-hidden="true">${PHONE}<span class="t">0:00</span></div>

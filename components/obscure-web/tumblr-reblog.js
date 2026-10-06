@@ -6,10 +6,9 @@ export default {
     :host { display: inline-block; }
     .post { width: 300px; max-width: 100%; background: #fff; border-radius: 12px; overflow: hidden; font: 14px/1.3 "Favorit", Inter, system-ui, sans-serif; color: #444; box-shadow: 0 0 0 1px rgba(0,0,0,.06); }
     .top { display: flex; align-items: center; gap: 8px; padding: 10px 14px; }
-    .av { width: 32px; height: 32px; border-radius: 3px; background: #001935; display: grid; place-items: center; }
-    .av svg { width: 14px; height: 14px; fill: #fff; }
+    .av { width: 32px; height: 32px; flex: none; border-radius: 3px; object-fit: cover; display: block; background: #e6e6e6; }
     .un { font-weight: 700; color: #000; font-size: 13px; }
-    .pic { height: 90px; background: linear-gradient(120deg, #ff8a00, #e52e71 50%, #001935); }
+    .pic { display: block; width: 100%; height: 169px; object-fit: cover; background: #eee; }
     .ft { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; }
     .notes { font: 600 13px/1 "Favorit", Inter, system-ui, sans-serif; color: #000; cursor: pointer; background: none; border: 1px solid rgba(0,0,0,.13); border-radius: 18px; padding: 7px 12px; white-space: nowrap; }
     .notes .n { display: inline-block; min-width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
@@ -26,8 +25,8 @@ export default {
   `,
   html: `
     <div class="post">
-      <div class="top"><span class="av" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg></span><span class="un">staff</span></div>
-      <div class="pic" aria-hidden="true"></div>
+      <div class="top"><img class="av" src="assets/portraits/women-37.jpg" alt="" width="32" height="32"><span class="un">softgrunge-summer</span></div>
+      <img class="pic" src="assets/wide/06.webp" alt="" width="300" height="169">
       <div class="ft">
         <button class="notes" type="button"><span class="n">1,204</span> notes</button>
         <div class="acts">

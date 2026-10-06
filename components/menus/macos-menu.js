@@ -37,8 +37,9 @@ export default {
     :host { display: inline-block; position: relative; }
     :host([data-open]) { z-index: 30; }
     .mb { position: relative; display: flex; align-items: center; height: 24px; padding: 0 6px; border-radius: 7px; white-space: nowrap;
-      background: linear-gradient(rgba(246,246,246,.58), rgba(246,246,246,.58)), linear-gradient(90deg, #5d9cb5 0%, #8fbf8d 45%, #d9cf86 75%, #e9b36f 100%);
+      isolation: isolate; background: #9fb6c4 url(assets/wide/23.webp) center 38% / cover;
       box-shadow: inset 0 -.5px 0 rgba(0,0,0,.12); font: 400 13px/16px -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: rgba(0,0,0,.88); -webkit-font-smoothing: antialiased; user-select: none; }
+    .mb::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: rgba(246,246,246,.58); -webkit-backdrop-filter: blur(24px) saturate(1.4); backdrop-filter: blur(24px) saturate(1.4); pointer-events: none; }
     .t { position: relative; height: 22px; padding: 0 9px; border: 0; border-radius: 4px; background: none; font: inherit; color: inherit; cursor: default; display: flex; align-items: center; }
     .t.app { font-weight: 700; }
     .t.ap { padding: 0 11px 0 10px; }

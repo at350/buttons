@@ -15,11 +15,9 @@ export default {
       font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; color: #fff;
     }
     .art {
-      position: relative; width: 96px; height: 96px; flex: none; border-radius: 8px; overflow: hidden;
-      background: radial-gradient(60% 60% at 70% 30%, #ffd2f0 0%, #ff7ac6 22%, transparent 55%), radial-gradient(90% 70% at 20% 100%, #3b82f6 0%, transparent 60%), linear-gradient(170deg, #241047 0%, #6d28d9 55%, #f472b6 100%);
+      position: relative; display: block; width: 96px; height: 96px; flex: none; border-radius: 8px; overflow: hidden; object-fit: cover; background: #2a2438;
       transform: scale(.84); box-shadow: 0 4px 10px -4px rgba(0,0,0,.45); transition: transform .8s ${SPRING}, box-shadow .6s ease;
     }
-    .art::after { content: 'M83'; position: absolute; left: 8px; bottom: 6px; font: 800 13px/1 'Space Grotesk', system-ui, sans-serif; letter-spacing: .04em; color: rgba(255,255,255,.85); }
     .stage.on .art { transform: none; box-shadow: 0 14px 28px -10px rgba(0,0,0,.65); }
     .meta { flex: 1; min-width: 0; display: flex; flex-direction: column; }
     .meta b { font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -40,7 +38,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="art" aria-hidden="true"></div>
+      <img class="art" src="assets/square/51.webp" alt="" width="96" height="96">
       <div class="meta">
         <b>Midnight City</b><span class="ar">M83</span>
         <span class="bar" aria-hidden="true"><i></i></span>

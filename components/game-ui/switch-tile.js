@@ -2,11 +2,11 @@
 // frame with a gap, the title in #0AB9E6 above the selected tile, the round shortcut buttons (News in #E60012,
 // Joy-Con in #E60012 / #0AB9E6) and the Ⓐ Start footer.
 const GAMES = [
-  ['Animal Crossing: New Horizons', 'linear-gradient(180deg, #8fd8ff 0 55%, #7ccf6a 56% 74%, #f2e2a8 75%)'],
-  ['Mario Kart 8 Deluxe', 'radial-gradient(circle at 50% 46%, #fff 0 14%, #e60012 15% 30%, transparent 31%), linear-gradient(135deg, #ffd23c, #ff7a00)'],
-  ['The Legend of Zelda: Tears of the Kingdom', 'radial-gradient(circle at 50% 40%, #6ff0c8 0 9%, transparent 10%), linear-gradient(180deg, #0f5c4a, #062a27 70%, #2c1e10)'],
-  ['Splatoon 3', 'radial-gradient(circle at 30% 35%, #eaff3d 0 22%, transparent 23%), radial-gradient(circle at 70% 68%, #7b2cff 0 26%, transparent 27%), #111'],
-  ['Super Mario Odyssey', 'radial-gradient(circle at 50% 34%, #fff 0 12%, transparent 13%), linear-gradient(180deg, #e60012 0 50%, #2b4fd8 51%)'],
+  ['Animal Crossing: New Horizons', '16'],
+  ['Mario Kart 8 Deluxe', '41'],
+  ['The Legend of Zelda: Tears of the Kingdom', '26'],
+  ['Splatoon 3', '51'],
+  ['Super Mario Odyssey', '45'],
 ];
 const ICONS = [
   ['News', '#e60012', '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>'],
@@ -24,14 +24,14 @@ export default {
     :host { display: block; max-width: 100%; }
     .stage { position: relative; background: #ebebeb; border-radius: 12px; padding: 10px 0 0; overflow: hidden; font-family: 'Inter', 'DM Sans', system-ui, sans-serif; color: #2d2d2d; }
     .top { display: flex; align-items: center; gap: 10px; padding: 0 16px; height: 22px; font: 500 12px 'Inter', system-ui, sans-serif; }
-    .user { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #ffd8a8 0 28%, transparent 29%), #0ab9e6; box-shadow: 0 0 0 2px #fff; }
+    .user { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; display: block; background: #0ab9e6; box-shadow: 0 0 0 2px #fff; }
     .stat { margin-left: auto; display: flex; gap: 8px; align-items: center; }
     .stat svg { width: 15px; height: 15px; fill: #2d2d2d; }
     .title { position: relative; height: 18px; margin: 8px 0 4px; overflow: hidden; }
     .title span { position: absolute; left: var(--x, 16px); top: 0; max-width: calc(100% - var(--x, 16px) - 12px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       font: 600 13px/18px 'Inter', system-ui, sans-serif; color: #0ab9e6; }
     .row { display: flex; gap: 10px; padding: 6px 16px 8px; overflow: hidden; }
-    .tile { position: relative; flex: none; width: 66px; height: 66px; border: none; padding: 0; cursor: pointer; border-radius: 2px; background: var(--art); box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+    .tile { position: relative; flex: none; width: 66px; height: 66px; border: none; padding: 0; cursor: pointer; border-radius: 2px; background: #d6d6d6 var(--art) center / cover; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
     .tile::after { content: ""; position: absolute; inset: -6px; border: 3px solid #00c3e3; border-radius: 4px; opacity: 0; pointer-events: none; }
     .tile.sel::after { opacity: 1; animation: pulse 1.2s ease-in-out infinite alternate; }
     @keyframes pulse { from { border-color: #00b4e6; box-shadow: 0 0 0 0 rgba(0,195,227,0); } to { border-color: #7af2ff; box-shadow: 0 0 6px rgba(0,195,227,.55); } }
@@ -51,10 +51,10 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="top"><span class="user"></span><span class="stat">12:34<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 0 0-6 0zm-4-4l2 2a7.074 7.074 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" transform="rotate(90 12 12)"/></svg></span></div>
+      <div class="top"><img class="user" src="assets/portraits/women-16.jpg" alt="" width="20" height="20"><span class="stat">12:34<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 0 0-6 0zm-4-4l2 2a7.074 7.074 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" transform="rotate(90 12 12)"/></svg></span></div>
       <div class="title"><span>${GAMES[0][0]}</span></div>
       <div class="row" role="listbox" aria-label="Software">
-        ${GAMES.map(([n, art], i) => `<button class="tile${i === 0 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 0}" aria-label="${n}" style="--art:${art}"></button>`).join('')}
+        ${GAMES.map(([n, art], i) => `<button class="tile${i === 0 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 0}" aria-label="${n}" style="--art:url(assets/square/${art}.webp)"></button>`).join('')}
       </div>
       <div class="icons">${ICONS.map(([n, c, p]) => `<button class="ic" type="button" aria-label="${n}"><svg viewBox="0 0 24 24" fill="${c}" aria-hidden="true">${p}</svg></button>`).join('')}</div>
       <div class="foot"><button class="fb opt" type="button"><span class="key">+</span>Options</button><button class="fb start" type="button" aria-pressed="false"><span class="key">A</span>Start</button></div>

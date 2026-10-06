@@ -10,9 +10,9 @@ export default {
     .room.dark .ui { opacity: .06; }
     .ui i { display: block; height: 8px; border-radius: 4px; background: #d0d0d0; }
     .ui i:nth-child(2) { width: 70%; } .ui i:nth-child(3) { width: 45%; }
-    .vid { position: absolute; left: 14px; bottom: 14px; width: 150px; height: 84px; border-radius: 4px; background: linear-gradient(135deg, #ff7a18, #af002d 60%, #319197); display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,.2); transition: box-shadow .6s, transform .6s; }
+    .vid { position: absolute; left: 14px; bottom: 14px; width: 150px; height: 84px; border-radius: 4px; background: #222 url(assets/wide/22.webp) center / cover; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,.2); transition: box-shadow .6s, transform .6s; }
     .room.dark .vid { box-shadow: 0 0 0 1px #222, 0 0 40px rgba(255,255,255,.08); transform: scale(1.04); }
-    .vid::after { content: ""; width: 0; height: 0; border: 12px solid transparent; border-left: 20px solid rgba(255,255,255,.9); border-right: 0; margin-left: 6px; }
+    .vid::after { content: ""; width: 0; height: 0; border: 12px solid transparent; border-left: 20px solid rgba(255,255,255,.9); border-right: 0; margin-left: 6px; filter: drop-shadow(0 1px 3px rgba(0,0,0,.45)); }
     .lamp { position: absolute; right: 18px; bottom: 18px; width: 56px; height: 56px; border-radius: 50%; border: 2px solid #bbb; background: #fff; cursor: pointer; display: grid; place-items: center; transition: background .4s, border-color .4s, box-shadow .4s; }
     .lamp:hover { border-color: #888; }
     .lamp:focus-visible { outline: 2px solid #ffb400; outline-offset: 3px; }

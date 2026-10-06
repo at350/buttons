@@ -1,7 +1,7 @@
 // Minority Report (2002) — Anderton's gestural precog-vision scrubber (John Underkoffler / g-speak): drag across the glass to scrub, fling to coast.
 export default {
   id: 'sf-minority-scrub',
-  credit: 'Minority Report (2002) — the precrime gestural interface (John Underkoffler, later Oblong g-speak): drag the precog vision to scrub through it, let go mid-swipe and it coasts; the red ball rolls',
+  credit: 'Minority Report (2002) — the precrime gestural interface (John Underkoffler, later Oblong g-speak): drag the precog vision (real footage stills) to scrub through it, let go mid-swipe and it coasts; the red ball rolls',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -19,25 +19,37 @@ export default {
     const g = root.querySelector('.glass'), cv = root.querySelector('canvas'), c = cv.getContext('2d'), tip = root.querySelector('.tip');
     const W = 276, H = 152, VH = 118; c.scale(2, 2);
     let t = 0.2, v = 0, raf = 0, drag = false, lx = 0, lt = 0;
-    const scene = (u, a) => {
-      c.globalAlpha = a;
-      c.strokeStyle = 'rgba(150,200,240,.35)'; c.lineWidth = 1; c.beginPath();
-      for (const [x, y] of [[0, 0], [W, 0], [0, VH], [W, VH]]) { c.moveTo(W * .55, VH * .45); c.lineTo(x, y); }
-      c.stroke();
-      const fx = 30 + u * 150, s = 0.8 + u * 0.4;
-      c.fillStyle = '#c9e6ff';
-      c.beginPath(); c.arc(fx, 46, 6 * s, 0, 7); c.fill(); c.fillRect(fx - 6 * s, 54, 12 * s, 34 * s);
-      c.save(); c.translate(fx + 5 * s, 58); c.rotate(-0.2 - Math.max(0, u - .7) * 4); c.fillRect(0, 0, 3 * s, 22 * s); c.restore();
-      c.fillStyle = '#7fa6c8'; c.beginPath(); c.arc(214, 48, 7, 0, 7); c.fill(); c.fillRect(207, 57, 14, 40);
-      c.fillStyle = 'rgba(160,210,255,.25)'; c.fillRect(196, 24, 46, 80);
+    // the precog vision: three shots (photos from the asset pack), each pushed in and panned as the clip plays,
+    // pre-toned once to the glass's cold cyan; the precrime ball rolls through them
+    const SHOTS = ['assets/wide/24.webp', 'assets/wide/30.webp', 'assets/wide/02.webp'];
+    const tone = SHOTS.map(() => null);
+    SHOTS.forEach((src, k) => {
+      const im = new Image();
+      im.onload = () => {
+        const o = document.createElement('canvas'); o.width = im.naturalWidth; o.height = im.naturalHeight;
+        const x = o.getContext('2d', { willReadFrequently: true }); x.drawImage(im, 0, 0);
+        const px = x.getImageData(0, 0, o.width, o.height), d = px.data;
+        for (let i = 0; i < d.length; i += 4) { const l = .3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2]; d[i] = l * .55 + 4; d[i + 1] = l * .8 + 14; d[i + 2] = l * .98 + 30; }
+        x.putImageData(px, 0, 0); tone[k] = o; draw();
+      };
+      im.src = src;
+    });
+    const shot = (u, a) => {
+      const k = Math.min(2, Math.floor(u * 3)), l = u * 3 - k, o = tone[k];
+      if (!o) return;
+      const z = 1.06 + l * .22, sw = o.width / z, sh = sw * VH / W;
+      const sx = (o.width - sw) * (k % 2 ? 1 - l : l), sy = (o.height - sh) * .5;
+      c.globalAlpha = a; c.drawImage(o, sx, sy, sw, sh, 0, 0, W, VH); c.globalAlpha = 1;
+    };
+    const ball = (u, a) => {
       const bx = 18 + ((u * 3) % 1) * 250, by = VH - 10 - Math.abs(Math.sin(u * 9.4)) * 30;
-      c.fillStyle = '#ff3b2f'; c.shadowColor = '#ff3b2f'; c.shadowBlur = 8; c.beginPath(); c.arc(bx, by, 6, 0, 7); c.fill(); c.shadowBlur = 0;
-      c.globalAlpha = 1;
+      c.globalAlpha = a; c.fillStyle = '#ff3b2f'; c.shadowColor = '#ff3b2f'; c.shadowBlur = 8; c.beginPath(); c.arc(bx, by, 6, 0, 7); c.fill(); c.shadowBlur = 0; c.globalAlpha = 1;
     };
     const draw = () => {
       const bg = c.createLinearGradient(0, 0, 0, VH); bg.addColorStop(0, '#16314a'); bg.addColorStop(1, '#06111c');
       c.fillStyle = bg; c.fillRect(0, 0, W, H);
-      scene(Math.max(0, t - .06), .18); scene(Math.max(0, t - .03), .32); scene(t, 1);
+      shot(t, 1); shot(Math.max(0, t - .012), .22);
+      ball(Math.max(0, t - .06), .18); ball(Math.max(0, t - .03), .32); ball(t, 1);
       const vg = c.createRadialGradient(W / 2, VH / 2, 40, W / 2, VH / 2, 170); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,4,10,.85)');
       c.fillStyle = vg; c.fillRect(0, 0, W, VH);
       c.fillStyle = 'rgba(2,8,14,.9)'; c.fillRect(0, VH, W, H - VH);

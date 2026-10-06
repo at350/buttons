@@ -3,12 +3,12 @@
 // content holds, then the list springs home (response .4 / damping .85) and the new message slides in at the top.
 const IOS = 'linear(0, 0.038, 0.117, 0.226, 0.343, 0.451, 0.557, 0.65, 0.726, 0.793, 0.847, 0.891, 0.922, 0.948, 0.967, 0.98, 0.99, 0.997, 1.001, 1.004, 1.005, 1.005, 1.005, 1.005, 1.004, 1.004, 1.003, 1.003, 1.002, 1.002, 1.001, 1.001, 1)';
 const MAIL = [
-  ['Linear', 'Weekly digest — 12 issues closed', '9:41 AM'],
-  ['Mia Jones', 'Design review notes', '9:12 AM'],
-  ['Alex Chen', 'Thursday offsite', '8:30 AM'],
-  ['Vercel', 'Deployment ready: acme-web', 'Yesterday'],
-  ['Ravi Kumar', 'Re: Q3 roadmap', 'Yesterday'],
-  ['GitHub', '[acme/web] PR #482 merged', 'Mon'],
+  ['Sofia Reyes', 'Weekly digest — 12 issues closed', '9:41 AM', 'women-24'],
+  ['Daniel Park', 'Design review notes', '9:12 AM', 'men-37'],
+  ['Hannah Lee', 'Thursday offsite', '8:30 AM', 'women-02'],
+  ['Marcus Webb', 'Deployment ready: acme-web', 'Yesterday', 'men-30'],
+  ['Priya Shah', 'Re: Q3 roadmap', 'Yesterday', 'women-15'],
+  ['Tom Becker', 'PR #482 merged', 'Mon', 'men-21'],
 ];
 
 export default {
@@ -28,10 +28,11 @@ export default {
     .scroll:focus-visible { box-shadow: inset 0 0 0 2px #007aff; border-radius: 12px; }
     h1 { margin: 0; padding: 12px 16px 6px; line-height: 32px; font-size: 26px; font-weight: 700; letter-spacing: .01em; color: #000; }
     ul { margin: 0; padding: 0; list-style: none; background: #fff; }
-    li { position: relative; height: 54px; display: flex; flex-direction: column; justify-content: center; padding: 0 14px 0 28px; overflow: hidden; transition: height .5s ${IOS}, opacity .35s; }
-    li + li::before { content: ''; position: absolute; top: 0; left: 28px; right: 0; height: 1px; background: #e5e5ea; }
+    li { position: relative; height: 54px; display: flex; flex-direction: column; justify-content: center; padding: 0 14px 0 70px; overflow: hidden; transition: height .5s ${IOS}, opacity .35s; }
+    li + li::before { content: ''; position: absolute; top: 0; left: 70px; right: 0; height: 1px; background: #e5e5ea; }
     li.new { height: 0; opacity: 0; }
-    li .u { position: absolute; left: 11px; top: 14px; width: 9px; height: 9px; border-radius: 50%; background: #007aff; }
+    li .u { position: absolute; left: 9px; top: 22px; width: 9px; height: 9px; border-radius: 50%; background: #007aff; }
+    li img { position: absolute; left: 24px; top: 8px; width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: #e5e5ea; }
     li div { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
     li b { font-size: 14px; font-weight: 600; color: #000; } li time { font-size: 12.5px; color: #8e8e93; white-space: nowrap; }
     li span { font-size: 13px; color: #3c3c43; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -49,7 +50,7 @@ export default {
     const T = 64, HOLD = 50;
     let next = 0, y = 0, sy = 0, busy = false, timers = [];
     const later = (fn, ms) => timers.push(setTimeout(fn, ms));
-    const row = ([who, sub, t], unread) => { const li = document.createElement('li'); li.innerHTML = `${unread ? '<i class="u"></i>' : ''}<div><b>${who}</b><time>${t}</time></div><span>${sub}</span>`; return li; };
+    const row = ([who, sub, t, img], unread) => { const li = document.createElement('li'); li.innerHTML = `${unread ? '<i class="u"></i>' : ''}<img src="assets/portraits/${img}.jpg" alt="" width="38" height="38"><div><b>${who}</b><time>${t}</time></div><span>${sub}</span>`; return li; };
     for (let i = 0; i < 4; i++) ul.appendChild(row(MAIL[(next + i) % MAIL.length], i === 0));
     next = 4;
     const setY = (v) => { y = v; scroll.style.setProperty('--y', v + 'px'); const n = busy ? 8 : Math.floor(Math.min(1, v / T) * 8); spokes.forEach((s, k) => s.classList.toggle('on', k < n)); };
@@ -57,7 +58,7 @@ export default {
       busy = true; stage.classList.add('busy'); setY(HOLD);
       later(() => {
         busy = false; stage.classList.remove('busy'); setY(0);
-        const li = row(['Notion', 'Your weekly summary is ready', 'now'], true); li.classList.add('new');
+        const li = row(['Olivia Grant', 'Your weekly summary is ready', 'now', 'women-38'], true); li.classList.add('new');
         ul.insertBefore(li, ul.firstChild);
         requestAnimationFrame(() => requestAnimationFrame(() => li.classList.remove('new')));
         later(() => { while (ul.children.length > 4) ul.lastChild.remove(); }, 600);

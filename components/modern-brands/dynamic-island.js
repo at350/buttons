@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 300px; max-width: 100%; height: 194px; border-radius: 12px; overflow: hidden;
-      background: radial-gradient(120% 90% at 20% 100%, #c9b6ff 0%, transparent 60%), radial-gradient(90% 80% at 90% 90%, #ffc9a8 0%, transparent 60%), linear-gradient(180deg, #8fb4ff, #dcd0ff);
+      background: #c9d3dc url(assets/tall/05.webp) 50% 22% / cover no-repeat;
       font: 600 15px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #000; -webkit-font-smoothing: antialiased; }
     .sb { position: absolute; top: 19px; left: 30px; right: 22px; display: flex; justify-content: space-between; align-items: center; transition: opacity .25s cubic-bezier(.32,.72,0,1); }
     .sb .ico { display: flex; gap: 4px; align-items: center; }
@@ -20,10 +20,10 @@ export default {
     .stage.open .isl { width: 284px; margin-left: -142px; height: 166px; border-radius: 44px; }
     .mini { position: absolute; left: 7px; right: 10px; top: 0; height: 37px; display: flex; align-items: center; justify-content: space-between; transition: opacity .18s, filter .25s; }
     .stage.open .mini { opacity: 0; filter: blur(4px); }
-    .art { display: block; border-radius: 6px; background: linear-gradient(140deg, #ffd27a 0%, #ff8a5c 45%, #b3426b 100%); flex: none; }
+    .art { display: block; border-radius: 6px; background: #b8231c url(assets/square/57.webp) center / cover no-repeat; flex: none; }
     .mini .art { width: 23px; height: 23px; }
     .wave { display: flex; gap: 2px; align-items: center; height: 14px; }
-    .wave i { width: 2.5px; height: 30%; border-radius: 2px; background: #ffb07a; animation: eq .9s ease-in-out infinite alternate; animation-play-state: paused; }
+    .wave i { width: 2.5px; height: 30%; border-radius: 2px; background: #ff6b5e; animation: eq .9s ease-in-out infinite alternate; animation-play-state: paused; }
     .wave i:nth-child(2) { animation-delay: -.3s; } .wave i:nth-child(3) { animation-delay: -.6s; } .wave i:nth-child(4) { animation-delay: -.15s; } .wave i:nth-child(5) { animation-delay: -.45s; }
     .stage.play .wave i { animation-play-state: running; }
     @keyframes eq { from { height: 22%; } to { height: 100%; } }

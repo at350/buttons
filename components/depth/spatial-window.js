@@ -26,11 +26,7 @@ export default {
     .content { position: absolute; inset: 0; transform: translateZ(2px); pointer-events: none; }
     .ttl { position: absolute; left: 22px; top: 18px; color: #fff; font: 700 17px/1 system-ui, -apple-system, 'Inter', sans-serif; letter-spacing: -.01em; }
     .tiles { position: absolute; left: 22px; right: 22px; top: 46px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
-    .tiles i { height: 38px; border-radius: 9px; box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .3); }
-    .tiles i:nth-child(1) { background: linear-gradient(160deg, #fbbf24, #f97316); }
-    .tiles i:nth-child(2) { background: linear-gradient(160deg, #34d399, #0ea5e9); }
-    .tiles i:nth-child(3) { background: linear-gradient(160deg, #f472b6, #8b5cf6); }
-    .tiles i:nth-child(4) { background: linear-gradient(160deg, #93c5fd, #6366f1); }
+    .tiles img { display: block; width: 100%; height: 38px; min-width: 0; object-fit: cover; border-radius: 9px; box-shadow: 0 2px 6px rgba(20, 10, 60, .25); }
     .orn {
       position: absolute; left: 50%; top: 100%; display: flex; gap: 2px; padding: 5px; border-radius: 999px;
       transform: translate(-50%, -50%) translateZ(28px);
@@ -58,7 +54,7 @@ export default {
     <div class="stage">
       <div class="win">
         <span class="glass"></span>
-        <span class="content"><span class="ttl">Library</span><span class="tiles"><i></i><i></i><i></i><i></i></span></span>
+        <span class="content"><span class="ttl">Library</span><span class="tiles"><img src="assets/square/58.webp" alt="" width="38" height="38" draggable="false"><img src="assets/square/35.webp" alt="" width="38" height="38" draggable="false"><img src="assets/square/45.webp" alt="" width="38" height="38" draggable="false"><img src="assets/square/71.webp" alt="" width="38" height="38" draggable="false"></span></span>
         <div class="orn" role="toolbar" aria-label="Library">
           <button class="ob" type="button" aria-pressed="false" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
           <button class="ob" type="button" aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></button>

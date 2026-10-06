@@ -15,7 +15,7 @@ export default {
     .car { position: relative; display: flex; align-items: center; gap: 4px; padding: 0 4px; }
     .vp { flex: 1; overflow: hidden; }
     .track { display: flex; gap: 8px; padding: 6px 2px; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-    .cv { flex: none; width: 70px; height: 104px; border: 0; padding: 6px; border-radius: 3px; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; text-align: left; font: 800 11px/1.05 'Roboto Flex', Inter, sans-serif; font-stretch: 70%; letter-spacing: .01em; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); box-shadow: 0 2px 6px rgba(0,0,0,.6); transition: transform .15s, box-shadow .15s; }
+    .cv { flex: none; width: 70px; height: 104px; border: 0; padding: 6px; border-radius: 3px; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; text-align: left; font: 800 11px/1.05 'Roboto Flex', Inter, sans-serif; font-stretch: 70%; letter-spacing: .01em; hyphens: manual; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); background: #222 center / cover no-repeat; box-shadow: 0 2px 6px rgba(0,0,0,.6); transition: transform .15s, box-shadow .15s; }
     .cv small { font-size: 7.5px; font-weight: 600; opacity: .85; }
     .cv:hover { transform: translateY(-2px); }
     .cv:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
@@ -42,11 +42,11 @@ export default {
     </div></div>`,
   init(root) {
     const track = root.querySelector('.track'), prev = root.querySelector('.prev'), next = root.querySelector('.next'), rent = root.querySelector('.rent'), badge = root.querySelector('.cart b');
-    const films = [['DUNE: PART TWO', 'PG-13', '#c9772b', '#3b1d0b'], ['WONKA', 'PG', '#7a3fb0', '#f2b84b'], ['OPPENHEIMER', 'R', '#2d2a26', '#d4561d'], ['BARBIE', 'PG-13', '#ff4fa3', '#ffd1e8'], ['TOP GUN: MAVERICK', 'PG-13', '#2f4b6e', '#e8a33d'], ['WICKED', 'PG', '#1f7a3e', '#f06ab0'], ['INSIDE OUT 2', 'PG', '#3a7bd5', '#ffcc33']];
+    const films = [['DUNE: PART TWO', 'PG-13', '42'], ['WONKA', 'PG', '51'], ['OPPEN&shy;HEIMER', 'R', '34'], ['BARBIE', 'PG-13', '21'], ['TOP GUN: MAVERICK', 'PG-13', '49'], ['WICKED', 'PG', '71'], ['INSIDE OUT 2', 'PG', '58']];
     let pos = 0, sel = null, price = 2.25, n = 0;
-    const covers = films.map(([t, r, a, b]) => {
+    const covers = films.map(([t, r, img]) => {
       const c = document.createElement('button'); c.type = 'button'; c.className = 'cv'; c.setAttribute('aria-pressed', 'false');
-      c.style.background = `linear-gradient(160deg, ${b}, ${a} 55%, #000)`; c.innerHTML = `${t}<small>${r} · NEW</small>`;
+      c.style.backgroundImage = `linear-gradient(transparent 42%, rgba(0,0,0,.82)), url(assets/square/${img}.webp)`; c.innerHTML = `${t}<small>${r} · NEW</small>`;
       c.addEventListener('click', () => { sel = sel === c ? null : c; covers.forEach((x) => x.setAttribute('aria-pressed', String(x === sel))); rent.disabled = !sel; });
       track.appendChild(c); return c;
     });

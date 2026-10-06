@@ -3,13 +3,16 @@ const ATTR = [['APPERCEPTION', 14], ['CANDOR', 15], ['VIVACITY', 14], ['COORDINA
 const pt = (i, v) => { const a = (i / 8) * Math.PI * 2 - Math.PI / 2, r = (v / 20) * 56; return [(70 + r * Math.cos(a)).toFixed(1), (70 + r * Math.sin(a)).toFixed(1)]; };
 export default {
   id: 'sf-westworld-analysis',
-  credit: 'Westworld (HBO, 2016) — Delos host tablet with the attribute matrix (Maeve\'s Bulk Apperception et al.): toggle ANALYSIS to freeze the host, then tap an attribute to push it up the 20-point scale',
+  credit: 'Westworld (HBO, 2016) — Delos host tablet with the host\'s profile photo and attribute matrix (Maeve\'s Bulk Apperception et al.): toggle ANALYSIS to freeze the host, then tap an attribute to push it up the 20-point scale',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .stage { width: 310px; max-width: 100%; border-radius: 12px; overflow: hidden; padding: 14px; background: linear-gradient(#2a2724, #161412); }
     .tab { border-radius: 14px; padding: 12px 14px; background: #efe8da; box-shadow: inset 0 0 0 1px #fff8ea, 0 0 0 5px #1a1816, 0 0 0 6px #3a3632, 0 8px 22px #000; color: #23201c; }
-    .hd { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #cfc5b2; padding-bottom: 6px; }
+    .hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid #cfc5b2; padding-bottom: 6px; }
+    .who { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .ph { display: block; width: 30px; height: 30px; flex: none; border-radius: 4px; object-fit: cover; box-shadow: 0 0 0 1px #cfc5b2; filter: sepia(.25) saturate(.8); transition: filter .3s; }
+    .frozen .ph { filter: grayscale(1) contrast(1.15); }
     .nm { font: italic 400 19px/1 'Instrument Serif', 'Playfair Display', Georgia, serif; white-space: nowrap; }
     .an { font: 600 9px 'Space Grotesk', system-ui, sans-serif; letter-spacing: .24em; color: #23201c; background: transparent; border: 1px solid #23201c; border-radius: 999px; padding: 5px 10px; cursor: pointer; transition: background .2s, color .2s; }
     .an:hover { background: #e2d8c4; }
@@ -33,7 +36,7 @@ export default {
     .web.hot { stroke: #9a3b22; stroke-width: 1; }
     .frozen .tab, .tab.frozen { box-shadow: inset 0 0 0 1px #fff8ea, 0 0 0 5px #1a1816, 0 0 0 6px #9a3b22, 0 8px 22px #000; }
   `,
-  html: `<div class="stage"><div class="tab"><div class="hd"><span class="nm">Maeve Millay</span><button class="an" type="button" aria-pressed="false">ANALYSIS</button></div>
+  html: `<div class="stage"><div class="tab"><div class="hd"><span class="who"><img class="ph" src="assets/portraits/women-30.jpg" alt="" width="30" height="30" draggable="false"><span class="nm">Maeve Millay</span></span><button class="an" type="button" aria-pressed="false">ANALYSIS</button></div>
     <div class="bd"><svg viewBox="0 0 140 140">${[20, 15, 10, 5].map((v) => `<polygon class="web" points="${ATTR.map((_, i) => pt(i, v).join(',')).join(' ')}"/>`).join('')}
       ${ATTR.map((_, i) => `<line class="web" x1="70" y1="70" x2="${pt(i, 20)[0]}" y2="${pt(i, 20)[1]}"/>`).join('')}<path class="poly"/>${ATTR.map((a, i) => `<circle class="vx" r="2.2" cx="${pt(i, a[1])[0]}" cy="${pt(i, a[1])[1]}"/>`).join('')}</svg>
     <div class="list">${ATTR.map(([n, v], i) => `<button class="ax" type="button" data-i="${i}" aria-disabled="true">${n}<b>${v}</b></button>`).join('')}</div></div></div></div>`,

@@ -9,7 +9,7 @@ export default {
     .screen { position: relative; width: 150px; height: 112px; border-radius: 12px / 16px; background: #0a0a0a; overflow: hidden;
       box-shadow: inset 0 0 30px #000, 0 0 0 6px #222, 0 0 0 8px #4a4844; }
     .pic { position: absolute; inset: 0; opacity: 0; transition: opacity .25s;
-      background: radial-gradient(ellipse at 50% 45%, #a8e0ff 0%, #2b7fd6 45%, #0b2b55 100%); }
+      background: #2b7fd6 url(assets/wide/03.webp) center / cover; }
     .pic::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); }
     .pic::after { content: ""; position: absolute; left: -20%; right: -20%; height: 30%; top: -30%; background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.12), rgba(255,255,255,0)); }
     .screen.on .pic { opacity: 1; animation: warm .5s steps(4) 1; }

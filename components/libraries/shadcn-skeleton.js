@@ -15,15 +15,14 @@ export default {
     .real { position: absolute; inset: 16px; opacity: 0; pointer-events: none; }
     .card.done .real { opacity: 1; }
     .card.done .ghost { opacity: 0; }
-    .real .img { display: grid; place-items: center; background: #f5f5f5; color: #737373; }
-    .real .img svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .real .img { display: block; width: 100%; object-fit: cover; background: #f5f5f5; }
     .real .t { height: 16px; font-weight: 500; line-height: 16px; }
     .real .s { height: 16px; color: #737373; line-height: 16px; }
   `,
   html: `
     <button class="card" type="button" aria-busy="true" aria-label="Reload">
       <span class="layer ghost"><span class="sk img"></span><span class="lines"><span class="sk ln" style="width:250px;max-width:100%"></span><span class="sk ln" style="width:200px"></span></span></span>
-      <span class="layer real"><span class="img"><svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span class="lines"><span class="t">shadcn</span><span class="s">m@example.com</span></span></span>
+      <span class="layer real"><img class="img" src="assets/wide/29.webp" alt="" width="250" height="125" draggable="false"><span class="lines"><span class="t">shadcn</span><span class="s">m@example.com</span></span></span>
     </button>`,
   init(root) {
     const c = root.querySelector('.card');

@@ -10,12 +10,13 @@ export default {
   css: `
     :host { display: inline-block; }
     .pad {
-      position: relative; display: inline-flex; flex-direction: column; align-items: center; padding: 22px 22px 18px; border-radius: 12px; overflow: hidden;
-      background: radial-gradient(120% 80% at 30% 0%, #4b5d8c 0%, #2b2f55 45%, #151528 100%); color: #fff;
+      position: relative; isolation: isolate; display: inline-flex; flex-direction: column; align-items: center; padding: 22px 22px 18px; border-radius: 12px; overflow: hidden;
+      background: #3b4a5a; color: #fff;
       font-family: system-ui, -apple-system, "SF Pro Display", sans-serif; user-select: none;
     }
     .in { display: flex; flex-direction: column; align-items: center; transition: transform .5s cubic-bezier(.32,.72,0,1), opacity .4s; }
     .pad.open .in { transform: translateY(-40px); opacity: 0; }
+    .pad::before { content: ''; position: absolute; inset: -30px; z-index: -1; background: url(assets/tall/05.webp) center / cover; filter: blur(16px) brightness(.6) saturate(1.2); }
     .ttl { font-size: 17px; line-height: 22px; font-weight: 400; letter-spacing: -.2px; }
     .dots { display: flex; gap: 17px; margin: 14px 0 26px; }
     .dot { width: 11px; height: 11px; border-radius: 50%; border: 1.2px solid #fff; background: transparent; transition: background-color .1s; }

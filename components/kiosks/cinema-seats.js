@@ -5,6 +5,10 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { display: inline-block; padding: 14px 16px; border-radius: 12px; background: #0e0f13; font-family: Inter, system-ui, sans-serif; color: #e8e8ea; }
+    .show { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #23252e; }
+    .show img { flex: none; display: block; width: 30px; height: 44px; border-radius: 3px; object-fit: cover; background: #23252e; box-shadow: 0 2px 6px rgba(0,0,0,.6); }
+    .show b { display: block; font-size: 13px; font-weight: 700; }
+    .show span { font-size: 10.5px; color: #a3a7b8; white-space: nowrap; }
     .screen { width: 240px; height: 18px; margin: 0 auto 4px; border-top: 3px solid #cfd6ff; border-radius: 50% 50% 0 0 / 100% 100% 0 0; box-shadow: 0 -6px 14px -6px rgba(160,180,255,.6); }
     .scap { text-align: center; font-size: 9px; letter-spacing: .3em; color: #8a8fa3; margin-bottom: 10px; }
     .map { display: grid; gap: 5px; }
@@ -28,6 +32,7 @@ export default {
   `,
   html: `
     <div class="stage">
+      <div class="show"><img src="assets/square/60.webp" alt="" width="30" height="44"><div><b>Twisters</b><span>Today · 7:30 PM · Auditorium 4</span></div></div>
       <div class="screen"></div><div class="scap">SCREEN</div>
       <div class="map"></div>
       <div class="key"><span class="a">Available</span><span class="s">Selected</span><span class="x">Sold</span></div>

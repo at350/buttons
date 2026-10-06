@@ -9,10 +9,10 @@ export default {
     .hd { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #da291c; color: #fff; font-weight: 800; font-size: 14px; }
     .hd svg { width: 26px; height: 26px; fill: #ffc72c; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; background: #f6f6f6; }
-    .t { height: 96px; border: 0; border-radius: 8px; background: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px;
+    .t { height: 96px; min-width: 0; border: 0; border-radius: 8px; background: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 6px;
       box-shadow: 0 1px 3px rgba(0,0,0,.14); font: inherit; color: inherit; transition: box-shadow .12s, transform .08s; -webkit-tap-highlight-color: transparent; }
-    .t svg { width: 36px; height: 36px; color: #da291c; }
-    .t b { font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+    .t img { display: block; width: 100%; height: 50px; border-radius: 5px; object-fit: cover; background: #eee; }
+    .t b { font-size: 12.5px; font-weight: 700; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
     .t span { font-size: 11px; color: #6f6f6f; }
     .t:hover { box-shadow: 0 2px 8px rgba(0,0,0,.18); }
     .t:active { transform: scale(.97); }
@@ -32,12 +32,12 @@ export default {
   `,
   html: `
     <div class="stage"><div class="scr">
-      <div class="hd"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.243 3.006c2.066 0 3.742 8.714 3.742 19.478H24c0-11.588-3.042-20.968-6.766-20.968-2.127 0-4.007 2.81-5.248 7.227-1.241-4.416-3.121-7.227-5.231-7.227C3.031 1.516 0 10.888 0 22.476h3.014c0-10.763 1.658-19.470 3.724-19.470 2.066 0 3.741 8.050 3.741 17.980h2.997c0-9.930 1.684-17.980 3.750-17.980Z"/></svg>Burgers</div>
+      <div class="hd"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.243 3.006c2.066 0 3.742 8.714 3.742 19.478H24c0-11.588-3.042-20.968-6.766-20.968-2.127 0-4.007 2.81-5.248 7.227-1.241-4.416-3.121-7.227-5.231-7.227C3.031 1.516 0 10.888 0 22.476h3.014c0-10.763 1.658-19.470 3.724-19.470 2.066 0 3.741 8.050 3.741 17.980h2.997c0-9.930 1.684-17.980 3.750-17.980Z"/></svg>McCafé®</div>
       <div class="grid">
-        <button class="t" type="button" aria-pressed="false" data-p="5.69"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16H4a2 2 0 1 1 0-4h16a2 2 0 1 1 0 4h-4.25"/><path d="M5 12a2 2 0 0 1-2-2 9 7 0 0 1 18 0 2 2 0 0 1-2 2"/><path d="M5 16a2 2 0 0 0-2 2 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 2 2 0 0 0-2-2q0 0 0 0"/><path d="m6.67 12 6.13 4.6a2 2 0 0 0 2.8-.4l3.15-4.2"/></svg><b>Big Mac®</b><span>$5.69 · 590 Cal.</span></button>
-        <button class="t" type="button" aria-pressed="false" data-p="2.49"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2.37 11.223 8.372-6.777a2 2 0 0 1 2.516 0l8.371 6.777"/><path d="M21 15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5.25"/><path d="M3 15a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h9"/><path d="m6.67 15 6.13 4.6a2 2 0 0 0 2.8-.4l3.15-4.2"/><rect width="20" height="4" x="2" y="11" rx="1"/></svg><b>McChicken®</b><span>$2.49 · 400 Cal.</span></button>
-        <button class="t" type="button" aria-pressed="false" data-p="1.89"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8"/><path d="M5 8h14"/><path d="M7 15a6.47 6.47 0 0 1 5 0 6.47 6.470 0 0 0 5 0"/><path d="m12 8 1-6h2"/></svg><b>Medium Coke®</b><span>$1.89 · 200 Cal.</span></button>
-        <button class="t" type="button" aria-pressed="false" data-p="4.39"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 4.08 10.35a1 1 0 0 0 1.84 0L17 11"/><path d="M17 7A5 5 0 0 0 7 7"/><path d="M17 7a2 2 0 0 1 0 4H7a2 2 0 0 1 0-4"/></svg><b>McFlurry® OREO®</b><span>$4.39 · 510 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="1.79"><img src="assets/square/57.webp" alt="" width="122" height="50" style="object-position:50% 45%"><b>Premium Roast</b><span>$1.79 · 0 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="3.29"><img src="assets/square/38.webp" alt="" width="122" height="50" style="object-position:68% 64%"><b>Cappuccino</b><span>$3.29 · 120 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="2.89"><img src="assets/square/28.webp" alt="" width="122" height="50" style="object-position:40% 50%"><b>Hot Chocolate</b><span>$2.89 · 370 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="3.49"><img src="assets/wide/16.webp" alt="" width="122" height="50" style="object-position:50% 58%"><b>Berry Smoothie</b><span>$3.49 · 190 Cal.</span></button>
       </div>
       <div class="ft">
         <div class="bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg><span class="badge">0</span></div>

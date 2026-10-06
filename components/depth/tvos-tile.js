@@ -1,6 +1,6 @@
 export default {
   id: 'dp-tvos-tile',
-  credit: 'Apple tvOS — focused parallax poster: layered artwork shifts at different rates, the tile scales up, tilts with the pointer, carries a moving specular glare and a deep soft shadow',
+  credit: 'Apple tvOS — focused parallax poster: the poster photo and its title shift at different rates, the tile scales up, tilts with the pointer, carries a moving specular glare and a deep soft shadow',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -24,10 +24,8 @@ export default {
     .tile:active .shadow { transform: translateY(8px); opacity: .7; }
     .art { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; background: #0b1220; transform: translateZ(0); }
     .l { position: absolute; inset: -10%; width: 120%; height: 120%; pointer-events: none; }
-    .sky { background: linear-gradient(180deg, #1e3a8a, #7c3aed 52%, #fb923c 92%); transform: translate(calc(var(--px) * -3px), calc(var(--py) * -3px)); }
-    .sun { transform: translate(calc(var(--px) * -6px), calc(var(--py) * -5px)); }
-    .far { transform: translate(calc(var(--px) * -10px), calc(var(--py) * -6px)); }
-    .near { transform: translate(calc(var(--px) * -16px), calc(var(--py) * -9px)); }
+    .photo { object-fit: cover; display: block; transform: translate(calc(var(--px) * -10px), calc(var(--py) * -6px)) scale(1.02); }
+    .scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, .55)); }
     .ttl {
       position: absolute; left: 16px; bottom: 12px; color: #fff; font: 800 21px/1 'Syne', system-ui, sans-serif; letter-spacing: .01em;
       text-shadow: 0 3px 12px rgba(0, 0, 0, .6); pointer-events: none; white-space: nowrap;
@@ -46,10 +44,8 @@ export default {
       <button class="tile" type="button" aria-label="Horizon">
         <span class="shadow"></span>
         <span class="art">
-          <span class="l sky"></span>
-          <svg class="l sun" viewBox="0 0 264 149" preserveAspectRatio="none" aria-hidden="true"><circle cx="172" cy="66" r="24" fill="#fde68a"/><circle cx="172" cy="66" r="36" fill="#fde68a" opacity=".18"/></svg>
-          <svg class="l far" viewBox="0 0 264 149" preserveAspectRatio="none" aria-hidden="true"><path fill="#5b21b6" d="M0 149V96l38-30 30 22 34-40 40 34 34-26 40 32 48-20v81z"/></svg>
-          <svg class="l near" viewBox="0 0 264 149" preserveAspectRatio="none" aria-hidden="true"><path fill="#1e1b4b" d="M0 149V118l46-24 34 20 42-30 38 28 46-18 58 22v33z"/></svg>
+          <img class="l photo" src="assets/wide/29.webp" alt="" width="264" height="149" draggable="false">
+          <span class="scrim"></span>
           <span class="ttl">Horizon</span>
           <span class="glare"></span>
           <span class="sheen"></span>

@@ -11,9 +11,9 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage {
-      display: grid; place-items: center; width: 128px; height: 236px; border-radius: 12px; overflow: hidden;
-      background: radial-gradient(90% 70% at 20% 10%, #7aa7ff 0%, #4361c2 40%, #2a2350 75%, #120f24 100%);
+      position: relative; isolation: isolate; display: grid; place-items: center; width: 128px; height: 236px; border-radius: 12px; overflow: hidden; background: #3a3236;
     }
+    .stage::before { content: ''; position: absolute; inset: -24px; z-index: -1; background: url(assets/tall/09.webp) center / cover; filter: blur(14px) brightness(.62) saturate(1.3); }
     .sl {
       position: relative; width: 72px; height: 160px; border-radius: 24px; overflow: hidden; cursor: pointer;
       background: rgba(40,40,46,.42); -webkit-backdrop-filter: blur(30px) saturate(1.8); backdrop-filter: blur(30px) saturate(1.8);

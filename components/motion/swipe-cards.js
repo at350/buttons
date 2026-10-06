@@ -9,14 +9,18 @@ export default {
     .stage { position: relative; width: 240px; height: 262px; max-width: 100%; border-radius: 12px; background: #111; overflow: hidden; touch-action: none; font-family: Inter, system-ui, sans-serif; }
     .card {
       position: absolute; left: 40px; top: 16px; width: 160px; height: 172px; border-radius: 18px; cursor: grab; user-select: none; -webkit-user-select: none;
-      display: flex; align-items: flex-end; padding: 14px; color: #fff; font-weight: 600; font-size: 15px; letter-spacing: -.01em;
+      display: flex; align-items: flex-end; padding: 14px; color: #fff; font-weight: 700; font-size: 18px; letter-spacing: -.01em; overflow: hidden; background: #2a2a2c;
       transform: translate(var(--x, 0px), calc(var(--i) * 10px)) rotate(var(--r, 0deg)) scale(calc(1 - var(--i) * .06)); transform-origin: 50% 120%;
       transition: transform .55s ${SPRING}, opacity .3s; z-index: calc(10 - var(--i)); box-shadow: 0 12px 30px -10px rgba(0,0,0,.6);
     }
+    .card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+    .card::after { content: ''; position: absolute; inset: 50% 0 0; background: linear-gradient(transparent, rgba(0,0,0,.65)); pointer-events: none; }
+    .card .nm { position: relative; z-index: 1; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+    .card .nm small { font-size: 16px; font-weight: 400; margin-left: 6px; }
     .card.drag { transition: none; cursor: grabbing; }
     .card.out { transition: transform .5s cubic-bezier(.3, .6, .4, 1), opacity .4s .1s; opacity: 0; }
     .card.hide { opacity: 0; transform: translate(0, 40px) scale(.8); }
-    .card .tag { position: absolute; top: 14px; padding: 4px 8px; border-radius: 6px; border: 2px solid; font-size: 12px; font-weight: 800; letter-spacing: .08em; opacity: 0; transform: rotate(-12deg); transition: opacity .15s; }
+    .card .tag { position: absolute; z-index: 2; top: 14px; padding: 4px 8px; border-radius: 6px; border: 2px solid; font-size: 12px; font-weight: 800; letter-spacing: .08em; opacity: 0; transform: rotate(-12deg); transition: opacity .15s; }
     .card .yes { left: 12px; color: #21d07c; border-color: #21d07c; } .card .no { right: 12px; color: #fe3c72; border-color: #fe3c72; transform: rotate(12deg); }
     .btns { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 20; display: flex; justify-content: center; gap: 14px; }
     .btns button { width: 38px; height: 38px; border-radius: 50%; border: 1px solid #2e2e30; cursor: pointer; display: grid; place-items: center; background: #1a1a1c; color: #fff; transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), background .2s; }
@@ -27,9 +31,9 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="card" style="background:linear-gradient(160deg,#f472b6,#7c3aed)"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span>Aurora</div>
-      <div class="card" style="background:linear-gradient(160deg,#fb923c,#dc2626)"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span>Ember</div>
-      <div class="card" style="background:linear-gradient(160deg,#22d3ee,#1d4ed8)"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span>Tide</div>
+      <div class="card"><img src="assets/square/58.webp" alt="" width="160" height="172" draggable="false"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span><span class="nm">Sophie<small>26</small></span></div>
+      <div class="card"><img src="assets/square/59.webp" alt="" width="160" height="172" draggable="false"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span><span class="nm">Maya<small>24</small></span></div>
+      <div class="card"><img src="assets/portraits/women-28.jpg" alt="" width="160" height="172" draggable="false"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span><span class="nm">Elena<small>27</small></span></div>
       <div class="btns"><button class="l" type="button" aria-label="Nope"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><button class="r" type="button" aria-label="Like"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></button></div>
     </div>`,
   init(root) {

@@ -20,7 +20,9 @@ export default {
     .tile:hover { border-color: #0067a5; background: #eef6fc; }
     .tile:active { transform: scale(.98); }
     .tile:focus-visible, .btn:focus-visible { outline: 2px solid #0067a5; outline-offset: 2px; }
-    .card { padding: 10px 12px; border-radius: 10px; background: #eef6fc; font-size: 12.5px; line-height: 1.5; }
+    .card { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; background: #eef6fc; font-size: 12.5px; line-height: 1.5; }
+    .card img { flex: none; display: block; width: 46px; height: 46px; border-radius: 50%; object-fit: cover; background: #dbe3ea; box-shadow: 0 0 0 2px #fff; }
+    .card div { min-width: 0; }
     .card b { font-size: 14px; }
     .row { display: flex; gap: 8px; margin-top: auto; }
     .btn { flex: 1; height: 40px; border: 0; border-radius: 20px; cursor: pointer; font: 700 13px/1 'DM Sans', Inter, sans-serif; transition: filter .1s, transform .06s; }
@@ -42,19 +44,19 @@ export default {
           <button class="tile" type="button" data-k="walk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>Walk-in visit</button>
         </div>
         <div class="v" data-s="1"><h4>Is this your visit?</h4>
-          <div class="card"><b class="what">Dr. Priya Patel</b><br><span class="when">Family Medicine · 10:30 AM</span><br>Suite 210, 2nd floor</div>
+          <div class="card"><img class="doc" src="assets/portraits/women-02.jpg" alt="" width="46" height="46"><div><b class="what">Dr. Priya Patel</b><br><span class="when">Family Medicine · 10:30 AM</span><br>Suite 210, 2nd floor</div></div>
           <div class="row"><button class="btn sec" type="button" data-k="back">Back</button><button class="btn pri" type="button" data-k="yes">Yes, check me in</button></div>
         </div>
         <div class="v ok" data-s="2"><div class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h4>You're checked in</h4><p>Please have a seat. We'll call you shortly.</p><button class="btn pri" type="button" data-k="done">Done</button></div>
       </div>
     </div></div>`,
   init(root) {
-    const vs = [...root.querySelectorAll('.v')], dots = [...root.querySelectorAll('.steps i')], what = root.querySelector('.what'), when = root.querySelector('.when');
+    const vs = [...root.querySelectorAll('.v')], dots = [...root.querySelectorAll('.steps i')], what = root.querySelector('.what'), when = root.querySelector('.when'), doc = root.querySelector('.doc');
     const go = (s) => { vs.forEach((v, i) => { v.classList.toggle('on', i === s); v.inert = i !== s; }); dots.forEach((d, i) => d.classList.toggle('on', i <= s)); };
     root.querySelectorAll('[data-k]').forEach((b) => b.addEventListener('click', () => {
       const k = b.dataset.k;
-      if (k === 'appt') { what.textContent = 'Dr. Priya Patel'; when.textContent = 'Family Medicine · 10:30 AM'; go(1); }
-      else if (k === 'walk') { what.textContent = 'Walk-in Clinic'; when.textContent = 'Est. wait 25 min'; go(1); }
+      if (k === 'appt') { what.textContent = 'Dr. Priya Patel'; when.textContent = 'Family Medicine · 10:30 AM'; doc.src = 'assets/portraits/women-02.jpg'; go(1); }
+      else if (k === 'walk') { what.textContent = 'Dr. Marcus Reed'; when.textContent = 'Walk-in · est. wait 25 min'; doc.src = 'assets/portraits/men-20.jpg'; go(1); }
       else if (k === 'back' || k === 'done') go(0);
       else if (k === 'yes') go(2);
     }));

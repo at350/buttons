@@ -29,7 +29,10 @@ export default {
     .turn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .col { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
     .card { border-radius: 16px; background: #1e1f22; padding: 8px; min-width: 0; }
-    .media { flex: 1.5; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(160deg, #1f3a2a, #1e1f22 70%); }
+    .media { flex: 1.5; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(160deg, #3d3524, #1e1f22 70%); }
+    .mh { display: flex; gap: 8px; align-items: center; min-width: 0; }
+    .mh > div { min-width: 0; }
+    .art { flex: none; display: block; width: 36px; height: 36px; border-radius: 8px; object-fit: cover; background: #2a2d31; }
     .media b, .media span, .sug b, .sug span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .media span, .sug span { color: #a8abaf; }
     .ctl { display: flex; justify-content: space-between; align-items: center; }
@@ -40,7 +43,7 @@ export default {
     .pp .pa, .playing .pp .pl { display: none; }
     .playing .pp .pa { display: block; }
     .sug { flex: 1; display: flex; gap: 8px; align-items: center; }
-    .sug .av { flex: none; width: 28px; height: 28px; border-radius: 50%; background: #7cacf8; color: #062e6f; display: grid; place-items: center; font-weight: 600; }
+    .sug .av { flex: none; display: block; width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #2a2d31; }
     .drawer { position: absolute; inset: 0; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); align-content: center; gap: 10px 4px; border-radius: 16px; background: #1e1f22; opacity: 0; transform: scale(.94); pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.2,0,0,1); }
     .open .drawer { opacity: 1; transform: none; pointer-events: auto; }
     .ap { border: 0; background: transparent; color: #e3e3e3; font: inherit; font-size: 10px; display: grid; justify-items: center; gap: 4px; cursor: pointer; }
@@ -59,11 +62,11 @@ export default {
       <div class="main">
         <div class="map"><svg viewBox="0 0 140 184" preserveAspectRatio="xMidYMid slice"><path class="rd" d="M-10 130 150 100M30 -10 56 200M120 -10 100 200"/><path class="rt" d="M50 190 46 126 104 108 112 40"/><path d="M50 160l-7 12h14z" fill="#fff"/></svg><div class="turn">${ic('<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>')}<span>200 m · Main St</span></div></div>
         <div class="col">
-          <div class="card media"><div><b>Lose Control</b><span>Teddy Swims</span></div><div class="ctl">
+          <div class="card media"><div class="mh"><img class="art" src="assets/square/62.webp" alt="" width="36" height="36"><div><b>Lose Control</b><span>Teddy Swims</span></div></div><div class="ctl">
             <button class="m" type="button" aria-label="Previous">${ic('<path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/>')}</button>
             <button class="m pp" type="button" aria-pressed="false" aria-label="Play / pause"><svg class="pl" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg><svg class="pa" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg></button>
             <button class="m" type="button" aria-label="Next">${ic('<path d="M21 4v16"/><path d="M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/>')}</button></div></div>
-          <div class="card sug"><span class="av">M</span><span style="min-width:0"><b>Mom</b><span>Missed call</span></span></div>
+          <div class="card sug"><img class="av" src="assets/portraits/women-14.jpg" alt="" width="28" height="28"><span style="min-width:0"><b>Mom</b><span>Missed call</span></span></div>
         </div>
         <div class="drawer">${APPS.map(([n, c, d]) => `<button class="ap" type="button"><span class="dot" style="background:${c}">${ic(d)}</span>${n}</button>`).join('')}</div>
       </div>

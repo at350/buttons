@@ -6,10 +6,11 @@ export default {
     :host { display: inline-block; }
     .stage { padding: 10px; border-radius: 12px; background: #111; }
     .scr { position: relative; width: 240px; max-width: 100%; height: 170px; border-radius: 30px; overflow: hidden; isolation: isolate;
-      background: radial-gradient(90% 70% at 20% 10%, #3a4f86 0%, transparent 60%), radial-gradient(80% 70% at 90% 100%, #6b3a6e 0%, transparent 60%), #14141c;
+      background: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.12)), #1d4a4f url(assets/tall/01.webp) 50% 40% / cover no-repeat;
       font: 400 15px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
     .apps { position: absolute; left: 22px; right: 22px; top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 18px; transition: filter .5s cubic-bezier(.32,.72,0,1), opacity .5s; }
-    .apps i { aspect-ratio: 1; border-radius: 11px; background: rgba(255,255,255,.14); }
+    .apps i { aspect-ratio: 1; border-radius: 11px; display: grid; place-items: center; background: rgba(255,255,255,.16); backdrop-filter: blur(8px) saturate(150%); -webkit-backdrop-filter: blur(8px) saturate(150%); box-shadow: inset 0 .5px 0 rgba(255,255,255,.45), inset 0 0 0 .5px rgba(255,255,255,.18); }
+    .apps svg { width: 56%; height: 56%; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .scr.on .apps { filter: blur(3px); opacity: .6; }
     .glow { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .5s cubic-bezier(.32,.72,0,1); }
     .glow.l1 { filter: none; } .glow.l2 { filter: blur(4px); } .glow.l3 { filter: blur(12px); } .glow.l4 { filter: blur(22px); }
@@ -43,7 +44,7 @@ export default {
   html: `
     <div class="stage">
       <div class="scr">
-        <div class="apps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="apps" aria-hidden="true"><i><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 20.5l1.4-5A8.5 8.5 0 1 1 21 11.5z"/></svg></i><i><svg viewBox="0 0 24 24"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2l1.6-2h5.8l1.6 2h2A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></i><i><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L5 21"/></svg></i><i><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></i><i><svg viewBox="0 0 24 24"><path d="M3 6.5 9 3.5l6 3 6-3v14l-6 3-6-3-6 3z"/><path d="M9 3.5v14M15 6.5v14"/></svg></i><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></i><i><svg viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg></i><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></i></div>
         <div class="glow l4" aria-hidden="true"><div class="ring"><div class="spin"></div></div></div>
         <div class="glow l3" aria-hidden="true"><div class="ring"><div class="spin"></div></div></div>
         <div class="glow l2" aria-hidden="true"><div class="ring"><div class="spin"></div></div></div>

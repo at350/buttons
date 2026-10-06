@@ -77,24 +77,16 @@ function shade(cv, el, w, h, fs, o = {}) {
 // Apple Liquid Glass (iOS 26 / WWDC25): a capsule lens over live content. Inside a rounded bevel the
 // surface tilts, so rays refract OUTWARD — content from beyond the edge is pulled into the rim and the
 // centre is gently magnified; the three channels refract by slightly different amounts (dispersion);
-// a thin two-sided specular rim catches the light; a soft contact shadow sits underneath.
+// a thin two-sided specular rim catches the light; a soft contact shadow sits underneath. The wallpaper is a
+// photo from the asset pack, uploaded once as a texture and cover-fitted to the canvas (u_crop).
 const FS = `precision highp float;
-uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse;
+uniform float u_hover,u_press;uniform vec2 u_res,u_mouse;
 float sdRR(vec2 p,vec2 b,float r){vec2 q=abs(p)-b+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
 float PX;
+uniform sampler2D u_tex;uniform vec2 u_crop;
 vec3 wall(vec2 p){
- float t=u_time*.12;
- vec3 c=mix(vec3(.05,.16,.62),vec3(.32,.62,1.),smoothstep(.1,1.,p.y));
- float y1=.30+.16*sin(p.x*1.5+t*2.)+.05*sin(p.x*4.3-t*1.3);
- float y2=.48+.14*sin(p.x*1.25-t*1.6+1.3)+.04*cos(p.x*3.7+t);
- float y3=.86+.1*sin(p.x*1.8+t*1.2+2.);
- vec3 org=mix(vec3(1.,.36,.06),vec3(1.,.62,.22),smoothstep(-.2,.3,p.y));
- c=mix(c,vec3(1.,.27,.52),smoothstep(PX,-PX,p.y-y2));
- c=mix(c,org,smoothstep(PX,-PX,p.y-y1));
- c=mix(c,vec3(.98,.93,1.),smoothstep(PX*1.5,-PX*1.5,abs(p.y-y3)-.018));
- c=mix(c,vec3(1.,.8,.55),smoothstep(PX*1.5,-PX*1.5,abs(p.y-y1-.07)-.006)*.8);
- vec2 g=fract(p*vec2(9.,9.))-.5; c=mix(c,vec3(1.),smoothstep(.07+PX*9.,.07-PX*9.,length(g))*.35);
- return c;}
+ vec2 t=.5+(vec2(p.x*u_res.y/u_res.x,p.y)-.5)*u_crop;
+ return texture2D(u_tex,clamp(t,vec2(.001),vec2(.999))).rgb;}
 void main(){
  PX=1./u_res.y;
  vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y; vec2 p=vec2(uv.x*ar,uv.y);
@@ -128,9 +120,9 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 280px; height: 110px; max-width: 100%; padding: 0; border: 0; border-radius: 20px; overflow: hidden; background: #1d3fb8; cursor: pointer; isolation: isolate; -webkit-tap-highlight-color: transparent; }
+    .btn { position: relative; display: grid; place-items: center; width: 280px; height: 110px; max-width: 100%; padding: 0; border: 0; border-radius: 20px; overflow: hidden; background: #13202c; cursor: pointer; isolation: isolate; -webkit-tap-highlight-color: transparent; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(180deg, #4f8dff, #1d3fb8 45%, #ff4a85 62%, #ff7a1f); }
+    .cv.nogl { background: url(assets/wide/35.webp) center / cover; }
     .l { position: relative; z-index: 1; color: #fff; font: 600 17px/1 system-ui, -apple-system, 'Inter', sans-serif; letter-spacing: -.022em; pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,.18), 0 0 12px rgba(0,0,0,.12); transition: transform .35s cubic-bezier(.32,.72,0,1); }
     .btn:active .l { transform: scale(1.06); }
     .btn:focus-visible { outline: 2px solid #0a84ff; outline-offset: 3px; }
@@ -138,7 +130,31 @@ export default {
   html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Continue</span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 280, 110, FS, { pressDecay: 1.4, idle: true, step: (st) => { if (st.down) st.press = Math.max(st.press, 1); } });
-    return () => s.destroy();
+    const photo = new Image();
+    let gl0 = null, tex = null, uCrop = null, crop = [1, 1];
+    const upload = () => {
+      if (!gl0 || gl0.isContextLost() || !tex || !photo.naturalWidth) return;
+      gl0.bindTexture(gl0.TEXTURE_2D, tex);
+      gl0.pixelStorei(gl0.UNPACK_FLIP_Y_WEBGL, true);
+      gl0.texImage2D(gl0.TEXTURE_2D, 0, gl0.RGBA, gl0.RGBA, gl0.UNSIGNED_BYTE, photo);
+      const ia = photo.naturalWidth / photo.naturalHeight, ca = cv.width / cv.height; // cover-fit
+      crop = ia > ca ? [ca / ia, 1] : [1, ia / ca];
+    };
+    const s = shade(cv, btn, 280, 110, FS, {
+      pressDecay: 1.4,
+      step: (st) => { if (st.down) st.press = Math.max(st.press, 1); },
+      after: (gl, prog) => {
+        gl0 = gl; tex = gl.createTexture(); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([214, 196, 206, 255]));
+        for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+        gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
+        uCrop = gl.getUniformLocation(prog, 'u_crop');
+        upload();
+      },
+      uniforms: (gl) => gl.uniform2f(uCrop, crop[0], crop[1]),
+    });
+    photo.onload = () => { upload(); s.draw(); };
+    photo.src = 'assets/wide/35.webp';
+    return () => { photo.onload = null; s.destroy(); };
   },
 };

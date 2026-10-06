@@ -1,5 +1,5 @@
 // PlayStation 5 home screen: deep-blue backdrop, Games / Media switcher, the tile row (PS Store first,
-// Game Library last), the focused tile scales up with its title beside it, white "Play" bar + "…" below.
+// Game Library last), the focused game's key art fills the backdrop, the focused tile scales up with its title beside it, white "Play" bar + "…" below.
 const PS = 'M8.984 2.596v17.547l3.915 1.261V6.688c0-.69.304-1.151.794-.991.636.18.76.814.76 1.505v5.875c2.441 1.193 4.362-.002 4.362-3.152 0-3.237-1.126-4.675-4.438-5.827-1.307-.448-3.728-1.186-5.39-1.502zm4.656 16.241l6.296-2.275c.715-.258.826-.625.246-.818-.586-.192-1.637-.139-2.357.123l-4.205 1.5V14.98l.24-.085s1.201-.42 2.913-.615c1.696-.18 3.785.03 5.437.661 1.848.601 2.04 1.472 1.576 2.072-.465.6-1.622 1.036-1.622 1.036l-8.544 3.107V18.86zM1.807 18.6c-1.9-.545-2.214-1.668-1.352-2.32.801-.586 2.16-1.052 2.16-1.052l5.615-2.013v2.313L4.205 17c-.705.271-.825.632-.239.826.586.195 1.637.15 2.343-.12L8.247 17v2.074c-.12.03-.256.044-.39.073-1.939.331-3.996.196-6.038-.479z';
 const TILES = [
   ['PlayStation Store', 'store', `<svg viewBox="0 0 24 24"><path fill="#fff" d="${PS}"/></svg>`],
@@ -15,13 +15,18 @@ export default {
     :host { display: block; max-width: 100%; }
     .stage { position: relative; border-radius: 12px; padding: 14px 0 16px 18px; overflow: hidden; color: #fff; font-family: 'Inter', 'SST', system-ui, sans-serif;
       background: radial-gradient(ellipse 80% 70% at 85% 0%, rgba(40,90,190,.55), transparent 70%), linear-gradient(180deg, #0b2150 0%, #06143a 55%, #020a20 100%); }
+    .bg { position: absolute; inset: 0; pointer-events: none; }
+    .bg i { position: absolute; top: 0; right: 0; bottom: 0; left: 30%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%); mask-image: linear-gradient(90deg, transparent, #000 35%); background-size: cover; background-position: center 40%; opacity: 0; transition: opacity 400ms ease; }
+    .bg i.on { opacity: 1; }
+    .bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(2,10,32,.6) 0%, rgba(2,10,32,.35) 55%, rgba(2,10,32,.1) 100%), linear-gradient(180deg, transparent 45%, rgba(2,10,32,.75)); }
+    .top, .row, .acts { position: relative; }
     .top { display: flex; align-items: center; gap: 16px; padding-right: 18px; font: 500 13px 'Inter', system-ui, sans-serif; white-space: nowrap; }
     .seg { border: none; background: none; padding: 0; cursor: pointer; color: rgba(255,255,255,.55); font: inherit; }
     .seg.on { color: #fff; font-weight: 600; }
     .seg:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 2px; }
     .clock { margin-left: auto; display: flex; gap: 12px; align-items: center; color: rgba(255,255,255,.85); font-size: 12px; }
     .clock svg { width: 15px; height: 15px; fill: rgba(255,255,255,.85); }
-    .av { width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #f7a7cb, #7cb7ff); }
+    .av { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; display: block; background: #24324f; }
     .row { display: flex; align-items: center; gap: 10px; height: 92px; margin-top: 12px; white-space: nowrap; }
     .tile { position: relative; flex: none; width: 54px; height: 54px; border-radius: 9px; border: none; padding: 0; cursor: pointer; overflow: hidden;
       transition: width 260ms cubic-bezier(.2,.8,.2,1), height 260ms cubic-bezier(.2,.8,.2,1), box-shadow 260ms; box-shadow: 0 4px 10px rgba(0,0,0,.45); }
@@ -32,11 +37,11 @@ export default {
     .nm { flex: none; font: 500 14px 'Inter', system-ui, sans-serif; margin: 0 6px 0 2px; color: #fff; }
     .store { background: linear-gradient(160deg, #1a8cff, #0070cc 55%, #00439c); }
     .lib { background: #24324f; }
-    .a { background: radial-gradient(circle at 50% 42%, #fff 0 11%, #cfe6ff 12% 16%, transparent 17%), radial-gradient(circle at 50% 120%, #ffd34d 0 30%, transparent 31%), linear-gradient(180deg, #2c8dff, #0a3bb3); }
-    .b { background: radial-gradient(ellipse at 30% 30%, #ff4a4a, transparent 55%), linear-gradient(135deg, #b00012 0%, #3a0008 55%, #050505 100%); }
-    .c { background: linear-gradient(170deg, transparent 58%, #ff8a1f 59% 62%, transparent 63%), linear-gradient(180deg, #2a2f3a, #0c0f16); }
-    .d { background: radial-gradient(circle at 62% 38%, #e2322a 0 18%, transparent 19%), linear-gradient(180deg, #f2e6d0 0 62%, #2b2620 63%); }
-    .e { background: radial-gradient(circle at 50% 60%, #43f5d6, transparent 40%), linear-gradient(160deg, #0b3a40, #02090d); }
+    .a { background: #10203c url(assets/wide/11.webp) center / cover; }
+    .b { background: #10203c url(assets/wide/02.webp) center / cover; }
+    .c { background: #10203c url(assets/wide/24.webp) center / cover; }
+    .d { background: #10203c url(assets/wide/25.webp) center / cover; }
+    .e { background: #10203c url(assets/wide/33.webp) center / cover; }
     .acts { display: flex; gap: 10px; margin-top: 6px; }
     .play { width: 132px; height: 34px; border: none; border-radius: 6px; background: #fff; color: #000; cursor: pointer; font: 600 13px 'Inter', system-ui, sans-serif; transition: transform 150ms, background 150ms; }
     .play:hover { background: #e9eef8; }
@@ -50,9 +55,10 @@ export default {
   `,
   html: `
     <div class="stage">
+      <div class="bg" aria-hidden="true"><i data-k="a" style="background-image:url(assets/wide/11.webp)" class="on"></i><i data-k="b" style="background-image:url(assets/wide/02.webp)"></i><i data-k="c" style="background-image:url(assets/wide/24.webp)"></i><i data-k="d" style="background-image:url(assets/wide/25.webp)"></i><i data-k="e" style="background-image:url(assets/wide/33.webp)"></i></div>
       <div class="top">
         <button class="seg on" type="button" aria-pressed="true">Games</button><button class="seg" type="button" aria-pressed="false">Media</button>
-        <span class="clock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span class="av"></span>10:42</span>
+        <span class="clock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><img class="av" src="assets/portraits/men-37.jpg" alt="" width="18" height="18">10:42</span>
       </div>
       <div class="row" role="listbox" aria-label="Games">
         ${TILES.map(([n, c, ic], i) => `<button class="tile ${c}${i === 1 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 1}" aria-label="${n}">${ic}</button>${i === 1 ? `<span class="nm">${n}</span>` : ''}`).join('')}
@@ -60,10 +66,12 @@ export default {
       <div class="acts"><button class="play" type="button">Play</button><button class="more" type="button" aria-label="More"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div>
     </div>`,
   init(root) {
+    const bgs = [...root.querySelectorAll('.bg i')];
     const tiles = [...root.querySelectorAll('.tile')], nm = root.querySelector('.nm'), play = root.querySelector('.play');
     const pick = (t) => {
       tiles.forEach((o) => { const on = o === t; o.classList.toggle('sel', on); o.setAttribute('aria-selected', String(on)); });
       t.after(nm); nm.textContent = t.getAttribute('aria-label');
+      bgs.forEach((b) => b.classList.toggle('on', t.classList.contains(b.dataset.k)));
       play.textContent = t.classList.contains('store') ? 'Open' : t.classList.contains('lib') ? 'Open' : 'Play';
     };
     tiles.forEach((t, i) => {

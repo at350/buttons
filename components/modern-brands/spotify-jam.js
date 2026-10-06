@@ -18,19 +18,21 @@ export default {
     .jam[aria-pressed="true"]:hover { box-shadow: inset 0 0 0 1px #fff; background: transparent; }
     .jam[aria-pressed="true"] .a { visibility: hidden; } .jam[aria-pressed="true"] .b { visibility: visible; }
     .ppl { display: flex; align-items: center; }
-    .ppl b { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #121212; margin-left: -10px; display: grid; place-items: center; color: #fff; font: 700 11px/1 Inter, system-ui, sans-serif;
+    .ppl > * { box-sizing: border-box; width: 32px; height: 32px; border-radius: 50%; border: 2px solid #121212; margin-left: -10px; flex: none;
       transform: scale(0); opacity: 0; transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .2s; }
-    .ppl b:nth-child(1) { margin-left: 0; background: #e8115b; }
-    .ppl b:nth-child(2) { background: #509bf5; transition-delay: .07s; }
-    .ppl b:nth-child(3) { background: #ff6437; transition-delay: .14s; }
-    .ppl b:nth-child(4) { background: #2a2a2a; color: #b3b3b3; transition-delay: .21s; }
-    .stage.on .ppl b { transform: scale(1); opacity: 1; }
+    .ppl img { display: block; object-fit: cover; background: #2a2a2a; }
+    .ppl b { display: grid; place-items: center; background: #2a2a2a; color: #b3b3b3; font: 700 11px/1 Inter, system-ui, sans-serif; }
+    .ppl > :nth-child(1) { margin-left: 0; }
+    .ppl > :nth-child(2) { transition-delay: .07s; }
+    .ppl > :nth-child(3) { transition-delay: .14s; }
+    .ppl > :nth-child(4) { transition-delay: .21s; }
+    .stage.on .ppl > * { transform: scale(1); opacity: 1; }
   `,
   html: `
     <div class="stage">
       <svg class="logo" viewBox="0 0 24 24" role="img" aria-label="Spotify"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
       <button class="jam" type="button" aria-pressed="false"><span class="a">Start a Jam</span><span class="b">End Jam</span></button>
-      <span class="ppl" aria-hidden="true"><b>M</b><b>J</b><b>K</b><b>+2</b></span>
+      <span class="ppl" aria-hidden="true"><img src="assets/portraits/women-33.jpg" alt="" width="32" height="32"><img src="assets/portraits/men-38.jpg" alt="" width="32" height="32"><img src="assets/portraits/women-21.jpg" alt="" width="32" height="32"><b>+2</b></span>
     </div>`,
   init(root) {
     const b = root.querySelector('.jam'), stage = root.querySelector('.stage');

@@ -1,6 +1,6 @@
 export default {
   id: 'dp-parallax-tilt-card',
-  credit: 'Parallax tilt card — pointer-tracked rotateX/Y with content layers at different translateZ (Atropos / vanilla-tilt lineage)',
+  credit: 'Parallax tilt card — pointer-tracked rotateX/Y over a photo, with the title and badge layers at different translateZ (Atropos / vanilla-tilt lineage)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -17,11 +17,12 @@ export default {
     .shine {
       position: absolute; inset: 0; border-radius: 18px; pointer-events: none;
       background: radial-gradient(260px 160px at var(--mx) var(--my), rgba(255, 255, 255, .22), transparent 60%);
-      opacity: 0; transition: opacity .3s;
+      opacity: 0; transition: opacity .3s; transform: translateZ(2px);
     }
     .card:hover .shine { opacity: 1; }
     .layer { position: absolute; pointer-events: none; }
-    .blob { left: 14px; top: 10px; width: 120px; height: 120px; transform: translateZ(28px); opacity: .9; }
+    .photo { inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 18px; transform: translateZ(0); }
+    .scrim { inset: 0; border-radius: 18px; background: linear-gradient(180deg, transparent 45%, rgba(10, 10, 30, .6)); transform: translateZ(1px); }
     .lbl {
       left: 22px; bottom: 20px; color: #fff; font: 700 22px/1 'Space Grotesk', system-ui, sans-serif; letter-spacing: -.02em;
       transform: translateZ(56px); text-shadow: 0 6px 18px rgba(0, 0, 0, .6);
@@ -38,12 +39,10 @@ export default {
   html: `
     <div class="stage">
       <button class="card" type="button" aria-pressed="false">
-        <span class="shine"></span>
-        <svg class="layer blob" viewBox="0 0 120 120" aria-hidden="true">
-          <defs><linearGradient id="dpptc" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#60a5fa"/></linearGradient></defs>
-          <path fill="url(#dpptc)" d="M60 8c26 0 52 20 52 48s-18 56-50 56S6 92 6 60 34 8 60 8z"/>
-        </svg>
+        <img class="layer photo" src="assets/wide/34.webp" alt="" width="230" height="140" draggable="false">
+        <span class="layer scrim"></span>
         <span class="layer lbl">Parallax</span>
+        <span class="shine"></span>
         <span class="layer badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
       </button>
     </div>`,

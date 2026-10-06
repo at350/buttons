@@ -16,7 +16,7 @@ export default {
     .cr[aria-pressed="true"] .c { transform: translateX(-5px) rotate(-6deg); } .cr[aria-pressed="true"] .r { transform: translateX(5px) rotate(6deg); }
     .av { position: relative; width: 48px; height: 48px; border: 0; padding: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .av:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 50%; }
-    .face { display: block; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ff9a9e, #fad0c4 55%, #a18cd1); box-shadow: 0 0 0 2px #fff; }
+    .face { display: block; width: 48px; height: 48px; border-radius: 50%; background: #2f2f2f url(assets/portraits/women-37.jpg) center / cover no-repeat; box-shadow: 0 0 0 2px #fff; }
     .pl { position: absolute; left: 50%; bottom: -10px; width: 22px; height: 22px; margin-left: -11px; border-radius: 50%; background: #fe2c55; display: grid; place-items: center;
       transition: transform .4s linear(0, 0.4 10%, 1.25 35%, 0.9 55%, 1.05 75%, 1), background .25s, opacity .3s .5s; }
     .pl svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }

@@ -1,12 +1,12 @@
-// Canvas 2D pixel sorting (Kim Asendorf's ASDFPixelSort, "brightness" mode): a procedural sunset photo
-// is generated once; every column is split into intervals of pixels brighter than a threshold and each
+// Canvas 2D pixel sorting (Kim Asendorf's ASDFPixelSort, "brightness" mode): a sunset photo from the
+// asset pack is read back once; every column is split into intervals of pixels brighter than a threshold and each
 // interval is sorted by brightness — the characteristic streaks. At rest the threshold is high (only the
-// sun and its reflection sort); hover lowers it so the streaks spread; press drops it and adds row glitches.
+// sunlit sky sorts); hover lowers it so the streaks spread; press drops it and adds row glitches.
 const W = 240, H = 80;
 
 export default {
   id: 'sh-pixel-sort',
-  credit: 'Pixel-sort glitch button — Kim Asendorf-style brightness-interval sorting of a procedural sunset on a 2D canvas: each column\'s bright runs are sorted into streaks; hover lowers the threshold, press glitches it',
+  credit: 'Pixel-sort glitch button — Kim Asendorf-style brightness-interval sorting of a sunset photo on a 2D canvas: each column\'s bright runs are sorted into streaks; hover lowers the threshold, press glitches it',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -23,35 +23,33 @@ export default {
     const w = Math.round(W * dpr), h = Math.round(H * dpr);
     cv.width = w; cv.height = h;
     const ctx = cv.getContext('2d'); if (!ctx) return;
-    // --- procedural source photo: sunset sky, sun, ridge, water with a broken reflection ---
+    let dead = false;
+    // --- source photo: a sunset from the asset pack, cover-cropped to the button and read back once ---
     const src = new Float32Array(w * h * 3), lum = new Float32Array(w * h);
-    const hz = Math.round(h * .62), sx = w * .64, sy = h * .5, sr = h * .2;
     const n1 = (x, y) => { const s = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453; return s - Math.floor(s); };
-    const mix = (a, b, t) => a + (b - a) * t;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      let r, g, b; const i = y * w + x;
-      if (y < hz) {
-        const t = y / hz;
-        r = mix(.16, 1, Math.pow(t, 1.4)); g = mix(.1, .45, Math.pow(t, 2.2)); b = mix(.38, .3, t);
-        const d = Math.hypot(x - sx, y - sy);
-        const glow = Math.exp(-d / (h * .35)); r += glow * .5; g += glow * .32; b += glow * .12;
-        if (d < sr) { r = 1; g = .9 - (y - (sy - sr)) / (2 * sr) * .3; b = .55; }
-        const ridge = hz - h * (.06 + .05 * Math.sin(x / w * 9 + 1) + .03 * Math.sin(x / w * 23));
-        if (y > ridge) { r = .1; g = .05; b = .16; }
-      } else {
-        const t = (y - hz) / (h - hz);
-        r = mix(.6, .14, t); g = mix(.25, .06, t); b = mix(.32, .2, t);
-        const ref = Math.exp(-Math.pow((x - sx) / (sr * (.6 + t * .8)), 2)) * (n1(Math.floor(x / 3), y) > .35 ? 1 : .35);
-        r += ref * .55; g += ref * .45; b += ref * .25;
+    let ready = false;
+    const photo = new Image();
+    photo.decoding = 'async';
+    photo.onload = () => {
+      if (dead) return;
+      const off = document.createElement('canvas'); off.width = w; off.height = h;
+      const o = off.getContext('2d', { willReadFrequently: true }); if (!o) return;
+      const iw = photo.naturalWidth, ih = photo.naturalHeight, sh = iw * h / w; // full width, a band around the horizon
+      o.drawImage(photo, 0, Math.max(0, Math.min(ih - sh, ih * .4 - sh / 2)), iw, sh, 0, 0, w, h);
+      const px = o.getImageData(0, 0, w, h).data;
+      for (let i = 0; i < w * h; i++) {
+        const r = px[i * 4] / 255, g = px[i * 4 + 1] / 255, b = px[i * 4 + 2] / 255;
+        src[i * 3] = r; src[i * 3 + 1] = g; src[i * 3 + 2] = b;
+        lum[i] = .299 * r + .587 * g + .114 * b;
       }
-      const nz = (n1(x, y) - .5) * .06; r += nz; g += nz; b += nz;
-      src[i * 3] = Math.min(1, r); src[i * 3 + 1] = Math.min(1, g); src[i * 3 + 2] = Math.min(1, b);
-      lum[i] = .299 * src[i * 3] + .587 * src[i * 3 + 1] + .114 * src[i * 3 + 2];
-    }
+      ready = true; render();
+    };
+    photo.src = 'assets/wide/23.webp';
     const img = ctx.createImageData(w, h), d = img.data;
     const idx = new Int32Array(h);
-    let thr = .6, thrT = .6, glitch = 0, raf = 0, last = 0, dead = false, seed = 1;
+    let thr = .6, thrT = .6, glitch = 0, raf = 0, last = 0, seed = 1;
     const render = () => {
+      if (!ready) return;
       for (let x = 0; x < w; x++) {
         // column x: gather intervals of lum > thr and sort each (descending brightness, bright on top)
         let y = 0;

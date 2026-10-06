@@ -9,9 +9,9 @@ export default {
   css: `
     :host { display: block; }
     .stage {
-      position: relative; width: 320px; max-width: 100%; margin: 0 auto; padding: 22px 18px; border-radius: 12px; overflow: hidden;
-      background: radial-gradient(120% 140% at 15% 0%, #3d5a80 0%, #293241 45%, #121620 100%);
+      position: relative; isolation: isolate; width: 320px; max-width: 100%; margin: 0 auto; padding: 22px 18px; border-radius: 12px; overflow: hidden; background: #1c2230;
     }
+    .stage::before { content: ''; position: absolute; inset: -24px; z-index: -1; background: url(assets/wide/02.webp) center / cover; filter: blur(12px) brightness(.55); }
     .track {
       position: relative; height: 62px; border-radius: 31px; background: rgba(255,255,255,.22);
       -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);

@@ -14,7 +14,7 @@ export default {
     :host { display: inline-block; }
     .list { width: 320px; max-width: 100%; border-radius: 12px; background: #fff; border: 1px solid #e5e5ea; overflow: hidden; font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; }
     .item { position: relative; height: 82px; overflow: hidden; touch-action: pan-y; transition: height .38s cubic-bezier(.32, .72, 0, 1); }
-    .item + .item::before { content: ''; position: absolute; top: 0; left: 28px; right: 0; height: 1px; background: #e5e5ea; z-index: 2; }
+    .item + .item::before { content: ''; position: absolute; top: 0; left: 74px; right: 0; height: 1px; background: #e5e5ea; z-index: 2; }
     .item.gone { height: 0; }
     .acts { position: absolute; top: 0; bottom: 0; right: 0; width: var(--aw, 0px); display: flex; transition: width .5s ${IOS}; }
     .acts button {
@@ -36,6 +36,7 @@ export default {
     .drag .row, .drag .acts { transition: none; }
     .dot { width: 10px; height: 10px; margin-top: 5px; border-radius: 50%; background: #007aff; flex: none; transition: transform .3s ${IOS}; }
     .read .dot { transform: scale(0); }
+    .av { display: block; width: 40px; height: 40px; margin: 2px 0 0 -2px; border-radius: 50%; flex: none; object-fit: cover; background: #e5e5ea; pointer-events: none; -webkit-user-drag: none; }
     .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
     .l1 { display: flex; align-items: center; gap: 6px; }
     .l1 b { flex: 1; font-size: 15px; font-weight: 600; color: #000; letter-spacing: -.01em; }
@@ -50,10 +51,10 @@ export default {
     <div class="list">
       <div class="item" data-k="0">
         <div class="acts"><button class="more" type="button" tabindex="-1">${MORE}<span>More</span></button><button class="flag" type="button" tabindex="-1">${FLAG}<span>Flag</span></button><button class="trash" type="button" tabindex="-1">${TRASH}<span>Trash</span></button></div>
-        <div class="row" tabindex="0" aria-label="Alex Chen, Thursday offsite. Swipe left or press the left arrow for actions"><span class="dot"></span><span class="txt"><span class="l1"><b>Alex Chen</b>${FLAG.replace('<svg', '<svg class="fl"')}<time>9:41 AM</time><svg class="ch" viewBox="0 0 8 13"><path d="m1.5 1.5 5 5-5 5"/></svg></span><span class="sub">Thursday offsite</span><span class="pre">Are we still on for Thursday? I booked the room…</span></span></div>
+        <div class="row" tabindex="0" aria-label="Jordan Ellis, Thursday offsite. Swipe left or press the left arrow for actions"><span class="dot"></span><img class="av" src="assets/portraits/men-29.jpg" alt="" width="40" height="40" draggable="false"><span class="txt"><span class="l1"><b>Jordan Ellis</b>${FLAG.replace('<svg', '<svg class="fl"')}<time>9:41 AM</time><svg class="ch" viewBox="0 0 8 13"><path d="m1.5 1.5 5 5-5 5"/></svg></span><span class="sub">Thursday offsite</span><span class="pre">Are we still on for Thursday? I booked the room…</span></span></div>
       </div>
       <div class="item">
-        <div class="row read" tabindex="-1"><span class="dot"></span><span class="txt"><span class="l1"><b>Mia Jones</b><time>Yesterday</time><svg class="ch" viewBox="0 0 8 13"><path d="m1.5 1.5 5 5-5 5"/></svg></span><span class="sub">Design review notes</span><span class="pre">Attached are the notes from today’s review.</span></span></div>
+        <div class="row read" tabindex="-1"><span class="dot"></span><img class="av" src="assets/portraits/women-19.jpg" alt="" width="40" height="40" draggable="false"><span class="txt"><span class="l1"><b>Nora Patel</b><time>Yesterday</time><svg class="ch" viewBox="0 0 8 13"><path d="m1.5 1.5 5 5-5 5"/></svg></span><span class="sub">Design review notes</span><span class="pre">Attached are the notes from today’s review.</span></span></div>
       </div>
     </div>`,
   init(root) {

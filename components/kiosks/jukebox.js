@@ -14,8 +14,10 @@ export default {
     .caret { width: 2px; height: 18px; background: #ff3dbb; animation: c 1s steps(1) infinite; }
     @keyframes c { 50% { opacity: 0; } }
     .res { display: flex; align-items: center; gap: 8px; height: 38px; margin: 8px 0; padding: 0 8px; border-radius: 6px; background: rgba(255,255,255,.06); font-size: 12px; white-space: nowrap; overflow: hidden; }
-    .res i { width: 26px; height: 26px; border-radius: 4px; flex: none; background: linear-gradient(135deg, #ff3dbb, #7b2fff); display: grid; place-items: center; }
+    .res img, .res i { flex: none; display: block; width: 28px; height: 28px; border-radius: 4px; object-fit: cover; background: #2a2140; }
+    .res i { display: none; place-items: center; color: rgba(255,255,255,.5); }
     .res i svg { width: 14px; height: 14px; }
+    .res.none img { display: none; } .res.none i { display: grid; }
     .res span { color: rgba(255,255,255,.55); }
     .res b { font-weight: 700; }
     .kb { display: grid; gap: 5px; }
@@ -31,18 +33,20 @@ export default {
     <div class="stage"><div class="scr">
       <div class="top"><span>SEARCH</span><span>CREDITS <b>12</b></span></div>
       <div class="field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span class="q ph">Artists, songs</span><span class="caret"></span></div>
-      <div class="res" aria-live="polite"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></i><span class="rt">Most played tonight · </span><b class="rb">Journey</b></div>
+      <div class="res" aria-live="polite"><img class="ra" src="assets/square/35.webp" alt="" width="28" height="28"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></i><span class="rt">Most played tonight · </span><b class="rb">Journey</b></div>
       <div class="kb"></div>
     </div></div>`,
   init(root) {
-    const kb = root.querySelector('.kb'), q = root.querySelector('.q'), rt = root.querySelector('.rt'), rb = root.querySelector('.rb');
+    const kb = root.querySelector('.kb'), q = root.querySelector('.q'), rt = root.querySelector('.rt'), rb = root.querySelector('.rb'), res = root.querySelector('.res'), ra = root.querySelector('.ra');
+    const ART = ['30', '47', '52', '53', '55', '61', '63', '64', '68', '35', '45', '46', '56', '43', '69', '13'];
     const artists = ['AC/DC', 'Bon Jovi', 'Chris Stapleton', 'Dolly Parton', 'Eagles', 'Fleetwood Mac', 'Guns N’ Roses', 'Hootie & the Blowfish', 'Johnny Cash', 'Journey', 'Kenny Chesney', 'Lynyrd Skynyrd', 'Morgan Wallen', 'Neil Diamond', 'Outkast', 'Prince', 'Queen', 'Red Hot Chili Peppers', 'Shania Twain', 'Taylor Swift', 'The Killers', 'Usher', 'Van Halen', 'Whitney Houston', 'Zac Brown Band'];
     let v = '';
     const render = () => {
       q.textContent = v || 'Artists, songs'; q.classList.toggle('ph', !v);
-      if (!v) { rt.textContent = 'Most played tonight · '; rb.textContent = 'Journey'; return; }
+      if (!v) { rt.textContent = 'Most played tonight · '; rb.textContent = 'Journey'; res.classList.remove('none'); ra.src = 'assets/square/35.webp'; return; }
       const m = artists.find((a) => a.toUpperCase().startsWith(v)) || artists.find((a) => a.toUpperCase().includes(v));
       rt.textContent = m ? 'Top result · ' : 'No results for '; rb.textContent = m || '“' + v + '”';
+      res.classList.toggle('none', !m); if (m) ra.src = 'assets/square/' + ART[artists.indexOf(m) % ART.length] + '.webp';
     };
     const back = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="m12 9 6 6"/><path d="m18 9-6 6"/></svg>';
     [['QWERTYUIOP'], ['ASDFGHJKL'], ['ZXCVBNM', 'del'], ['123', 'sp', 'clr']].forEach(([keys, extra, extra2]) => {

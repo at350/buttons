@@ -11,6 +11,7 @@ export default {
     ul { list-style: none; margin: 0; padding: 0 10px; flex: 1; overflow: hidden; }
     li { display: flex; align-items: center; gap: 8px; height: 28px; border-bottom: 1px solid #eee; font-size: 11.5px; animation: in .3s cubic-bezier(.2,.8,.2,1); }
     li svg { width: 14px; height: 14px; color: #00a19a; flex: none; }
+    li img { flex: none; display: block; width: 17px; height: 24px; border-radius: 1px 2px 2px 1px; object-fit: cover; background: #ddd; box-shadow: inset 2px 0 0 rgba(0,0,0,.25), 0 1px 2px rgba(0,0,0,.25); }
     li b { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     li span { color: #777; font-size: 10.5px; white-space: nowrap; }
     li.empty { color: #888; justify-content: center; border: 0; height: 84px; animation: none; }
@@ -40,12 +41,12 @@ export default {
     </div>`,
   init(root) {
     const ul = root.querySelector('ul'), n = root.querySelector('.n'), pad = root.querySelector('.pad'), rc = root.querySelector('.rc');
-    const books = ['Moby-Dick', 'Pride and Prejudice', 'Frankenstein', 'The Great Gatsby', 'Middlemarch', 'Dracula'];
+    const books = [['Moby-Dick', '16'], ['Pride and Prejudice', '23'], ['Frankenstein', '47'], ['The Great Gatsby', '51'], ['Middlemarch', '17'], ['Dracula', '70']];
     let i = 0, c = 0;
     const tick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
     pad.addEventListener('click', () => {
       if (!c) ul.innerHTML = '';
-      const li = document.createElement('li'); li.innerHTML = `${tick}<b>${books[i++ % books.length]}</b><span>Due 10/26/2026</span>`;
+      const li = document.createElement('li'); const [t, img] = books[i++ % books.length]; li.innerHTML = `<img src="assets/square/${img}.webp" alt="" width="17" height="24"><b>${t}</b><span>Due 10/26/2026</span>${tick}`;
       ul.prepend(li); while (ul.children.length > 3) ul.lastElementChild.remove();
       n.textContent = ++c; pad.classList.remove('read'); void pad.offsetWidth; pad.classList.add('read');
     });

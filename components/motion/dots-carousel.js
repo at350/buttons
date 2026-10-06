@@ -11,8 +11,10 @@ export default {
     .box { width: 260px; max-width: 100%; font-family: Inter, system-ui, sans-serif; }
     .track { position: relative; height: 150px; border-radius: 14px; overflow: hidden; touch-action: pan-y; }
     .rail { display: flex; height: 100%; transform: translateX(calc(var(--i, 0) * -100%)); transition: transform .6s ${SPRING}; }
-    .slide { flex: none; width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 14px; color: #fff; font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
-    .slide span { opacity: 0; transform: translateY(8px); transition: opacity .3s, transform .5s ${SPRING}; }
+    .slide { position: relative; flex: none; width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 14px; color: #fff; font-weight: 600; font-size: 15px; letter-spacing: -.01em; background: #d8d8d4; }
+    .slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+    .slide::after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgba(0,0,0,.5)); pointer-events: none; }
+    .slide span { position: relative; z-index: 1; text-shadow: 0 1px 8px rgba(0,0,0,.3); opacity: 0; transform: translateY(8px); transition: opacity .3s, transform .5s ${SPRING}; }
     .slide.on span { opacity: 1; transform: none; transition-delay: .15s; }
     .nav { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding: 0 2px 2px; }
     .dots { display: flex; align-items: center; gap: 6px; width: 64px; justify-content: center; }
@@ -28,10 +30,10 @@ export default {
   html: `
     <div class="box">
       <div class="track"><div class="rail">
-        <div class="slide on" style="background:linear-gradient(135deg,#6366f1,#a855f7)"><span>Discover</span></div>
-        <div class="slide" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"><span>Create</span></div>
-        <div class="slide" style="background:linear-gradient(135deg,#10b981,#06b6d4)"><span>Share</span></div>
-        <div class="slide" style="background:linear-gradient(135deg,#0f172a,#475569)"><span>Grow</span></div>
+        <div class="slide on"><img src="assets/wide/29.webp" alt="" width="260" height="150" draggable="false"><span>Discover</span></div>
+        <div class="slide"><img src="assets/wide/07.webp" alt="" width="260" height="150" draggable="false"><span>Create</span></div>
+        <div class="slide"><img src="assets/wide/17.webp" alt="" width="260" height="150" draggable="false"><span>Share</span></div>
+        <div class="slide"><img src="assets/wide/20.webp" alt="" width="260" height="150" draggable="false"><span>Grow</span></div>
       </div></div>
       <div class="nav">
         <button class="arr" type="button" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>

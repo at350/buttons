@@ -4,10 +4,9 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { --bg: radial-gradient(circle at 14% 34%, #ff5f6d 0 15%, transparent 15.5%), radial-gradient(circle at 44% 18%, #ffc371 0 11%, transparent 11.5%),
-        radial-gradient(circle at 82% 30%, #4facfe 0 17%, transparent 17.5%), radial-gradient(circle at 30% 92%, #43e97b 0 14%, transparent 14.5%),
-        radial-gradient(circle at 66% 88%, #a18cd1 0 19%, transparent 19.5%), radial-gradient(circle at 94% 96%, #ff8fb1 0 12%, transparent 12.5%),
-        repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 1px, transparent 1px 22px), linear-gradient(135deg, #fbe7ec, #e4ecfb);
+    /* Music "Home" shelf of album covers scrolled under the floating bar; .refr repaints the same layers inside the lens. */
+    .stage { --bg: url(assets/square/59.webp) 12px 12px / 104px 104px no-repeat, url(assets/square/51.webp) 126px 12px / 104px 104px no-repeat,
+        url(assets/square/49.webp) 240px 12px / 104px 104px no-repeat, #fff;
       position: relative; width: 356px; max-width: 100%; height: 132px; border-radius: 12px; overflow: hidden; background: var(--bg);
       font: 600 10px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
     .glass { position: absolute; bottom: 14px; height: 62px; border-radius: 31px; isolation: isolate;

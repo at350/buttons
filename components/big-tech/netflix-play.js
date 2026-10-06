@@ -5,7 +5,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: flex; gap: 12px; padding: 24px; border-radius: 12px; background: linear-gradient(77deg, rgba(0,0,0,.6), rgba(0,0,0,0) 85%), linear-gradient(160deg, #3a2a20, #141414 70%); }
+    .stage { display: flex; gap: 12px; padding: 24px; border-radius: 12px; background: linear-gradient(77deg, rgba(0,0,0,.6), rgba(0,0,0,0) 85%), linear-gradient(0deg, rgba(20,20,20,.55), rgba(20,20,20,0) 45%), #141414 url(assets/wide/24.webp) 60% 55% / cover no-repeat; }
     .nf {
       height: 42px; padding: 0 26px 0 22px; border: 0; border-radius: 4px; cursor: pointer; white-space: nowrap;
       font: 500 17.6px/24px "Netflix Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;

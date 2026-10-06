@@ -1,13 +1,12 @@
 export default {
   id: 'mb-bluesky-follow',
-  credit: 'Bluesky — profile row with the butterfly mark, the blue "+ Follow" pill that settles to grey "Following", and the pink like heart that pops',
+  credit: 'Bluesky — profile row (avatar, display name, handle), the blue "+ Follow" pill that settles to grey "Following", and the pink like heart that pops',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .stage { padding: 14px 16px; border-radius: 12px; background: #fff; border: 1px solid #e6ebf0; display: flex; align-items: center; gap: 12px;
       font: 600 14px/1 Inter, -apple-system, system-ui, sans-serif; color: #0b0f14; letter-spacing: -.01em; }
-    .av { width: 40px; height: 40px; border-radius: 50%; background: #0085ff; display: grid; place-items: center; flex: none; }
-    .av svg { width: 22px; height: 22px; fill: #fff; }
+    .av { display: block; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #e6ebf0; flex: none; }
     .who { display: grid; gap: 4px; min-width: 0; margin-right: 6px; }
     .who small { color: #6f869f; font-weight: 400; font-size: 13px; }
     .fl { display: grid; height: 33px; padding: 0 14px 0 11px; border-radius: 999px; border: 0; background: #0085ff; color: #fff; cursor: pointer; font: inherit; font-size: 13px;
@@ -37,8 +36,8 @@ export default {
   `,
   html: `
     <div class="stage">
-      <span class="av" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></span>
-      <span class="who">Bluesky<small>@bsky.app</small></span>
+      <img class="av" src="assets/portraits/women-26.jpg" alt="" width="40" height="40">
+      <span class="who">Priya Nair<small>@priya.bsky.social</small></span>
       <button class="fl" type="button" aria-pressed="false"><span class="a"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Follow</span><span class="b"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Following</span></button>
       <button class="lk" type="button" aria-pressed="false" aria-label="Like"><svg viewBox="0 0 24 24"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg><span class="n">42</span><i></i><i></i><i></i><i></i><i></i><i></i></button>
     </div>`,

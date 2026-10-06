@@ -25,8 +25,8 @@ export default {
     .acts button:focus-visible, .x:focus-visible, .cta:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
     .feed { align-self: stretch; margin-top: 26px; padding: 6px 14px; border-radius: 20px; background: #fff; }
     .feed div { display: flex; align-items: center; gap: 10px; height: 52px; } .feed div + div { border-top: 1px solid #f2f2f2; }
-    .feed .av { width: 32px; height: 32px; font-size: 11px; }
-    .feed span:not(.av) { display: flex; flex-direction: column; flex: 1; font-size: 14px; font-weight: 600; } .feed small { font-size: 12px; font-weight: 500; color: #8a8a8a; }
+    .feed .av { width: 32px; height: 32px; }
+    .feed span { display: flex; flex-direction: column; flex: 1; font-size: 14px; font-weight: 600; } .feed small { font-size: 12px; font-weight: 500; color: #8a8a8a; }
     .feed b { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; } .feed b.in { color: #1fa855; }
     .dim { position: absolute; inset: 0; background: rgba(0,0,0,.18); opacity: 0; transition: opacity .35s; pointer-events: none; }
     .stage.open .dim { opacity: 1; pointer-events: auto; }
@@ -47,8 +47,8 @@ export default {
     .x:hover { background: #e8e8e8; color: #111; } .x:active { transform: scale(.9); }
     .x svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
     .who { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 18px; background: #f7f7f7; }
-    .av { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(140deg, #ffb36b, #ff6a3d); color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; flex: none; }
-    .who span:not(.av) { display: flex; flex-direction: column; font-size: 15px; font-weight: 600; } .who small { font-size: 13px; font-weight: 500; color: #8a8a8a; }
+    .av { display: block; width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #e4e4e4; flex: none; }
+    .who span { display: flex; flex-direction: column; font-size: 15px; font-weight: 600; } .who small { font-size: 13px; font-weight: 500; color: #8a8a8a; }
     .amt { margin: 16px 0 0; text-align: center; font-size: 40px; font-weight: 700; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
     .rows { display: flex; flex-direction: column; gap: 12px; padding: 4px 2px; }
     .rows div { display: flex; justify-content: space-between; font-size: 15px; font-weight: 500; color: #8a8a8a; } .rows b { color: #111; font-weight: 600; }
@@ -83,15 +83,15 @@ export default {
           <button class="recv" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>Receive</button>
         </div>
         <div class="feed">
-          <div><span class="av" style="background:linear-gradient(140deg,#9b8cff,#5b4bff)">MJ</span><span>Mia Jones<small>Yesterday</small></span><b>−$12.00</b></div>
-          <div><span class="av" style="background:linear-gradient(140deg,#5fd3ff,#1f8cff)">RK</span><span>Ravi Kumar<small>Mon</small></span><b class="in">+$250.00</b></div>
+          <div><img class="av" src="assets/portraits/women-33.jpg" alt="" width="32" height="32"><span>Lena Fischer<small>Yesterday</small></span><b>−$12.00</b></div>
+          <div><img class="av" src="assets/portraits/men-26.jpg" alt="" width="32" height="32"><span>Ravi Kumar<small>Mon</small></span><b class="in">+$250.00</b></div>
         </div>
       </div>
       <div class="dim"></div>
       <div class="tray" role="dialog" aria-label="Send" aria-hidden="true">
         <div class="step s1">
           <div class="hd"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span><b>Send</b><button class="x" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-          <div class="who"><span class="av">AC</span><span>Alex Chen<small>alex.eth</small></span></div>
+          <div class="who"><img class="av" src="assets/portraits/men-04.jpg" alt="" width="36" height="36"><span>Alex Chen<small>alex.eth</small></span></div>
           <div class="amt">$40.00</div>
           <div style="height:86px"></div>
         </div>

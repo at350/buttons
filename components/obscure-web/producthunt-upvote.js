@@ -8,8 +8,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .row { display: flex; align-items: flex-start; gap: 16px; width: 412px; max-width: 100%; padding: 16px; background: #fff; border-radius: 12px; font: 400 16px/1.4 Inter, system-ui, -apple-system, sans-serif; color: #21293c; }
-    .thumb { width: 48px; height: 48px; flex: none; border-radius: 12px; background: #0d0d12; display: grid; place-items: center; }
-    .thumb i { display: block; width: 28px; height: 12px; border-radius: 6px; background: #fff; box-shadow: 0 3px 0 #ff6154; }
+    .thumb { width: 48px; height: 48px; flex: none; border-radius: 12px; object-fit: cover; display: block; background: #f2f4f7; }
     .txt { flex: 1; min-width: 0; }
     .nm { font-weight: 600; font-size: 16px; color: #21293c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .3s; }
     .row:hover .nm { color: #ff6154; }
@@ -34,7 +33,7 @@ export default {
   `,
   html: `
     <div class="row">
-      <span class="thumb" aria-hidden="true"><i></i></span>
+      <img class="thumb" src="assets/square/32.webp" alt="" width="48" height="48">
       <div class="txt">
         <div class="nm">1. Buttons</div>
         <div class="tg">Every button on the web</div>

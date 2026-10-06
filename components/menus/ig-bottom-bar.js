@@ -28,7 +28,7 @@ export default {
     .t:focus-visible .g::after { content: ""; position: absolute; inset: -7px; border-radius: 10px; box-shadow: 0 0 0 2px #0095f6; }
     .badge { position: absolute; top: -8px; left: 17px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #ff3040; color: #fff; box-shadow: 0 0 0 2px #000; font: 700 11px/18px -apple-system, system-ui, sans-serif; text-align: center; transition: transform .25s cubic-bezier(.32,.72,0,1), opacity .2s; }
     .badge.gone { transform: scale(0); opacity: 0; }
-    .av { grid-area: 1 / 1; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #f2c6a0 0 22%, transparent 23%), radial-gradient(ellipse 60% 45% at 50% 100%, #c7533c 0 98%, transparent 100%), linear-gradient(160deg, #8fb3c9, #3d5a73); transition: box-shadow .2s; }
+    .av { grid-area: 1 / 1; display: block; width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: #262626; transition: box-shadow .2s; }
     .t[aria-selected="true"] .av { box-shadow: 0 0 0 1.5px #000, 0 0 0 3.5px #f5f5f5; }
     .hi { height: 34px; display: grid; place-items: end center; padding-bottom: 8px; }
     .hi span { width: 134px; height: 5px; border-radius: 3px; background: #f5f5f5; }
@@ -40,7 +40,7 @@ export default {
         ${t('Reels', REELS, false)}
         ${t('Messages', DM, false, '<span class="badge" aria-label="3 unread">3</span>')}
         ${t('Search', SEARCH, false)}
-        ${t('Profile', '<span class="av"></span>', false)}
+        ${t('Profile', '<img class="av" src="assets/portraits/women-19.jpg" alt="" width="26" height="26" draggable="false">', false)}
       </div>
       <div class="hi" aria-hidden="true"><span></span></div>
     </div>`,

@@ -26,7 +26,7 @@ export default {
     :host { display: inline-block; }
     .stage {
       position: relative; width: 104px; height: 212px; border-radius: 12px; overflow: hidden;
-      background: radial-gradient(120% 90% at 100% 0%, #f4a261 0%, #e76f51 35%, #6d3b6e 75%, #2a1a3a 100%);
+      background: #8a7a68 url(assets/tall/02.webp) 40% center / cover;
     }
     .sl {
       position: absolute; left: 16px; top: 24px; width: 12px; height: 164px; border-radius: 6px; overflow: hidden; cursor: pointer;

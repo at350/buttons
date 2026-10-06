@@ -1,6 +1,6 @@
 export default {
   id: 'ob-stumbleupon',
-  credit: 'StumbleUpon toolbar — the green "Stumble!" button with the SU logo and thumbs up / down; every stumble lands you on a different-coloured page',
+  credit: 'StumbleUpon toolbar — the green "Stumble!" button with the SU logo and thumbs up / down; every stumble lands you on a different random page',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -18,7 +18,10 @@ export default {
     .th.on.dn { color: #fff; background: #c33; border-color: #911; }
         .sp { flex: 1; }
     .cnt { color: #555; font-size: 10px; }
-    .page { height: 96px; display: grid; place-items: center; background: #e8f0fe; transition: background .4s; font: 700 13px Georgia, serif; color: rgba(0,0,0,.55); }
+    .page { position: relative; height: 96px; overflow: hidden; background: #e8f0fe; }
+    .page img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; visibility: hidden; }
+    .page img.on { visibility: visible; }
+    .pt { position: absolute; left: 6px; bottom: 6px; padding: 1px 5px; background: rgba(255,255,255,.88); border: 1px solid #999; font: 10px Verdana, Arial, sans-serif; color: #333; }
     .page.flash { animation: fl .3s; }
     @keyframes fl { 0% { opacity: .2; } 100% { opacity: 1; } }
   `,
@@ -30,16 +33,18 @@ export default {
         <button class="th dn" type="button" aria-pressed="false" aria-label="Not for me"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/><path d="M17 14V2"/></svg></button>
         <span class="sp"></span><span class="cnt"><b class="n">0</b> stumbles</span>
       </div>
-      <div class="page" aria-live="polite"><span class="pt">example.com</span></div>
+      <div class="page" aria-live="polite"><img src="assets/wide/18.webp" alt="" width="300" height="96" class="on"><img src="assets/wide/16.webp" alt="" width="300" height="96"><img src="assets/wide/07.webp" alt="" width="300" height="96"><img src="assets/wide/13.webp" alt="" width="300" height="96"><img src="assets/wide/08.webp" alt="" width="300" height="96"><img src="assets/wide/28.webp" alt="" width="300" height="96"><img src="assets/wide/00.webp" alt="" width="300" height="96"><img src="assets/wide/20.webp" alt="" width="300" height="96"><span class="pt">weird-gifs.net</span></div>
     </div>`,
   init(root) {
     const st = root.querySelector('.st'), page = root.querySelector('.page'), pt = root.querySelector('.pt'), up = root.querySelector('.up'), dn = root.querySelector('.dn'), n = root.querySelector('.n');
     const sites = ['weird-gifs.net', 'cat-facts.org', 'optical-illusions.co', 'how-to-fold-a-crane.com', 'best-of-flash.biz', 'tiny-piano.io', 'random-wiki.page', 'infinite-zoom.art'];
-    let c = 0;
+    const pics = [...page.querySelectorAll('img')];
+    let c = 0, cur = 0;
     st.addEventListener('click', () => {
       c++; n.textContent = String(c);
-      page.style.background = `hsl(${Math.floor(Math.random() * 360)} 60% 85%)`;
-      pt.textContent = sites[Math.floor(Math.random() * sites.length)];
+      let k = cur; while (k === cur) k = Math.floor(Math.random() * sites.length);
+      cur = k; pics.forEach((im, j) => im.classList.toggle('on', j === k));
+      pt.textContent = sites[k];
       page.classList.remove('flash'); void page.offsetWidth; page.classList.add('flash');
       up.classList.remove('on'); dn.classList.remove('on'); up.setAttribute('aria-pressed', 'false'); dn.setAttribute('aria-pressed', 'false');
     });

@@ -1,4 +1,4 @@
-// Blade Runner (1982) — Deckard's Esper machine: grid + crosshair over a photograph, "Enhance 224 to 176", "Pull back".
+// Blade Runner (1982) — Deckard's Esper machine: grid + crosshair over a photograph (a real print from the asset pack), "Enhance 224 to 176", "Pull back".
 export default {
   id: 'sf-esper-enhance',
   credit: 'Blade Runner (1982) — the Esper photo analyser: click the print to place the crosshair, ENHANCE steps the zoom in on it with the grid and coordinates ticking, PULL BACK steps out',
@@ -23,20 +23,22 @@ export default {
   init(root) {
     const cv = root.querySelector('canvas'), c = cv.getContext('2d'), rd = root.querySelector('.rd'), crt = root.querySelector('.crt');
     const W = 276, H = 160, P = document.createElement('canvas'); P.width = 828; P.height = 480;
-    const p = P.getContext('2d'); p.scale(3, 3);
-    const g = (x0, y0, x1, y1, a, b) => { const r = p.createLinearGradient(x0, y0, x1, y1); r.addColorStop(0, a); r.addColorStop(1, b); return r; };
-    p.fillStyle = g(0, 0, 0, H, '#5f7d86', '#1c2a2e'); p.fillRect(0, 0, W, H);
-    p.fillStyle = g(0, 110, 0, H, '#2c3b3f', '#0e1517'); p.fillRect(0, 108, W, 52);
-    p.fillStyle = '#121c1f'; p.fillRect(28, 20, 54, 90); p.fillStyle = g(30, 22, 80, 108, '#9cb8bf', '#3d5359'); p.fillRect(31, 23, 48, 85);
-    p.fillStyle = '#0f1719'; p.fillRect(150, 70, 110, 44); p.fillStyle = g(0, 70, 0, 100, '#b9cdd2', '#4f656b'); p.fillRect(154, 66, 102, 16);
-    const rg = p.createRadialGradient(118, 46, 2, 122, 50, 26); rg.addColorStop(0, '#e8f6f9'); rg.addColorStop(.5, '#6f8d95'); rg.addColorStop(1, '#0c1214');
-    p.fillStyle = '#0a0f10'; p.beginPath(); p.arc(122, 50, 28, 0, 7); p.fill(); p.fillStyle = rg; p.beginPath(); p.arc(122, 50, 25, 0, 7); p.fill();
-    p.fillStyle = '#1b2427'; p.beginPath(); p.ellipse(126, 54, 5, 9, 0.2, 0, 7); p.fill(); p.fillRect(122, 60, 9, 10);
-    p.fillStyle = 'rgba(255,255,255,.55)'; p.fillRect(200, 30, 3, 26); p.fillRect(213, 26, 2, 30);
-    const im = p.getImageData(0, 0, 828, 480);
-    for (let i = 0; i < im.data.length; i += 4) { const n = (Math.random() - .5) * 26; im.data[i] += n; im.data[i + 1] += n; im.data[i + 2] += n; }
-    p.putImageData(im, 0, 0);
-    let z = 1, zt = 1, cx = W / 2, cy = H / 2, tx = 126, ty = 54, raf = 0;
+    const p = P.getContext('2d', { willReadFrequently: true });
+    // the print: a photo from the asset pack, cover-cropped onto an 828×480 plate, toned to the Esper's cold
+    // blue-grey monochrome with film grain
+    const photo = new Image();
+    photo.onload = () => {
+      const iw = photo.naturalWidth, ih = photo.naturalHeight, k = Math.max(828 / iw, 480 / ih);
+      p.drawImage(photo, (iw - 828 / k) / 2, (ih - 480 / k) / 2, 828 / k, 480 / k, 0, 0, 828, 480);
+      const im = p.getImageData(0, 0, 828, 480), d = im.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const l = (.3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2]) * .92 + (Math.random() - .5) * 22;
+        d[i] = l * .62 + 6; d[i + 1] = l * .82 + 12; d[i + 2] = l * .88 + 16;
+      }
+      p.putImageData(im, 0, 0); draw();
+    };
+    photo.src = 'assets/wide/07.webp';
+    let z = 1, zt = 1, cx = W / 2, cy = H / 2, tx = 138, ty = 60, raf = 0;
     const draw = () => {
       c.setTransform(2, 0, 0, 2, 0, 0);
       const sw = W / z, sh = H / z, sx = Math.max(0, Math.min(W - sw, cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, cy - sh / 2));

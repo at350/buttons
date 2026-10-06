@@ -13,7 +13,9 @@ export default {
     .scr { position: relative; width: 300px; height: 200px; border-radius: 6px; overflow: hidden; background: #f4f6f8; box-shadow: 0 0 0 5px #0d0e10; font-family: Inter, system-ui, sans-serif; color: #1a1a1a; display: flex; flex-direction: column; }
     .top { padding: 7px 10px; background: #0b4f9c; color: #fff; font-size: 12px; font-weight: 600; }
     ul { list-style: none; margin: 0; padding: 4px 10px; flex: 1; font-size: 11.5px; }
-    li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #e3e6ea; }
+    li { display: flex; align-items: center; gap: 7px; padding: 3px 0; border-bottom: 1px solid #e3e6ea; }
+    li img { flex: none; display: block; width: 22px; height: 22px; border-radius: 3px; object-fit: cover; background: #e3e6ea; }
+    li span:nth-of-type(1) { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     li span:last-child { font-variant-numeric: tabular-nums; }
     .tot { display: flex; justify-content: space-between; padding: 0 10px 6px; font-weight: 700; font-size: 14px; }
     .bar { display: grid; grid-template-columns: 1fr 1.6fr; gap: 6px; padding: 0 8px 8px; }
@@ -38,8 +40,8 @@ export default {
       <div class="pole"><div class="lamp">7</div><div class="stick"></div></div>
       <div class="scr">
         <div class="top">Scan your next item</div>
-        <ul><li><span>Bananas 2.31 lb @ $0.59/lb</span><span>$1.36</span></li><li><span>Whole Milk 1 gal</span><span>$3.49</span></li><li><span>Sourdough Loaf</span><span>$4.99</span></li></ul>
-        <div class="tot"><span>Total (3 items)</span><span>$9.84</span></div>
+        <ul><li><img src="assets/wide/16.webp" alt="" width="22" height="22"><span>Raspberries 6 oz</span><span>$3.99</span></li><li><img src="assets/wide/19.webp" alt="" width="22" height="22"><span>Fresh Flowers Bouquet</span><span>$9.99</span></li><li><img src="assets/wide/26.webp" alt="" width="22" height="22" style="object-position:35% 60%"><span>Medium Roast Coffee 12 oz</span><span>$8.49</span></li></ul>
+        <div class="tot"><span>Total (3 items)</span><span>$22.47</span></div>
         <div class="bar">
           <button class="b help-b" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 14"/><path d="m7 18 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 13 6 6"/></svg><span class="hl">Call attendant</span></button>
           <button class="b pay" type="button">Finish &amp; Pay</button>

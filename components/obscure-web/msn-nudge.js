@@ -21,11 +21,11 @@ export default {
     .menu { display: flex; gap: 10px; padding: 3px 7px; background: linear-gradient(#f4f8fd, #e3ecf9); border-bottom: 1px solid #b6c8e6; color: #000; }
     .to { padding: 4px 8px; color: #1e3d75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .to span { color: #555; }
-    .chat { height: 70px; margin: 0 6px; padding: 4px 6px; background: #fff; border: 1px solid #9eb6ce; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; overflow: hidden; }
+    .chat { height: 70px; margin: 0; padding: 4px 6px; background: #fff; border: 1px solid #9eb6ce; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; overflow: hidden; }
     .chat .who { color: #555; }
     .chat .msg { padding-left: 12px; color: #000; }
     .chat .sys { color: #7a7a7a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 14px; }
-    .bar { display: flex; align-items: center; gap: 1px; padding: 3px 6px 2px; }
+    .bar { display: flex; align-items: center; gap: 1px; padding: 3px 0 2px; }
     .tbtn { height: 22px; min-width: 24px; padding: 0 2px; border: 1px solid transparent; border-radius: 3px; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 1px; font: 700 12px/1 "Times New Roman", serif; color: #1e3d75; }
     .tbtn:hover { border-color: #7a96df; background: linear-gradient(#fff, #d6e3f7); }
     .tbtn:active { background: #b9cdf0; }
@@ -33,7 +33,11 @@ export default {
     .tbtn svg { width: 18px; height: 18px; flex: none; }
     .tbtn .dd { width: 5px; height: 4px; }
     .tbtn.cool { opacity: .45; pointer-events: none; }
-    .inp { display: flex; gap: 6px; padding: 0 6px 6px; }
+    .inp { display: flex; gap: 6px; }
+    .mid { display: grid; grid-template-columns: minmax(0, 1fr) 66px; gap: 6px; padding: 0 6px 6px; }
+    .lc { min-width: 0; }
+    .dps { display: flex; flex-direction: column; justify-content: space-between; }
+    .dp { width: 66px; height: 66px; display: block; object-fit: cover; padding: 2px; background: #fff; border: 1px solid #9eb6ce; border-radius: 4px; box-shadow: 1px 1px 2px rgba(30,61,117,.18); }
     .inp input { flex: 1; min-width: 0; height: 40px; border: 1px solid #9eb6ce; padding: 3px 5px; font: 11px Tahoma, Verdana, sans-serif; background: #fff; color: #000; }
     .inp input:focus { outline: 0; border-color: #3c6fcf; }
     .send { width: 56px; height: 40px; border: 1px solid #003c74; border-radius: 3px; background: linear-gradient(#fff, #ece9d8 85%, #d6d0c5); cursor: pointer; font: 11px Tahoma, Verdana, sans-serif; color: #000; }
@@ -47,6 +51,7 @@ export default {
         <div class="tb"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="10.5" cy="4" r="2.6" fill="#2f78e8"/><path d="M6.5 15c0-4 1.6-6.5 4-6.5s4 2.5 4 6.5z" fill="#2f78e8"/><circle cx="5.5" cy="5" r="2.8" fill="#3cb43c"/><path d="M1 15.5c0-4.4 1.8-7 4.5-7s4.5 2.6 4.5 7z" fill="#3cb43c"/></svg><span class="t">Tom - Conversation</span><span class="cap" aria-hidden="true"><svg viewBox="0 0 9 9"><path d="M1 7.5h5"/></svg></span><span class="cap" aria-hidden="true"><svg viewBox="0 0 9 9"><path d="M1 1.5h7v6.5H1z"/></svg></span><span class="cap x" aria-hidden="true"><svg viewBox="0 0 9 9"><path d="M1.5 1.5l6 6M7.5 1.5l-6 6"/></svg></span></div>
         <div class="menu" aria-hidden="true"><span>File</span><span>Edit</span><span>Actions</span><span>Tools</span><span>Help</span></div>
         <div class="to">To: <b>Tom</b> <span>&lt;tom@hotmail.com&gt;</span></div>
+        <div class="mid"><div class="lc">
         <div class="chat" aria-live="polite"><div class="who">Tom says:</div><div class="msg">hey u there??</div><div class="sys log"></div></div>
         <div class="bar">
           <button class="tbtn" type="button" aria-label="Change font">A</button>
@@ -55,6 +60,7 @@ export default {
           <button class="tbtn nudge" type="button" aria-label="Send a nudge"><svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="5" r="2.8" fill="#3cb43c"/><path d="M4.5 16c0-4.4 1.8-7 4.5-7s4.5 2.6 4.5 7z" fill="#3cb43c"/><path d="M2 5.5l-1 1.5 1 1.5M3.5 4.5L2 7l1.5 2.5M16 5.5l1 1.5-1 1.5M14.5 4.5L16 7l-1.5 2.5" fill="none" stroke="#e8670c" stroke-width="1"/></svg></button>
         </div>
         <div class="inp"><input type="text" aria-label="Message"><button class="send" type="button">Send</button></div>
+        </div><div class="dps" aria-hidden="true"><img class="dp" src="assets/portraits/men-04.jpg" alt="" width="66" height="66"><img class="dp" src="assets/portraits/women-27.jpg" alt="" width="66" height="66"></div></div>
       </div>
     </div>`,
   init(root) {

@@ -23,9 +23,7 @@ export default {
     .top i { font-style: normal; font-weight: 700; font-size: 8px; color: #c0392b; }
     .art {
       position: relative; height: 82px; border: 2px solid #c9a227; border-radius: 1px; overflow: hidden;
-      background:
-        radial-gradient(circle at 50% 58%, #fff59d 0 9px, #ffd54f 10px 15px, transparent 16px),
-        conic-gradient(from 0deg at 50% 58%, #4a2a8a, #2b5fb8 12%, #4a2a8a 25%, #2b5fb8 37%, #4a2a8a 50%, #2b5fb8 62%, #4a2a8a 75%, #2b5fb8 87%, #4a2a8a);
+      background: #6f8fb0 url(assets/square/49.webp) center 40% / cover;
     }
     .bar { height: 5px; border-radius: 3px; background: rgba(28, 28, 28, .18); }
     .bar.s { width: 62%; }

@@ -1,5 +1,5 @@
 // Discord (2024) server channel sidebar. Channel glyphs: Phosphor (MIT) hash-bold / speaker-high-fill;
-// UI glyphs: Lucide (ISC); avatar mark: Simple Icons "discord" (CC0).
+// UI glyphs: Lucide (ISC).
 const lu = (paths, s = 18, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 const L = {
   chev: '<path d="m6 9 6 6 6-6"/>', x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
@@ -17,8 +17,7 @@ const L = {
 };
 const HASH = '<svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,84H180.2l7.61-41.85a12,12,0,0,0-23.62-4.3L155.8,84H116.2l7.61-41.85a12,12,0,1,0-23.62-4.3L91.8,84H48a12,12,0,0,0,0,24H87.44l-7.27,40H32a12,12,0,0,0,0,24H75.8l-7.61,41.85a12,12,0,0,0,9.66,14A11.430,11.430,0,0,0,80,228a12,12,0,0,0,11.8-9.86L100.2,172h39.6l-7.61,41.85a12,12,0,0,0,9.66,14,11.43,11.43,0,0,0,2.160.2,12,12,0,0,0,11.8-9.86L164.2,172H208a12,12,0,0,0,0-24H168.56l7.27-40H224a12,12,0,0,0,0-24Zm-79.83,64H104.56l7.27-40h39.61Z"/></svg>';
 const SPEAKER = '<svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M160,32.25V223.69a8.29,8.29,0,0,1-3.91,7.18,8,8,0,0,1-9-.56l-65.57-51A4,4,0,0,1,80,176.16V79.84a4,4,0,0,1,1.55-3.15l65.57-51a8,8,0,0,1,10,.16A8.27,8.27,0,0,1,160,32.25ZM60,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H60a4,4,0,0,0,4-4V84A4,4,0,0,0,60,80Zm126.77,20.840a8,8,0,0,0-.72,11.3,24,24,0,0,1,0,31.72,8,8,0,1,0,12,10.58,40,40,0,0,0,0-52.88A8,8,0,0,0,186.74,100.84Zm40.89-26.17a8,8,0,1,0-11.92,10.66,64,64,0,0,1,0,85.34,8,8,0,1,0,11.92,10.66,80,80,0,0,0,0-106.66Z"/></svg>';
-const CLYDE = '<svg width="60%" height="60%" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>';
-const av = (c, s) => `<span class="av" style="background:${c};width:${s}px;height:${s}px">${CLYDE}</span>`;
+const av = (src, s) => `<span class="av" style="width:${s}px;height:${s}px"><img src="assets/portraits/${src}.jpg" alt="" width="${s}" height="${s}" draggable="false"></span>`;
 const ch = (name, o = {}) => `<button class="ch${o.un ? ' un' : ''}" type="button"${o.cur ? ' aria-current="page"' : ''}>${o.voice ? SPEAKER : HASH}<span class="tx">${name}</span>${o.n ? `<span class="n">${o.n}</span>` : ''}<span class="act"><span title="Create Invite">${lu(L.userPlus, 16)}</span><span title="Edit Channel">${lu(L.gear, 16)}</span></span></button>`;
 const MENU = [
   ['Invite People', L.userPlus, 'inv'], ['Server Settings', L.gear], ['Create Channel', L.circlePlus], ['Create Category', L.folderPlus], ['Create Event', L.calPlus], '-',
@@ -75,7 +74,8 @@ export default {
     .ch:hover .n { display: none; }
     .vu { display: flex; align-items: center; gap: 8px; height: 28px; margin: 1px 0 0 32px; padding: 0 8px; border-radius: 4px; font-size: 14px; color: #949ba4; }
     .vu:hover { background: rgba(78,80,88,.3); color: #dbdee1; }
-    .av { position: relative; flex: none; display: grid; place-items: center; border-radius: 50%; }
+    .av { position: relative; flex: none; display: block; border-radius: 50%; background: #313338; }
+    .av img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
     .me { flex: none; display: flex; align-items: center; gap: 8px; height: 52px; padding: 0 8px; background: #232428; }
     .me .who { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 4px 0 2px; border-radius: 4px; }
     .me .who:hover { background: rgba(78,80,88,.3); }
@@ -95,10 +95,10 @@ export default {
         <button class="cat" type="button" aria-expanded="true">${lu(L.chev, 12, 3)}Text Channels<span class="add" title="Create Channel">${lu(L.plus, 18)}</span></button>
         <div class="grp">${ch('announcements', { un: 1, n: 3 })}${ch('general', { cur: 1 })}${ch('design', { un: 1 })}${ch('off-topic')}</div>
         <button class="cat" type="button" aria-expanded="true">${lu(L.chev, 12, 3)}Voice Channels<span class="add" title="Create Channel">${lu(L.plus, 18)}</span></button>
-        <div class="grp">${ch('Lounge', { voice: 1 })}<div class="vu">${av('#5865f2', 24)}Nova</div><div class="vu">${av('#3ba55c', 24)}Kit</div>${ch('Standup', { voice: 1 })}</div>
+        <div class="grp">${ch('Lounge', { voice: 1 })}<div class="vu">${av('women-29', 24)}Nova</div><div class="vu">${av('men-14', 24)}Kit</div>${ch('Standup', { voice: 1 })}</div>
       </div>
       <div class="me">
-        <div class="who">${av('#eb459e', 32)}<span class="nm">alex<small>Online</small></span></div>
+        <div class="who">${av('men-37', 32)}<span class="nm">alex<small>Online</small></span></div>
         <button class="tb" type="button" aria-label="Mute" aria-pressed="false">${lu(L.mic + '<path class="sl" d="M3 3l18 18"/>', 20)}</button>
         <button class="tb" type="button" aria-label="Deafen" aria-pressed="false">${lu(L.phones + '<path class="sl" d="M3 3l18 18"/>', 20)}</button>
         <button class="tb" type="button" aria-label="User Settings">${lu(L.gear, 20)}</button>

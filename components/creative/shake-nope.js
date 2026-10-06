@@ -5,9 +5,11 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage {
-      width: 260px; height: 120px; max-width: 100%; border-radius: 12px; display: grid; place-items: center;
-      background: radial-gradient(120% 90% at 20% 10%, #4fa3d9, transparent 60%), radial-gradient(90% 90% at 90% 100%, #2f8f6d, transparent 60%), linear-gradient(160deg, #1f4e79, #163a52);
+      width: 260px; height: 176px; max-width: 100%; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      background: #4a4030 url(assets/wide/23.webp) center / cover; font-family: system-ui, -apple-system, sans-serif;
     }
+    .av { display: block; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: rgba(255, 255, 255, .25); box-shadow: 0 2px 10px rgba(0, 0, 0, .25); }
+    .nm { margin-bottom: 2px; font-size: 13px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .35); }
     .field {
       position: relative; display: flex; align-items: center; width: 190px; height: 30px; border-radius: 15px; padding: 0 3px 0 12px;
       background: rgba(255, 255, 255, .22); box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .35), 0 1px 4px rgba(0, 0, 0, .12);
@@ -36,7 +38,7 @@ export default {
       77% { transform: translateX(2px); }
     }
   `,
-  html: `<div class="stage"><div class="field"><input type="password" value="letmein" placeholder="Enter Password" aria-label="Password" autocomplete="off"><button class="go" type="button" aria-label="Log in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m12 16 4-4-4-4"/><path d="M8 12h8"/></svg></button></div></div>`,
+  html: `<div class="stage"><img class="av" src="assets/portraits/men-32.jpg" alt="" width="56" height="56"><span class="nm">Jamie Rivera</span><div class="field"><input type="password" value="letmein" placeholder="Enter Password" aria-label="Password" autocomplete="off"><button class="go" type="button" aria-label="Log in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m12 16 4-4-4-4"/><path d="M8 12h8"/></svg></button></div></div>`,
   init(root) {
     const f = root.querySelector('.field'), i = root.querySelector('input'), go = root.querySelector('.go');
     const nope = () => { f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); i.select(); };

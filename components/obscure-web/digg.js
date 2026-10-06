@@ -24,7 +24,7 @@ export default {
     .txt { flex: 1; min-width: 0; }
     .ttl { display: block; color: #105cb6; font: 700 17px/1.2 Arial, Helvetica, sans-serif; text-decoration: underline; cursor: pointer; }
     .meta { margin-top: 4px; color: #999; font-size: 11px; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-    .meta i { width: 14px; height: 14px; flex: none; border: 1px solid #ccc; background: #f4f4f4; }
+    .meta img { width: 16px; height: 16px; flex: none; display: block; object-fit: cover; border: 1px solid #ccc; background: #f4f4f4; }
     .meta a { color: #999; text-decoration: underline; }
     .meta b { color: #a12a2a; }
     .foot { margin-top: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: #999; white-space: nowrap; }
@@ -44,7 +44,7 @@ export default {
       </div>
       <div class="txt">
         <a class="ttl" href="#">An Endless Page of Buttons</a>
-        <div class="meta"><i aria-hidden="true"></i><a href="#">kevinrose</a> submitted, made popular <b>4 minutes ago</b></div>
+        <div class="meta"><img src="assets/portraits/men-29.jpg" alt="" width="16" height="16"><a href="#">kevinrose</a> submitted, made popular <b>4 minutes ago</b></div>
         <div class="foot"><svg viewBox="0 0 14 12" aria-hidden="true"><path d="M1.5 1.5h11v7h-6l-3 2.5v-2.5h-2z" fill="#fff" stroke="#578cca"/><path d="M4 4h6M4 6h4" stroke="#578cca"/></svg><a href="#">23 comments</a> | <a href="#">Blog It</a> | <button class="bury" type="button" aria-pressed="false"><span class="x">Bury</span><span class="y">Buried</span></button></div>
       </div>
     </div>`,

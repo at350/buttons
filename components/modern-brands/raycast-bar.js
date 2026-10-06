@@ -4,7 +4,7 @@ export default {
   size: 'wide',
   css: `
     :host { display: block; }
-    .stage { padding: 20px; border-radius: 12px; background: radial-gradient(80% 90% at 15% 0%, #4a1e2a, transparent 60%), radial-gradient(70% 80% at 95% 100%, #1d2a44, transparent 60%), #0b0b0d; }
+    .stage { padding: 20px; border-radius: 12px; background: #0b0b0d url(assets/wide/02.webp) 50% 40% / cover no-repeat; }
     .win { max-width: 100%; border-radius: 12px; background: rgba(28,28,30,.94); backdrop-filter: blur(30px) saturate(150%); -webkit-backdrop-filter: blur(30px) saturate(150%); overflow: hidden;
       box-shadow: 0 0 0 1px rgba(255,255,255,.1) inset, 0 0 0 1px rgba(0,0,0,.6), 0 24px 60px -12px rgba(0,0,0,.7);
       font: 400 14px/1 Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; color: #ececee; -webkit-font-smoothing: antialiased; }

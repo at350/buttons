@@ -28,9 +28,7 @@ const P = {
   x: '<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>',
 };
 const oc = (n, s = 16) => `<svg class="oc" width="${s}" height="${s}" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">${P[n]}</svg>`;
-// GitHub default identicon: 5x5 mirrored grid, 70px cells with a 35px margin on a #f0f0f0 field.
-const ID = [[1,0,1],[0,1,1],[1,1,0],[0,1,0],[1,0,1]];
-const IDENT = `<svg width="32" height="32" viewBox="0 0 12 12" aria-hidden="true"><rect width="12" height="12" fill="#f0f0f0"/><g fill="#5eb5c5">${ID.map((r, y) => [r[0], r[1], r[2], r[1], r[0]].map((on, x) => (on ? `<rect x="${1 + x * 2}" y="${1 + y * 2}" width="2" height="2"/>` : '')).join('')).join('')}</g></svg>`;
+const AVATAR = '<img src="assets/portraits/men-26.jpg" alt="" width="32" height="32" draggable="false">';
 const item = (icon, label, extra = '') => `<li role="none"><button class="ai${extra}" type="button" role="menuitem" tabindex="-1">${icon ? `<span class="lv">${oc(icon)}</span>` : ''}<span class="tx">${label}</span></button></li>`;
 const div = '<li class="dv" role="separator"></li>';
 
@@ -83,7 +81,7 @@ export default {
     .dvd { width: 1px; height: 20px; background: var(--border); flex: none; margin: 0 4px; }
     .dot { position: absolute; top: -3px; right: -3px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid #f6f8fa; }
     .av { width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; cursor: pointer; background: #f0f0f0; box-shadow: 0 0 0 1px #1f23281a; flex: none; }
-    .av svg { display: block; }
+    .av img { display: block; width: 100%; height: 100%; object-fit: cover; }
     .oc { display: block; flex: none; }
     .sbi { display: none; }
 
@@ -173,9 +171,9 @@ export default {
           <button class="ib hide-md" type="button" aria-label="Your pull requests">${oc('git-pull-request')}</button>
           <button class="ib hide-xs" type="button" aria-label="You have unread notifications">${oc('inbox')}<span class="dot"></span></button>
           <div class="anc">
-            <button class="av" type="button" data-ov="user" aria-label="Open user navigation menu" aria-haspopup="true" aria-expanded="false">${IDENT}</button>
+            <button class="av" type="button" data-ov="user" aria-label="Open user navigation menu" aria-haspopup="true" aria-expanded="false">${AVATAR}</button>
             <div class="ov ov-user r" data-ov="user" role="dialog" aria-label="User navigation">
-              <div class="uh"><span class="av">${IDENT}</span><div><b>alantai</b><span>Alan Tai</span></div></div>
+              <div class="uh"><span class="av">${AVATAR}</span><div><b>alantai</b><span>Alan Tai</span></div></div>
               <ul role="menu">${item('smiley', 'Set status')}${div}${item('person', 'Your profile')}${item('repo', 'Your repositories')}${item('copilot', 'Your Copilot')}${item('table', 'Your projects')}${item('star', 'Your stars')}${item('code-square', 'Your gists')}${item('organization', 'Your organizations')}${div}${item('gear', 'Settings')}${div}${item('sign-out', 'Sign out')}</ul>
             </div>
           </div>

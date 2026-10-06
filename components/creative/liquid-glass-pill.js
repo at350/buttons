@@ -5,14 +5,11 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage {
-      --W: 280px; --H: 140px; --pw: 150px; --ph: 52px;
-      --wall:
-        repeating-linear-gradient(135deg, transparent 0 16px, rgba(255, 255, 255, .28) 16px 19px),
-        radial-gradient(circle at 18% 30%, #ffd166 0 26px, transparent 27px),
-        radial-gradient(circle at 84% 72%, #06d6a0 0 22px, transparent 23px),
-        linear-gradient(90deg, #ff6a00, #ff2d95 40%, #7c3aed 72%, #00a8ff);
+      /* wallpaper drawn at --IW × --IH (the photo's 16:9, covering the 280 × 140 stage), centred */
+      --W: 280px; --H: 140px; --IW: 280px; --IH: 157.5px; --pw: 150px; --ph: 52px;
+      --wall: url(assets/wide/19.webp) no-repeat;
       position: relative; width: var(--W); height: var(--H); border-radius: 12px; overflow: hidden; display: grid; place-items: center;
-      background: var(--wall); background-size: var(--W) var(--H);
+      background: var(--wall); background-color: #6fa3d8; background-size: var(--IW) var(--IH); background-position: center;
     }
     .pill {
       --m: 1.2; --r: .82; --x: 30%; --y: 20%;
@@ -21,10 +18,8 @@ export default {
       text-shadow: 0 1px 6px rgba(0, 0, 0, .25);
       /* lens: the same wallpaper, magnified around the capsule's centre */
       background: var(--wall);
-      background-size: calc(var(--W) * var(--m)) calc(var(--H) * var(--m));
-      background-position:
-        calc((var(--W) / 2) * (1 - var(--m)) - (var(--W) - var(--pw)) / 2)
-        calc((var(--H) / 2) * (1 - var(--m)) - (var(--H) - var(--ph)) / 2);
+      background-size: calc(var(--IW) * var(--m)) calc(var(--IH) * var(--m));
+      background-position: calc(var(--pw) / 2 - var(--IW) * var(--m) / 2) calc(var(--ph) / 2 - var(--IH) * var(--m) / 2);
       box-shadow: 0 8px 24px rgba(0, 0, 0, .22), 0 2px 6px rgba(0, 0, 0, .12);
       transition: transform .5s cubic-bezier(.32, .72, 0, 1), box-shadow .4s ease;
     }
@@ -32,10 +27,8 @@ export default {
     .rim {
       position: absolute; inset: 0; border-radius: inherit; padding: 7px; pointer-events: none; z-index: -1;
       background: var(--wall);
-      background-size: calc(var(--W) * var(--r)) calc(var(--H) * var(--r));
-      background-position:
-        calc((var(--W) / 2) * (1 - var(--r)) - (var(--W) - var(--pw)) / 2)
-        calc((var(--H) / 2) * (1 - var(--r)) - (var(--H) - var(--ph)) / 2);
+      background-size: calc(var(--IW) * var(--r)) calc(var(--IH) * var(--r));
+      background-position: calc(var(--pw) / 2 - var(--IW) * var(--r) / 2) calc(var(--ph) / 2 - var(--IH) * var(--r) / 2);
       filter: blur(1.2px) saturate(1.5) brightness(1.1);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
       mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);

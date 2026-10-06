@@ -4,10 +4,10 @@
 const ENTER = 'linear(0, 0.135, 0.447, 0.807, 1.111, 1.299, 1.358, 1.311, 1.2, 1.071, 0.962, 0.894, 0.872, 0.888, 0.928, 0.974, 1.013, 1.038, 1.046, 1.04, 1.026, 1.009, 0.995, 0.986, 0.984, 0.986, 0.991, 0.997, 1.002, 1.005, 1.006, 1.005, 1.003, 1.001, 0.999, 0.998, 0.998, 0.998, 0.999, 1, 1)';
 const FOLLOW = 'linear(0, 0.021, 0.076, 0.15, 0.236, 0.333, 0.425, 0.514, 0.601, 0.676, 0.743, 0.805, 0.854, 0.896, 0.932, 0.959, 0.981, 0.998, 1.01, 1.018, 1.023, 1.026, 1.027, 1.027, 1.026, 1.024, 1.022, 1.019, 1.017, 1.014, 1.012, 1.01, 1.008, 1.006, 1.004, 1.003, 1.002, 1.001, 1.001, 1, 1)';
 const PEOPLE = [
-  ['John Doe', 'Software Engineer', 'JD', '#f59e0b', '#ea580c'],
-  ['Robert Johnson', 'Product Manager', 'RJ', '#38bdf8', '#2563eb'],
-  ['Jane Smith', 'Data Scientist', 'JS', '#f472b6', '#c026d3'],
-  ['Emily Davis', 'UX Designer', 'ED', '#34d399', '#0d9488'],
+  ['John Doe', 'Software Engineer', 'men-14'],
+  ['Robert Johnson', 'Product Manager', 'men-22'],
+  ['Jane Smith', 'Data Scientist', 'women-12'],
+  ['Emily Davis', 'UX Designer', 'women-26'],
 ];
 
 export default {
@@ -20,8 +20,8 @@ export default {
     .row { display: flex; padding-right: 16px; }
     .it { position: relative; margin-right: -16px; }
     .av {
-      position: relative; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-size: 16px; font-weight: 600;
-      background: linear-gradient(150deg, var(--a), var(--b)); cursor: pointer; transition: transform .5s cubic-bezier(.4, 0, .2, 1); outline: none;
+      position: relative; display: block; width: 56px; height: 56px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; object-position: top;
+      background: #e5e5e5; cursor: pointer; transition: transform .5s cubic-bezier(.4, 0, .2, 1); outline: none;
     }
     .it:hover, .it:focus-within { z-index: 30; }
     .it:hover .av, .av:focus-visible { transform: scale(1.05); }
@@ -41,7 +41,7 @@ export default {
   `,
   html: `
     <div class="stage"><div class="row">
-      ${PEOPLE.map(([n, d, ini, a, b]) => `<div class="it"><div class="tw"><div class="tip" role="tooltip"><i class="e"></i><i class="s"></i><b>${n}</b><span>${d}</span></div></div><div class="av" tabindex="0" aria-label="${n}, ${d}" style="--a:${a};--b:${b}">${ini}</div></div>`).join('')}
+      ${PEOPLE.map(([n, d, img]) => `<div class="it"><div class="tw"><div class="tip" role="tooltip"><i class="e"></i><i class="s"></i><b>${n}</b><span>${d}</span></div></div><img class="av" tabindex="0" src="assets/portraits/${img}.jpg" width="56" height="56" alt="${n}, ${d}"></div>`).join('')}
     </div></div>`,
   init(root) {
     root.querySelectorAll('.it').forEach((it) => {

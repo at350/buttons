@@ -31,7 +31,7 @@ export default {
     .lg { height: 48px; padding: 8px; }
     .lg[aria-expanded="true"], .lg:hover { background: #f5f5f5; }
     .logo { width: 32px; height: 32px; flex: none; border-radius: 8px; background: #171717; color: #fafafa; display: grid; place-items: center; }
-    .av { width: 32px; height: 32px; flex: none; border-radius: 8px; background: #f5f5f5; color: #0a0a0a; display: grid; place-items: center; font-size: 12px; font-weight: 500; border: 1px solid #e5e5e5; }
+    .av { display: block; width: 32px; height: 32px; flex: none; border-radius: 8px; background: #f5f5f5; object-fit: cover; }
     .two { flex: 1; min-width: 0; display: grid; line-height: 1.25; }
     .two b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
     .two span { font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
@@ -58,7 +58,7 @@ export default {
             </li>`).join('')}
           </ul>
         </div>
-        <div class="ft"><button class="mb lg" type="button" aria-haspopup="menu" aria-expanded="false"><span class="av">CN</span><span class="two"><b>shadcn</b><span>m@example.com</span></span>${UPDOWN}</button></div>
+        <div class="ft"><button class="mb lg" type="button" aria-haspopup="menu" aria-expanded="false"><img class="av" src="assets/portraits/men-32.jpg" alt="" width="32" height="32" draggable="false"><span class="two"><b>shadcn</b><span>m@example.com</span></span>${UPDOWN}</button></div>
       </nav>
     </div>`,
   init(root) {

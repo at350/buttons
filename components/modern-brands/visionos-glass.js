@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { padding: 24px 26px; border-radius: 12px; display: flex;
-      background: radial-gradient(90% 80% at 20% 0%, #6d8fb8 0%, transparent 60%), radial-gradient(70% 80% at 90% 100%, #a07a8f 0%, transparent 60%), linear-gradient(160deg, #39465c, #2a2f3d); }
+      background: #2a2f3d url(assets/wide/01.webp) 50% 60% / cover no-repeat; }
     .orn { display: flex; gap: 8px; padding: 8px; border-radius: 40px; position: relative; isolation: isolate;
       background: rgba(128,128,128,.3); backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
       box-shadow: inset 0 0 0 .5px rgba(255,255,255,.12), 0 18px 40px rgba(0,0,0,.28); }

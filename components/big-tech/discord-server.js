@@ -17,6 +17,7 @@ export default {
       transition: border-radius .15s ease-out, background-color .15s ease-out, color .15s ease-out;
     }
     .ic svg { width: 28px; height: 28px; fill: currentColor; }
+    .ic img { display: block; width: 48px; height: 48px; object-fit: cover; }
     .srv:hover .ic, .srv:focus-visible .ic, .srv[aria-current="true"] .ic { border-radius: 16px; background: #5865f2; color: #fff; }
     .srv:active .ic { transform: translateY(1px); }
     .srv:focus-visible { outline: none; }
@@ -45,7 +46,7 @@ export default {
       <div class="guilds">
         <button class="srv home" type="button" aria-current="true" aria-label="Direct Messages"><span class="pill"></span><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${CLYDE}"/></svg></span></button>
         <span class="sep"></span>
-        <button class="srv unread" type="button" aria-current="false" aria-label="Design Systems"><span class="pill"></span><span class="ic">DS</span></button>
+        <button class="srv unread" type="button" aria-current="false" aria-label="Design Systems"><span class="pill"></span><span class="ic"><img src="assets/square/32.webp" alt="" width="48" height="48"></span></button>
       </div>
       <button class="join" type="button" aria-pressed="false"><span class="a">Join</span><span class="b">Joined</span></button>
     </div>`,

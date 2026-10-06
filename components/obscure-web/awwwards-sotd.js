@@ -8,9 +8,10 @@ export default {
   css: `
     :host { display: inline-block; }
     .site { position: relative; width: 220px; height: 200px; border-radius: 12px; overflow: hidden; background: #f4f3ef; }
-    .site i { position: absolute; left: 18px; height: 8px; border-radius: 4px; background: #dcdad3; }
-    .site i:nth-child(1) { top: 24px; width: 90px; height: 14px; background: #1a1a1a; border-radius: 2px; }
-    .site i:nth-child(2) { top: 50px; width: 120px; } .site i:nth-child(3) { top: 64px; width: 96px; } .site i:nth-child(4) { top: 78px; width: 110px; }
+    .shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; display: block; }
+    .nav { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 70px 0 16px; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+    .nav b { font: 500 13px/1 'Instrument Serif', Georgia, serif; letter-spacing: 3px; }
+    .nav svg { width: 16px; height: 10px; }
     .score { position: absolute; right: 53px; top: 50%; width: 92px; height: 74px; margin-top: -37px; padding: 10px 12px; background: #fff; box-shadow: -2px 2px 12px rgba(0,0,0,.12); font: 600 10px/1.2 Inter, system-ui, sans-serif; color: #222; letter-spacing: .3px; text-transform: uppercase;
       transform: translateX(100%); opacity: 0; transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s; pointer-events: none; }
     .score b { display: block; margin-top: 6px; font: 800 26px/1 Inter, system-ui, sans-serif; letter-spacing: -1px; text-transform: none; }
@@ -27,7 +28,8 @@ export default {
   `,
   html: `
     <div class="site">
-      <i></i><i></i><i></i><i></i>
+      <img class="shot" src="assets/wide/29.webp" alt="" width="220" height="200">
+      <div class="nav" aria-hidden="true"><b>TENUTA</b><svg viewBox="0 0 16 10"><path d="M0 1h16M0 5h16M0 9h16" stroke="#fff" stroke-width="1.4"/></svg></div>
       <div class="score" aria-hidden="true">Score<b>7.85</b><small>/ 10 jury</small></div>
       <button class="rib" type="button" aria-pressed="false" aria-label="Awwwards Site of the Day">
         <svg viewBox="0 5 24 14" aria-hidden="true"><path d="m14.72 5.6-2.24 8.68-2.12-8.68H7.47l-2.12 8.68L3.11 5.6H0l4.01 12.65h2.74l2.17-8.18 2.16 8.18h2.74L17.83 5.6zm5.1 10.7c0 1.2.9 2.1 2.09 2.1 1.2 0 2.09-.9 2.09-2.1s-.9-2.12-2.1-2.12c-1.19 0-2.08.9-2.08 2.11"/></svg>

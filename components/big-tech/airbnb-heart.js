@@ -4,7 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .card { position: relative; width: 120px; height: 90px; border-radius: 12px; background: linear-gradient(135deg, #c9d6df, #8fa3b1); overflow: visible; }
+    .card { position: relative; width: 120px; height: 90px; border-radius: 12px; background: #ebebeb url(assets/square/45.webp) center / cover no-repeat; overflow: visible; }
     .hb {
       position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border: 0; background: none; cursor: pointer; padding: 0;
       display: flex; align-items: center; justify-content: center; border-radius: 50%; -webkit-tap-highlight-color: transparent;
