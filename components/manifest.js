@@ -46,6 +46,7 @@ export async function loadComponents() {
         continue;
       }
       seen.add(def.id);
+      def._cat = c;
       out.push(def);
     }
   }

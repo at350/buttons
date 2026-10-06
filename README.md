@@ -17,3 +17,7 @@ Quality rules for elements (real icons, real colors, real motion, nothing escape
 
 Zero dependencies. Every element is one ES module under `components/<category>/`, rendered in its own
 shadow root. See [components/CONTRACT.md](components/CONTRACT.md) to add one.
+
+Hidden extras on the page: **press and hold any element** for a moment to copy its source module to the
+clipboard, and the small round button in the bottom corner opens a **category filter** (click a chip to
+toggle it, alt/option-click to show only that category; the choice is remembered in the browser).

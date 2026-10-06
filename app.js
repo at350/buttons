@@ -25,7 +25,8 @@ spacer.setAttribute('aria-hidden', 'true');
 flow.appendChild(spacer);
 let spacerH = 0;
 
-let registry = [];
+let allRegistry = [];   // every loaded element
+let registry = [];      // the elements currently in the feed (after the category filter)
 let order = [];
 let cursor = 0;
 const pool = []; // mounted + measured hosts waiting to be packed into a row
@@ -57,6 +58,7 @@ function mount(def) {
   host.className = 'item size-' + (def.size || 'auto');
   host.dataset.id = def.id;
   host._size = def.size || 'auto';
+  host._def = def;
   if (def.credit) host.title = def.credit;
   const root = host.attachShadow({ mode: 'open' });
   root.innerHTML = `<style>${BASE_CSS}${def.css || ''}</style>${def.html || ''}`;
@@ -287,12 +289,15 @@ function relock() {
 
 // ---- boot -------------------------------------------------------------------
 async function main() {
-  registry = await loadComponents();
+  allRegistry = await loadComponents();
   boot.classList.add('hidden');
-  if (!registry.length) {
+  if (!allRegistry.length) {
     console.error('[buttons] no components loaded');
     return;
   }
+  registry = filtered(loadFilter());
+  setupFilter();
+  setupLongPress();
   // Box locking depends on text metrics, so wait for the web fonts (bounded), and if they arrive
   // later anyway, re-measure every live element once.
   let fontsDone = !document.fonts || document.fonts.status === 'loaded';
@@ -331,6 +336,162 @@ async function main() {
     }
   };
   requestAnimationFrame(fill);
+}
+
+// ---- category filter ----------------------------------------------------------
+const FILTER_KEY = 'buttons.categories';
+const categories = () => [...new Set(allRegistry.map((d) => d._cat))];
+let active = null; // null = all categories
+
+function loadFilter() {
+  try {
+    const raw = localStorage.getItem(FILTER_KEY);
+    if (raw) { const arr = JSON.parse(raw); if (Array.isArray(arr) && arr.length) return new Set(arr); }
+  } catch {}
+  return null;
+}
+function saveFilter() {
+  try { active ? localStorage.setItem(FILTER_KEY, JSON.stringify([...active])) : localStorage.removeItem(FILTER_KEY); } catch {}
+}
+function filtered(set) {
+  active = set && set.size ? set : null;
+  const list = active ? allRegistry.filter((d) => active.has(d._cat)) : allRegistry;
+  return list.length ? list : allRegistry;
+}
+
+// Tear the feed down and start it again from the current registry.
+function resetFeed() {
+  for (const h of flow.querySelectorAll('.item')) unmount(h);
+  for (const r of flow.querySelectorAll(':scope > .row')) r.remove();
+  for (const h of pool.splice(0)) unmount(h);
+  measure.innerHTML = '';
+  order = []; cursor = 0; lastId = null;
+  setSpacer(0);
+  window.scrollTo(0, 0);
+  appendRows(ROWS_PER_FILL * 2);
+  requestAnimationFrame(function fill() {
+    if (document.documentElement.scrollHeight <= window.innerHeight + 200) { appendRows(); requestAnimationFrame(fill); }
+  });
+}
+
+function setupFilter() {
+  const btn = document.getElementById('filter');
+  const panel = document.getElementById('filter-panel');
+  const cats = categories().filter((c) => c !== 'core').sort();
+  const chips = new Map();
+  const paint = () => {
+    for (const [c, el] of chips) el.setAttribute('aria-pressed', String(!active || active.has(c)));
+    all.setAttribute('aria-pressed', String(!active));
+    btn.dataset.active = String(!!active);
+  };
+  const apply = (set) => { registry = filtered(set); saveFilter(); paint(); resetFeed(); };
+  const all = document.createElement('button');
+  all.type = 'button'; all.className = 'all'; all.textContent = 'all';
+  all.addEventListener('click', () => apply(null));
+  panel.appendChild(all);
+  for (const c of cats) {
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.textContent = c.replace(/-/g, ' ');
+    el.addEventListener('click', (e) => {
+      // plain click toggles one category; alt/option-click shows only that category
+      let set = new Set(active || cats);
+      if (e.altKey) set = new Set([c]);
+      else if (set.has(c) && set.size > 1) set.delete(c);
+      else set.add(c);
+      apply(set.size === cats.length ? null : set);
+    });
+    chips.set(c, el);
+    panel.appendChild(el);
+  }
+  const open = (v) => { panel.hidden = !v; btn.setAttribute('aria-expanded', String(v)); };
+  btn.addEventListener('click', () => open(panel.hidden));
+  document.addEventListener('pointerdown', (e) => { if (!panel.hidden && !panel.contains(e.target) && e.target !== btn) open(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) { open(false); btn.focus(); } });
+  paint();
+}
+
+// ---- long-press: copy an element's source module -----------------------------
+const sourceCache = new Map(); // category -> Promise<Map<id, { path, text }>>
+
+async function sourcesFor(cat) {
+  if (!sourceCache.has(cat)) {
+    sourceCache.set(cat, (async () => {
+      const idx = await (await fetch(`./components/${cat}/index.js`)).text();
+      const paths = [...idx.matchAll(/from\s+['"]\.\/([^'"]+)['"]/g)].map((m) => m[1]);
+      const files = await Promise.all(paths.map(async (p) => ({ path: `components/${cat}/${p}`, text: await (await fetch(`./components/${cat}/${p}`)).text() })));
+      const map = new Map();
+      for (const f of files) {
+        const m = f.text.match(/\bid\s*:\s*['"`]([^'"`]+)['"`]/);
+        if (m) map.set(m[1], f);
+      }
+      return map;
+    })());
+  }
+  return sourceCache.get(cat);
+}
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch {}
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:absolute;left:-9999px;top:0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  } catch { return false; }
+}
+
+const toast = document.getElementById('toast');
+let toastTimer;
+function showToast(x, y, ok, path) {
+  toast.innerHTML = ok
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>${path.split('/').pop()}`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+  toast.style.left = Math.max(80, Math.min(innerWidth - 80, x)) + 'px';
+  toast.style.top = Math.max(40, y) + 'px';
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 1400);
+}
+
+function setupLongPress() {
+  const HOLD = 600, SLOP = 8;
+  let timer = 0, host = null, sx = 0, sy = 0;
+  const cancel = () => { clearTimeout(timer); timer = 0; if (host) host.classList.remove('holding'); host = null; };
+  const fire = async () => {
+    const h = host;
+    if (!h) return;
+    const def = h._def;
+    const x = sx, y = sy;
+    cancel();
+    let ok = false, path = '';
+    try {
+      const map = await sourcesFor(def._cat);
+      const src = map.get(def.id);
+      if (src) { path = src.path; ok = await copyText(src.text); }
+    } catch (err) { console.error('[buttons] copy failed', err); }
+    h.classList.remove('copied'); void h.offsetWidth; h.classList.add('copied');
+    showToast(x, y, ok, path);
+  };
+  document.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    const h = e.composedPath().find((n) => n instanceof HTMLElement && n.classList.contains('item') && n.parentElement && n.parentElement.closest('#flow'));
+    if (!h || !h._def) return;
+    cancel();
+    host = h; sx = e.clientX; sy = e.clientY;
+    h.classList.add('holding');
+    timer = setTimeout(fire, HOLD);
+  }, true);
+  document.addEventListener('pointermove', (e) => {
+    if (!host) return;
+    if (Math.hypot(e.clientX - sx, e.clientY - sy) > SLOP) cancel();
+  }, true);
+  for (const t of ['pointerup', 'pointercancel']) addEventListener(t, cancel, true);
+  addEventListener('blur', cancel); // window lost focus (element blurs don't reach here without capture)
+  // keep the mobile long-press from opening the context menu while holding an element
+  document.addEventListener('contextmenu', (e) => { if (host) e.preventDefault(); });
 }
 
 main();
