@@ -1,41 +1,44 @@
+// Magic UI <NumberTicker /> — a motion value is driven by useSpring({ damping: 60, stiffness: 100 }) and every frame is
+// re-formatted with Intl.NumberFormat('en-US'), "inline-block tracking-wider tabular-nums". Starts once in view.
+// The same spring is integrated here (mass 1, ζ = 3) in a rAF loop that only runs while the value is moving.
 export default {
   id: 'mo-number-ticker',
-  credit: 'Number ticker — every digit is a rolling column, staggered right to left (Family / Magic UI "NumberTicker")',
+  credit: 'Magic UI NumberTicker — the number is pushed through a useSpring (stiffness 100, damping 60), so it counts up fast then eases into the value, formatted with Intl.NumberFormat on every frame',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .wrap { display: inline-flex; align-items: center; gap: 14px; padding: 12px 14px 12px 18px; border-radius: 16px; background: #fff; border: 1px solid #e5e5e0; box-shadow: 0 1px 3px rgba(0,0,0,.06); font-family: Inter, system-ui, sans-serif; }
-    .num { display: inline-flex; align-items: center; font-weight: 600; font-size: 34px; letter-spacing: -.03em; color: #111; font-variant-numeric: tabular-nums; line-height: 1; }
-    .num .sym { margin-right: 2px; color: #999; font-weight: 500; }
-    .digits { display: inline-flex; align-items: center; }
-    .col { position: relative; display: block; height: 36px; width: .62em; overflow: hidden; mask-image: linear-gradient(transparent, #000 20%, #000 80%, transparent); -webkit-mask-image: linear-gradient(transparent, #000 20%, #000 80%, transparent); }
-    .col i { position: absolute; left: 0; top: 0; display: flex; flex-direction: column; font-style: normal; transform: translateY(calc(var(--d, 0) * -36px)); transition: transform .9s cubic-bezier(.2, .9, .2, 1); transition-delay: calc(var(--k) * 60ms); }
-    .col i span { height: 36px; display: grid; place-items: center; }
-    .comma { width: .25em; height: 36px; display: grid; place-items: end center; padding-bottom: 4px; }
-    .comma::after { content: ','; }
-    .btn { height: 40px; width: 40px; border-radius: 12px; border: 0; background: #111; color: #fff; cursor: pointer; display: grid; place-items: center; transition: transform .2s cubic-bezier(.34, 1.56, .64, 1), background .2s; }
-    .btn:hover { background: #2a2a2a; } .btn:active { transform: scale(.9) rotate(-20deg); }
-    .btn:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
-    .btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .6s cubic-bezier(.34, 1.56, .64, 1); }
-    .btn.spin svg { transform: rotate(360deg); }
+    .card { display: inline-flex; align-items: center; gap: 18px; padding: 16px 16px 16px 22px; border-radius: 12px; background: #fff; border: 1px solid #e4e4e7; box-shadow: 0 1px 2px rgba(0,0,0,.05); font-family: Inter, system-ui, sans-serif; }
+    .num { display: inline-block; min-width: 4.3ch; font-size: 48px; font-weight: 500; line-height: 1; letter-spacing: -.05em; color: #000; font-variant-numeric: tabular-nums; text-align: right; }
+    .btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid #e4e4e7; background: #fff; color: #09090b; cursor: pointer; display: grid; place-items: center; transition: background .15s, transform .15s; }
+    .btn:hover { background: #f4f4f5; } .btn:active { transform: scale(.94); }
+    .btn:focus-visible { outline: 2px solid #09090b; outline-offset: 2px; }
+    .btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .5s cubic-bezier(.32, .72, 0, 1); }
+    .btn.spin svg { transform: rotate(360deg); transition: none; }
   `,
   html: `
-    <div class="wrap">
-      <div class="num" aria-live="polite"><span class="sym">$</span><span class="digits"></span></div>
-      <button class="btn" type="button" aria-label="New value"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5"/></svg></button>
+    <div class="card">
+      <span class="num" role="status" aria-live="polite">0</span>
+      <button class="btn" type="button" aria-label="Replay"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>
     </div>`,
   init(root) {
-    const digits = root.querySelector('.digits'), btn = root.querySelector('.btn');
-    const col = (k) => { const c = document.createElement('span'); c.className = 'col'; c.innerHTML = '<i style="--k:' + k + '">' + '0123456789'.split('').map((d) => '<span>' + d + '</span>').join('') + '</i>'; return c; };
-    const cols = [];
-    for (let i = 0; i < 5; i++) { if (i === 2) { const c = document.createElement('span'); c.className = 'comma'; digits.appendChild(c); } const c = col(4 - i); digits.appendChild(c); cols.push(c.firstChild); }
-    const show = (n) => { const s = String(n).padStart(5, '0'); cols.forEach((c, i) => c.style.setProperty('--d', s[i])); };
-    show(12840);
-    let t = 0;
+    const el = root.querySelector('.num'), btn = root.querySelector('.btn');
+    const fmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+    const targets = [8462, 1250, 9999, 3018, 6730];
+    let k = 0, x = 0, v = 0, target = 0, raf = 0, last = 0;
+    const tick = (t) => {
+      const dt = Math.min(0.032, (t - last) / 1000 || 0.016); last = t;
+      for (let i = 0; i < 4; i++) { const a = -100 * (x - target) - 60 * v; v += a * dt / 4; x += v * dt / 4; }
+      el.textContent = fmt.format(Math.round(x));
+      if (Math.abs(target - x) < .5 && Math.abs(v) < 1) { x = target; el.textContent = fmt.format(target); raf = 0; return; }
+      raf = requestAnimationFrame(tick);
+    };
+    const go = (to, from) => { if (from !== undefined) { x = from; v = 0; } target = to; if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(targets[k]); } });
+    io.observe(el);
     btn.addEventListener('click', () => {
-      show(10000 + Math.floor(Math.random() * 89999));
-      btn.classList.add('spin'); clearTimeout(t); t = setTimeout(() => btn.classList.remove('spin'), 600);
+      k = (k + 1) % targets.length; go(targets[k], 0);
+      btn.classList.add('spin'); requestAnimationFrame(() => requestAnimationFrame(() => btn.classList.remove('spin')));
     });
-    return () => clearTimeout(t);
+    return () => { io.disconnect(); cancelAnimationFrame(raf); };
   },
 };

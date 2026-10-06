@@ -8,7 +8,7 @@ export default {
       --x: 50%; --y: 50%;
       position: relative; overflow: hidden; cursor: pointer; border: 1px solid #27272a; border-radius: 14px;
       width: 240px; height: 72px; max-width: 100%; background: #0a0a0a; padding: 0;
-      font: 800 22px/1 system-ui, sans-serif; letter-spacing: .3em; text-transform: uppercase;
+      font: 800 22px/1 system-ui, sans-serif; letter-spacing: .22em; text-indent: .22em; text-transform: uppercase;
       transition: border-color .3s;
     }
     .btn::before {
@@ -27,7 +27,7 @@ export default {
     .btn:active .t { transform: scale(.98); }
     .btn:focus-visible { outline: 2px solid #fde68a; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button" aria-pressed="false"><span class="t">Seek</span></button>`,
+  html: `<button class="btn" type="button" aria-pressed="false"><span class="t">Explore</span></button>`,
   init(root) {
     const b = root.querySelector('.btn');
     b.addEventListener('mousemove', (e) => {

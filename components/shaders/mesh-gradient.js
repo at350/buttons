@@ -74,43 +74,65 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Stripe's homepage gradient (their minigl "Gradient"): a base colour with three simplex-noise layers
+// blended on top, each layer's mask = pow(smoothstep(floor, ceil, snoise(...)), 4); the plane is also
+// displaced by low-frequency noise, emulated here as a slow domain warp. Hero palette from stripe.com.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse,u_pt;
-float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
- return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+vec4 perm(vec4 x){return mod289(((x*34.)+1.)*x);}vec4 tis(vec4 r){return 1.79284291400159-.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0.,.5,1.,2.);
+ vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;
+ vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;
+ i=mod289(i);vec4 p=perm(perm(perm(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+ float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);
+ vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);
+ vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0.));vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+ vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+ vec4 nm=tis(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=nm.x;p1*=nm.y;p2*=nm.z;p3*=nm.w;
+ vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;
+ return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+vec3 lin(vec3 c){return c*c;}
 void main(){
  vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y;
- vec2 p=vec2(uv.x*ar,uv.y); vec2 m=vec2(u_mouse.x*ar,u_mouse.y);
- float t=u_time*.3;
- vec2 d=p-m; p-=d*exp(-dot(d,d)*4.)*.45*u_hover;
- p+=(vec2(noise(p*1.6+t),noise(p*1.6-t+5.))-.5)*.5;
- vec2 c1=vec2(.5+.35*sin(t*1.3),.65+.3*cos(t)), c2=vec2(ar*.5+.4*cos(t*.9),.35+.3*sin(t*1.1));
- vec2 c3=vec2(ar-.5+.35*sin(t*1.7),.7+.3*cos(t*.8)), c4=vec2(ar*.45+.6*sin(t*.6),1.1+.3*cos(t*1.4));
- float w1=exp(-dot(p-c1,p-c1)*1.6),w2=exp(-dot(p-c2,p-c2)*1.6),w3=exp(-dot(p-c3,p-c3)*1.6),w4=exp(-dot(p-c4,p-c4)*1.6);
- vec3 col=(w1*vec3(.39,.36,1.)+w2*vec3(1.,.5,.71)+w3*vec3(.0,.83,1.)+w4*vec3(1.,.8,.44))/(w1+w2+w3+w4+1e-4);
- col*=1.+.18*u_hover;
+ // Stripe skews the canvas ~-12deg; noise coords are the plane coords
+ vec2 nc=vec2(uv.x*ar,uv.y)*.16; nc.y+=nc.x*.21;
+ vec2 m=vec2(u_mouse.x*ar,u_mouse.y)*.16; m.y+=m.x*.21; vec2 dm=nc-m; nc-=dm*exp(-dot(dm,dm)*160.)*.25*u_hover;
+ float t=u_time*(.05+.03*u_hover)+3.;
+ nc+=.025*vec2(snoise(vec3(nc*2.,t*.7)),snoise(vec3(nc*2.+7.,t*.7)));
+ vec3 c1=lin(vec3(.663,.376,.933)), c2=lin(vec3(1.,.2,.239)), c3=lin(vec3(.565,.878,1.)), c4=lin(vec3(1.,.796,.341));
+ vec3 col=c1; vec3 L[3]; L[0]=c2; L[1]=c3; L[2]=c4;
+ for(int i=0;i<3;i++){float fi=float(i);
+  float n=snoise(vec3(nc.x*(2.+fi/3.)+t*(6.5+.3*fi)*.1,nc.y*(3.+fi/3.),t*(1.1+.03*fi)+5.+10.*fi))*.5+.5;
+  n=smoothstep(.1,.63+.07*fi,n); col=mix(col,L[i],pow(n,4.)*.92+.0);}
  float r=length((uv-u_pt)*vec2(ar,1.))-(1.-u_press)*ar*1.1;
- col+=smoothstep(.12,0.,abs(r))*u_press*.7;
- gl_FragColor=vec4(col,1.);}`;
+ col+=smoothstep(.18,0.,abs(r))*u_press*.35;
+ gl_FragColor=vec4(sqrt(col),1.);}`;
 
 export default {
   id: 'sh-mesh-gradient',
-  credit: 'Stripe-style mesh gradient button — four color blobs in GLSL with domain-warped noise; the pointer pulls the gradient, press sends a ring',
+  credit: 'Stripe homepage mesh gradient (minigl) — base #a960ee with #ff333d / #90e0ff / #ffcb57 simplex-noise layers drifting in GLSL, Stripe\'s HoverArrow on the label; the pointer pulls the gradient',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 80px; max-width: 100%; padding: 0; border: 0; border-radius: 22px; overflow: hidden; background: #635bff; cursor: pointer; isolation: isolate; }
+    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 80px; max-width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #a960ee; cursor: pointer; isolation: isolate; box-shadow: 0 13px 27px -5px rgba(50,50,93,.25), 0 8px 16px -8px rgba(0,0,0,.3); transition: box-shadow .15s cubic-bezier(.215,.61,.355,1), transform .15s cubic-bezier(.215,.61,.355,1); }
+    .btn:hover { box-shadow: 0 30px 60px -12px rgba(50,50,93,.25), 0 18px 36px -18px rgba(0,0,0,.3); }
+    .btn:active { transform: scale(.985); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(120deg, #635bff, #ff80b5 45%, #00d4ff 75%, #ffcc70); }
-    .l { position: relative; z-index: 1; color: #fff; font: 600 20px/1 'Inter', system-ui, sans-serif; letter-spacing: -.01em; text-shadow: 0 1px 12px rgba(0,0,0,.25); transition: transform .15s; pointer-events: none; }
-    .btn:active .l { transform: scale(.97); }
+    .cv.nogl { background: linear-gradient(105deg, #a960ee, #ff333d 40%, #ffcb57 65%, #90e0ff); }
+    .l { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; padding: 9px 14px 10px 18px; border-radius: 16.5px; background: #0a2540; color: #fff; font: 600 15px/1 'Inter', system-ui, sans-serif; letter-spacing: .01em; pointer-events: none; transition: background .15s cubic-bezier(.215,.61,.355,1); }
+    .btn:hover .l { background: #425466; }
+    .ha { margin-left: 6px; stroke: currentColor; fill: none; stroke-width: 2; overflow: visible; }
+    .ha .ln { opacity: 0; transition: opacity .15s cubic-bezier(.215,.61,.355,1); }
+    .ha .tp { transition: transform .15s cubic-bezier(.215,.61,.355,1); }
+    .btn:hover .ha .ln { opacity: 1; }
+    .btn:hover .ha .tp { transform: translateX(3px); }
     .btn:focus-visible { outline: 2px solid #635bff; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Start now</span></button>`,
+  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Start now<svg class="ha" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><g fill-rule="evenodd"><path class="ln" d="M0 5h7"/><path class="tp" d="M1 1l4 4-4 4"/></g></svg></span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 260, 80, FS, { pressDecay: 1.6 });
+    const s = shade(cv, btn, 260, 80, FS, { pressDecay: 1.6, idle: true });
     return () => s.destroy();
   },
 };

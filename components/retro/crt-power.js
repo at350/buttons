@@ -1,6 +1,6 @@
 export default {
   id: 'rt-crt-power',
-  credit: 'CRT television — rocker power switch that wakes a scanlined phosphor screen with a static flash',
+  credit: 'CRT television — rocker power switch: the picture warms up from a bright line, and collapses to a dot when switched off',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -23,6 +23,9 @@ export default {
     .pw .led { position: absolute; left: 50%; bottom: -14px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #3a0000; }
     .pw[aria-checked="true"] .led { background: #ff2a00; box-shadow: 0 0 6px #ff4a00; }
     .pw:focus-visible { outline: 2px solid #ffb300; outline-offset: 3px; }
+    .screen.dying .pic { opacity: 1; animation: crtoff .55s cubic-bezier(.5,0,.75,0) forwards; }
+    .screen.dying .pic::after { display: none; }
+    @keyframes crtoff { 0% { transform: none; filter: none; } 55% { transform: scale(1, .006); filter: brightness(5) saturate(0); } 85% { transform: scale(.02, .006); filter: brightness(6) saturate(0); opacity: 1; } 100% { transform: scale(0, 0); opacity: 0; } }
     @keyframes warm { from { filter: brightness(4) contrast(2) saturate(0); transform: scaleY(.02); } to { filter: none; transform: none; } }
     @keyframes roll { to { top: 130%; } }
   `,
@@ -33,6 +36,13 @@ export default {
     </div>`,
   init(root) {
     const pw = root.querySelector('.pw'); const screen = root.querySelector('.screen');
-    pw.addEventListener('click', () => { const on = pw.getAttribute('aria-checked') !== 'true'; pw.setAttribute('aria-checked', String(on)); screen.classList.toggle('on', on); });
+    let t = 0;
+    pw.addEventListener('click', () => {
+      const on = pw.getAttribute('aria-checked') !== 'true';
+      pw.setAttribute('aria-checked', String(on)); screen.classList.toggle('on', on);
+      clearTimeout(t); screen.classList.toggle('dying', !on);
+      if (!on) t = setTimeout(() => screen.classList.remove('dying'), 600);
+    });
+    return () => clearTimeout(t);
   },
 };

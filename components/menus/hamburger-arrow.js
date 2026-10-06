@@ -1,31 +1,26 @@
 export default {
   id: 'mn-hamburger-arrow',
-  credit: 'Jonsuh Hamburgers — "arrow" (three lines fold into a back arrow)',
+  credit: 'Hamburgers by Jonathan Suh — "arrow" (top and bottom layers fold into a back arrow)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .hb {
-      width: 52px; height: 52px; border: 0; background: #fff; border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,.15); cursor: pointer; display: grid; place-items: center; padding: 0; color: #222;
-      transition: box-shadow .2s, transform .15s;
-    }
-    .hb:hover { box-shadow: 0 3px 10px rgba(0,0,0,.18); }
-    .hb:active { transform: scale(.95); }
-    .hb:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
-    .box { position: relative; width: 26px; height: 18px; display: block; }
-    .box span {
-      position: absolute; left: 0; width: 26px; height: 3px; border-radius: 3px; background: currentColor;
-      transition: transform .3s cubic-bezier(.4,0,.2,1), width .3s cubic-bezier(.4,0,.2,1);
-    }
-    .box span:nth-child(1) { top: 0; }
-    .box span:nth-child(2) { top: 7.5px; }
-    .box span:nth-child(3) { top: 15px; }
-    .hb[aria-expanded="true"] span:nth-child(1) { width: 15px; transform: translate(-5px, 1.5px) rotate(-45deg); }
-    .hb[aria-expanded="true"] span:nth-child(3) { width: 15px; transform: translate(-5px, -1.5px) rotate(45deg); }
+    /* Hamburgers by Jonathan Suh — default settings: 40px wide, 4px layers, 6px spacing, 15px padding, hover opacity .7 */
+    .hamburger { padding: 15px; display: inline-block; cursor: pointer; transition-property: opacity, filter; transition-duration: .15s; transition-timing-function: linear; font: inherit; color: inherit; text-transform: none; background-color: transparent; border: 0; margin: 0; overflow: visible; border-radius: 4px; line-height: 0; }
+    .hamburger:hover, .hamburger.is-active:hover { opacity: .7; }
+    .hamburger:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+    .hamburger-box { width: 40px; height: 24px; display: inline-block; position: relative; }
+    .hamburger-inner { display: block; top: 50%; margin-top: -2px; }
+    .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after { width: 40px; height: 4px; background-color: #000; border-radius: 4px; position: absolute; transition-property: transform; transition-duration: .15s; transition-timing-function: ease; }
+    .hamburger-inner::before, .hamburger-inner::after { content: ""; display: block; }
+    .hamburger-inner::before { top: -10px; }
+    .hamburger-inner::after { bottom: -10px; }
+
+    .hamburger--arrow.is-active .hamburger-inner::before { transform: translate3d(-8px, 0, 0) rotate(-45deg) scale(.7, 1); }
+    .hamburger--arrow.is-active .hamburger-inner::after { transform: translate3d(-8px, 0, 0) rotate(45deg) scale(.7, 1); }
   `,
-  html: `<button class="hb" type="button" aria-expanded="false" aria-label="Menu"><span class="box"><span></span><span></span><span></span></span></button>`,
+  html: `<button class="hamburger hamburger--arrow" type="button" aria-label="Menu" aria-expanded="false"><span class="hamburger-box"><span class="hamburger-inner"></span></span></button>`,
   init(root) {
-    const b = root.querySelector('.hb');
-    b.addEventListener('click', () => b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') !== 'true'));
+    const b = root.querySelector('.hamburger');
+    b.addEventListener('click', () => { const on = b.classList.toggle('is-active'); b.setAttribute('aria-expanded', String(on)); });
   },
 };

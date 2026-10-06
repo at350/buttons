@@ -1,50 +1,53 @@
+// shadcn/ui InputOTP (built on input-otp): one real input laid transparently over six 36px slots in two groups of
+// three joined by shared borders (border-y + border-r, rounded-l-md / rounded-r-md ends, shadow-sm), a Lucide minus
+// separator, the active slot raised with a 1px ring-ring outline, and the fake caret (1px × 16px) blinking with
+// caret-blink 1.25s. zinc tokens: border-input #e4e4e7, ring #18181b, foreground #09090b; Inter 14px.
 export default {
   id: 'in-otp-input',
-  credit: 'One-time code input — four boxes that auto-advance, backspace steps back, paste fills all; turns green when complete',
+  credit: 'shadcn/ui Input OTP — six joined 36px slots in two groups, ring on the active slot, blinking fake caret',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .otp { display: inline-flex; gap: 10px; }
-    input {
-      width: 46px; height: 54px; border: 2px solid #d4d4d8; border-radius: 12px; background: #fff; text-align: center; font: 600 24px ui-monospace, Menlo, monospace; color: #111;
-      outline: 0; transition: border-color .15s, box-shadow .15s, transform .15s, background .2s; caret-color: #4f46e5; -moz-appearance: textfield;
+    .otp { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 4px; font: 400 14px/20px Inter, "Geist", system-ui, sans-serif; color: #09090b; }
+    .grp { display: flex; align-items: center; }
+    .slot {
+      position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #fff;
+      border-top: 1px solid #e4e4e7; border-bottom: 1px solid #e4e4e7; border-right: 1px solid #e4e4e7; box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+      transition: box-shadow .15s cubic-bezier(.4,0,.2,1);
     }
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    input:hover { border-color: #a1a1aa; }
-    input:focus { border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79,70,229,.15); transform: translateY(-2px); }
-    input.has { border-color: #4f46e5; }
-    .otp.done input { border-color: #16a34a; background: #f0fdf4; color: #15803d; animation: tick .3s ease-out; }
-    .otp.done input:nth-child(2) { animation-delay: .05s; } .otp.done input:nth-child(3) { animation-delay: .1s; } .otp.done input:nth-child(4) { animation-delay: .15s; }
-    @keyframes tick { 50% { transform: translateY(-4px); } }
+    .slot:first-child { border-left: 1px solid #e4e4e7; border-radius: 6px 0 0 6px; }
+    .slot:last-child { border-radius: 0 6px 6px 0; }
+    .slot.act { z-index: 1; box-shadow: 0 0 0 1px #18181b; }
+    .caret { display: none; width: 1px; height: 16px; background: #09090b; animation: blink 1.25s ease-out infinite; }
+    .slot.act.empty .caret { display: block; }
+    @keyframes blink { 0%, 70%, 100% { opacity: 1; } 20%, 50% { opacity: 0; } }
+    .sep svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; display: block; }
+    .otp:hover .slot:not(.act) { border-color: #d4d4d8; }
+    input {
+      position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; font: inherit; letter-spacing: 2em; cursor: text;
+      caret-color: transparent; background: transparent; color: transparent; outline: 0;
+    }
   `,
-  html: `<div class="otp" role="group" aria-label="One-time code">
-    <input inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
-    <input inputmode="numeric" maxlength="1" aria-label="Digit 2">
-    <input inputmode="numeric" maxlength="1" aria-label="Digit 3">
-    <input inputmode="numeric" maxlength="1" aria-label="Digit 4">
+  html: `<div class="otp">
+    <div class="grp"><div class="slot"><span class="ch"></span><span class="caret"></span></div><div class="slot"><span class="ch"></span><span class="caret"></span></div><div class="slot"><span class="ch"></span><span class="caret"></span></div></div>
+    <div class="sep" role="separator"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></div>
+    <div class="grp"><div class="slot"><span class="ch"></span><span class="caret"></span></div><div class="slot"><span class="ch"></span><span class="caret"></span></div><div class="slot"><span class="ch"></span><span class="caret"></span></div></div>
+    <input inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" aria-label="One-time password" spellcheck="false">
   </div>`,
   init(root) {
-    const wrap = root.querySelector('.otp'), ins = [...root.querySelectorAll('input')];
-    const check = () => { ins.forEach((i) => i.classList.toggle('has', !!i.value)); wrap.classList.toggle('done', ins.every((i) => i.value)); };
-    ins.forEach((inp, i) => {
-      inp.addEventListener('input', () => {
-        inp.value = inp.value.replace(/\D/g, '').slice(-1);
-        if (inp.value && i < ins.length - 1) ins[i + 1].focus({ preventScroll: true });
-        check();
+    const inp = root.querySelector('input'), slots = [...root.querySelectorAll('.slot')];
+    const paint = () => {
+      const v = inp.value, focused = root.activeElement === inp;
+      const at = Math.min(v.length, 5);
+      slots.forEach((s, i) => {
+        s.querySelector('.ch').textContent = v[i] || '';
+        s.classList.toggle('empty', !v[i]);
+        s.classList.toggle('act', focused && (i === at && (v.length < 6 || i === 5)));
       });
-      inp.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !inp.value && i > 0) { ins[i - 1].value = ''; ins[i - 1].focus({ preventScroll: true }); check(); e.preventDefault(); }
-        if (e.key === 'ArrowLeft' && i > 0) { e.preventDefault(); ins[i - 1].focus({ preventScroll: true }); }
-        if (e.key === 'ArrowRight' && i < ins.length - 1) { e.preventDefault(); ins[i + 1].focus({ preventScroll: true }); }
-      });
-      inp.addEventListener('paste', (e) => {
-        const t = (e.clipboardData.getData('text') || '').replace(/\D/g, '');
-        if (!t) return;
-        e.preventDefault();
-        for (let k = 0; k < ins.length - i && k < t.length; k++) ins[i + k].value = t[k];
-        ins[Math.min(i + t.length, ins.length - 1)].focus({ preventScroll: true }); check();
-      });
-      inp.addEventListener('focus', () => inp.select());
-    });
+    };
+    inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); inp.setSelectionRange(inp.value.length, inp.value.length); paint(); });
+    inp.addEventListener('focus', paint); inp.addEventListener('blur', paint);
+    inp.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End') e.preventDefault(); });
+    paint();
   },
 };

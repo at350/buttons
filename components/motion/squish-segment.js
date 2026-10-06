@@ -1,49 +1,58 @@
+// Jakub Krehel-style segmented control — the selected pill's two edges ride separate springs: the leading edge
+// (stiffness 420, damping 32) races to the new tab while the trailing edge (stiffness 170, damping 21) catches up,
+// so the pill stretches across the gap and settles into the new tab. Labels cross-fade, pressed tab squishes.
+const LEAD = 'linear(0, 0.043, 0.142, 0.267, 0.408, 0.534, 0.646, 0.742, 0.82, 0.882, 0.928, 0.962, 0.987, 1.003, 1.012, 1.016, 1.018, 1.018, 1.016, 1.014, 1.011, 1.009, 1.007, 1.005, 1.004, 1.002, 1.002, 1.001, 1, 1, 1)';
+const TRAIL = 'linear(0, 0.04, 0.129, 0.247, 0.368, 0.49, 0.598, 0.695, 0.774, 0.84, 0.891, 0.931, 0.959, 0.981, 0.995, 1.004, 1.01, 1.012, 1.013, 1.013, 1.012, 1.01, 1.008, 1.007, 1.005, 1.004, 1.003, 1.002, 1.001, 1.001, 1)';
+
 export default {
   id: 'mo-squish-segment',
-  credit: 'Jakub Krehel-style segmented control — the pill stretches across the gap, then squishes into the new tab',
+  credit: 'Jakub Krehel-style segmented control — the pill’s leading edge springs ahead and the trailing edge follows on a softer spring, so it stretches across and squishes into the new tab',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .seg { position: relative; display: inline-flex; padding: 4px; border-radius: 999px; background: #ededea; font-family: Inter, system-ui, sans-serif; }
-    .pill { position: absolute; top: 4px; bottom: 4px; left: var(--l, 4px); width: var(--w, 0px); border-radius: 999px; background: #111; box-shadow: 0 2px 6px rgba(0,0,0,.2); transition: left .36s cubic-bezier(.3, .8, .3, 1), width .36s cubic-bezier(.3, .8, .3, 1); }
-    .seg.stretch .pill { transition: left .22s cubic-bezier(.4, 0, .2, 1), width .22s cubic-bezier(.4, 0, .2, 1); }
-    .seg.squish .pill { transition: left .32s cubic-bezier(.34, 1.4, .64, 1), width .32s cubic-bezier(.34, 1.4, .64, 1); }
-    .seg button { position: relative; z-index: 1; height: 34px; padding: 0 18px; border: 0; background: transparent; border-radius: 999px; color: #555; font: 500 13.5px Inter, system-ui, sans-serif; cursor: pointer; transition: color .25s, transform .2s; }
-    .seg button:hover { color: #111; }
-    .seg button[aria-selected="true"] { color: #fff; }
-    .seg button:active { transform: scale(.94); }
-    .seg button:focus-visible { outline: 2px solid #111; outline-offset: -2px; }
+    .seg { position: relative; display: inline-flex; padding: 3px; border-radius: 12px; background: #ececec; box-shadow: inset 0 0 0 1px rgba(0,0,0,.03); font-family: Inter, system-ui, sans-serif; }
+    .pill {
+      position: absolute; top: 3px; bottom: 3px; left: var(--l, 3px); right: var(--r, 3px); border-radius: 9px; background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 6px -1px rgba(0,0,0,.08), 0 0 0 .5px rgba(0,0,0,.06);
+    }
+    .seg.fwd .pill { transition: left .68s ${TRAIL}, right .45s ${LEAD}; }
+    .seg.back .pill { transition: left .45s ${LEAD}, right .68s ${TRAIL}; }
+    .seg button {
+      position: relative; z-index: 1; height: 32px; padding: 0 16px; border: 0; background: transparent; border-radius: 9px; color: #737373; cursor: pointer;
+      font: 500 13.5px Inter, system-ui, sans-serif; letter-spacing: -.005em; transition: color .2s, transform .3s ${LEAD};
+    }
+    .seg button:hover { color: #404040; }
+    .seg button[aria-selected="true"] { color: #0a0a0a; }
+    .seg button:active { transform: scale(.95); }
+    .seg button:focus-visible { outline: 2px solid #0a0a0a; outline-offset: -2px; }
   `,
   html: `
-    <div class="seg" role="tablist">
-      <span class="pill"></span>
-      <button type="button" role="tab" aria-selected="true">Day</button>
-      <button type="button" role="tab" aria-selected="false">Week</button>
-      <button type="button" role="tab" aria-selected="false">Month</button>
-      <button type="button" role="tab" aria-selected="false">Year</button>
+    <div class="seg" role="tablist" aria-label="Range">
+      <span class="pill" aria-hidden="true"></span>
+      <button type="button" role="tab" aria-selected="true" tabindex="0">Day</button>
+      <button type="button" role="tab" aria-selected="false" tabindex="-1">Week</button>
+      <button type="button" role="tab" aria-selected="false" tabindex="-1">Month</button>
+      <button type="button" role="tab" aria-selected="false" tabindex="-1">Year</button>
     </div>`,
   init(root) {
     const seg = root.querySelector('.seg'), pill = root.querySelector('.pill'), tabs = [...root.querySelectorAll('[role="tab"]')];
-    let cur = 0, t1 = 0, t2 = 0;
-    const box = (b) => ({ l: b.offsetLeft, w: b.offsetWidth });
-    const place = (l, w) => { pill.style.setProperty('--l', l + 'px'); pill.style.setProperty('--w', w + 'px'); };
-    // place the pill without animating: reading offsetWidth has already resolved style with --w: 0
-    pill.style.transition = 'none'; const first = box(tabs[0]); place(first.l, first.w); void pill.offsetWidth; pill.style.transition = '';
-    const go = (i) => {
+    let cur = 0;
+    const place = (b) => { pill.style.setProperty('--l', b.offsetLeft + 'px'); pill.style.setProperty('--r', (seg.clientWidth - b.offsetLeft - b.offsetWidth) + 'px'); };
+    // the host is measured after init, so place the pill once layout exists (and again if fonts change widths)
+    const ro = new ResizeObserver(() => { seg.classList.remove('fwd', 'back'); place(tabs[cur]); });
+    ro.observe(seg);
+    const go = (i, focus) => {
       if (i === cur) return;
-      const a = box(tabs[cur]), b = box(tabs[i]);
-      tabs[cur].setAttribute('aria-selected', 'false'); tabs[i].setAttribute('aria-selected', 'true'); cur = i;
-      clearTimeout(t1); clearTimeout(t2);
-      seg.classList.remove('squish'); seg.classList.add('stretch');
-      place(Math.min(a.l, b.l), Math.max(a.l + a.w, b.l + b.w) - Math.min(a.l, b.l));
-      t1 = setTimeout(() => { seg.classList.remove('stretch'); seg.classList.add('squish'); place(b.l, b.w); }, 200);
-      t2 = setTimeout(() => seg.classList.remove('squish'), 560);
+      seg.classList.toggle('fwd', i > cur); seg.classList.toggle('back', i < cur);
+      tabs[cur].setAttribute('aria-selected', 'false'); tabs[cur].tabIndex = -1;
+      tabs[i].setAttribute('aria-selected', 'true'); tabs[i].tabIndex = 0; cur = i;
+      place(tabs[i]); if (focus) tabs[i].focus();
     };
     tabs.forEach((b, i) => b.addEventListener('click', () => go(i)));
     seg.addEventListener('keydown', (e) => {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      e.preventDefault(); const n = (cur + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length; go(n); tabs[n].focus();
+      e.preventDefault(); go((cur + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length, true);
     });
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    return () => ro.disconnect();
   },
 };

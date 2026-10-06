@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage {
-      padding: 54px 60px 50px;
+      padding: 32px 60px 10px;
       perspective: 1200px;
       background: #ecfeff;
       border-radius: 12px;
@@ -29,10 +29,8 @@ export default {
       cursor: pointer;
       transform-style: preserve-3d;
       transform: translate(-50%, -50%) translateZ(var(--z));
-      transition: transform .2s ease-out;
+      transition: transform .28s cubic-bezier(.3, 1.3, .4, 1);
     }
-    .tier:hover { transform: translate(-50%, -50%) translateZ(calc(var(--z) + 10px)); }
-    .tier[aria-pressed="true"] { transform: translate(-50%, -50%) translateZ(calc(var(--z) - 8px)); }
     .t1 {
       width: 140px;
       height: 140px;
@@ -71,18 +69,14 @@ export default {
       transform-origin: left;
       transform: rotateY(-90deg);
     }
-    .t1 .top { background: #0e7490; }
-    .t1 .fr { background: #155e75; }
-    .t1 .sd { background: #0891b2; }
-    .t2 .top { background: #06b6d4; }
-    .t2 .fr { background: #0e7490; }
-    .t2 .sd { background: #22d3ee; }
-    .t3 .top { background: #67e8f9; }
-    .t3 .fr { background: #06b6d4; }
-    .t3 .sd { background: #a5f3fc; }
-    .tier[aria-pressed="true"] .top { background: #f97316; }
+    /* one light from the upper left: tops lightest, left faces mid, right faces darkest */
+    .t1 .top { background: #0891b2; } .t1 .sd { background: #0e7490; } .t1 .fr { background: #155e75; }
+    .t2 .top { background: #22d3ee; } .t2 .sd { background: #06b6d4; } .t2 .fr { background: #0891b2; }
+    .t3 .top { background: #a5f3fc; } .t3 .sd { background: #67e8f9; } .t3 .fr { background: #22d3ee; }
+    .tier:hover .top { filter: brightness(1.08); }
+    .tier[aria-pressed="true"] .top { background: #fdba74; }
+    .tier[aria-pressed="true"] .sd { background: #f97316; }
     .tier[aria-pressed="true"] .fr { background: #c2410c; }
-    .tier[aria-pressed="true"] .sd { background: #fb923c; }
     .tier:focus-visible { outline: 0; }
     .tier:focus-visible .top { box-shadow: inset 0 0 0 3px #fff; }
   `,
@@ -95,6 +89,21 @@ export default {
       </div>
     </div>`,
   init(root) {
-    root.querySelectorAll('.tier').forEach((t) => t.addEventListener('click', () => t.setAttribute('aria-pressed', String(t.getAttribute('aria-pressed') !== 'true'))));
+    // a tier that lifts or sinks carries every tier above it, so slabs never intersect
+    const tiers = [...root.querySelectorAll('.tier')];
+    let hov = -1;
+    const lay = () => {
+      let acc = 0;
+      tiers.forEach((t, i) => {
+        acc += (i === hov ? 8 : 0) + (t.getAttribute('aria-pressed') === 'true' ? -6 : 0);
+        t.style.setProperty('--z', (i * 22 + acc) + 'px');
+      });
+    };
+    tiers.forEach((t, i) => {
+      t.addEventListener('pointerenter', () => { hov = i; lay(); });
+      t.addEventListener('pointerleave', () => { if (hov === i) { hov = -1; lay(); } });
+      t.addEventListener('click', () => { t.setAttribute('aria-pressed', String(t.getAttribute('aria-pressed') !== 'true')); lay(); });
+    });
+    lay();
   },
 };

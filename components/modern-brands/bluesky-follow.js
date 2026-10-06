@@ -1,45 +1,52 @@
 export default {
   id: 'mb-bluesky-follow',
-  credit: 'Bluesky — blue "Follow" pill with the butterfly that flaps its wings on hover; the like heart pops pink with scattered dots',
+  credit: 'Bluesky — profile row with the butterfly mark, the blue "+ Follow" pill that settles to grey "Following", and the pink like heart that pops',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { padding: 18px 22px; border-radius: 12px; background: #fff; border: 1px solid #e8ebee; display: flex; align-items: center; gap: 14px; font: 600 14px/1 Inter, -apple-system, system-ui, sans-serif; }
-    .fl { height: 34px; padding: 0 14px 0 10px; border-radius: 999px; border: 0; background: #1185fe; color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
-      transition: background .2s, transform .15s cubic-bezier(.2,.8,.2,1), box-shadow .25s; -webkit-tap-highlight-color: transparent; }
-    .fl:hover { background: #0e6fd6; box-shadow: 0 6px 18px -6px rgba(17,133,254,.7); }
-    .fl:active { transform: scale(.96); }
-    .fl:focus-visible, .lk:focus-visible { outline: 2px solid #1185fe; outline-offset: 2px; }
-    .fl[aria-pressed="true"] { background: #e8ebee; color: #0b0f14; box-shadow: none; }
-    .fl[aria-pressed="true"]:hover { background: #dde2e7; }
-    .bf { width: 18px; height: 18px; overflow: visible; }
-    .bf path { fill: currentColor; transform-origin: 50% 55%; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
-    .fl:hover .bf .l { animation: flapL .6s ease-in-out infinite; }
-    .fl:hover .bf .r { animation: flapR .6s ease-in-out infinite; }
-    @keyframes flapL { 50% { transform: rotateY(55deg) scaleX(.7); } }
-    @keyframes flapR { 50% { transform: rotateY(-55deg) scaleX(.7); } }
-    .bf { perspective: 60px; }
-    .lk { position: relative; height: 34px; min-width: 34px; padding: 0 8px; border-radius: 999px; border: 0; background: transparent; color: #6b7a8a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font: 500 14px/1 Inter, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; transition: background .15s; }
-    .lk:hover { background: #fff0f6; color: #ec4899; }
-    .lk svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; transition: transform .35s linear(0, 0.4 12%, 1.3 35%, 0.9 55%, 1.05 75%, 1), fill .15s; }
+    .stage { padding: 14px 16px; border-radius: 12px; background: #fff; border: 1px solid #e6ebf0; display: flex; align-items: center; gap: 12px;
+      font: 600 14px/1 Inter, -apple-system, system-ui, sans-serif; color: #0b0f14; letter-spacing: -.01em; }
+    .av { width: 40px; height: 40px; border-radius: 50%; background: #0085ff; display: grid; place-items: center; flex: none; }
+    .av svg { width: 22px; height: 22px; fill: #fff; }
+    .who { display: grid; gap: 4px; min-width: 0; margin-right: 6px; }
+    .who small { color: #6f869f; font-weight: 400; font-size: 13px; }
+    .fl { display: grid; height: 33px; padding: 0 14px 0 11px; border-radius: 999px; border: 0; background: #0085ff; color: #fff; cursor: pointer; font: inherit; font-size: 13px;
+      transition: background .15s, transform .15s ease-out; -webkit-tap-highlight-color: transparent; }
+    .fl > span { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; }
+    .fl svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .fl .b { visibility: hidden; }
+    .fl:hover { background: #0072dc; }
+    .fl:active { transform: scale(.97); }
+    .fl:focus-visible, .lk:focus-visible { outline: 2px solid #0085ff; outline-offset: 2px; }
+    .fl[aria-pressed="true"] { background: #eef1f5; color: #42576c; }
+    .fl[aria-pressed="true"]:hover { background: #e2e7ee; }
+    .fl[aria-pressed="true"] .a { visibility: hidden; } .fl[aria-pressed="true"] .b { visibility: visible; }
+    .lk { position: relative; height: 33px; padding: 0 6px; border-radius: 999px; border: 0; background: transparent; color: #6f869f; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      font: 400 13px/1 Inter, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; transition: background .15s, color .15s; }
+    .lk:hover { background: #fdf2f8; }
+    .lk svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; overflow: visible; }
+    .lk .n { display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums; text-align: left; }
     .lk[aria-pressed="true"] { color: #ec4899; }
-    .lk[aria-pressed="true"] svg { fill: #ec4899; stroke: #ec4899; transform: scale(1.12); }
-    .lk .n { font-variant-numeric: tabular-nums; }
-    .lk i { --r: 0deg; position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -14px; border-radius: 50%; background: #ec4899; opacity: 0; pointer-events: none; }
-    .lk.pop i { animation: fly .6s cubic-bezier(.2,.8,.2,1) forwards; }
+    .lk[aria-pressed="true"] svg { fill: #ec4899; stroke: #ec4899; }
+    .lk.pop svg { animation: pop .45s cubic-bezier(.2,1.6,.4,1); }
+    @keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+    .lk i { position: absolute; left: 15px; top: 50%; width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: #ec4899; opacity: 0; pointer-events: none; }
+    .lk.pop i { animation: fly .55s cubic-bezier(.2,.8,.2,1) forwards; }
     .lk i:nth-of-type(2) { --r: 60deg; } .lk i:nth-of-type(3) { --r: 120deg; } .lk i:nth-of-type(4) { --r: 180deg; } .lk i:nth-of-type(5) { --r: 240deg; } .lk i:nth-of-type(6) { --r: 300deg; }
-    @keyframes fly { 0% { opacity: 1; transform: rotate(var(--r)) translateY(0); } 100% { opacity: 0; transform: rotate(var(--r)) translateY(-22px); } }
+    @keyframes fly { 0% { opacity: 1; transform: rotate(var(--r, 0deg)) translateY(-6px); } 100% { opacity: 0; transform: rotate(var(--r, 0deg)) translateY(-15px) scale(.4); } }
   `,
   html: `
     <div class="stage">
-      <button class="fl" type="button" aria-pressed="false"><svg class="bf" viewBox="0 0 24 24"><path class="l" d="M12 10.5c-1.2-2.6-4.3-7.3-7.4-8.4C2.3 1.4 2 2.7 2 3.6c0 1 .6 7.9 1 9.1.6 2.4 2.8 2.9 4.9 2.6-3.1.5-3.9 2.3-2.2 4 3.2 3.4 4.6-.8 5.6-3.2.2-.4.5-.8.7-1.2z"/><path class="r" d="M12 10.5c1.2-2.6 4.3-7.3 7.4-8.4C21.7 1.4 22 2.7 22 3.6c0 1-.6 7.9-1 9.1-.6 2.4-2.8 2.9-4.9 2.6 3.1.5 3.9 2.3 2.2 4-3.2 3.4-4.6-.8-5.6-3.2-.2-.4-.5-.8-.7-1.2z"/></svg><span class="lbl">Follow</span></button>
-      <button class="lk" type="button" aria-pressed="false" aria-label="Like"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.7a4.3 4.3 0 0 1 7.5 2.8c0 5.4-7.5 10-7.5 10z"/></svg><span class="n">42</span><i></i><i></i><i></i><i></i><i></i><i></i></button>
+      <span class="av" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></span>
+      <span class="who">Bluesky<small>@bsky.app</small></span>
+      <button class="fl" type="button" aria-pressed="false"><span class="a"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Follow</span><span class="b"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Following</span></button>
+      <button class="lk" type="button" aria-pressed="false" aria-label="Like"><svg viewBox="0 0 24 24"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg><span class="n">42</span><i></i><i></i><i></i><i></i><i></i><i></i></button>
     </div>`,
   init(root) {
-    const fl = root.querySelector('.fl'), lk = root.querySelector('.lk');
-    fl.addEventListener('click', () => { const on = fl.getAttribute('aria-pressed') !== 'true'; fl.setAttribute('aria-pressed', String(on)); fl.querySelector('.lbl').textContent = on ? 'Following' : 'Follow'; });
+    const fl = root.querySelector('.fl'), lk = root.querySelector('.lk'), n = lk.querySelector('.n');
+    fl.addEventListener('click', () => fl.setAttribute('aria-pressed', String(fl.getAttribute('aria-pressed') !== 'true')));
     lk.addEventListener('click', () => {
-      const on = lk.getAttribute('aria-pressed') !== 'true'; const n = lk.querySelector('.n');
+      const on = lk.getAttribute('aria-pressed') !== 'true';
       lk.setAttribute('aria-pressed', String(on)); n.textContent = String(+n.textContent + (on ? 1 : -1));
       lk.classList.remove('pop'); if (on) { void lk.offsetWidth; lk.classList.add('pop'); }
     });

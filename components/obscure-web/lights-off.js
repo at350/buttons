@@ -17,12 +17,12 @@ export default {
     .lamp:hover { border-color: #888; }
     .lamp:focus-visible { outline: 2px solid #ffb400; outline-offset: 3px; }
     .lamp svg { width: 30px; height: 30px; }
-    .glass { fill: #fff; stroke: #333; stroke-width: 1.5; transition: fill .4s, stroke .4s; }
+    .glass { fill: #fff; stroke: #333; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: fill .4s, stroke .4s; }
     .base { fill: #555; transition: fill .4s; }
-    .fil { fill: none; stroke: #333; stroke-width: 1.2; transition: stroke .4s; }
+    .fil { fill: none; stroke: #333; stroke-width: 2; stroke-linecap: round; transition: stroke .4s; }
     .room.dark .lamp { background: #111; border-color: #ffb400; box-shadow: 0 0 24px 6px rgba(255,180,0,.45), 0 0 60px 20px rgba(255,180,0,.15); }
     .room.dark .glass { fill: #ffd34d; stroke: #ffb400; }
-    .room.dark .fil { stroke: #fff; }
+    .room.dark .fil { stroke: #ffb400; }
     .room.dark .base { fill: #999; }
   `,
   html: `
@@ -30,7 +30,7 @@ export default {
       <div class="ui" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="vid" aria-hidden="true"></div>
       <button class="lamp" type="button" aria-pressed="false" aria-label="Turn off the lights">
-        <svg viewBox="0 0 30 30" aria-hidden="true"><path class="glass" d="M15 3a8 8 0 0 0-4.5 14.6c.8.6 1.3 1.5 1.3 2.4h6.4c0-.9.5-1.8 1.3-2.4A8 8 0 0 0 15 3z"/><path class="fil" d="M12.5 20v-4l1.5-2 1 2 1-2 1.5 2v4"/><rect class="base" x="11.5" y="21" width="7" height="2" rx="1"/><rect class="base" x="12" y="24" width="6" height="2" rx="1"/><rect class="base" x="13" y="27" width="4" height="1.5" rx=".75"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="glass" d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path class="fil" d="M9 18h6"/><path class="fil" d="M10 22h4"/></svg>
       </button>
     </div>`,
   init(root) {

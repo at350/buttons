@@ -74,54 +74,90 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// CRT: barrel-distorted tube; content is SMPTE colour bars + an OSD channel tag, drawn as 64 scanlines
+// with a Gaussian beam whose width grows with brightness, through a staggered RGB slot mask (3 css px
+// triads). Power-on/off squashes the raster to a bright line and then a dot, like a real tube.
+const SW = 176, SH = 130;
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_value;uniform vec2 u_res;uniform sampler2D u_tex;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+vec3 smpte(vec2 q){
+ float b=floor(q.x*7.);
+ if(q.y>.33){
+  if(b<1.)return vec3(.75);if(b<2.)return vec3(.75,.75,0.);if(b<3.)return vec3(0.,.75,.75);if(b<4.)return vec3(0.,.75,0.);
+  if(b<5.)return vec3(.75,0.,.75);if(b<6.)return vec3(.75,0.,0.);return vec3(0.,0.,.75);}
+ if(q.y>.25){
+  if(b<1.)return vec3(0.,0.,.75);if(b<2.)return vec3(.075);if(b<3.)return vec3(.75,0.,.75);if(b<4.)return vec3(.075);
+  if(b<5.)return vec3(0.,.75,.75);if(b<6.)return vec3(.075);return vec3(.75);}
+ float w=q.x*7./1.25;
+ if(w<1.)return vec3(0.,.13,.3);if(w<2.)return vec3(1.);if(w<3.)return vec3(.2,0.,.42);if(q.x<5./7.)return vec3(.075);
+ if(q.x<6./7.){float k=floor((q.x-5./7.)*21.);return vec3(k<1.?.03:k<2.?.075:.115);}
+ return vec3(.075);}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; vec2 c=uv*2.-1.;
- float r2=dot(c,c); vec2 bc=c*(1.+.13*r2);
- float pw=u_value;
- vec2 sc=vec2(bc.x,bc.y/max(pw,.002)); vec2 q=sc*.5+.5;
- float inside=step(abs(sc.x),1.)*step(abs(sc.y),1.);
- float band=floor(q.x*7.);
- vec3 bars=vec3(1.)-vec3(mod(band,2.),mod(floor(band*.5),2.),mod(floor(band*.25),2.));
- vec3 content=mix(bars*.75,vec3(.06,.06,.08),step(q.y,.42));
- content=mix(content,vec3(.9,.9,.9),step(q.y,.42)*step(.5,fract(q.x*30.))*step(q.y,.1));
- float txt=texture2D(u_tex,q+vec2(.004*sin(u_time*9.+q.y*25.)*u_hover,0.)).a;
- content=mix(content,vec3(1.,.95,.9),txt);
- content=mix(vec3(hash(q*u_res+fract(u_time)*77.))*.9,content,smoothstep(.0,.9,pw));
- float sl=.78+.22*sin(q.y*u_res.y*1.2);
- vec3 mask=.85+.25*vec3(sin(gl_FragCoord.x*2.1),sin(gl_FragCoord.x*2.1+2.1),sin(gl_FragCoord.x*2.1+4.2));
- vec3 col=content*sl*mask*inside*(1.15+.2*u_hover)*(.96+.04*sin(u_time*55.));
- col*=1.-r2*.35;
- col+=exp(-abs(bc.y)*50.)*(1.-pw)*pw*6.*vec3(.9,1.,1.);
- col=col*smoothstep(0.,.03,pw)+vec3(.015,.02,.03)*(1.-r2*.6)*(1.-pw);
+ float dpr=u_res.x/${SW}.;
+ vec2 uv=gl_FragCoord.xy/u_res; vec2 c=uv*2.-1.; float ar=${SW}./${SH}.;
+ float r2=dot(c*vec2(1.,1./ar),c*vec2(1.,1./ar));
+ vec2 bc=c*(1.+.075*dot(c,c)); float px=2.5/u_res.y;
+ float a=u_value;
+ float hs=mix(.012,1.,smoothstep(0.,.32,a)), vs=mix(.006,1.,smoothstep(.3,1.,a));
+ vec2 sc=bc/vec2(hs,vs); vec2 q=sc*.5+.5;
+ float tube=smoothstep(1.+px,1.-px,max(abs(bc.x),abs(bc.y)));
+ float ras=smoothstep(1.+px/vs,1.-px/vs,abs(sc.y))*smoothstep(1.+px/hs,1.-px/hs,abs(sc.x));
+ // scanlines: sample content at the line centre, Gaussian beam profile
+ float N=64.; float ln=q.y*N; float yc=(floor(ln)+.5)/N;
+ vec2 cq=vec2(q.x+.0025*u_hover*sin(yc*40.+u_time*7.)*step(.82,fract(u_time*.37)),yc);
+ vec3 img=smpte(cq);
+ float osd=texture2D(u_tex,vec2(cq.x,yc)).a; img=mix(img,vec3(.25,1.,.4),osd);
+ img+=(hash(vec2(floor(q.x*240.),floor(ln))+fract(u_time*3.1))-.5)*.05;
+ img*=1.-.07*u_hover*smoothstep(.0,.2,sin(q.y*2.6-u_time*1.3)); // hum bar
+ float L=dot(img,vec3(.3,.59,.11)); float f=fract(ln)-.5; float s=mix(.2,.36,L);
+ vec3 beam=img*exp(-f*f/(2.*s*s))*1.55;
+ // staggered slot mask, 3 css px per RGB triad
+ vec2 fp=gl_FragCoord.xy/dpr; float row=floor(fp.y/3.); float fx=fp.x+mod(row,2.)*1.5;
+ float k=mod(floor(fx),3.); vec3 m=vec3(k<.5?1.:.42,(k>.5&&k<1.5)?1.:.42,k>1.5?1.:.42);
+ m*=step(.7,fract(fp.y/3.))>.5?.78:1.;
+ vec3 col=beam*m*1.6;
+ col*=1.+ (1./max(vs,.08)-1.)*.35; // the collapsing line runs hot
+ col*=ras*smoothstep(0.,.02,a);
+ col*=1.-.42*r2;
+ // the glass: grey-green tube face, faint mask, window reflection
+ vec3 glass=vec3(.055,.068,.062)*(1.-.5*r2)+m*.012;
+ float refl=exp(-dot(bc-vec2(-.55,.55),bc-vec2(-.55,.55))*2.2)*.11+smoothstep(.55,.2,abs(bc.x+bc.y*.7+.35))*smoothstep(-.2,.9,bc.y)*.035;
+ refl*=1.+.6*u_hover;
+ col=(glass+col+refl*vec3(.9,.95,1.))*tube;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-crt-toggle',
-  credit: 'CRT power toggle in GLSL — barrel distortion, scanlines, RGB phosphor mask and vignette over colour bars; switching off collapses the picture to a bright line',
+  credit: 'CRT power toggle in GLSL — SMPTE colour bars on a barrel-distorted tube, Gaussian-beam scanlines through an RGB slot mask; power-off collapses the raster to a line and a dot (Lucide power icon)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .tv { position: relative; width: 240px; height: 150px; max-width: 100%; border-radius: 14px; overflow: hidden; background: #050505; box-shadow: inset 0 0 0 6px #2a2a2e, inset 0 0 0 7px #111, 0 10px 30px -10px rgba(0,0,0,.8); isolation: isolate; }
+    .tv { position: relative; display: grid; grid-template-columns: ${SW}px 1fr; gap: 10px; align-items: center; width: 240px; height: 150px; max-width: 100%; padding: 10px 10px 10px 10px; border-radius: 16px; background: linear-gradient(180deg, #3a3a3d, #232325 60%, #1b1b1d); box-shadow: inset 0 1px 0 rgba(255,255,255,.14), inset 0 -2px 0 rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.25), 0 10px 22px -12px rgba(0,0,0,.6); isolation: isolate; }
+    .scr { position: relative; width: ${SW}px; height: ${SH}px; border-radius: 16px / 20px; overflow: hidden; background: #0e1110; box-shadow: 0 0 0 2px #0a0a0b, 0 0 0 3px rgba(255,255,255,.07); }
+    .scr::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 12px 3px rgba(0,0,0,.75); pointer-events: none; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: repeating-linear-gradient(0deg, #000 0 2px, #223 2px 4px); }
-    .pw { position: absolute; right: 12px; bottom: 10px; z-index: 2; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #555; background: radial-gradient(circle at 50% 35%, #4a4a50, #1a1a1e); color: #777; cursor: pointer; display: grid; place-items: center; padding: 0; transition: box-shadow .3s, color .3s; }
-    .pw svg { width: 14px; height: 14px; }
-    .pw[aria-pressed="true"] { color: #5cf29a; box-shadow: 0 0 10px #5cf29a88; }
-    .pw:active { transform: scale(.94); }
-    .pw:focus-visible { outline: 2px solid #5cf29a; outline-offset: 2px; }
+    .cv.nogl { background: repeating-linear-gradient(0deg, #0c0e0d 0 2px, #141816 2px 4px); }
+    .side { display: grid; justify-items: center; align-content: space-between; height: 100%; padding: 4px 0 2px; }
+    .grille { width: 30px; height: 62px; border-radius: 4px; background: repeating-linear-gradient(180deg, #0d0d0e 0 3px, #2f2f32 3px 6px); box-shadow: inset 0 1px 2px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.06); }
+    .led { width: 5px; height: 5px; border-radius: 50%; background: #4a1512; box-shadow: inset 0 0 1px rgba(0,0,0,.6); transition: background .2s, box-shadow .2s; }
+    .pw { width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; display: grid; place-items: center; cursor: pointer; color: #9a9aa0; background: radial-gradient(circle at 50% 30%, #4b4b50, #1e1e21 70%); box-shadow: 0 2px 0 #0b0b0c, 0 3px 6px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.18); transition: transform .08s, box-shadow .08s, color .2s; }
+    .pw svg { width: 15px; height: 15px; }
+    .pw:hover { color: #d4d4d8; }
+    .pw:active { transform: translateY(2px); box-shadow: 0 0 0 #0b0b0c, 0 1px 3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1); }
+    .pw[aria-pressed="true"] { color: #e8e8ec; }
+    .tv.on .led { background: #ff3b2f; box-shadow: 0 0 6px 1px rgba(255,59,47,.7); }
+    .pw:focus-visible { outline: 2px solid #ff3b2f; outline-offset: 2px; }
   `,
-  html: `<div class="tv"><canvas class="cv"></canvas><button class="pw" type="button" aria-pressed="false" aria-label="Power"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 3v9"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/></svg></button></div>`,
+  html: `<div class="tv"><div class="scr"><canvas class="cv"></canvas></div><div class="side"><span class="grille"></span><span class="led"></span><button class="pw" type="button" aria-pressed="false" aria-label="Power"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg></button></div></div>`,
   init(root) {
     const tv = root.querySelector('.tv'), cv = root.querySelector('.cv'), pw = root.querySelector('.pw');
-    const s = shade(cv, tv, 240, 150, FS, {
-      idle: true, idleWhen: (st) => st.valueT > 0, valueRate: 4,
+    const s = shade(cv, tv, SW, SH, FS, {
+      idle: true, idleWhen: (st) => st.valueT > 0, valueRate: 3.2,
       after(gl, prog) {
-        const t = document.createElement('canvas'); t.width = 480; t.height = 300;
-        const c = t.getContext('2d'); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle';
-        c.font = '700 54px "JetBrains Mono", ui-monospace, monospace'; c.fillText('ON AIR', 240, 108);
+        const t = document.createElement('canvas'); t.width = SW * 2; t.height = SH * 2;
+        const c = t.getContext('2d'); c.fillStyle = '#fff'; c.textBaseline = 'top';
+        c.font = '700 26px "JetBrains Mono", ui-monospace, monospace'; c.fillText('CH 03', SW * 2 - 150, 30);
         const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -132,7 +168,7 @@ export default {
     });
     pw.addEventListener('click', () => {
       const on = pw.getAttribute('aria-pressed') !== 'true';
-      pw.setAttribute('aria-pressed', String(on)); s.valueT = on ? 1 : 0; s.kick();
+      pw.setAttribute('aria-pressed', String(on)); tv.classList.toggle('on', on); s.valueT = on ? 1 : 0; s.kick();
     });
     return () => s.destroy();
   },

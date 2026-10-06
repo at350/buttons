@@ -1,40 +1,38 @@
+// Straight from berkshirehathaway.com's <body link="#800080" text="#000080" vlink="#ff0000">: purple links,
+// navy text, RED visited links, Times, the <font size=6>B</font><font size=4>ERKSHIRE</font> small-caps
+// header with the Farnam Street address, a default inset <hr>, bulleted links with size=1 "Updated" notes.
 export default {
   id: 'ob-berkshire-link',
-  credit: 'BerkshireHathaway.com — the most valuable unstyled page on the web: Times New Roman, default blue links, visited purple, no CSS whatsoever',
+  credit: 'BerkshireHathaway.com — the famously unstyled home page: navy Times text, purple links that turn red once visited',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .pg { width: 300px; max-width: 100%; background: #fff; padding: 14px 16px; border-radius: 12px; font: 16px/1.25 "Times New Roman", Times, serif; color: #000; }
-    hr { border: 0; border-top: 1px inset #999; margin: 8px 0; }
-    .ttl { font-weight: 700; margin-bottom: 4px; }
-    ul { margin: 0; padding-left: 22px; }
-    li { margin: 2px 0; }
-    a { color: #0000ee; text-decoration: underline; cursor: pointer; }
-    a.v { color: #551a8b; }
-    a:active { color: #f00; }
+    .pg { width: 340px; max-width: 100%; background: #fff; padding: 12px 14px 10px; border-radius: 12px; font: 16px/1.15 "Times New Roman", Times, serif; color: #000080; }
+    .hd { text-align: center; font-weight: 700; }
+    .hd .b { font-size: 32px; } .hd .m { font-size: 18px; } .hd .s { font-size: 13px; }
+    hr { border: 0; border-top: 1px solid #9a9a9a; border-bottom: 1px solid #eee; margin: 8px 0; }
+    ul { margin: 0; padding-left: 40px; list-style: disc; }
+    li { margin: 0 0 12px; }
+    li:last-child { margin-bottom: 4px; }
+    a { color: #800080; text-decoration: underline; cursor: pointer; }
+    a.v, a:active { color: #ff0000; }
     a:focus-visible { outline: 1px dotted #000; }
-    .legal { font-size: 11px; margin-top: 6px; }
-    .legal b { color: #000; }
-    .cp { font-size: 11px; color: #000; }
+    small { display: block; font-size: 10px; color: #000080; }
   `,
   html: `
     <div class="pg">
-      <div class="ttl">BERKSHIRE HATHAWAY INC.</div>
+      <div class="hd"><span class="b">B</span><span class="m">ERKSHIRE </span><span class="b">H</span><span class="m">ATHAWAY </span><span class="s">INC.<br>3555 Farnam Street<br>Omaha, NE 68131</span><br>Official Home Page</div>
       <hr>
       <ul>
-        <li><a href="#">A Message From Warren E. Buffett</a></li>
-        <li><a href="#">Annual &amp; Interim Reports</a></li>
-        <li><a href="#">Berkshire Activewear</a></li>
-        <li><a href="#">Special Letters from Warren &amp; Charlie RE:Past, Present and Future</a></li>
-        <li><a href="#">Links to Berkshire Subsidiary Companies</a></li>
-        <li><a href="#">Berkshire Hathaway Energy</a></li>
-        <li><a href="#">Comparative Rights and Relative Prices of Class A and B Stock</a></li>
+        <li><a href="#">A Message from Warren E. Buffett</a></li>
+        <li><a href="#">Annual &amp; Interim Reports</a><small>Updated August 8, 2026</small></li>
+        <li><a href="#">Warren Buffett's Letters to Berkshire Shareholders</a></li>
+        <li><a href="#">Links to Berkshire Operating Companies</a></li>
       </ul>
-      <hr>
-      <div class="legal"><a href="#">Legal Disclaimer</a></div>
-      <div class="cp">Copyright © 1978-2026 Berkshire Hathaway Inc.</div>
     </div>`,
   init(root) {
-    root.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); a.classList.toggle('v'); }));
+    root.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); a.classList.add('v'); }));
+    // Escape "clears history" so the links go back to unvisited purple
+    root.querySelector('.pg').addEventListener('keydown', (e) => { if (e.key === 'Escape') root.querySelectorAll('a.v').forEach((a) => a.classList.remove('v')); });
   },
 };

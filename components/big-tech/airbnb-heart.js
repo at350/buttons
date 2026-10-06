@@ -26,6 +26,6 @@ export default {
     </div>`,
   init(root) {
     const b = root.querySelector('.hb');
-    b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'));
+    b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')));
   },
 };

@@ -8,20 +8,20 @@ export default {
     .ram { display: flex; justify-content: center; gap: 3px; }
     .ram i { width: 10px; height: 18px; background: #0d3d0d; border: 1px solid #2a7a2a; border-radius: 1px; transition: background .2s, box-shadow .2s; }
     .ram i.on { background: #39ff14; box-shadow: 0 0 6px #39ff14; }
-    .btn { position: relative; height: 46px; border: 2px solid #7a0000; border-radius: 8px; cursor: pointer; color: #fff; font: 900 18px/1 "Arial Black", Impact, Arial, sans-serif; letter-spacing: 1px; text-shadow: 1px 1px 0 #600;
+    .btn { position: relative; height: 46px; border: 2px solid #7a0000; border-radius: 8px; cursor: pointer; color: #fff; font: 900 15px/1 "Arial Black", Impact, Arial, sans-serif; letter-spacing: .5px; white-space: nowrap; text-shadow: 1px 1px 0 #600;
       background: linear-gradient(#ff5a5a 0, #e00 48%, #b00 52%, #d00); box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 4px 0 #700, 0 6px 10px rgba(0,0,0,.5); transition: transform .06s, box-shadow .06s; }
     .btn:hover { background: linear-gradient(#ff7a7a 0, #f00 48%, #c00 52%, #e00); }
     .btn:active { transform: translateY(3px); box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 1px 0 #700; }
     .btn:focus-visible { outline: 3px dotted #ffde00; outline-offset: 3px; }
     .btn.busy { cursor: progress; background: linear-gradient(#999, #666); border-color: #333; text-shadow: none; box-shadow: 0 4px 0 #333; }
     .btn.done { background: linear-gradient(#5aff5a, #0a0); border-color: #060; box-shadow: 0 4px 0 #040; }
-    .free { position: absolute; right: -6px; top: -8px; width: 54px; height: 54px; display: grid; place-items: center; color: #000; font: 900 11px "Arial Black", Arial, sans-serif; transform: rotate(14deg); pointer-events: none; animation: blink .5s steps(1) infinite; }
+    .free { position: absolute; right: -10px; top: -14px; width: 50px; height: 50px; z-index: 1; display: grid; place-items: center; color: #000; font: 900 11px "Arial Black", Arial, sans-serif; transform: rotate(14deg); pointer-events: none; animation: blink .5s steps(1) infinite; }
     .free svg { position: absolute; inset: 0; fill: #ffde00; }
     .free span { position: relative; }
     @keyframes blink { 50% { visibility: hidden; } }
     .bar { height: 14px; border: 1px solid #fff; background: #000; position: relative; overflow: hidden; }
     .bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: repeating-linear-gradient(90deg, #39ff14 0 8px, #000 8px 10px); transition: width .25s linear; }
-    .bar b { position: absolute; inset: 0; display: grid; place-items: center; font: 700 10px Verdana, sans-serif; color: #fff; mix-blend-mode: difference; }
+    .bar b { position: absolute; inset: 0; display: grid; place-items: center; font: 700 10px Verdana, sans-serif; color: #fff; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }
   `,
   html: `
     <div class="ad">

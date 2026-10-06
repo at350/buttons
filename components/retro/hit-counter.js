@@ -33,6 +33,6 @@ export default {
       ctr.setAttribute('aria-valuenow', String(n));
     };
     render(false);
-    ctr.addEventListener('click', () => { n++; if (n % 7 === 0) ctr.classList.toggle('red'); render(true); });
+    ctr.addEventListener('click', () => { n++; render(true); });
   },
 };

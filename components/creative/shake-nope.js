@@ -1,32 +1,47 @@
 export default {
   id: 'cr-shake-nope',
-  credit: 'Shake "nope" button — macOS login-window wrong-password head shake',
+  credit: 'macOS login window — wrong password makes the field shake its head (Sonoma/Sequoia lock screen capsule field)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-      font: 600 15px/1 system-ui, sans-serif; color: #fff; background: #ef4444; border: 0; border-radius: 10px;
-      padding: 14px 24px; box-shadow: 0 2px 6px rgba(239, 68, 68, .4); transition: background .2s, box-shadow .2s;
+    .stage {
+      width: 260px; height: 120px; max-width: 100%; border-radius: 12px; display: grid; place-items: center;
+      background: radial-gradient(120% 90% at 20% 10%, #4fa3d9, transparent 60%), radial-gradient(90% 90% at 90% 100%, #2f8f6d, transparent 60%), linear-gradient(160deg, #1f4e79, #163a52);
     }
-    .btn:hover { background: #dc2626; box-shadow: 0 4px 14px rgba(239, 68, 68, .45); }
-    .btn:active { transform: scale(.97); }
-    .btn.shake { animation: shake .55s cubic-bezier(.36, .07, .19, .97) both; background: #991b1b; }
-    .btn svg { width: 16px; height: 16px; }
-    .btn.shake svg { animation: wig .55s ease both; }
-    .btn:focus-visible { outline: 2px solid #991b1b; outline-offset: 3px; }
+    .field {
+      position: relative; display: flex; align-items: center; width: 190px; height: 30px; border-radius: 15px; padding: 0 3px 0 12px;
+      background: rgba(255, 255, 255, .22); box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .35), 0 1px 4px rgba(0, 0, 0, .12);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);
+      transition: box-shadow .2s ease;
+    }
+    .field:focus-within { box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .5), 0 0 0 3px rgba(255, 255, 255, .28); }
+    .field.shake { animation: shake .5s cubic-bezier(.36, .07, .19, .97) both; }
+    input {
+      flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; outline: 0; color: #fff;
+      font: 400 13px/1 system-ui, -apple-system, sans-serif; letter-spacing: .1em;
+    }
+    input::placeholder { color: rgba(255, 255, 255, .7); letter-spacing: 0; }
+    .go { display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 50%; padding: 0; background: transparent; color: #fff; cursor: pointer; opacity: .9; transition: opacity .2s ease, transform .15s ease; }
+    .go svg { width: 22px; height: 22px; }
+    .go:hover { opacity: 1; }
+    .go:active { transform: scale(.9); }
+    .go:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
     @keyframes shake {
-      10%, 90% { transform: translateX(-2px); }
-      20%, 80% { transform: translateX(4px); }
-      30%, 50%, 70% { transform: translateX(-8px); }
-      40%, 60% { transform: translateX(8px); }
+      0%, 100% { transform: translateX(0); }
+      12% { transform: translateX(-11px); }
+      25% { transform: translateX(10px); }
+      38% { transform: translateX(-8px); }
+      51% { transform: translateX(6px); }
+      64% { transform: translateX(-4px); }
+      77% { transform: translateX(2px); }
     }
-    @keyframes wig { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(90deg); } }
   `,
-  html: `<button class="btn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Delete</button>`,
+  html: `<div class="stage"><div class="field"><input type="password" value="letmein" placeholder="Enter Password" aria-label="Password" autocomplete="off"><button class="go" type="button" aria-label="Log in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m12 16 4-4-4-4"/><path d="M8 12h8"/></svg></button></div></div>`,
   init(root) {
-    const b = root.querySelector('.btn');
-    b.addEventListener('click', () => { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); });
-    b.addEventListener('animationend', () => b.classList.remove('shake'));
+    const f = root.querySelector('.field'), i = root.querySelector('input'), go = root.querySelector('.go');
+    const nope = () => { f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); i.select(); };
+    go.addEventListener('click', nope);
+    i.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); nope(); } });
+    f.addEventListener('animationend', () => f.classList.remove('shake'));
   },
 };

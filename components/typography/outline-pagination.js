@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .pg { display: inline-flex; align-items: flex-end; gap: 6px; padding: 6px 4px; }
     .n {
       cursor: pointer; background: transparent; border: 0; padding: 4px 8px 0; min-width: 44px; color: transparent;

@@ -1,42 +1,60 @@
+// Slashdot c. 2005 (from a web.archive.org capture): #006666 story bar with white bold Arial title,
+// Times body text, #006666 underlined links, the grey comment header "Re:… (Score:5, Funny)" with
+// "by Anonymous Coward on … (#14352361)", and the moderation <select> + Moderate button that moves the score.
 export default {
   id: 'ob-slashdot-score',
-  credit: 'Slashdot — comment header with "(Score:5, Funny)" in the teal title bar; [-] collapses the comment, moderating bumps the score and mood',
+  credit: 'Slashdot (2005) — a comment at (Score:5, Funny): pick a moderation from the dropdown and hit Moderate to move the score',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .c { width: 320px; max-width: 100%; border: 1px solid #ccc; border-radius: 12px; overflow: hidden; background: #fff; font: 12px/1.45 Verdana, Arial, sans-serif; color: #000; }
-    .hd { display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: #006666; color: #fff; font: 700 12px Verdana, Arial, sans-serif; }
-    .tog { width: 16px; height: 16px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; font: 700 11px/1 monospace; padding: 0; flex: none; }
-    .tog:hover { background: rgba(255,255,255,.2); }
-    .tog:focus-visible, .mod:focus-visible { outline: 1px dotted #fff; outline-offset: 1px; }
-    .ttl { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .sc { font-weight: 400; color: #cfe; white-space: nowrap; }
-    .by { padding: 2px 8px; background: #e6f2f2; color: #333; font-size: 11px; border-bottom: 1px solid #cde; }
-    .by a { color: #006666; }
-    .bd { padding: 8px; }
-    .c.closed .by, .c.closed .bd { display: none; }
-    .mods { display: flex; gap: 4px; padding: 0 8px 8px; }
-    .mod { font: 10px Verdana, Arial, sans-serif; padding: 1px 6px; border: 1px solid #999; background: #f4f4f4; cursor: pointer; color: #000; }
-    .mod:hover { background: #e4e4e4; }
-    .mod.on { background: #006666; color: #fff; border-color: #004444; }
-    .c.closed .mods { display: none; }
+    .sd { width: 360px; max-width: 100%; background: #fff; border-radius: 12px; overflow: hidden; font: 13px/1.3 "Times New Roman", Times, serif; color: #000; padding-bottom: 10px; }
+    .story { background: #006666; color: #fff; font: 700 15px/1.25 Arial, Helvetica, sans-serif; padding: 5px 10px; }
+    .story u { text-decoration: underline; }
+    .c { margin: 8px 10px 0; }
+    .hd { background: #e1e1e1; padding: 3px 6px; }
+    .hd b { font-weight: 700; }
+    .by { font-size: 12px; }
+    a { color: #006666; text-decoration: underline; cursor: pointer; }
+    a:focus-visible, select:focus-visible, .mod:focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
+    .bd { padding: 6px 6px 4px; font-size: 14px; }
+    .rt { padding: 0 6px; font-size: 12px; white-space: nowrap; }
+    .mods { display: flex; align-items: center; gap: 6px; margin: 8px 10px 0; font: 12px Arial, Helvetica, sans-serif; }
+    select { font: 12px Arial, Helvetica, sans-serif; height: 21px; color: #000; background: #fff; border: 1px solid #767676; border-radius: 2px; }
+    .mod { height: 21px; padding: 0 8px; font: 12px Arial, Helvetica, sans-serif; color: #000; background: #efefef; border: 1px solid #767676; border-radius: 3px; cursor: pointer; }
+    .mod:hover { background: #e5e5e5; }
+    .mod:active { background: #f5f5f5; }
+    .sc { font-variant-numeric: tabular-nums; }
+    .hd.flash { animation: fl .6s ease-out; }
+    @keyframes fl { from { background: #ffff99; } }
   `,
   html: `
-    <div class="c">
-      <div class="hd"><button class="tog" type="button" aria-expanded="true" aria-label="collapse">−</button><span class="ttl">Re: In Soviet Russia, button presses you</span><span class="sc">(Score:<span class="n">5</span>, <span class="m">Funny</span>)</span></div>
-      <div class="by">by <a href="#">Anonymous Coward</a> on Sunday October 05, @01:33PM</div>
-      <div class="bd">Imagine a Beowulf cluster of these.</div>
-      <div class="mods"><button class="mod" type="button" data-m="Insightful">Insightful</button><button class="mod" type="button" data-m="Funny">Funny</button><button class="mod" type="button" data-m="Informative">Informative</button><button class="mod" type="button" data-m="Troll">Troll</button></div>
+    <div class="sd">
+      <div class="story"><u>Hardware</u>: An Endless Page of Buttons</div>
+      <div class="c">
+        <div class="hd"><b>Re:In Soviet Russia...</b> (<b>Score:<span class="sc">5</span>, <span class="m">Funny</span></b>)<div class="by">by <a href="#">Anonymous Coward</a> on Wednesday December 28, @09:12PM (<a href="#">#14352361</a>)</div></div>
+        <div class="bd">...button presses YOU! Also, imagine a Beowulf cluster of these.</div>
+        <div class="rt">[ <a href="#">Reply to This</a> | <a href="#">Parent</a> ]</div>
+      </div>
+      <div class="mods">
+        <select aria-label="Moderation">
+          <option>Normal</option><option>Offtopic</option><option>Flamebait</option><option>Troll</option><option>Redundant</option>
+          <option>Insightful</option><option>Interesting</option><option>Informative</option><option>Funny</option><option>Overrated</option><option>Underrated</option>
+        </select>
+        <button class="mod" type="button">Moderate</button>
+      </div>
     </div>`,
   init(root) {
-    const c = root.querySelector('.c'), tog = root.querySelector('.tog'), n = root.querySelector('.n'), m = root.querySelector('.m'), mods = [...root.querySelectorAll('.mod')];
-    let score = 5, mood = 'Funny', active = null;
-    tog.addEventListener('click', () => { const closed = c.classList.toggle('closed'); tog.textContent = closed ? '+' : '−'; tog.setAttribute('aria-expanded', String(!closed)); tog.setAttribute('aria-label', closed ? 'expand' : 'collapse'); });
-    mods.forEach((b) => b.addEventListener('click', () => {
-      if (active === b) { active.classList.remove('on'); active = null; score = 5; mood = 'Funny'; }
-      else { mods.forEach((x) => x.classList.remove('on')); b.classList.add('on'); active = b; mood = b.dataset.m; score = mood === 'Troll' ? -1 : 5; }
-      n.textContent = String(score); m.textContent = mood;
-    }));
-    root.querySelector('.by a').addEventListener('click', (e) => e.preventDefault());
+    const sel = root.querySelector('select'), mod = root.querySelector('.mod'), sc = root.querySelector('.sc'), m = root.querySelector('.m'), hd = root.querySelector('.hd');
+    const down = ['Offtopic', 'Flamebait', 'Troll', 'Redundant', 'Overrated'];
+    let score = 5, reason = 'Funny';
+    root.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+    mod.addEventListener('click', () => {
+      const v = sel.value;
+      if (v === 'Normal') { score = 5; reason = 'Funny'; }
+      else if (down.includes(v)) { score = Math.max(-1, score - 1); if (v !== 'Overrated') reason = v; }
+      else { score = Math.min(5, score + 1); if (v !== 'Underrated') reason = v; }
+      sc.textContent = String(score); m.textContent = reason;
+      hd.classList.remove('flash'); void hd.offsetWidth; hd.classList.add('flash');
+    });
   },
 };

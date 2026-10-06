@@ -1,4 +1,5 @@
-const SPRING = 'linear(0, 0.125, 0.424, 0.778, 1.088, 1.292, 1.371, 1.34, 1.237, 1.105, 0.985, 0.901, 0.864, 0.869, 0.904, 0.952, 0.999, 1.033, 1.049, 1.05, 1.039, 1.021, 1.003, 0.99, 0.982, 0.981, 0.985, 0.991, 0.998, 1.003, 1.006)';
+// Spring: stiffness 500, damping 22 (ζ .49) integrated into CSS linear() — the knob overshoots ~16% and settles.
+const SPRING = 'linear(0, 0.098, 0.318, 0.574, 0.81, 0.983, 1.102, 1.158, 1.165, 1.141, 1.102, 1.059, 1.022, 0.995, 0.979, 0.972, 0.973, 0.978, 0.985, 0.992, 0.998, 1.002, 1.004, 1.005, 1.004, 1.003, 1.002, 1.001, 1, 1, 1)';
 
 export default {
   id: 'mo-spring-toggle',
@@ -14,7 +15,7 @@ export default {
     .knob {
       position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.25);
       transform: translateX(var(--x, 0px)) scale(var(--sx, 1), var(--sy, 1)); transform-origin: center;
-      transition: transform .85s ${SPRING};
+      transition: transform .63s ${SPRING};
     }
     .sw[aria-checked="true"] .knob { --x: 24px; }
     .sw:active .knob { --sx: 1.25; --sy: .85; transition: transform .15s cubic-bezier(.4, 0, .6, 1); }

@@ -1,9 +1,10 @@
 export default {
   id: 'ty-circular-badge',
-  credit: 'Spinning text ring — "OPEN • OPEN •" on an SVG textPath that rotates slowly, speeds up on hover and reverses when toggled (portfolio "hire me" badge)',
+  credit: 'Spinning text ring — "OPEN · FOR · WORK" on an SVG textPath that rotates slowly, speeds up on hover and reverses when toggled; Lucide arrow, ring clipped to the disc (portfolio "hire me" badge)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .btn {
       cursor: pointer;
       width: 132px;
@@ -16,6 +17,8 @@ export default {
       display: grid;
       place-items: center;
       position: relative;
+      overflow: hidden;
+      isolation: isolate;
       transition: background .3s, transform .3s cubic-bezier(.34, 1.56, .64, 1);
     }
     .btn:hover { transform: scale(1.04); }
@@ -32,23 +35,22 @@ export default {
     .btn:hover .ring { animation-duration: 4s; }
     .btn.on .ring { animation-direction: reverse; animation-duration: 6s; }
     .ring text {
-      font: 700 14.5px 'Space Grotesk', Inter, system-ui, sans-serif;
-      letter-spacing: .26em;
+      font: 700 12.5px 'Space Grotesk', Inter, system-ui, sans-serif;
       fill: currentColor;
       text-transform: uppercase;
     }
     .ar {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       stroke: currentColor;
       transition: transform .45s cubic-bezier(.34, 1.56, .64, 1);
     }
-    .btn:hover .ar { transform: rotate(-45deg) translate(2px, -2px); }
+    .btn:hover .ar { transform: rotate(-45deg); }
     .btn.on .ar { transform: rotate(90deg); }
     @keyframes spin { to { transform: rotate(360deg); } }
     @media (prefers-reduced-motion: reduce) { .ring { animation-duration: 60s !important; } }
   `,
-  html: `<button class="btn" type="button" aria-pressed="false" aria-label="Open"><svg class="ring" viewBox="0 0 132 132" aria-hidden="true"><defs><path id="ty-cb-p" d="M66 66 m-48 0 a48 48 0 1 1 96 0 a48 48 0 1 1 -96 0"/></defs><text textLength="301" lengthAdjust="spacing"><textPath href="#ty-cb-p" startOffset="0">OPEN • OPEN • OPEN • OPEN •</textPath></text></svg><svg class="ar" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`,
+  html: `<button class="btn" type="button" aria-pressed="false" aria-label="Open for work"><svg class="ring" viewBox="0 0 132 132" aria-hidden="true"><defs><path id="ty-cb-p" d="M66 66 m-48 0 a48 48 0 1 1 96 0 a48 48 0 1 1 -96 0"/></defs><text textLength="301" lengthAdjust="spacing"><textPath href="#ty-cb-p" startOffset="0">OPEN · FOR · WORK · OPEN · FOR · WORK ·</textPath></text></svg><svg class="ar" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>`,
   init(root) {
     const btn = root.querySelector('.btn');
     btn.addEventListener('click', () => {

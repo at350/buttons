@@ -1,30 +1,41 @@
+// Material 3 filter chips (md-filter-chip tokens, baseline scheme): 32px tall, 8px corners, 1px outline-variant
+// #cac4d0 outline, 14/20 medium label +0.1 tracking in on-surface-variant #49454f; selected = secondary-container
+// #e8def8 with on-secondary-container #4a4458 label and an 18px Material Symbols check that grows in
+// (padding 16 → 8 leading). Hover 8% / press 12% state layer, 200ms emphasized cubic-bezier(0.2, 0, 0, 1).
+// The widest (all-selected) row is reserved by an invisible ghost so selecting never changes the box.
+const LABELS = ['Extra soft', 'Soft', 'Medium', 'Hard'];
+const CHECK = 'M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z';
+const chip = (l, on, ghost) => `<button class="chip" type="button" ${ghost ? 'tabindex="-1" aria-hidden="true"' : `aria-pressed="${on}"`}><svg viewBox="0 -960 960 960"><path d="${CHECK}"/></svg><span>${l}</span></button>`;
 export default {
   id: 'in-filter-chips',
-  credit: 'Google Material 3 filter chips — outlined pill that fills and grows a leading check when selected',
+  credit: 'Google Material 3 filter chips — outline-variant pill fills secondary-container and grows a leading check when selected',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .row { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+    .stack { display: grid; }
+    .row { grid-area: 1 / 1; display: flex; gap: 8px; white-space: nowrap; }
+    .ghost { visibility: hidden; pointer-events: none; }
     .chip {
-      display: inline-flex; align-items: center; height: 32px; padding: 0 16px 0 8px; border-radius: 8px; border: 1px solid #79747e; background: #fff;
-      font: 500 14px system-ui, sans-serif; color: #49454f; cursor: pointer; transition: background .2s, border-color .2s, color .2s, box-shadow .2s; -webkit-tap-highlight-color: transparent;
+      position: relative; display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border-radius: 8px; border: 0; background: transparent;
+      box-shadow: inset 0 0 0 1px #cac4d0; font: 500 14px/20px "Roboto Flex", Roboto, system-ui, sans-serif; letter-spacing: .1px; color: #49454f;
+      cursor: pointer; overflow: hidden; transition: background-color 200ms cubic-bezier(.2,0,0,1), padding 200ms cubic-bezier(.2,0,0,1), box-shadow 200ms cubic-bezier(.2,0,0,1);
+      -webkit-tap-highlight-color: transparent; outline: 0;
     }
-    .chip:hover { background: #f3edf7; }
-    .chip:focus-visible { outline: 2px solid #6750a4; outline-offset: 1px; }
-    .chip[aria-pressed="true"] { background: #e8def8; border-color: #e8def8; color: #1d192b; }
-    .chip[aria-pressed="true"]:hover { box-shadow: 0 1px 3px rgba(0,0,0,.2); }
-    .chip svg { width: 18px; height: 18px; margin-right: 0; fill: none; stroke: #1d192b; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: width .2s, margin .2s; }
-    .chip:not([aria-pressed="true"]) svg { width: 0; margin-left: 8px; }
-    .chip[aria-pressed="true"] svg { margin-right: 8px; }
-    .chip svg path { stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset .25s .1s; }
-    .chip[aria-pressed="true"] svg path { stroke-dashoffset: 0; }
+    .chip::before { content: ''; position: absolute; inset: 0; background: currentColor; opacity: 0; transition: opacity 15ms linear; }
+    .chip:hover::before { opacity: .08; }
+    .chip:active::before { opacity: .12; }
+    .chip:focus-visible { outline: 3px solid #625b71; outline-offset: 2px; }
+    .chip svg { width: 0; height: 18px; flex: none; fill: #4a4458; opacity: 0; margin-right: 0; transition: width 200ms cubic-bezier(.2,0,0,1), margin 200ms cubic-bezier(.2,0,0,1), opacity 100ms linear; }
+    .chip[aria-pressed="true"], .ghost .chip { padding-left: 8px; background: #e8def8; box-shadow: none; color: #4a4458; }
+    .chip[aria-pressed="true"]:hover { box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15); }
+    .chip[aria-pressed="true"] svg, .ghost .chip svg { width: 18px; margin-right: 8px; opacity: 1; }
+    .chip span { position: relative; }
   `,
-  html: `<div class="row">
-    <button class="chip" type="button" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Free</button>
-    <button class="chip" type="button" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Open</button>
-    <button class="chip" type="button" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Nearby</button>
+  html: `<div class="stack">
+    <div class="row ghost">${LABELS.map((l) => chip(l, true, true)).join('')}</div>
+    <div class="row live">${LABELS.map((l, i) => chip(l, i === 1, false)).join('')}</div>
   </div>`,
   init(root) {
-    root.querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true')));
+    root.querySelectorAll('.live .chip').forEach((c) => c.addEventListener('click', () => c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true')));
   },
 };

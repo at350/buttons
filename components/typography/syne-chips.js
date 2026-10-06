@@ -4,6 +4,7 @@ export default {
   size: 'wide',
   css: `
     :host { display: block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .stage {
       background: #111;
       border-radius: 12px;

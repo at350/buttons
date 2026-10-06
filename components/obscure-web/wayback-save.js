@@ -1,55 +1,61 @@
+// The real web.archive.org/save page: Internet Archive "WayBack Machine" wordmark (Wikimedia SVG, #ab2e33 /
+// #211e1e), the #2dc0d6 page-plus icon beside bold "Save Page Now", a URL field with the Bootstrap #66afe9
+// focus glow, and the flat #ebebeb "SAVE PAGE" button. Saving shows progress, then the 14-digit capture stamp.
 export default {
   id: 'ob-wayback-save',
-  credit: 'Internet Archive Wayback Machine — "Save Page Now": URL field, the column-building logo spins while saving, then a 14-digit timestamp',
+  credit: 'Internet Archive Wayback Machine — "Save Page Now": paste a URL, SAVE PAGE, and it hands back a 14-digit snapshot timestamp',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .wb { width: 320px; max-width: 100%; background: #fff; border: 1px solid #ddd; border-radius: 12px; overflow: hidden; font: 13px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif; color: #333; }
-    .hd { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #000; color: #fff; font: 700 13px "Helvetica Neue", Arial, sans-serif; letter-spacing: .5px; }
-    .logo { width: 20px; height: 20px; fill: #fff; flex: none; }
-    .wb.busy .logo { animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .bd { padding: 12px; display: grid; gap: 8px; }
-    .url { height: 34px; border: 1px solid #ccc; border-radius: 3px; padding: 0 8px; font: 13px "JetBrains Mono", ui-monospace, monospace; color: #333; width: 100%; background: #fff; }
-    .url:focus-visible { outline: 2px solid #428bca; outline-offset: 1px; }
-    .save { height: 34px; border: 1px solid #357ebd; border-radius: 3px; background: #428bca; color: #fff; font: 700 13px "Helvetica Neue", Arial, sans-serif; cursor: pointer; transition: background .15s; }
-    .save:hover { background: #3276b1; }
-    .save:active { background: #285e8e; }
-    .save:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
-    .save:disabled { background: #9ec1e0; border-color: #9ec1e0; cursor: progress; }
-    .st { min-height: 18px; font: 11px "JetBrains Mono", ui-monospace, monospace; color: #666; display: flex; justify-content: space-between; }
-    .st b { color: #2a7a2a; font-weight: 700; }
-    .meter { height: 4px; background: #eee; border-radius: 2px; overflow: hidden; }
-    .meter i { display: block; height: 100%; width: 0; background: #428bca; transition: width .3s; }
+    .wb { width: 340px; max-width: 100%; padding: 14px 18px 12px; background: #fff; border-radius: 12px; font: 14px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif; color: #2c2c2c; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .logo { width: 170px; height: 62px; display: block; }
+    .h { display: flex; align-items: center; gap: 8px; font: 700 18px/1 "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    .h svg { width: 22px; height: 26px; flex: none; }
+    .wb.busy .h svg { animation: bob 1s ease-in-out infinite alternate; }
+    @keyframes bob { to { transform: translateY(-2px); } }
+    .url { width: 100%; height: 34px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #555; background: #fff; box-shadow: inset 0 1px 1px rgba(0,0,0,.075); transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out; outline: none; }
+    .url:focus { border-color: #66afe9; box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6); }
+    .save { width: 152px; height: 34px; border: 0; border-radius: 4px; background: #ebebeb; color: #2c2c2c; font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .2px; cursor: pointer; transition: background .15s; display: grid; }
+    .save span { grid-area: 1 / 1; align-self: center; } .save .b { visibility: hidden; }
+    .save:hover { background: #dedede; }
+    .save:active { background: #cfcfcf; }
+    .save:focus-visible { outline: 2px solid #66afe9; outline-offset: 2px; }
+    .wb.busy .save { cursor: progress; color: #888; }
+    .wb.done .save .a { visibility: hidden; } .wb.done .save .b { visibility: visible; }
+    .st { height: 36px; width: 100%; text-align: center; font-size: 12px; line-height: 18px; color: #2c2c2c; }
+    .st a { color: #428bca; text-decoration: none; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; }
+    .spin { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -2px; border: 2px solid #ddd; border-top-color: #2dc0d6; border-radius: 50%; animation: r .7s linear infinite; }
+    @keyframes r { to { transform: rotate(360deg); } }
   `,
   html: `
     <div class="wb">
-      <div class="hd"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L2 7h20zM3 8h18v2H3zm1 3h3v7H4zm5 0h3v7H9zm5 0h3v7h-3zm5 0h2v7h-2zM2 20h20v2H2z"/></svg>WAYBACK MACHINE</div>
-      <div class="bd">
-        <input class="url" type="text" value="https://example.com/buttons" aria-label="URL">
-        <button class="save" type="button">SAVE PAGE</button>
-        <div class="meter" aria-hidden="true"><i></i></div>
-        <div class="st" aria-live="polite"><span class="msg">&nbsp;</span><span class="ts"></span></div>
-      </div>
+      <svg class="logo" viewBox="40.05 148 711.8 258.3" aria-label="Internet Archive Wayback Machine" role="img"><path fill="#ab2e33" d="M 110.89,363.14 l 0,-141.67 -19.68,-0.00 0,145.25 c 0,0 0.33,0.33 -0.67,1.34 -1.01,1.01 -1.73,0.19 -1.73,0.19 l -1.92,0 0,-146.79 -19.74,0 0,146.79 -1.92,0 c 0,0 -0.72,0.82 -1.73,-0.19 -1.01,-1.01 -0.67,-1.34 -0.67,-1.34 l 0,-145.25 -19.68,0.00 0,141.67 c 0,0 -1.05,8.81 5.14,15.00 6.19,6.19 15.21,5.56 15.21,5.56 l 27.06,0 c 0,0 9.02,0.62 15.21,-5.56 6.19,-6.19 5.14,-15.00 5.14,-15.00 M 141.26,350.48 c 0,0 -0.26,1.44 -2.04,1.44 -1.77,0 -2.30,-1.44 -2.30,-1.44 l 0,-27.04 c 0,0 -0.19,-0.39 0.45,-1.05 0.66,-0.66 1.18,-0.58 1.18,-0.58 l 2.69,0.06 z m -2.34,-127.55 c -21.72,0 -20.90,17.83 -20.90,17.83 l 0,52.05 18.95,0 0,-51.45 c 0,0 0.10,-3.05 2.15,-3.05 2.05,0 2.25,2.87 2.25,2.87 l 0,65.38 -7.99,0 c 0,0 -6.25,-0.71 -10.86,3.89 -4.61,4.60 -4.50,10.85 -4.50,10.85 l 0,28.08 c 0,0 -1.64,11.48 7.99,16.60 9.63,5.12 16.19,-2.86 16.19,-2.86 l 0,3.68 18.03,0 0,-126.46 c 0,0 0.40,-17.42 -21.31,-17.42 M 294.91,373.84 c 0,0 -0.28,1.56 -2.23,1.56 -1.95,0 -2.53,-1.56 -2.53,-1.56 l 0,-29.19 c 0,0 -0.21,-0.42 0.50,-1.14 0.72,-0.70 1.30,-0.63 1.30,-0.63 l 2.96,0.07 z m -2.57,-137.71 c -23.86,0 -22.96,19.25 -22.96,19.25 l 0,56.19 20.82,0 0,-55.55 c 0,0 0.11,-3.30 2.36,-3.30 2.25,0 2.47,3.09 2.47,3.09 l 0,70.58 -8.78,0 c 0,0 -6.86,-0.76 -11.93,4.20 -5.07,4.98 -4.95,11.72 -4.95,11.72 l 0,30.31 c 0,0 -1.80,12.39 8.78,17.92 10.58,5.53 17.78,-3.09 17.78,-3.09 l 0,3.98 19.81,0 0,-136.52 c 0,0 0.45,-18.80 -23.41,-18.80 M 209.75,386.98 l 0,-154.63 -18.88,0 0,124.56 c 0,0 0.64,2.77 -1.99,2.77 -2.63,0 -2.35,-2.77 -2.35,-2.77 l 0,-124.56 -18.88,0 c 0,0 0.14,123.85 0.14,126.91 0,3.06 0.35,4.77 0.92,7.12 0.57,2.35 1.78,7.26 10.26,8.62 8.48,1.35 11.75,-4.27 11.75,-4.27 l 0,15.10 c 0,0 0.42,2.06 -1.92,2.06 -2.35,0 -2.28,-1.92 -2.28,-1.92 l 0,-6.19 -19.02,0 0,6.12 c 0,0 -1.14,17.38 21.02,17.38 22.16,0 21.23,-16.31 21.23,-16.31 M 241.68,236.43 l 0,80.68 c 0,5.06 -4.62,4.68 -4.62,4.68 l 0,-88.18 c 0,0 -1,-0.06 1.68,-0.06 3.31,0 2.93,2.87 2.93,2.87 m -0.12,127.43 c 0,0 -0.18,2.5 -1.93,2.5 l -2.43,0 0,-29 1.62,0 c 0,0 2.75,-0.06 2.75,3.31 z m 19.37,-29 c 0,-3.43 -0.62,-5.75 -2.56,-8.25 -1.93,-2.5 -5.56,-4.5 -5.56,-4.5 0,0 2.18,-0.62 5.43,-3.43 3.25,-2.81 2.87,-8.62 2.87,-8.62 l 0,-69.68 c 0,0 0.28,-10.65 -4.68,-15.62 -4.96,-4.96 -14.68,-5.35 -14.68,-5.35 l -24.25,0 0,161.85 22.31,0 c 9.62,0 14.25,-2.37 18.06,-7.37 3.81,-5 3.06,-12.62 3.06,-12.62 z m 0,0 M 343.88,257.89 l 0,53.29 19.19,0 0,-52.38 c 0,0 0.26,-17.64 -21.46,-17.64 -21.73,0 -20.82,17.73 -20.82,17.73 l 0,108.76 c 0,0 -1.27,17.91 21.19,17.91 22.46,0 20.91,-17.73 20.91,-17.73 l 0,-27.19 -18.91,0 0,28.28 c 0,0 0.08,1.54 -1.91,1.54 -2,0 -2.27,-1.54 -2.27,-1.54 l 0,-111.32 c 0,0 0.09,-1.45 2,-1.45 1.91,0 2.09,1.73 2.09,1.73 M 413.05,327.69 c -3.00,-3.62 -6.42,-4.98 -6.42,-4.98 0,0 3.28,-0.13 6.28,-3.96 3.00,-3.82 2.73,-8.67 2.73,-8.67 l 0,-75.65 -20.36,0 0,85.90 c 0,0 0,1.70 -2.05,1.70 l -2.45,-0.06 0,-108.52 -20.16,0 0,172.62 20.09,0 0,-47.97 3.07,0 c 0,0 0.41,0 0.95,0.61 0.54,0.61 0.54,1.36 0.54,1.36 l 0,45.99 20.50,0 0,-49.75 c 0,0 0.27,-4.98 -2.73,-8.60"/><path fill="#211e1e" d="M 477.5,215.00 c -16.66,0 -12.66,0 -31.08,0 -18.41,0 -18.16,16.33 -18.16,16.33 l 0,156.16 14.82,0 0,-157.58 c 0,0 -0.05,-4.46 3.98,-4.46 4.04,0 6.70,0 6.70,0 l 0,162.05 14.80,0 0,-161.99 c 0,0 2.66,0.00 6.70,0.00 4.04,0 3.98,4.46 3.98,4.46 l 0,157.51 14.65,0 0,-154.91 c 0,0 0.25,-17.58 -16.41,-17.58 M 526.58,368.50 c 0,0 0,5.58 -5.08,5.58 -5.08,0 -5.41,-5.41 -5.41,-5.41 l 0,-29.58 c 0,0 0.08,-2.08 1.41,-3.41 1.33,-1.33 3.16,-1.58 3.16,-1.58 l 5.91,0 z m -5.08,-137.08 c -20.5,0 -19.34,16.16 -19.34,16.16 l 0,61.41 13.80,0 0,-60.40 c 0,0 -0.04,-6.75 5.12,-6.75 5.16,0 5.5,5.08 5.5,5.08 l 0,77.16 -12.16,0 c -12.16,0 -12.25,12.08 -12.25,12.08 l 0,34.75 c 0,13 7.75,13.91 15.25,13.66 7.5,-0.25 10.08,-6.41 10.08,-6.41 l 0,5.91 13.08,0 0,-136 c 0,0 1.41,-16.66 -19.08,-16.66 M 570.07,247.95 l 0,58.20 13.24,0 0,-56.28 c 0,0 0.87,-15.85 -18.82,-15.85 -19.69,0 -17.77,17.60 -17.77,17.60 l 0,108.91 c 0,0 -1.39,16.55 17.95,16.55 19.33,0 18.29,-12.54 18.29,-21.60 l 0,-24.57 -13.07,0 0,32.06 c 0,0 -0.52,4.70 -4.70,4.70 -4.18,0 -5.40,-3.66 -5.40,-6.79 l 0,-112.92 c 0,0 0.52,-4.87 5.05,-4.87 4.53,0 5.23,4.87 5.23,4.87 M 621.82,239.41 c -8.75,0 -12.14,4.57 -12.89,5.79 l 0,-25.83 -14.46,0 0,172.52 14.46,0 0,-135.70 c 0.39,-2.22 1.64,-4.05 5.40,-4.05 5.05,0 5.05,6.10 5.05,6.10 l 0,133.30 13.76,0 0,-138.53 c 0,0 0.87,-13.59 -11.32,-13.59 M 689.58,238.44 c -8.88,0 -12.32,4.59 -13.08,5.83 l 0,-4.82 -14.67,0 0,152.43 14.67,0 0,-136.56 c 0.40,-2.23 1.67,-4.07 5.48,-4.07 5.12,0 5.12,6.13 5.12,6.13 l 0,134.16 13.96,0 0,-139.41 c 0,0 0.88,-13.67 -11.48,-13.67 M 654.98,375.16 l -12.19,0 0,-128.42 12.19,0 z m 0,0 M 655.94,233.40 c 0,2.93 -3.16,5.31 -7.05,5.31 -3.89,0 -7.05,-2.37 -7.05,-5.31 0,-2.93 3.16,-5.31 7.05,-5.31 3.89,0 7.05,2.38 7.05,5.31 M 723.96,252.55 c 0,0 0.26,-6.01 5.21,-6.01 4.94,0 5.48,5.48 5.48,5.48 l 0,76.78 -10.70,0 z m 10.70,101.27 0,21.40 c 0,0 -0.26,4.67 -5.48,4.67 -5.21,0 -5.21,-4.28 -5.21,-8.55 l 0,-31.70 24.75,0 0,-84.28 c 0,0 1.33,-18.73 -19.80,-18.73 -21.13,0 -18.86,18.99 -18.86,18.99 l 0,120.26 c 0,0 0.26,14.44 18.99,14.44 18.73,0 19.80,-10.96 19.80,-17.12 l 0,-19.39 z m 0,0 M 431.43,157.46 l 5.54,14.23 -10.75,0 z m -12.70,26.66 3.01,0 3.64,-10.14 12.41,0 3.64,10.14 5.07,0 -11.87,-32.80 -9.15,0 0,1.07 c 1.94,0.28 3.73,0.33 3.73,2.29 0,0.33 -0.51,2.04 -0.82,2.86 z m 0,0 M 479.59,158.00 c 0,-3.51 0,-4.39 3.27,-4.39 4.08,0 7.12,1.46 7.12,6.72 0,5.46 -4.44,6.33 -7.60,6.33 l -2.79,0 z m -5.34,26.12 5.34,0 0,-15.16 3.03,0 8.61,15.16 5.58,0 -8.94,-16.04 c 3.84,-0.63 7.43,-2.48 7.43,-8.03 0,-8.72 -10.07,-8.72 -13.73,-8.72 l -11.97,0 0,1.07 c 4.52,0.73 4.62,0.73 4.62,5.55 z m 0,0 M 547.00,179.23 c -1.50,1.02 -3.89,2.48 -8.51,2.48 -6.76,0 -9.44,-6.92 -9.44,-14.62 0,-6.08 1.16,-13.74 8.32,-13.74 5.25,0 7.93,4.77 8.13,7.26 l 1.41,0 -0.28,-8.14 C 544.37,151.73 541.20,151 536.87,151 c -10.84,0 -13.58,7.22 -13.58,16.09 0,10.96 3.81,17.35 14.37,17.35 5.01,0 7.69,-1.12 9.34,-1.84 z m 0,0 M 576.14,184.40 l 5.35,0 0,-15.95 13.23,0 0,15.95 5.36,0 0,-32.81 -5.36,0 0,14.57 -13.23,0 0,-15.11 -10.22,1.12 0,1.06 c 4.57,0.48 4.87,0.92 4.87,4.78 z m 0,0 M 628.00,183.96 l 13.61,0 0,-1.22 c -3.41,0 -4.14,-0.73 -4.14,-4.53 l 0,-20.95 c 0,-3.80 0.73,-4.52 4.14,-4.52 l 0,-1.22 -13.61,0 0,1.22 c 3.44,0 4.13,0.72 4.13,4.52 l 0,20.95 c 0,3.80 -0.68,4.53 -4.13,4.53 z m 0,0 M 678.40,184.13 l 4.23,0 11.89,-32.80 -3.16,0 -9.30,26.70 -0.09,0 -9.53,-26.70 -9.44,0 0,1.07 c 3.89,0.73 4.33,0.73 5.89,5.16 z m 0,0 M 722.28,184.13 l 19.42,0 0.14,-7.06 -1.35,0 c -0.28,3.80 -1.60,4.77 -4.37,4.77 l -5.41,0 c -2.43,0 -3.06,-0.09 -3.06,-2.83 l 0,-10.86 5.89,0 c 2.91,0 3.99,1.54 3.99,4.17 l 1.35,0 0,-10.22 -1.35,0 c -0.30,1.60 -0.64,3.74 -3.99,3.74 l -5.89,0 0,-9.69 c 0,-2.33 0.63,-2.52 3.06,-2.52 l 3.78,0 c 3.22,0 5.26,1.01 5.26,4.92 l 1.36,0 -0.13,-7.21 -23.33,0 0,1.07 c 4.48,0.73 4.62,0.73 4.62,5.55 z m 0,0 M 352.19,184.14 l 5.42,0 0,-30.55 3.33,0 c 3.79,0 5.37,1.16 5.37,4.94 l 1.37,0 -0.19,-7.23 -25.20,0 -0.20,7.08 1.37,0 c 0.29,-3.57 1.42,-4.79 5.32,-4.79 l 3.39,0 z m -48.06,0 19.64,0 0.14,-7.07 -1.37,0 c -0.30,3.80 -1.63,4.77 -4.43,4.77 l -5.46,0 c -2.46,0 -3.10,-0.09 -3.10,-2.83 l 0,-10.87 5.96,0 c 2.95,0 4.03,1.54 4.03,4.19 l 1.36,0 0,-10.24 -1.36,0 c -0.30,1.60 -0.64,3.75 -4.03,3.75 l -5.96,0 0,-9.70 c 0,-2.33 0.64,-2.53 3.10,-2.53 l 3.83,0 c 3.25,0 5.32,1.02 5.32,4.94 l 1.37,0 -0.13,-7.23 -23.59,0 0,1.07 c 4.53,0.73 4.68,0.73 4.68,5.56 z m -48.41,0 3.08,0 0,-27.76 0.10,0 16.25,27.76 4.73,0 0,-32.83 -3.10,0 0,26.53 -0.10,0 -15.51,-26.53 -10.39,0 0,1.07 c 4.23,0.83 4.92,0.63 4.92,5.17 z m -38.81,-26.15 c 0,-3.51 0,-4.39 3.30,-4.39 4.13,0 7.18,1.46 7.18,6.73 0,5.46 -4.48,6.33 -7.68,6.33 l -2.80,0 z m -5.42,26.15 5.42,0 0,-15.17 3.05,0 8.71,15.17 5.66,0 -9.06,-16.05 c 3.88,-0.62 7.53,-2.49 7.53,-8.04 0,-8.73 -10.19,-8.73 -13.89,-8.73 l -12.11,0 0,1.07 c 4.57,0.73 4.67,0.73 4.67,5.56 z m -42.30,0 19.64,0 0.14,-7.07 -1.37,0 c -0.30,3.80 -1.62,4.77 -4.43,4.77 l -5.46,0 c -2.46,0 -3.10,-0.09 -3.10,-2.83 l 0,-10.87 5.97,0 c 2.95,0 4.03,1.54 4.03,4.19 l 1.38,0 0,-10.24 -1.38,0 c -0.30,1.60 -0.63,3.75 -4.03,3.75 l -5.97,0 0,-9.70 c 0,-2.33 0.64,-2.53 3.10,-2.53 l 3.84,0 c 3.24,0 5.31,1.02 5.31,4.94 l 1.37,0 -0.14,-7.23 -23.58,0 0,1.07 c 4.52,0.73 4.67,0.73 4.67,5.56 z m -35.50,0 5.41,0 0,-30.55 3.35,0 c 3.78,0 5.36,1.16 5.36,4.94 l 1.37,0 -0.18,-7.23 -25.22,0 -0.19,7.08 1.37,0 c 0.30,-3.57 1.42,-4.79 5.32,-4.79 l 3.40,0 z m -54.23,0 3.10,0 0,-27.76 0.09,0 16.24,27.76 4.73,0 0,-32.83 -3.10,0 0,26.53 -0.09,0 -15.51,-26.53 -10.39,0 0,1.07 c 4.23,0.83 4.92,0.63 4.92,5.17 z m -34.87,0 13.78,0 0,-1.21 c -3.44,0 -4.18,-0.73 -4.18,-4.54 l 0,-20.97 c 0,-3.81 0.73,-4.54 4.18,-4.54 l 0,-1.21 -13.78,0 0,1.21 c 3.49,0 4.18,0.73 4.18,4.54 l 0,20.97 c 0,3.80 -0.69,4.54 -4.18,4.54 z m 0,0"/></svg>
+      <div class="h"><svg viewBox="0 0 22 26" fill="none" stroke="#2dc0d6" stroke-width="2.6" aria-hidden="true"><path d="M2 2h9.5L17 8.5V16M2 2v21h11"/><path d="M17.5 17.5v8M13.5 21.5h8"/></svg>Save Page Now</div>
+      <input class="url" type="text" value="https://buttons.page/" aria-label="URL to save" spellcheck="false">
+      <button class="save" type="button"><span class="a">SAVE PAGE</span><span class="b">SAVE AGAIN</span></button>
+      <div class="st" aria-live="polite"></div>
     </div>`,
   init(root) {
-    const wb = root.querySelector('.wb'), save = root.querySelector('.save'), msg = root.querySelector('.msg'), ts = root.querySelector('.ts'), bar = root.querySelector('.meter i');
-    const steps = ['Fetching page...', 'Capturing outlinks...', 'Saving screenshot...', 'Writing to CDX...'];
+    const wb = root.querySelector('.wb'), save = root.querySelector('.save'), st = root.querySelector('.st'), url = root.querySelector('.url');
+    const steps = ['Saving page now...', 'Capturing outlinks...', 'Writing to the archive...'];
     let iv = 0, i = 0;
     const stop = () => { clearInterval(iv); iv = 0; };
+    const clean = (v) => v.replace(/[<>&"]/g, '');
     save.addEventListener('click', () => {
-      if (wb.classList.contains('done')) { wb.classList.remove('done'); msg.innerHTML = '&nbsp;'; ts.textContent = ''; bar.style.width = '0'; save.textContent = 'SAVE PAGE'; return; }
-      wb.classList.add('busy'); save.disabled = true; i = 0; msg.textContent = steps[0]; bar.style.width = '10%';
-      stop();
+      if (iv) return;
+      wb.classList.remove('done'); wb.classList.add('busy'); i = 0;
+      st.innerHTML = '<span class="spin"></span>' + steps[0];
       iv = setInterval(() => {
         i++;
-        if (i < steps.length) { msg.textContent = steps[i]; bar.style.width = (10 + i * 28) + '%'; return; }
-        stop(); wb.classList.remove('busy'); wb.classList.add('done'); save.disabled = false; save.textContent = 'SAVE AGAIN';
-        bar.style.width = '100%';
+        if (i < steps.length) { st.innerHTML = '<span class="spin"></span>' + steps[i]; return; }
+        stop(); wb.classList.remove('busy'); wb.classList.add('done');
         const d = new Date(), p = (n) => String(n).padStart(2, '0');
-        msg.innerHTML = '<b>Saved</b>'; ts.textContent = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
-      }, 600);
+        const ts = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+        st.innerHTML = 'A snapshot was captured. Visit page:<br><a href="#">/web/' + ts + '/' + clean(url.value.replace(/^https?:\/\//, '')).slice(0, 18) + '</a>';
+        st.querySelector('a').addEventListener('click', (e) => e.preventDefault());
+      }, 650);
     });
+    url.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save.click(); } });
     return stop;
   },
 };

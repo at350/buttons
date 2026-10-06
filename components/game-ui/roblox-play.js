@@ -25,7 +25,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <button class="play" type="button" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M5.2 2 2 18.8 18.8 22 22 5.2z" fill="#fff"/><path d="M10.3 9.2 9.2 14.8l5.6 1.1 1.1-5.6z" fill="#00b06f"/></svg><span class="pl">Play</span></button>
+      <button class="play" type="button" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg><span class="pl">Play</span></button>
       <div class="row">
         <button class="pill like" type="button" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M7 10v11H4V10zM10 21h8l3-7v-3h-7l1-5-2-1-3 6z"/></svg><span class="n">1.2M</span></button>
         <button class="pill fav" type="button" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.5 5.9 21l1.5-6.8L2.2 9.5l6.9-.7z"/></svg>Favorite</button>

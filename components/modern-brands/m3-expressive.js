@@ -1,51 +1,44 @@
 export default {
   id: 'mb-m3-expressive',
-  credit: 'Google Material 3 Expressive (Pixel, 2025) — connected button group: the selected segment bounces from rounded-square into a wide pill while its neighbours squeeze',
+  credit: 'Google Material 3 Expressive — medium connected button group (Material Symbols Rounded): the selected toggle springs from 8dp inner corners into a full pill, pressing squeezes the corners, 8%/12% state layers',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { padding: 22px 26px; border-radius: 12px; background: #fef7ff; }
-    .grp { display: flex; gap: 4px; }
-    .m3 { position: relative; height: 48px; width: 56px; border: 0; border-radius: 12px; background: #e8def8; color: #4a4458; cursor: pointer; display: grid; place-items: center; -webkit-tap-highlight-color: transparent; overflow: hidden;
-      transition: width .55s linear(0, 0.3 7%, 0.62 14%, 0.86 21%, 1.04 30%, 1.09 38%, 1.03 50%, 0.99 64%, 1.005 80%, 1),
-                  border-radius .45s linear(0, 0.4 10%, 0.85 22%, 1.1 35%, 1.03 50%, 0.98 65%, 1),
-                  background .25s, color .25s, transform .15s cubic-bezier(.2,.8,.2,1); }
-    .m3:first-child { border-radius: 24px 12px 12px 24px; }
-    .m3:last-child { border-radius: 12px 24px 24px 12px; }
-    .m3:hover { background: #ddd0f0; }
-    .m3:active { transform: scale(.94); border-radius: 8px; }
-    .m3:focus-visible { outline: 3px solid #6750a4; outline-offset: 2px; }
-    .m3[aria-checked="true"] { width: 108px; border-radius: 24px; background: #6750a4; color: #fff; }
-    .m3[aria-checked="true"]:hover { background: #5b4595; }
-    .m3.squish { width: 44px; }
-    .m3 svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round;
-      transition: transform .4s linear(0, 0.45 12%, 1.2 35%, 0.95 55%, 1.02 75%, 1); }
-    .m3[aria-checked="true"] svg { transform: scale(1.1); }
-    .m3::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.35), transparent 60%); opacity: 0; transition: opacity .3s; pointer-events: none; }
-    .m3:active::after { opacity: 1; transition: none; }
+    .stage { padding: 22px 24px; border-radius: 12px; background: #fef7ff; }
+    .grp { display: flex; gap: 2px; width: 262px; }
+    .m3 { --ri: 8px; --ro: 28px; position: relative; isolation: isolate; height: 56px; flex: 1 1 0; min-width: 0; border: 0; padding: 0; cursor: pointer; display: grid; place-items: center;
+      background: #f3edf7; color: #49454f; -webkit-tap-highlight-color: transparent;
+      border-radius: var(--ri); transition: border-radius .5s linear(0, 0.18 5%, 0.55 13%, 0.88 22%, 1.06 31%, 1.1 38%, 1.06 47%, 1 60%, 0.99 72%, 1), background .2s cubic-bezier(.2,0,0,1), color .2s cubic-bezier(.2,0,0,1),
+        flex-grow .5s linear(0, 0.18 5%, 0.55 13%, 0.88 22%, 1.06 31%, 1.1 38%, 1.06 47%, 1 60%, 0.99 72%, 1); }
+    .m3:first-child { border-radius: var(--ro) var(--ri) var(--ri) var(--ro); }
+    .m3:last-child { border-radius: var(--ri) var(--ro) var(--ro) var(--ri); }
+    .m3::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: currentColor; opacity: 0; z-index: -1; transition: opacity .15s linear; }
+    .m3:hover::before { opacity: .08; }
+    .m3:active::before { opacity: .12; }
+    .m3:active { --ri: 4px; flex-grow: 1.3; }
+    .m3:focus-visible { outline: 3px solid #625b71; outline-offset: 2px; }
+    .m3[aria-checked="true"] { --ri: 28px; background: #6750a4; color: #fff; }
+    .m3 svg { width: 24px; height: 24px; fill: currentColor; }
   `,
   html: `
     <div class="stage">
-      <div class="grp" role="radiogroup" aria-label="Alignment">
-        <button class="m3" type="button" role="radio" aria-checked="true" aria-label="Align left"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/></svg></button>
-        <button class="m3" type="button" role="radio" aria-checked="false" aria-label="Align center"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M5 18h14"/></svg></button>
-        <button class="m3" type="button" role="radio" aria-checked="false" aria-label="Align right"><svg viewBox="0 0 24 24"><path d="M4 6h16M10 12h10M6 18h14"/></svg></button>
-        <button class="m3" type="button" role="radio" aria-checked="false" aria-label="Justify"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="grp" role="radiogroup" aria-label="Text alignment">
+        <button class="m3" type="button" role="radio" aria-checked="true" aria-label="Align left"><svg viewBox="0 -960 960 960"><path d="M150-120q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h420q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h420q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Z"/></svg></button>
+        <button class="m3" type="button" role="radio" aria-checked="false" aria-label="Align center"><svg viewBox="0 -960 960 960"><path d="M150-120q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm160-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h340q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H310ZM150-450q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm160-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h340q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H310ZM150-780q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Z"/></svg></button>
+        <button class="m3" type="button" role="radio" aria-checked="false" aria-label="Align right"><svg viewBox="0 -960 960 960"><path d="M150-780q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm240 165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h420q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H390ZM150-450q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm240 165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h420q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H390ZM150-120q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Z"/></svg></button>
+        <button class="m3" type="button" role="radio" aria-checked="false" aria-label="Justify"><svg viewBox="0 -960 960 960"><path d="M150-120q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Zm0-165q-12.75 0-21.37-8.68-8.63-8.67-8.63-21.5 0-12.82 8.63-21.32 8.62-8.5 21.37-8.5h660q12.75 0 21.38 8.68 8.62 8.67 8.62 21.5 0 12.82-8.62 21.32-8.63 8.5-21.38 8.5H150Z"/></svg></button>
       </div>
     </div>`,
   init(root) {
     const btns = [...root.querySelectorAll('.m3')];
-    let t;
-    const pick = (i) => {
-      btns.forEach((b, j) => { b.setAttribute('aria-checked', String(i === j)); b.classList.toggle('squish', Math.abs(i - j) === 1); });
-      clearTimeout(t); t = setTimeout(() => btns.forEach((b) => b.classList.remove('squish')), 320);
-    };
+    const pick = (i) => btns.forEach((b, j) => { b.setAttribute('aria-checked', String(i === j)); b.tabIndex = i === j ? 0 : -1; });
     btns.forEach((b, i) => {
       b.addEventListener('click', () => pick(i));
       b.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const n = (i + (e.key === 'ArrowRight' ? 1 : btns.length - 1)) % btns.length; btns[n].focus(); pick(n); }
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault(); const n = (i + (e.key === 'ArrowRight' ? 1 : btns.length - 1)) % btns.length; btns[n].focus(); pick(n);
       });
     });
-    return () => clearTimeout(t);
+    pick(0);
   },
 };

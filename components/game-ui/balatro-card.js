@@ -1,42 +1,90 @@
+// Balatro: a 23x31-texel Joker card drawn at an integer 3x scale (crisp pixel edges), Balatro's hover tilt +
+// foil sheen, select lifts the card; the HUD uses the game's Chips blue #009dff and Mult red #fe5f55 boxes and
+// the blue "Play Hand" button; playing triggers the Joker's "+4 Mult" pop.
+const px = (rows, pal, ox = 0, oy = 0) => {
+  const d = {};
+  rows.forEach((r, y) => { let x = 0; while (x < r.length) { const c = r[x]; let n = 1; while (r[x + n] === c) n++; if (pal[c]) (d[c] = d[c] || []).push(`M${x + ox} ${y + oy}h${n}v1h-${n}z`); x += n; } });
+  return Object.entries(d).map(([c, p]) => `<path fill="${pal[c]}" d="${p.join('')}"/>`).join('');
+};
+const FRAME = px([
+  '..OOOOOOOOOOOOOOOOOOO..', '.OCCCCCCCCCCCCCCCCCCCO.', ...Array.from({ length: 27 }, () => 'OCCCCCCCCCCCCCCCCCCCCCO'), '.OCCCCCCCCCCCCCCCCCCCO.', '..OOOOOOOOOOOOOOOOOOO..',
+], { O: '#b9ad98', C: '#fbf5e9' });
+const JOKER = px([
+  '...................', '.YY.....YYY.....YY.', '.YYK...KYYYK...KYY.', '..KRK..KBBBK..KBK..', '..KRRK.KBBBK.KBBK..',
+  '...KRRKKBBBKKBBK...', '...KRRRKBBBKBBBK...', '....KRRRBBBBBBK....', '...KKKKKKKKKKKKK...', '...KYYYYYYYYYYYK...',
+  '...KKKKKKKKKKKKK...', '....KSSSSSSSSSK....', '...KSSSSSSSSSSSK...', '...KSSKKSSSKKSSK...', '...KSSKKSSSKKSSK...',
+  '...KSSSSSSSSSSSK...', '...KSSSSSRRSSSSK...', '...KSSSSSRRSSSSK...', '...KSKSSSSSSSKSK...', '...KSSKKKKKKKSSK...',
+  '....KSSSRRRSSSK....', '.....KSSSSSSSK.....', '......KKKKKKK......', '.....RRK...KBB.....', '....RRRRK.KBBBB....',
+  '...RRRRRRKBBBBBB...', '...................',
+], { Y: '#fda200', K: '#3a3046', R: '#fe5f55', B: '#009dff', S: '#ffffff' }, 2, 2);
+
 export default {
   id: 'gm-balatro-card',
-  credit: 'LocalThunk Balatro — a pixel Joker card that tilts toward the cursor with a holographic shine; click to select (it lifts and the chip glows)',
+  credit: 'LocalThunk Balatro — the pixel Joker card (tilts toward the cursor with a foil sheen, click to select) and the Chips × Mult HUD; "Play Hand" triggers +4 Mult',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: #2b4b3f; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,.08) 0 6px, transparent 6px 12px); padding: 20px 36px; border-radius: 12px; perspective: 500px; display: flex; align-items: flex-end; gap: 10px; }
-    .card { position: relative; width: 84px; height: 116px; border: none; padding: 0; cursor: pointer; background: #f6efe0; border-radius: 6px; transform-style: preserve-3d; transition: transform .12s ease-out, box-shadow .12s;
-      box-shadow: 0 3px 0 #b7b0a0, 0 7px 10px rgba(0,0,0,.45); image-rendering: pixelated; overflow: hidden; }
-    .card.sel { transform: translateY(-16px) !important; box-shadow: 0 3px 0 #b7b0a0, 0 20px 18px rgba(0,0,0,.5), 0 0 0 3px #ff4c40; }
+    .stage { position: relative; display: flex; align-items: flex-end; gap: 16px; padding: 30px 20px 16px; border-radius: 12px; overflow: hidden;
+      background: radial-gradient(ellipse at 30% 20%, #3f7d68, #2a5446 55%, #1d3b33); font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    .stage::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.07) 0 1px, transparent 1px 3px); pointer-events: none; }
+    .slot { perspective: 420px; }
+    .card { position: relative; display: block; width: 69px; height: 93px; border: none; padding: 0; cursor: pointer; background: none; image-rendering: pixelated;
+      transform-style: preserve-3d; transition: transform 140ms cubic-bezier(.3,1.6,.6,1), filter 140ms; filter: drop-shadow(3px 4px 0 rgba(0,0,0,.35)); }
+    .card svg { display: block; width: 69px; height: 93px; }
+    .card:hover { transform: scale(1.06) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+    .card.sel { transform: translateY(-18px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); filter: drop-shadow(5px 10px 0 rgba(0,0,0,.3)); }
+    .card.juice { animation: juice 260ms cubic-bezier(.3,1.8,.6,1); }
+    @keyframes juice { 0% { scale: 1; rotate: 0deg; } 40% { scale: 1.14; rotate: -4deg; } 100% { scale: 1; rotate: 0deg; } }
+    .sheen { position: absolute; inset: 3px; border-radius: 3px; pointer-events: none; opacity: 0; mix-blend-mode: screen; transition: opacity 150ms;
+      background: linear-gradient(115deg, transparent 25%, rgba(255,120,200,.45) 40%, rgba(120,255,230,.45) 50%, rgba(255,240,120,.4) 60%, transparent 75%); background-size: 250% 250%; background-position: var(--sx, 50%) 50%; }
+    .card:hover .sheen, .card.sel .sheen { opacity: 1; }
     .card:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
-    .face { position: absolute; inset: 6px; border: 3px solid #1d1d2b; border-radius: 3px; background: linear-gradient(180deg, #e3b341, #c7472f); shape-rendering: crispEdges; }
-    .face svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
-    .holo { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 20%, rgba(255,0,128,.35) 35%, rgba(0,255,200,.35) 45%, rgba(255,255,0,.35) 55%, transparent 70%); background-size: 250% 250%; background-position: var(--hx, 100%) 0; mix-blend-mode: screen; opacity: 0; transition: opacity .2s; pointer-events: none; }
-    .card:hover .holo, .card.sel .holo { opacity: 1; }
-    .chip { position: absolute; right: -8px; top: -8px; width: 26px; height: 26px; border-radius: 50%; background: #1e88e5; border: 3px dashed #fff; color: #fff; font: 700 11px 'JetBrains Mono', ui-monospace, monospace; display: grid; place-items: center; box-shadow: 0 2px 0 #0d47a1; transition: transform .2s, box-shadow .2s; }
-    .card.sel ~ .chip, .wrap:hover .chip { transform: scale(1.15); box-shadow: 0 2px 0 #0d47a1, 0 0 12px #64b5f6; }
-    .wrap { position: relative; }
-    .mult { background: #ff4c40; color: #fff; border: none; cursor: pointer; font: 700 12px 'JetBrains Mono', ui-monospace, monospace; padding: 6px 10px; border-radius: 4px; box-shadow: 0 3px 0 #a52a20; margin-bottom: 4px; }
-    .mult:active { transform: translateY(2px); box-shadow: 0 1px 0 #a52a20; }
-    .mult:focus-visible { outline: 2px solid #fff; }
+    .pop { position: absolute; left: 54px; top: 40px; z-index: 3; transform: translateX(-50%); padding: 2px 6px; border-radius: 4px; background: #fe5f55; color: #fff; font: 800 11px/14px 'JetBrains Mono', monospace; white-space: nowrap; pointer-events: none; opacity: 0; box-shadow: 0 2px 0 #a8352f; }
+    .pop.go { animation: pop 900ms steps(9) forwards; }
+    @keyframes pop { 0% { opacity: 0; transform: translateX(-50%) scale(.4); } 15% { opacity: 1; transform: translateX(-50%) scale(1.15); } 30%, 80% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0; transform: translateX(-50%) scale(1); } }
+    .hud { position: relative; display: flex; flex-direction: column; gap: 8px; width: 150px; }
+    .score { background: #1e2b2d; border-radius: 6px; padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 0 0 2px #384f52; }
+    .score small { color: #c9d6d4; font: 700 9px 'JetBrains Mono', monospace; letter-spacing: .5px; }
+    .score b { color: #fff; font: 800 15px 'JetBrains Mono', monospace; text-shadow: 0 2px 0 rgba(0,0,0,.4); }
+    .cm { display: flex; align-items: center; gap: 4px; }
+    .box { flex: 1; height: 30px; border-radius: 6px; display: grid; place-items: center; color: #fff; font: 800 17px 'JetBrains Mono', monospace; text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+    .chips { background: #009dff; box-shadow: 0 3px 0 #0068a8; justify-content: end; padding-right: 8px; }
+    .mult { background: #fe5f55; box-shadow: 0 3px 0 #a8352f; justify-content: start; padding-left: 8px; }
+    .x { color: #fe5f55; font: 800 16px 'JetBrains Mono', monospace; text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+    .box.bump { animation: bump 220ms cubic-bezier(.3,1.8,.6,1); }
+    @keyframes bump { 50% { transform: scale(1.18) rotate(-3deg); } }
+    .play { height: 34px; border: none; border-radius: 6px; cursor: pointer; background: #009dff; color: #fff; font: 800 13px 'JetBrains Mono', monospace; text-shadow: 0 2px 0 rgba(0,0,0,.3); box-shadow: 0 3px 0 #0068a8; transition: transform 60ms; }
+    .play:hover { background: #22acff; }
+    .play:active { transform: translateY(3px); box-shadow: 0 0 0 #0068a8; }
+    .play:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   `,
   html: `
     <div class="stage">
-      <div class="wrap">
-        <button class="card" type="button" aria-pressed="false" aria-label="Joker">
-          <span class="face"><svg viewBox="0 0 24 34"><rect x="4" y="6" width="16" height="22" fill="#f6efe0"/><rect x="7" y="9" width="3" height="3" fill="#1d1d2b"/><rect x="14" y="9" width="3" height="3" fill="#1d1d2b"/><rect x="8" y="17" width="8" height="2" fill="#c7472f"/><rect x="7" y="15" width="2" height="2" fill="#c7472f"/><rect x="15" y="15" width="2" height="2" fill="#c7472f"/><rect x="2" y="2" width="4" height="4" fill="#2b9b7a"/><rect x="18" y="2" width="4" height="4" fill="#c7472f"/><rect x="10" y="0" width="4" height="4" fill="#e3b341"/><rect x="5" y="4" width="14" height="3" fill="#2b4b3f"/></svg></span>
-          <span class="holo"></span>
-        </button>
-        <span class="chip">+4</span>
+      <div class="slot">
+        <button class="card" type="button" aria-pressed="false" aria-label="Joker card"><svg viewBox="0 0 23 31" shape-rendering="crispEdges" aria-hidden="true">${FRAME}${JOKER}</svg><span class="sheen"></span></button>
       </div>
-      <button class="mult" type="button">x3 Mult</button>
+      <span class="pop">+4 Mult</span>
+      <div class="hud">
+        <div class="score"><small>ROUND SCORE</small><b class="tot">0</b></div>
+        <div class="cm"><span class="box chips">10</span><span class="x">X</span><span class="box mult">1</span></div>
+        <button class="play" type="button">Play Hand</button>
+      </div>
     </div>`,
   init(root) {
-    const c = root.querySelector('.card'), holo = root.querySelector('.holo'), mult = root.querySelector('.mult'); let m = 3;
-    c.addEventListener('pointermove', (e) => { if (c.classList.contains('sel')) return; const r = c.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-      c.style.transform = 'rotateY(' + (x * 24) + 'deg) rotateX(' + (-y * 24) + 'deg)'; holo.style.setProperty('--hx', (100 - (x + .5) * 100) + '%'); });
-    c.addEventListener('pointerleave', () => { c.style.transform = ''; });
-    c.addEventListener('click', () => { const on = c.classList.toggle('sel'); c.setAttribute('aria-pressed', String(on)); c.style.transform = ''; });
-    mult.addEventListener('click', () => { m = m >= 12 ? 3 : m + 3; mult.textContent = 'x' + m + ' Mult'; });
+    const c = root.querySelector('.card'), sheen = root.querySelector('.sheen'), play = root.querySelector('.play'), pop = root.querySelector('.pop');
+    const chips = root.querySelector('.chips'), mult = root.querySelector('.mult'), tot = root.querySelector('.tot');
+    const timers = []; let total = 0;
+    c.addEventListener('pointermove', (e) => { const r = c.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      c.style.setProperty('--ry', (x * 26).toFixed(1) + 'deg'); c.style.setProperty('--rx', (-y * 26).toFixed(1) + 'deg'); sheen.style.setProperty('--sx', (100 - (x + .5) * 100) + '%'); });
+    c.addEventListener('pointerleave', () => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
+    const juice = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+    c.addEventListener('click', () => { const on = c.classList.toggle('sel'); c.setAttribute('aria-pressed', String(on)); juice(c, 'juice'); });
+    play.addEventListener('click', () => {
+      timers.forEach(clearTimeout); timers.length = 0;
+      chips.textContent = '10'; mult.textContent = '1'; juice(chips, 'bump');
+      timers.push(setTimeout(() => { juice(c, 'juice'); juice(pop, 'go'); mult.textContent = '5'; juice(mult, 'bump'); }, 300));
+      timers.push(setTimeout(() => { total += 50; tot.textContent = total.toLocaleString(); }, 700));
+    });
+    return () => timers.forEach(clearTimeout);
   },
 };

@@ -74,36 +74,41 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Frosted glass over a live shader: a slow, tone-mapped colour field (magenta / indigo / amber blobs on
+// deep violet) runs behind a backdrop-filter pill. Hover thins the frost and the amber blob drifts to
+// the pointer; the toggle clears the glass (aria-pressed).
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse,u_pt;
 void main(){
  float W=u_res.x/u_res.y; vec2 p=gl_FragCoord.xy/u_res*vec2(W,1.);
- float t=u_time*.35;
- vec2 c1=vec2(W*.3+.5*sin(t*1.1),.5+.35*cos(t*.9));
- vec2 c2=vec2(W*.7+.5*cos(t*.8+2.),.5+.4*sin(t*1.3+1.));
- vec2 c3=mix(vec2(W*.5+.6*sin(t*.6+4.),.5+.3*cos(t*1.7)),u_mouse*vec2(W,1.),u_hover*.8);
- float w1=exp(-dot(p-c1,p-c1)*2.2),w2=exp(-dot(p-c2,p-c2)*2.2),w3=exp(-dot(p-c3,p-c3)*3.);
- vec3 col=vec3(.07,.06,.12)+w1*vec3(1.,.3,.5)+w2*vec3(.2,.5,1.)+w3*vec3(1.,.8,.2)*(1.+.5*u_hover);
+ float t=u_time*.3;
+ vec2 c1=vec2(W*.28+.45*sin(t*1.1),.5+.3*cos(t*.9));
+ vec2 c2=vec2(W*.72+.45*cos(t*.8+2.),.5+.35*sin(t*1.3+1.));
+ vec2 c3=mix(vec2(W*.5+.55*sin(t*.6+4.),.45+.25*cos(t*1.7)),u_mouse*vec2(W,1.),u_hover*.7);
+ float w1=exp(-dot(p-c1,p-c1)*2.6),w2=exp(-dot(p-c2,p-c2)*2.4),w3=exp(-dot(p-c3,p-c3)*4.);
+ vec3 col=vec3(.10,.05,.24)+w1*vec3(1.4,.18,.62)+w2*vec3(.22,.36,1.5)+w3*vec3(1.4,.72,.12)*.9;
+ col=1.-exp(-col*1.25);
  float r=length((gl_FragCoord.xy/u_res-u_pt)*vec2(W,1.))-(1.-u_press)*W;
- col+=smoothstep(.1,0.,abs(r))*u_press*.8;
+ col+=smoothstep(.1,0.,abs(r))*u_press*.35;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-frosted-glass',
-  credit: 'Frosted glass over a live shader — a WebGL colour-blob field runs behind a backdrop-filter pill; hover thins the frost, toggling it clears the glass',
+  credit: 'Frosted glass over a live shader — a tone-mapped WebGL colour field drifts behind a backdrop-filter pill (blur + saturate, hairline rim, inner highlight); hover thins the frost, toggling clears the glass',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; display: grid; place-items: center; width: 260px; height: 120px; max-width: 100%; border-radius: 16px; overflow: hidden; background: #110f1f; isolation: isolate; }
+    .stage { position: relative; display: grid; place-items: center; width: 260px; height: 120px; max-width: 100%; border-radius: 16px; overflow: hidden; background: #1a0d3d; isolation: isolate; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: radial-gradient(circle at 30% 40%, #ff4d80, transparent 50%), radial-gradient(circle at 70% 60%, #3380ff, transparent 50%), #110f1f; }
-    .glass { position: relative; z-index: 1; padding: 14px 30px; border-radius: 999px; border: 1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.18); color: #fff; font: 600 16px/1 'Inter', system-ui, sans-serif; letter-spacing: .02em; cursor: pointer; -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 10px 30px -12px rgba(0,0,0,.6); transition: backdrop-filter .4s, -webkit-backdrop-filter .4s, background .3s, transform .15s; }
-    .glass:hover { -webkit-backdrop-filter: blur(6px) saturate(1.4); backdrop-filter: blur(6px) saturate(1.4); }
+    .cv.nogl { background: radial-gradient(circle at 28% 45%, #e0307f, transparent 55%), radial-gradient(circle at 72% 55%, #3d5cff, transparent 55%), #1a0d3d; }
+    .glass { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 999px; border: 1px solid rgba(255,255,255,.32); background: linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.08)); color: #fff; font: 600 15px/1 'Inter', system-ui, sans-serif; letter-spacing: .01em; white-space: nowrap; cursor: pointer; text-shadow: 0 1px 2px rgba(20,8,50,.35); -webkit-backdrop-filter: blur(16px) saturate(1.6); backdrop-filter: blur(16px) saturate(1.6); box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(255,255,255,.08), 0 8px 24px -10px rgba(10,0,40,.7); transition: backdrop-filter .45s cubic-bezier(.2,.8,.2,1), -webkit-backdrop-filter .45s cubic-bezier(.2,.8,.2,1), background .3s, border-color .3s, transform .15s; }
+    .glass svg { width: 16px; height: 16px; flex: none; }
+    .glass:hover { -webkit-backdrop-filter: blur(8px) saturate(1.6); backdrop-filter: blur(8px) saturate(1.6); border-color: rgba(255,255,255,.45); }
     .glass:active { transform: scale(.97); }
-    .glass[aria-pressed="true"] { -webkit-backdrop-filter: blur(0px) saturate(1.2); backdrop-filter: blur(0px) saturate(1.2); background: rgba(255,255,255,.06); }
+    .glass[aria-pressed="true"] { -webkit-backdrop-filter: blur(0px) saturate(1.1); backdrop-filter: blur(0px) saturate(1.1); background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.55); }
     .glass:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
   `,
-  html: `<div class="stage"><canvas class="cv"></canvas><button class="glass" type="button" aria-pressed="false">Defrost</button></div>`,
+  html: `<div class="stage"><canvas class="cv"></canvas><button class="glass" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/></svg>Defrost</button></div>`,
   init(root) {
     const stage = root.querySelector('.stage'), cv = root.querySelector('.cv'), btn = root.querySelector('.glass');
     const s = shade(cv, stage, 260, 120, FS, { idle: true, pressDecay: 1.4 });

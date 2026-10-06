@@ -74,51 +74,71 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Apple Liquid Glass (iOS 26 / WWDC25): a capsule lens over live content. Inside a rounded bevel the
+// surface tilts, so rays refract OUTWARD — content from beyond the edge is pulled into the rim and the
+// centre is gently magnified; the three channels refract by slightly different amounts (dispersion);
+// a thin two-sided specular rim catches the light; a soft contact shadow sits underneath.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse;
 float sdRR(vec2 p,vec2 b,float r){vec2 q=abs(p)-b+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
-vec3 bgc(vec2 p){
- vec3 c=mix(vec3(.95,.93,.99),vec3(.82,.9,1.),p.y);
- vec2 g=fract(p*vec2(16.,6.5))-.5; c-=smoothstep(.13,.09,length(g))*.4;
- c=mix(c,vec3(1.,.45,.3),smoothstep(.015,0.,abs(p.y-.5+.14*sin(p.x*7.+u_time*.6))-.035));
- c=mix(c,vec3(.3,.5,1.),smoothstep(.015,0.,abs(p.y-.3+.1*cos(p.x*5.-u_time*.4))-.02));
+float PX;
+vec3 wall(vec2 p){
+ float t=u_time*.12;
+ vec3 c=mix(vec3(.05,.16,.62),vec3(.32,.62,1.),smoothstep(.1,1.,p.y));
+ float y1=.30+.16*sin(p.x*1.5+t*2.)+.05*sin(p.x*4.3-t*1.3);
+ float y2=.48+.14*sin(p.x*1.25-t*1.6+1.3)+.04*cos(p.x*3.7+t);
+ float y3=.86+.1*sin(p.x*1.8+t*1.2+2.);
+ vec3 org=mix(vec3(1.,.36,.06),vec3(1.,.62,.22),smoothstep(-.2,.3,p.y));
+ c=mix(c,vec3(1.,.27,.52),smoothstep(PX,-PX,p.y-y2));
+ c=mix(c,org,smoothstep(PX,-PX,p.y-y1));
+ c=mix(c,vec3(.98,.93,1.),smoothstep(PX*1.5,-PX*1.5,abs(p.y-y3)-.018));
+ c=mix(c,vec3(1.,.8,.55),smoothstep(PX*1.5,-PX*1.5,abs(p.y-y1-.07)-.006)*.8);
+ vec2 g=fract(p*vec2(9.,9.))-.5; c=mix(c,vec3(1.),smoothstep(.07+PX*9.,.07-PX*9.,length(g))*.35);
  return c;}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; vec2 ar=vec2(u_res.x/u_res.y,1.); vec2 p=uv*ar;
- vec2 c=mix(vec2(ar.x*.5,.5),u_mouse*ar,u_hover);
- vec2 b=vec2(.6,.3)*vec2(1.+.12*u_press,1.-.14*u_press); float R=.29;
+ PX=1./u_res.y;
+ vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y; vec2 p=vec2(uv.x*ar,uv.y);
+ vec2 ctr=vec2(ar*.5,.5); vec2 mp=u_mouse*vec2(ar,1.);
+ vec2 c=ctr+(mp-ctr)*vec2(.05,.08)*u_hover;
+ float sc=1.+.07*u_press;
+ vec2 b=vec2(.62,.27)*sc; float R=b.y;
  float d=sdRR(p-c,b,R);
- float inL=smoothstep(.004,-.004,d);
- vec2 e=vec2(.004,0.);
- vec2 grad=normalize(vec2(sdRR(p-c+e,b,R)-sdRR(p-c-e,b,R),sdRR(p-c+e.yx,b,R)-sdRR(p-c-e.yx,b,R))+1e-5);
- float edgeF=smoothstep(-.2,0.,d);
- float bend=pow(edgeF,3.)*.14;
- vec2 q=p-grad*bend-(p-c)*.07*(1.-edgeF);
- vec3 bg=bgc(p/ar), ref=bgc(q/ar)*1.04+.03;
- vec3 col=mix(bg,ref,inL);
- float rim=smoothstep(.0,-.025,d)*(1.-smoothstep(-.025,-.06,d));
- float ld=dot(grad,normalize(vec2(-.6,.85)));
- col+=rim*(max(ld,0.)*.95+max(-ld,0.)*.45)*inL;
- col-=smoothstep(.16,0.,d)*(1.-inL)*.14;
- col+=inL*(1.-edgeF)*.03;
- gl_FragColor=vec4(col,1.);}`;
+ vec2 e=vec2(PX,0.);
+ vec2 n=normalize(vec2(sdRR(p-c+e,b,R)-sdRR(p-c-e,b,R),sdRR(p-c+e.yx,b,R)-sdRR(p-c-e.yx,b,R))+1e-6);
+ float W=.15; float k=clamp(1.+d/W,0.,1.);
+ float amt=pow(k,2.6)*.16;
+ vec2 q=c+(p-c)*.93;
+ vec3 g;
+ g.r=wall(q+n*amt*1.18).r; g.g=wall(q+n*amt).g; g.b=wall(q+n*amt*.84).b;
+ g=mix(g,vec3(1.),.10+.06*u_hover+.1*u_press);
+ vec2 L=normalize(mix(vec2(-.62,.78),normalize(mp-c+vec2(1e-4)),.55*u_hover));
+ float ld=dot(n,L);
+ float rim=smoothstep(-.03,-.004,d);
+ g+=rim*(pow(max(ld,0.),2.)*.85+pow(max(-ld,0.),2.)*.45);
+ g+=pow(k,5.)*max(ld,0.)*.18;
+ g+=(1.-k)*.03*(.5+.5*(p.y-c.y)/b.y);
+ float ds=sdRR(p-c-vec2(0.,-.035),b,R);
+ vec3 bg=wall(p)*(1.-.28*(1.-smoothstep(-.02,.13,ds)));
+ float inside=smoothstep(PX,-PX,d);
+ gl_FragColor=vec4(mix(bg,g,inside),1.);}`;
 
 export default {
   id: 'sh-liquid-glass',
-  credit: 'Liquid Glass (Apple WWDC25 look) done in GLSL — a rounded-rect SDF lens refracts the pattern behind it with edge-bending, specular rim and drop shadow; it follows the pointer',
+  credit: 'Apple Liquid Glass (WWDC25 / iOS 26) in GLSL — a capsule lens refracts the wallpaper outward at its bevel with RGB dispersion, a two-sided specular rim and contact shadow; it leans toward the pointer and swells on press',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 280px; height: 110px; max-width: 100%; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #e9eefb; cursor: pointer; isolation: isolate; }
+    .btn { position: relative; display: grid; place-items: center; width: 280px; height: 110px; max-width: 100%; padding: 0; border: 0; border-radius: 20px; overflow: hidden; background: #1d3fb8; cursor: pointer; isolation: isolate; -webkit-tap-highlight-color: transparent; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.7) 0 30%, transparent 32%), #dfe6fa; }
-    .l { position: relative; z-index: 1; color: #1b1f33; font: 600 17px/1 'Inter', system-ui, sans-serif; letter-spacing: -.01em; pointer-events: none; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
-    .btn:focus-visible { outline: 2px solid #3a6cff; outline-offset: 3px; }
+    .cv.nogl { background: linear-gradient(180deg, #4f8dff, #1d3fb8 45%, #ff4a85 62%, #ff7a1f); }
+    .l { position: relative; z-index: 1; color: #fff; font: 600 17px/1 system-ui, -apple-system, 'Inter', sans-serif; letter-spacing: -.022em; pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,.18), 0 0 12px rgba(0,0,0,.12); transition: transform .35s cubic-bezier(.32,.72,0,1); }
+    .btn:active .l { transform: scale(1.06); }
+    .btn:focus-visible { outline: 2px solid #0a84ff; outline-offset: 3px; }
   `,
   html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Continue</span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 280, 110, FS, { pressDecay: 3 });
+    const s = shade(cv, btn, 280, 110, FS, { pressDecay: 1.4, idle: true, step: (st) => { if (st.down) st.press = Math.max(st.press, 1); } });
     return () => s.destroy();
   },
 };

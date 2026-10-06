@@ -74,43 +74,67 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Holographic foil: real thin-film interference. For film thickness d and refraction angle θ the phase
+// difference is δ = 4π·n·d·cosθ / λ; reflectance ≈ ½(1 − cos δ) per wavelength, summed over 10 visible
+// wavelengths weighted by approximate colour-matching lobes. Thickness varies with a slow noise field,
+// a diffraction mosaic (each cell a different grating offset) and the card tilt from the pointer.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse,u_pt;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
-vec3 hue(float h){return .5+.5*cos(6.2832*(h+vec3(0.,.33,.67)));}
+vec3 film(float d,float ct){vec3 acc=vec3(0.),nrm=vec3(0.);
+ for(int i=0;i<10;i++){float l=400.+float(i)*33.3;
+  vec3 cm=vec3(exp(-pow((l-605.)/48.,2.))+.3*exp(-pow((l-440.)/22.,2.)),exp(-pow((l-545.)/42.,2.)),exp(-pow((l-455.)/32.,2.)));
+  acc+=(.5-.5*cos(12.566*1.45*d*ct/l))*cm; nrm+=cm;}
+ return acc/nrm;}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; vec2 m=u_mouse-.5;
- float ang=dot(uv-.5,normalize(m+vec2(1e-3,2e-3)))*1.6+length(m)*2.2;
- float pat=noise(uv*vec2(7.,4.)+u_time*.08)*.6+sin((uv.x+uv.y)*22.+u_time*.5)*.06;
- vec3 rb=hue(ang+pat+u_time*.03);
- float sheen=pow(max(0.,1.-abs((uv.x-uv.y)+(m.x-m.y)*1.3)*2.2),2.);
- float grid=step(.92,fract(uv.x*18.))+step(.92,fract(uv.y*11.));
- vec3 base=vec3(.07,.07,.1)+.04*noise(uv*60.)+grid*.03;
- vec3 col=base+rb*(.18+.6*u_hover)*(.35+sheen*1.2);
- col+=vec3(1.)*sheen*.4*u_hover;
- col+=u_press*smoothstep(.8,0.,length(uv-u_pt))*.7*hue(u_time*.5);
+ vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y; float px=1./u_res.y;
+ vec2 tilt=mix(vec2(-.28,.22),(u_mouse-.5)*1.2,u_hover);
+ vec2 p=vec2((uv.x-.5)*ar,uv.y-.5);
+ // diffraction mosaic: rotated square cells, each with its own grating phase
+ vec2 r=mat2(.7071,-.7071,.7071,.7071)*p*24.; vec2 id=floor(r), f=fract(r)-.5;
+ float cell=hash(id); float edge=smoothstep(.5-px*30.,.5-px*8.,max(abs(f.x),abs(f.y)));
+ float d=300.+90.*noise(p*1.8+3.)+380.*(p.x*.5+p.y*.5)+260.*dot(tilt,p)+170.*dot(tilt,vec2(1.,.6));
+ d+=34.*(cell-.5)+25.*edge;
+ float ct=sqrt(max(0.,1.-.42*dot(tilt+p*.5,tilt+p*.5)));
+ vec3 h=film(d,ct); float g=dot(h,vec3(.333)); h=clamp(mix(vec3(g),h,1.9),0.,1.);
+ float brush=noise(vec2(p.x*3.,p.y*260.))*.06+noise(vec2(p.x*8.,p.y*90.))*.04;
+ vec3 silver=vec3(.78,.79,.82)+brush-.08*length(p);
+ float k=.5+.3*u_hover;
+ vec3 col=silver*mix(vec3(1.),.3+1.1*h,k);
+ col*=1.-.05*edge;
+ vec2 gp=mix(vec2(-.35*ar,.35),(u_mouse-.5)*vec2(ar,1.),u_hover);
+ float glare=exp(-dot(p-gp,p-gp)*3.5);
+ col+=vec3(1.)*glare*(.22+.25*u_hover);
+ float sweep=pow(max(0.,1.-abs((p.x+p.y*.8)-(tilt.x*1.4+tilt.y))*3.2),3.);
+ col+=sweep*.18*(.5+u_hover);
+ col+=u_press*exp(-dot(p-(u_pt-.5)*vec2(ar,1.),p-(u_pt-.5)*vec2(ar,1.))*6.)*.5*(1.-u_press*.4);
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-holo-foil',
-  credit: 'Holographic foil card button — thin-film rainbow computed from pointer angle in GLSL, with a diagonal sheen that follows the cursor (trading-card foil)',
+  credit: 'Holographic foil card — true thin-film interference (δ = 4πnd·cosθ/λ summed over the visible spectrum) on brushed silver with a diffraction mosaic in GLSL; the card tilts toward the pointer and the colours sweep like a trading-card holo',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 200px; height: 120px; max-width: 100%; padding: 0; border: 1px solid rgba(255,255,255,.18); border-radius: 14px; overflow: hidden; background: #0f0f16; cursor: pointer; isolation: isolate; transition: transform .25s, box-shadow .25s; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -16px rgba(120, 80, 255, .5); }
-    .btn:active { transform: translateY(0); }
+    .wrap { width: 200px; height: 120px; max-width: 100%; perspective: 700px; }
+    .btn { position: relative; display: grid; place-items: center; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: #c9cbd2; cursor: pointer; isolation: isolate; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .3s; box-shadow: inset 0 0 0 1px rgba(255,255,255,.55), 0 1px 2px rgba(0,0,0,.18), 0 6px 14px -8px rgba(0,0,0,.35); }
+    .btn.on { transition: transform .12s linear, box-shadow .3s; }
+    .btn:active { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(.98); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(135deg, #2b2b3a, #5a4fcf 40%, #ff7ad9 60%, #40e0ff 80%, #2b2b3a); }
-    .l { position: relative; z-index: 1; color: #fff; font: 700 26px/1 'Syne', system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; pointer-events: none; opacity: .92; }
-    .btn:focus-visible { outline: 2px solid #c8b8ff; outline-offset: 3px; }
+    .cv.nogl { background: linear-gradient(125deg, #c9cbd2 10%, #e8b9d6 30%, #a9d8e8 48%, #d9e6a8 62%, #e8c6a0 78%, #c9cbd2); }
+    .l { position: relative; z-index: 1; color: #15151d; font: 800 26px/1 'Syne', system-ui, sans-serif; letter-spacing: .16em; margin-right: -.16em; text-transform: uppercase; pointer-events: none; text-shadow: 0 1px 0 rgba(255,255,255,.55); mix-blend-mode: multiply; }
+    .btn:focus-visible { outline: 2px solid #6b5cff; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">holo</span></button>`,
+  html: `<div class="wrap"><button class="btn" type="button"><canvas class="cv"></canvas><span class="l">holo</span></button></div>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 200, 120, FS, { pressDecay: 1.4 });
+    const s = shade(cv, btn, 200, 120, FS, { pressDecay: 1.6 });
+    const move = (e) => { const r = btn.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; btn.style.setProperty('--ry', (x * 9).toFixed(2) + 'deg'); btn.style.setProperty('--rx', (-y * 9).toFixed(2) + 'deg'); };
+    btn.addEventListener('pointerenter', (e) => { btn.classList.add('on'); move(e); });
+    btn.addEventListener('pointermove', move);
+    btn.addEventListener('pointerleave', () => { btn.classList.remove('on'); btn.style.setProperty('--rx', '0deg'); btn.style.setProperty('--ry', '0deg'); });
     return () => s.destroy();
   },
 };

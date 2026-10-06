@@ -8,7 +8,7 @@ export default {
     .panel {
       display: grid; grid-template-columns: repeat(2, 56px); gap: 14px; padding: 18px; border-radius: 8px;
       background: repeating-linear-gradient(90deg, #c8c8cc 0 1px, #dcdce0 1px 3px, #d2d2d6 3px 4px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .6);
+      box-shadow: 0 14px 22px -6px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .6);
       transform-style: preserve-3d; transform: rotateY(-16deg) rotateX(4deg); transition: transform .5s;
     }
     .panel:hover { transform: rotateY(-8deg) rotateX(2deg); }

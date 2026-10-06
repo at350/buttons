@@ -74,38 +74,43 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse;
 float smin(float a,float b,float k){float h=clamp(.5+.5*(b-a)/k,0.,1.);return mix(b,a,h)-k*h*(1.-h);}
 float map(vec3 p){
- float sep=.6-.42*u_hover; vec3 sq=vec3(1.+.3*u_press,1.-.35*u_press,1.+.3*u_press);
- float a=length((p-vec3(-sep,0.,0.))/sq)-.5, b=length((p-vec3(sep,sin(u_time*1.5)*.08,0.))/sq)-.44;
- return smin(a,b,.3+.25*u_hover);}
-vec3 nrm(vec3 p){vec2 e=vec2(.003,0.);return normalize(vec3(map(p+e.xyy)-map(p-e.xyy),map(p+e.yxy)-map(p-e.yxy),map(p+e.yyx)-map(p-e.yyx)));}
+ p.y-=.06;
+ float sep=.5-.36*u_hover; vec3 sq=vec3(1.+.25*u_press,1.-.3*u_press,1.+.25*u_press);
+ float a=length((p-vec3(-sep,0.,0.))/sq)-.4, b=length((p-vec3(sep,sin(u_time*1.5)*.06,0.))/sq)-.35;
+ return smin(a,b,.28+.22*u_hover);}
+vec3 nrm(vec3 p){vec2 e=vec2(.002,0.);return normalize(vec3(map(p+e.xyy)-map(p-e.xyy),map(p+e.yxy)-map(p-e.yxy),map(p+e.yyx)-map(p-e.yyx)));}
+vec3 shadeAt(vec3 p,vec3 rd){
+ vec3 n=nrm(p); vec3 l=normalize(vec3(u_mouse*2.-1.,1.2));
+ float dif=max(dot(n,l),0.), spec=pow(max(dot(reflect(-l,n),-rd),0.),48.), fr=pow(1.-max(dot(n,-rd),0.),2.5);
+ vec3 base=mix(vec3(.96,.32,.52),vec3(.36,.5,1.),n.y*.5+.5);
+ return base*(dif*.8+.22)+spec*.85+fr*vec3(.55,.72,1.)*.6;}
 void main(){
  vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y;
  vec3 ro=vec3(0.,0.,2.4), rd=normalize(vec3(uv,-1.5));
- float t=0.,d=1.; for(int i=0;i<48;i++){d=map(ro+rd*t); if(d<.002||t>5.)break; t+=d;}
+ float pw=1.6/u_res.y/1.5; // world size of a pixel per unit ray length
+ float t=0.,d=1.,md=1e9,mt=0.;
+ for(int i=0;i<56;i++){d=map(ro+rd*t); float r=d/max(t,.5); if(r<md){md=r;mt=t;} if(d<.0015||t>5.)break; t+=d;}
  vec3 bg=vec3(.07,.08,.12)+.04*uv.y;
- float glow=exp(-max(d,0.)*6.)*.25*(.5+u_hover);
- if(d>.002){gl_FragColor=vec4(bg+glow*vec3(.4,.5,1.),1.);return;}
- vec3 p=ro+rd*t, n=nrm(p);
- vec3 l=normalize(vec3(u_mouse*2.-1.,1.2));
- float dif=max(dot(n,l),0.), spec=pow(max(dot(reflect(-l,n),-rd),0.),40.), fr=pow(1.-max(dot(n,-rd),0.),2.5);
- vec3 base=mix(vec3(.95,.3,.5),vec3(.35,.5,1.),n.y*.5+.5);
- vec3 col=base*(dif*.85+.2)+spec*.9+fr*vec3(.5,.7,1.)*.7;
+ float glow=exp(-max(d,0.)*6.)*.22*(.5+u_hover);
+ vec3 col=bg+glow*vec3(.4,.5,1.);
+ float cov=d<.0015?1.:1.-smoothstep(0.,pw*1.4,md);
+ if(cov>0.){vec3 p=ro+rd*(d<.0015?t:mt); col=mix(col,shadeAt(p,rd),cov);}
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-sdf-blob',
-  credit: 'Raymarched blob button — two SDF spheres joined with a smooth-union; they bulge together on hover and squash on press, lit from the pointer',
+  credit: 'Raymarched blob button — two SDF spheres joined with a smooth-union (anti-aliased silhouette); they bulge together on hover and squash on press, lit from the pointer',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .btn { position: relative; display: grid; place-items: center; width: 220px; height: 130px; max-width: 100%; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #12141c; cursor: pointer; isolation: isolate; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
     .cv.nogl { background: radial-gradient(circle at 35% 50%, #f04c80 0 22%, transparent 24%), radial-gradient(circle at 65% 50%, #5a80ff 0 20%, transparent 22%), #12141c; }
-    .l { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 1; color: rgba(255,255,255,.8); font: 500 12px/1 'Space Grotesk', system-ui, sans-serif; letter-spacing: .25em; text-transform: uppercase; pointer-events: none; }
+    .l { position: absolute; left: 0; right: 0; bottom: 11px; z-index: 1; color: rgba(255,255,255,.82); font: 500 12px/1 'Space Grotesk', system-ui, sans-serif; letter-spacing: .25em; text-transform: uppercase; pointer-events: none; }
     .btn:focus-visible { outline: 2px solid #8fa8ff; outline-offset: 3px; }
   `,
   html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">merge</span></button>`,

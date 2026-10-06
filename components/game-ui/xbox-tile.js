@@ -1,52 +1,54 @@
+// Xbox Series X|S dashboard: near-black canvas, square tiles with 4px radius, the focused tile scales ~5%
+// with a thick white focus frame, Segoe UI type, #107C10 Game Pass tile; the pin control toggles a pinned badge.
+const XBOX = 'M4.102 21.033C6.211 22.881 8.977 24 12 24c3.026 0 5.789-1.119 7.902-2.967 1.877-1.912-4.316-8.709-7.902-11.417-3.582 2.708-9.779 9.505-7.898 11.417zm11.16-14.406c2.5 2.961 7.484 10.313 6.076 12.912C23.002 17.48 24 14.861 24 12.004c0-3.34-1.365-6.362-3.57-8.536 0 0-.027-.022-.082-.042-.063-.022-.152-.045-.281-.045-.592 0-1.985.434-4.805 3.246zM3.654 3.426c-.057.02-.082.041-.086.042C1.365 5.642 0 8.664 0 12.004c0 2.854.998 5.473 2.661 7.533-1.401-2.605 3.579-9.951 6.08-12.91-2.82-2.813-4.216-3.245-4.806-3.245-.131 0-.223.021-.281.046v-.002zM12 3.551S9.055 1.828 6.755 1.746c-.903-.033-1.454.295-1.521.339C7.379.646 9.659 0 11.984 0H12c2.334 0 4.605.646 6.766 2.085-.068-.046-.615-.372-1.52-.339C14.946 1.828 12 3.545 12 3.545v.006z';
+const PIN = 'M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z';
 export default {
   id: 'gm-xbox-tile',
-  credit: 'Microsoft Xbox Series X|S dashboard — green game tile that lifts with a white focus frame and glow; pin toggles the corner badge',
+  credit: 'Microsoft Xbox Series X|S dashboard — #107C10 Game Pass tile and neighbours; focus scales the tile with the thick white frame, the pin toggles',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: linear-gradient(160deg, #1f1f23, #0e0e11); padding: 24px 28px; border-radius: 12px; display: inline-flex; gap: 14px; }
-    .tile { position: relative; width: 120px; height: 120px; border-radius: 6px; border: none; padding: 0; cursor: pointer; text-align: left; overflow: visible;
-      background: linear-gradient(135deg, #1aa34a, #107c10 55%, #0a4d0a); color: #fff; font: 700 13px 'Inter', system-ui, sans-serif;
-      box-shadow: 0 6px 14px rgba(0,0,0,.5); transition: transform .18s ease, box-shadow .18s ease; }
-    .tile::before { content: ""; position: absolute; inset: -5px; border-radius: 9px; border: 3px solid #fff; opacity: 0; transition: opacity .18s; pointer-events: none; }
-    .tile:hover, .tile:focus-visible, .tile.sel { transform: translateY(-6px) scale(1.04); box-shadow: 0 14px 28px rgba(0,0,0,.6), 0 0 26px rgba(16,124,16,.7); outline: none; }
-    .tile:hover::before, .tile:focus-visible::before, .tile.sel::before { opacity: 1; }
-    .tile:active { transform: translateY(-2px) scale(1.0); }
-    .logo { position: absolute; left: 10px; top: 10px; width: 24px; height: 24px; }
-    .logo svg { width: 100%; height: 100%; fill: #fff; }
-    .name { position: absolute; left: 10px; bottom: 10px; right: 10px; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
-    .pin { position: absolute; right: 8px; top: 8px; width: 22px; height: 22px; border-radius: 50%; border: none; cursor: pointer; padding: 0;
-      background: rgba(0,0,0,.45); color: #fff; display: grid; place-items: center; opacity: .75; }
-    .pin svg { width: 12px; height: 12px; fill: #fff; transition: transform .2s; }
-    .pin.on { background: #fff; opacity: 1; } .pin.on svg { fill: #107c10; transform: rotate(-45deg); }
+    .stage { position: relative; padding: 22px 22px 18px; border-radius: 12px; overflow: hidden; display: flex; gap: 12px; align-items: flex-start;
+      background: radial-gradient(ellipse at 20% 0%, rgba(16,124,16,.28), transparent 60%), #0e0e0e;
+      font-family: 'Segoe UI', 'Segoe UI Variable Text', system-ui, -apple-system, sans-serif; }
+    .t { position: relative; flex: none; border: none; padding: 0; cursor: pointer; border-radius: 4px; color: #fff; text-align: left;
+      transition: transform 167ms cubic-bezier(0,0,0,1), box-shadow 167ms cubic-bezier(0,0,0,1); box-shadow: 0 4px 10px rgba(0,0,0,.5); }
+    .t::after { content: ""; position: absolute; inset: -6px; border: 3px solid #fff; border-radius: 7px; opacity: 0; transition: opacity 120ms; pointer-events: none; }
+    .t:hover, .t:focus-visible, .t.sel { transform: scale(1.05); box-shadow: 0 10px 22px rgba(0,0,0,.7); outline: none; z-index: 1; }
+    .t:hover::after, .t:focus-visible::after, .t.sel::after { opacity: 1; }
+    .t:active { transform: scale(1.01); }
+    .gp { width: 112px; height: 112px; background: #107c10; }
+    .gp svg { position: absolute; left: 50%; top: 42%; width: 40px; height: 40px; transform: translate(-50%, -50%); fill: #fff; }
+    .lbl { position: absolute; left: 9px; bottom: 7px; font: 600 12px/1.2 'Segoe UI', system-ui, sans-serif; white-space: nowrap; }
+    .col { display: flex; flex-direction: column; gap: 12px; }
+    .sm { width: 50px; height: 50px; display: grid; place-items: center; }
+    .store { background: #2d2d2d; } .store svg { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .halo { background: radial-gradient(ellipse at 50% 38%, #b8e986 0 10%, #3c7a3a 11% 20%, transparent 21%), linear-gradient(170deg, #5c6b74, #1d262c 70%); }
+    .pin { position: absolute; right: 6px; top: 6px; z-index: 2; width: 22px; height: 22px; border-radius: 50%; border: none; padding: 0; cursor: pointer; display: grid; place-items: center;
+      background: rgba(0,0,0,.35); transition: background 120ms; }
+    .pin svg { width: 13px; height: 13px; fill: #fff; transform: rotate(45deg); transition: transform 167ms cubic-bezier(0,0,0,1); }
+    .pin:hover { background: rgba(0,0,0,.6); }
+    .pin.on { background: #fff; } .pin.on svg { fill: #107c10; transform: rotate(0); }
     .pin:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-    .small { width: 60px; height: 120px; display: flex; flex-direction: column; gap: 10px; }
-    .mini { flex: 1; border-radius: 6px; border: none; cursor: pointer; background: #2a2a30; transition: transform .18s, box-shadow .18s; position: relative; }
-    .mini::before { content: ""; position: absolute; inset: -4px; border-radius: 8px; border: 3px solid #fff; opacity: 0; transition: opacity .18s; }
-    .mini:hover, .mini:focus-visible, .mini.sel { transform: scale(1.06); outline: none; box-shadow: 0 8px 18px rgba(0,0,0,.6); }
-    .mini:hover::before, .mini:focus-visible::before, .mini.sel::before { opacity: 1; }
-    .m1 { background: linear-gradient(135deg, #3b6ef0, #1e3a8a); } .m2 { background: linear-gradient(135deg, #e94b7a, #7a1d3a); }
+    .wrap { position: relative; }
   `,
   html: `
     <div class="stage">
-      <div style="position:relative">
-        <button class="tile" type="button" aria-pressed="false">
-          <span class="logo"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-6.4 2.3c1.9-.6 4.3.9 6.4 2.6 2.1-1.7 4.5-3.2 6.4-2.6A10 10 0 0 0 12 2zM4.3 5.9A10 10 0 0 0 5.2 19c-.6-2.9 2.4-7.6 4.9-10.5C8.1 6.6 5.9 5.4 4.3 5.9zm15.4 0c-1.6-.5-3.8.7-5.8 2.6 2.5 2.9 5.5 7.6 4.9 10.5a10 10 0 0 0 .9-13.1zM12 10.4c-3.5 3.3-6.9 7.9-5.6 9.8A10 10 0 0 0 12 22a10 10 0 0 0 5.6-1.8c1.3-1.9-2.1-6.5-5.6-9.8z"/></svg></span>
-          <span class="name">Halo Infinite</span>
-        </button>
-        <button class="pin" type="button" aria-label="Pin" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M14 2l8 8-3 1-3 3 .5 5.5L14 17l-4 4-1-1 4-4-2.5-2.5L5 14l1-3 3-3 1-3 2 2 2-2z"/></svg></button>
+      <div class="wrap">
+        <button class="t gp" type="button" aria-pressed="false" aria-label="Xbox Game Pass"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${XBOX}"/></svg><span class="lbl">Game Pass</span></button>
+        <button class="pin" type="button" aria-label="Pin to Home" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${PIN}"/></svg></button>
       </div>
-      <div class="small">
-        <button class="mini m1" type="button" aria-label="Store" aria-pressed="false"></button>
-        <button class="mini m2" type="button" aria-label="Game Pass" aria-pressed="false"></button>
+      <div class="col">
+        <button class="t sm store" type="button" aria-label="Microsoft Store" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg></button>
+        <button class="t sm halo" type="button" aria-label="Halo Infinite" aria-pressed="false"></button>
       </div>
     </div>`,
   init(root) {
-    const tiles = [...root.querySelectorAll('.tile, .mini')];
+    const tiles = [...root.querySelectorAll('.t')];
     tiles.forEach((t) => t.addEventListener('click', () => {
       tiles.forEach((o) => { const on = o === t && !o.classList.contains('sel'); o.classList.toggle('sel', on); o.setAttribute('aria-pressed', String(on)); });
     }));
     const pin = root.querySelector('.pin');
-    pin.addEventListener('click', (e) => { e.stopPropagation(); const on = pin.classList.toggle('on'); pin.setAttribute('aria-pressed', String(on)); });
+    pin.addEventListener('click', (e) => { e.stopPropagation(); const on = pin.classList.toggle('on'); pin.setAttribute('aria-pressed', String(on)); pin.setAttribute('aria-label', on ? 'Unpin from Home' : 'Pin to Home'); });
   },
 };

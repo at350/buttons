@@ -1,37 +1,63 @@
+// Aircraft-panel guarded toggle (MS24658-style red flip cover over an MS24523-style bat switch).
+// The guard is hinged at the top: it flips up and over (drawn as a true projection — its height is
+// L*cos(angle), so it never leaves the panel). Closing the guard forces the switch back to OFF.
 export default {
   id: 'ph-guard-toggle',
-  credit: 'Aircraft-style guarded toggle switch — lift the red guard, flip the bat; closing the guard forces it off',
+  credit: 'Aircraft-style guarded toggle (MS24658 red flip guard) — lift the guard, flip the bat; closing the guard forces it off',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: inline-block; padding: 20px 28px; border-radius: 12px; background: linear-gradient(#3c3f45, #262a30); }
-    .panel { position: relative; width: 70px; height: 112px; border-radius: 6px; background: linear-gradient(160deg, #5e636b, #40454c); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 2px 4px rgba(0,0,0,.6); perspective: 260px; }
-    .nut { position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px; background: radial-gradient(circle, #1a1a1c 0 22%, #9aa0a6 25%, #e9ecef 32%, #7a8087 100%); clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%); box-shadow: inset 0 2px 3px rgba(0,0,0,.6); }
-    .sw { position: absolute; left: 50%; top: 50%; width: 30px; height: 70px; margin: -35px 0 0 -15px; border: 0; padding: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .stage { display: inline-block; padding: 14px 22px; border-radius: 12px; background: linear-gradient(#2c3035, #1b1e22); }
+    .panel {
+      position: relative; width: 96px; height: 156px; border-radius: 4px;
+      background: radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 0 .7px, transparent 1px) 0 0 / 3px 3px, linear-gradient(170deg, #50555c, #393d43);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.6);
+    }
+    .panel > i { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #c9cdd2, #60656b); box-shadow: inset 0 0 0 .5px #000; }
+    .panel > i:nth-of-type(1) { left: 5px; top: 5px; } .panel > i:nth-of-type(2) { right: 5px; top: 5px; } .panel > i:nth-of-type(3) { left: 5px; bottom: 5px; } .panel > i:nth-of-type(4) { right: 5px; bottom: 5px; }
+    .legend { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font: 700 8px/1 "Roboto Flex", Inter, Arial, sans-serif; font-variation-settings: "wdth" 80; letter-spacing: 1.4px; color: #eceff1; }
+    .mark { position: absolute; left: 72px; font: 700 7.5px/1 "Roboto Flex", Inter, Arial, sans-serif; font-variation-settings: "wdth" 80; color: #eceff1; letter-spacing: .6px; }
+    .mark.on { top: 46px; } .mark.off { top: 98px; }
+    /* switch */
+    .nut { position: absolute; left: 31px; top: 61px; width: 34px; height: 34px;
+      background: radial-gradient(circle, #121315 0 26%, #8f959b 29%, #eef0f2 40%, #9aa0a6 62%, #5f656b 100%);
+      clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%); }
+    .sw { position: absolute; left: 33px; top: 34px; width: 30px; height: 88px; border: 0; padding: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .sw:focus-visible { outline: 2px solid #7cc4ff; outline-offset: 2px; border-radius: 4px; }
     .bat {
-      position: absolute; left: 50%; top: 35px; width: 12px; height: 34px; margin-left: -6px; border-radius: 6px 6px 7px 7px;
-      background: linear-gradient(90deg, #5a5e64, #f0f2f4 40%, #b7bbc0 60%, #4e5258); box-shadow: 0 3px 4px rgba(0,0,0,.7);
-      transform-origin: 50% 0; transform: rotateX(28deg); transition: transform .09s cubic-bezier(.3,1.5,.6,1), top .09s cubic-bezier(.3,1.5,.6,1);
+      position: absolute; left: 50%; top: 44px; width: 10px; height: 34px; margin-left: -5px; border-radius: 5px 5px 3px 3px;
+      background: linear-gradient(90deg, #6b7076, #f4f6f7 38%, #b9bdc2 62%, #5d6268);
+      box-shadow: 0 3px 3px rgba(0,0,0,.6);
+      transform: translateY(0); transition: transform .1s cubic-bezier(.6,0,.3,1.5);
     }
-    .sw[aria-pressed="true"] .bat { top: 1px; transform-origin: 50% 100%; transform: rotateX(-28deg); }
-    .hinge { position: absolute; left: 12px; right: 12px; bottom: 4px; height: 6px; border-radius: 3px; background: linear-gradient(#e6e6e6, #777); box-shadow: 0 1px 2px rgba(0,0,0,.6); }
+    .bat::before { content: ''; position: absolute; left: -1px; right: -1px; bottom: -1px; height: 11px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff, #b7bcc1 55%, #60656b); }
+    .sw[aria-pressed="true"] .bat { transform: translateY(-34px) scaleY(-1); }
+    /* guard: hinge at y=30, 78px long */
+    .hinge { position: absolute; left: 24px; top: 25px; width: 48px; height: 9px; border-radius: 4px; z-index: 3; background: linear-gradient(#f2f3f4, #9aa0a6 55%, #5e636a); box-shadow: 0 1px 2px rgba(0,0,0,.6); }
     .guard {
-      position: absolute; left: 10px; right: 10px; top: 6px; bottom: 8px; border: 0; padding: 0; border-radius: 6px 6px 3px 3px; cursor: pointer;
-      background: linear-gradient(90deg, #8a0d10, #e4201c 40%, #c2161a 60%, #6f0a0c); box-shadow: 0 4px 6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.3);
-      transform-origin: 50% 100%; transition: transform .3s cubic-bezier(.3,1.2,.5,1); -webkit-tap-highlight-color: transparent;
+      position: absolute; left: 26px; top: 30px; width: 44px; height: 86px; border: 0; padding: 0; cursor: pointer; z-index: 2;
+      border-radius: 4px 4px 8px 8px; transform-origin: 50% 0;
+      background: linear-gradient(90deg, #7c0b0d, #d81e1b 18%, #f0352f 40%, #c51714 70%, #6d090b);
+      box-shadow: 0 4px 6px rgba(0,0,0,.55), inset 0 -3px 0 rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.3);
+      transition: transform .34s cubic-bezier(.3,1.25,.5,1); -webkit-tap-highlight-color: transparent;
     }
-    .guard::after { content: ''; position: absolute; left: 50%; top: 8px; width: 16px; height: 6px; margin-left: -8px; border-radius: 3px; background: rgba(0,0,0,.35); box-shadow: inset 0 1px 1px rgba(0,0,0,.6); }
-    .guard[aria-expanded="true"] { transform: rotateX(115deg); box-shadow: 0 -4px 8px rgba(0,0,0,.3); }
+    .guard::before { content: ''; position: absolute; left: 50%; bottom: 7px; width: 18px; height: 8px; margin-left: -9px; border-radius: 4px; background: linear-gradient(#5d0708, #a71512); box-shadow: inset 0 1px 2px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.2); }
+    .guard::after { content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity 0s .1s;
+      background: linear-gradient(90deg, #4a0607, #8f100f 20%, #6d0b0b 80%, #3e0505); box-shadow: inset 0 0 0 3px #b51713, inset 0 6px 8px rgba(0,0,0,.6); }
+    .guard[aria-expanded="true"] { transform: scaleY(-0.25); box-shadow: 0 -2px 3px rgba(0,0,0,.4); }
+    .guard[aria-expanded="true"]::after { opacity: 1; }
     .guard:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   `,
   html: `
     <div class="stage">
       <div class="panel">
+        <i></i><i></i><i></i><i></i>
+        <span class="mark on" aria-hidden="true">ON</span><span class="mark off" aria-hidden="true">OFF</span>
         <div class="nut"></div>
-        <button class="sw" type="button" aria-pressed="false" aria-label="toggle switch" tabindex="-1"><span class="bat"></span></button>
-        <button class="guard" type="button" aria-expanded="false" aria-label="switch guard"></button>
+        <button class="sw" type="button" aria-pressed="false" aria-label="Master arm switch" tabindex="-1"><span class="bat"></span></button>
+        <button class="guard" type="button" aria-expanded="false" aria-label="Switch guard"></button>
         <div class="hinge"></div>
+        <span class="legend" aria-hidden="true">MASTER ARM</span>
       </div>
     </div>`,
   init(root) {

@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .bar { display: inline-flex; gap: 6px; padding: 10px; background: #fff; border: 1px solid #111; border-radius: 12px; position: relative; }
     .tab {
       cursor: pointer; background: #f4f4f0; border: 0; border-radius: 6px; padding: 16px 10px; height: 176px; width: 44px; color: #555;

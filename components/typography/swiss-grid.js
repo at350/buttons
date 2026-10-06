@@ -1,9 +1,10 @@
 export default {
   id: 'ty-swiss-grid',
-  credit: 'Swiss / International Style button — tight-tracked Inter on a hairline grid with a single red dot that travels across on hover (Müller-Brockmann poster grammar)',
+  credit: 'Swiss / International Style button — tight-tracked Inter on a hairline grid with a single red dot that steps diagonally one module on hover (Müller-Brockmann poster grammar)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .btn {
       cursor: pointer;
       width: 220px;
@@ -41,14 +42,15 @@ export default {
       left: 12px;
       top: 10px;
       font: 700 34px/.95 Inter, Helvetica, Arial, sans-serif;
-      letter-spacing: -.06em;
+      letter-spacing: -.035em;
     }
     .s {
       position: absolute;
       left: 12px;
       bottom: 10px;
-      font: 500 11px/1 Inter, Helvetica, Arial, sans-serif;
-      letter-spacing: .02em;
+      font: 600 11px/1 Inter, Helvetica, Arial, sans-serif;
+      letter-spacing: .04em;
+      font-feature-settings: 'case', 'cpsp', 'tnum';
       text-transform: uppercase;
       display: inline-grid;
     }
@@ -68,11 +70,11 @@ export default {
       background: #e3241b;
       right: 14px;
       top: 14px;
-      transition: transform .5s cubic-bezier(.76, 0, .24, 1), width .3s, height .3s;
+      transition: transform .5s cubic-bezier(.76, 0, .24, 1);
     }
-    .btn:hover .dot { transform: translate(-110px, 56px); }
-    .btn.on .dot { transform: translate(-110px, 56px) scale(1.4); }
-    .btn:active .dot { transform: translate(-110px, 56px) scale(.6); }
+    .btn:hover .dot, .btn:focus-visible .dot { transform: translate(-55px, 55px); }
+    .btn.on .dot { transform: translate(-55px, 55px) scale(1.4); }
+    .btn:active .dot { transform: translate(-55px, 55px) scale(.7); transition-duration: .15s; }
     .btn:focus-visible { outline: 2px solid #e3241b; outline-offset: 3px; }
   `,
   html: `<button class="btn" type="button" aria-pressed="false"><span class="t">Grid<br>System</span><span class="s"><span class="a">Zürich 1961</span><span class="b" aria-hidden="true">Basel 1963</span></span><i class="dot" aria-hidden="true"></i></button>`,

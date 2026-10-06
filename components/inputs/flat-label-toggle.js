@@ -1,32 +1,32 @@
+// Designmodo Flat UI (2013) bootstrap-switch, values from flat-ui.css 2.3.0:
+// 80×29 pill, a 132px strip that slides margin-left 0 / -51px in .25s ease-out,
+// ON half #34495e with #1abc9c text, OFF half #bdc3c7 with white text,
+// 29px knob with a 4px border in the track color (turquoise when on, #7f8c9a when off).
 export default {
   id: 'in-flat-label-toggle',
-  credit: 'Flat UI toggle — square knob with ON / OFF label sliding inside the track',
+  credit: 'Designmodo Flat UI switch (2013) — navy / turquoise ON, silver OFF, the whole label strip slides under a ringed knob',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .t {
-      position: relative; width: 84px; height: 34px; border-radius: 6px; border: 0; padding: 0; cursor: pointer; overflow: hidden;
-      background: #e74c3c; transition: background .25s; font: 700 12px/1 system-ui, sans-serif; letter-spacing: .1em; color: #fff;
-      -webkit-tap-highlight-color: transparent;
+      position: relative; display: block; width: 80px; height: 29px; border-radius: 30px; border: 0; padding: 0; overflow: hidden; cursor: pointer;
+      background: #bdc3c7; font: 700 15px/19px Lato, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent;
     }
-    .t:hover { filter: brightness(1.06); }
-    .t:focus-visible { outline: 3px solid #2d3436; outline-offset: 2px; }
-    .t[aria-checked="true"] { background: #2ecc71; }
-    .lbl { position: absolute; top: 0; height: 100%; width: 50px; display: flex; align-items: center; justify-content: center; transition: transform .25s cubic-bezier(.4,0,.2,1), opacity .2s; }
-    .off { right: 0; }
-    .on { left: 0; transform: translateX(-20px); opacity: 0; }
-    .t[aria-checked="true"] .off { transform: translateX(20px); opacity: 0; }
-    .t[aria-checked="true"] .on { transform: none; opacity: 1; }
+    .t:focus-visible { outline: 2px solid #1abc9c; outline-offset: 2px; }
+    .strip { position: absolute; top: 0; left: 0; width: 132px; height: 29px; display: flex; transform: translateX(-51px); transition: transform .25s ease-out; }
+    .t[aria-checked="true"] .strip { transform: translateX(0); }
+    .on, .off { width: 66px; height: 29px; padding: 5px 0; text-align: center; transition: box-shadow .25s ease-out; }
+    .on { background: #34495e; color: #1abc9c; padding-right: 15px; }
+    .off { background: #bdc3c7; color: #fff; padding-left: 15px; }
     .knob {
-      position: absolute; top: 4px; left: 4px; width: 26px; height: 26px; border-radius: 4px; background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .25s cubic-bezier(.4,0,.2,1);
+      position: absolute; top: 0; left: 51px; width: 29px; height: 29px; border-radius: 50%; border: 4px solid #bdc3c7; background: #7f8c9a;
+      background-clip: padding-box; transition: border-color .25s ease-out, background-color .25s ease-out;
     }
-    .t:active .knob { transform: scaleX(1.15); transform-origin: left; }
-    .t[aria-checked="true"] .knob { transform: translateX(50px); }
-    .t[aria-checked="true"]:active .knob { transform: translateX(46px) scaleX(1.15); transform-origin: right; }
+    .t[aria-checked="true"] .knob { border-color: #34495e; background-color: #1abc9c; }
+    .t:hover .knob { filter: brightness(1.06); }
   `,
-  html: `<button class="t" type="button" role="switch" aria-checked="false" aria-label="Flat toggle">
-    <span class="lbl on">ON</span><span class="lbl off">OFF</span><span class="knob"></span>
+  html: `<button class="t" type="button" role="switch" aria-checked="true" aria-label="Notifications">
+    <span class="strip"><span class="on">ON</span><span class="off">OFF</span><span class="knob"></span></span>
   </button>`,
   init(root) {
     const b = root.querySelector('.t');

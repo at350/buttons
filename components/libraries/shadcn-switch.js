@@ -1,31 +1,28 @@
 export default {
   id: 'lb-shadcn-switch',
-  credit: 'shadcn/ui — Switch (Radix) with label, zinc theme: 44×24 track, 20px thumb, ring offset on focus',
+  credit: 'shadcn/ui (new-york v4) — Switch with Label "Airplane Mode": 32×18.4 track (bg-input → bg-primary), size-4 thumb sliding calc(100% − 2px), shadow-xs, 3px ring/50 focus; plus the dark-theme rendering',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .row { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 Inter, -apple-system, system-ui, sans-serif; color: #09090b; }
-    .sw { position: relative; width: 44px; height: 24px; flex: none; border-radius: 9999px; border: 2px solid transparent; background: #e4e4e7; padding: 0; cursor: pointer; transition: background .15s; -webkit-tap-highlight-color: transparent; }
-    .sw:focus-visible { outline: 0; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b; }
-    .sw[aria-checked="true"] { background: #18181b; }
-    .sw[disabled] { opacity: .5; cursor: not-allowed; }
-    .th { position: absolute; top: 0; left: 0; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.1); transition: transform .15s cubic-bezier(.4,0,.2,1); pointer-events: none; }
-    .sw[aria-checked="true"] .th { transform: translateX(20px); }
-    .lbl { cursor: pointer; user-select: none; }
-    .dark { display: inline-flex; align-items: center; gap: 8px; margin-left: 20px; padding: 12px 16px; border-radius: 12px; background: #09090b; color: #fafafa; }
-    .dark .sw { background: #27272a; }
-    .dark .sw[aria-checked="true"] { background: #fafafa; }
-    .dark .sw[aria-checked="true"] .th { background: #18181b; }
-    .dark .sw:focus-visible { box-shadow: 0 0 0 2px #09090b, 0 0 0 4px #d4d4d8; }
+    .row { display: inline-flex; align-items: center; gap: 20px; font: 500 14px/1 Inter, -apple-system, system-ui, sans-serif; color: #0a0a0a; }
+    .it { display: inline-flex; align-items: center; gap: 8px; }
+    .sw { display: inline-flex; flex: none; align-items: center; width: 32px; height: 1.15rem; padding: 0; border-radius: 9999px; border: 1px solid transparent; background: #e5e5e5; box-shadow: 0 1px 2px rgba(0,0,0,.05); cursor: pointer; outline: none; transition: all .15s cubic-bezier(.4,0,.2,1); -webkit-tap-highlight-color: transparent; }
+    .sw[aria-checked="true"] { background: #171717; }
+    .sw:focus-visible { border-color: #a1a1a1; box-shadow: 0 0 0 3px rgba(161,161,161,.5); }
+    .th { display: block; width: 16px; height: 16px; border-radius: 9999px; background: #fff; pointer-events: none; transition: transform .15s cubic-bezier(.4,0,.2,1); }
+    .sw[aria-checked="true"] .th { transform: translateX(calc(100% - 2px)); }
+    .lbl { cursor: pointer; user-select: none; line-height: 1; }
+    .dark { padding: 12px 16px; border-radius: 12px; background: #0a0a0a; color: #fafafa; }
+    .dark .sw { background: rgba(255,255,255,.12); }
+    .dark .sw[aria-checked="true"] { background: #e5e5e5; }
+    .dark .th { background: #fafafa; }
+    .dark .sw[aria-checked="true"] .th { background: #171717; }
+    .dark .sw:focus-visible { border-color: #737373; box-shadow: 0 0 0 3px rgba(115,115,115,.5); }
   `,
   html: `
     <div class="row">
-      <button class="sw" type="button" role="switch" aria-checked="false" id="a"><span class="th"></span></button>
-      <label class="lbl" for="a">Airplane Mode</label>
-      <span class="dark">
-        <button class="sw" type="button" role="switch" aria-checked="true" id="b"><span class="th"></span></button>
-        <label class="lbl" for="b">Dark</label>
-      </span>
+      <span class="it"><button class="sw" type="button" role="switch" aria-checked="false" id="a"><span class="th"></span></button><label class="lbl" for="a">Airplane Mode</label></span>
+      <span class="it dark"><button class="sw" type="button" role="switch" aria-checked="true" id="b"><span class="th"></span></button><label class="lbl" for="b">Airplane Mode</label></span>
     </div>`,
   init(root) {
     root.querySelectorAll('.sw').forEach((b) => b.addEventListener('click', () => b.setAttribute('aria-checked', b.getAttribute('aria-checked') !== 'true')));

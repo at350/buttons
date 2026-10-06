@@ -1,81 +1,83 @@
+// iOS "slide to power off": a frosted capsule on the dimmed wallpaper, white knob carrying a red power glyph,
+// shimmering "slide to power off" label that fades as the knob travels; releasing early springs back
+// (iOS spring cubic-bezier(.32,.72,0,1)), reaching the end powers off: the screen goes black with the
+// 8-spoke activity indicator, then comes back.
 export default {
   id: 'in-slide-confirm',
-  credit: 'Slide-to-confirm track — drag the knob all the way right to confirm (iOS "slide to unlock" / Revolut style)',
+  credit: 'Apple iOS "slide to power off" — frosted capsule, white knob with red power glyph, shimmering label, spring-back',
   size: 'wide',
   css: `
     :host { display: block; }
+    .stage {
+      position: relative; width: 320px; max-width: 100%; margin: 0 auto; padding: 22px 18px; border-radius: 12px; overflow: hidden;
+      background: radial-gradient(120% 140% at 15% 0%, #3d5a80 0%, #293241 45%, #121620 100%);
+    }
     .track {
-      position: relative; width: 100%; max-width: 300px; height: 54px; border-radius: 27px; background: #e5e7eb;
-      user-select: none; touch-action: none; overflow: hidden; margin: 0 auto;
+      position: relative; height: 62px; border-radius: 31px; background: rgba(255,255,255,.22);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);
+      user-select: none; touch-action: none; transition: opacity .35s ease;
     }
-    .fill { position: absolute; inset: 0; background: #22c55e; opacity: var(--p, 0); transition: opacity .2s; }
-    .track.drag .fill { transition: none; }
-    .chev { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 2px; opacity: calc(1 - var(--p, 0) * 1.5); color: #9ca3af; }
-    .chev svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-    .track:hover .chev svg { animation: nudge 1s infinite; }
-    .chev svg:nth-child(2) { animation-delay: .15s; } .chev svg:nth-child(3) { animation-delay: .3s; }
-    @keyframes nudge { 0%, 100% { transform: translateX(0); opacity: .5; } 50% { transform: translateX(4px); opacity: 1; } }
-    .track.done .chev { display: none; }
+    .lbl {
+      position: absolute; inset: 0 0 0 62px; display: grid; place-items: center; white-space: nowrap; pointer-events: none;
+      font: 400 19px/1 system-ui, -apple-system, "SF Pro Text", sans-serif; letter-spacing: -.01em;
+      color: transparent; background: linear-gradient(100deg, rgba(255,255,255,.45) 40%, #fff 50%, rgba(255,255,255,.45) 60%) 0 0 / 300% 100%;
+      -webkit-background-clip: text; background-clip: text; animation: shine 2.6s linear infinite;
+      opacity: calc(1 - var(--p, 0) * 2.2);
+    }
+    @keyframes shine { from { background-position: 100% 0; } to { background-position: 0 0; } }
     .knob {
-      position: absolute; top: 4px; left: 4px; width: 46px; height: 46px; border-radius: 50%; background: #fff; border: 0; padding: 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,.2); cursor: grab; display: grid; place-items: center; color: #111;
-      transform: translateX(var(--x, 0px)); transition: transform .3s cubic-bezier(.34,1.3,.64,1);
+      position: absolute; top: 4px; left: 4px; width: 54px; height: 54px; border-radius: 50%; border: 0; padding: 0; background: #fff;
+      display: grid; place-items: center; cursor: grab; color: #ff3b30; box-shadow: 0 1px 4px rgba(0,0,0,.18);
+      transform: translateX(var(--x, 0px)); transition: transform .45s cubic-bezier(.32,.72,0,1);
+      -webkit-tap-highlight-color: transparent;
     }
+    .knob:hover { box-shadow: 0 2px 10px rgba(0,0,0,.28); }
     .track.drag .knob { transition: none; cursor: grabbing; }
-    .knob:focus-visible { outline: 3px solid #22c55e; outline-offset: 2px; }
-    .knob svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; position: absolute; transition: opacity .2s; }
-    .ok { opacity: 0; color: #22c55e; } .track.done .ok { opacity: 1; } .track.done .arr { opacity: 0; }
+    .knob:focus-visible { outline: 3px solid rgba(255,255,255,.85); outline-offset: 3px; }
+    .knob svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+    .black { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; transition: opacity .5s ease; display: grid; place-items: center; }
+    .stage.off .black { opacity: 1; }
+    .stage.off .track { opacity: 0; }
+    .spin { width: 26px; height: 26px; animation: step 1s steps(8) infinite; }
+    .spin rect { fill: #fff; }
+    @keyframes step { to { transform: rotate(360deg); } }
   `,
-  html: `<div class="track">
-    <span class="fill"></span>
-    <span class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
-    <button class="knob" type="button" aria-pressed="false" aria-label="Slide to confirm">
-      <svg class="arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <svg class="ok" viewBox="0 0 24 24"><path d="M5 12.5l5 5L20 7"/></svg>
-    </button>
+  html: `<div class="stage">
+    <div class="track">
+      <span class="lbl">slide to power off</span>
+      <button class="knob" type="button" aria-pressed="false" aria-label="Slide to power off"><svg viewBox="0 0 24 24"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg></button>
+    </div>
+    <div class="black" aria-hidden="true"><svg class="spin" viewBox="0 0 24 24">${[0, 1, 2, 3, 4, 5, 6, 7].map((i) => '<rect x="10.75" y="1.5" width="2.5" height="6.5" rx="1.25" opacity="' + (1 - i * 0.1).toFixed(2) + '" transform="rotate(' + (-i * 45) + ' 12 12)"/>').join('')}</svg></div>
   </div>`,
   init(root) {
-    const track = root.querySelector('.track'), knob = root.querySelector('.knob');
-    const max = () => track.clientWidth - 54;
-    const cur = () => parseFloat(track.style.getPropertyValue('--x')) || 0;
-    const setX = (x) => { track.style.setProperty('--x', x + 'px'); track.style.setProperty('--p', (x / max()).toFixed(3)); };
-    const finish = (done) => {
-      track.classList.toggle('done', done); knob.setAttribute('aria-pressed', done); setX(done ? max() : 0);
+    const stage = root.querySelector('.stage'), track = root.querySelector('.track'), knob = root.querySelector('.knob');
+    const max = () => Math.max(1, track.clientWidth - 62);
+    let x = 0, startX = 0, startPos = 0, timer = 0;
+    const setX = (n) => { x = n; track.style.setProperty('--x', n + 'px'); track.style.setProperty('--p', (n / max()).toFixed(3)); };
+    const powerOff = () => {
+      setX(max()); knob.setAttribute('aria-pressed', 'true'); stage.classList.add('off');
+      clearTimeout(timer);
+      timer = setTimeout(() => { stage.classList.remove('off'); setX(0); knob.setAttribute('aria-pressed', 'false'); }, 1800);
     };
-    let startX = 0, startPos = 0, suppressClick = false;
     knob.addEventListener('pointerdown', (e) => {
-      suppressClick = false;
-      if (track.classList.contains('done')) return;
+      if (e.button !== 0 || stage.classList.contains('off')) return;
       knob.setPointerCapture(e.pointerId); track.classList.add('drag');
-      startX = e.clientX; startPos = cur(); e.preventDefault();
+      startX = e.clientX; startPos = x; e.preventDefault();
     });
     knob.addEventListener('pointermove', (e) => {
       if (!track.classList.contains('drag')) return;
       setX(Math.max(0, Math.min(max(), startPos + e.clientX - startX)));
     });
-    // pointerup ends the drag and decides confirm / snap back. The same gesture also fires a click
-    // right after, which must not undo the result — flag it so the click handler ignores it.
-    const up = () => {
+    const end = (ok) => {
       if (!track.classList.contains('drag')) return;
       track.classList.remove('drag');
-      suppressClick = true;
-      finish(cur() / max() > 0.88);
+      if (ok && x / max() > 0.92) powerOff(); else setX(0);
     };
-    // pointercancel (scroll steal, touch lost) abandons the gesture: snap back, never confirm.
-    const cancel = () => {
-      if (!track.classList.contains('drag')) return;
-      track.classList.remove('drag');
-      finish(false);
-    };
-    knob.addEventListener('pointerup', up); knob.addEventListener('pointercancel', cancel);
-    // A deliberate activation (click / Space) on a confirmed knob resets it.
-    knob.addEventListener('click', () => {
-      if (suppressClick) { suppressClick = false; return; }
-      if (track.classList.contains('done')) finish(false);
-    });
+    knob.addEventListener('pointerup', () => end(true));
+    knob.addEventListener('pointercancel', () => end(false));
     knob.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); finish(true); }
-      if (e.key === 'ArrowLeft' || e.key === 'Escape') { e.preventDefault(); finish(false); }
+      if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); powerOff(); }
     });
+    return () => clearTimeout(timer);
   },
 };

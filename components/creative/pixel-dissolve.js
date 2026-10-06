@@ -1,6 +1,6 @@
 export default {
   id: 'cr-pixel-dissolve',
-  credit: 'Pixel dissolve hover — a mosaic of cells fades out in random order to reveal the button',
+  credit: 'Pixel dissolve hover — an 8-bit mosaic breaks up cell-by-cell in random order to reveal the button (pixel transition, Awwwards / Codrops)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -12,11 +12,11 @@ export default {
     .grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(4, 1fr); pointer-events: none; }
     .c { background: var(--c); opacity: 1; transform: scale(1); transition: opacity .25s ease, transform .25s ease; transition-delay: var(--d); }
     .btn:hover .c, .btn:focus-visible .c, .btn[aria-pressed="true"] .c { opacity: 0; transform: scale(.2); }
-    .btn span { position: relative; z-index: 1; }
+    .btn > .lbl { position: relative; z-index: 1; }
     .btn:active { transform: scale(.98); }
     .btn:focus-visible { outline: 2px solid #22c55e; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button" aria-pressed="false"><span class="grid" aria-hidden="true"></span><span>Reveal</span></button>`,
+  html: `<button class="btn" type="button" aria-pressed="false"><span class="grid" aria-hidden="true"></span><span class="lbl">Reveal</span></button>`,
   init(root) {
     const b = root.querySelector('.btn'), g = root.querySelector('.grid');
     const shades = ['#16a34a', '#22c55e', '#4ade80', '#15803d', '#86efac'];
@@ -25,7 +25,7 @@ export default {
     for (let i = 0; i < 48; i++) {
       const c = document.createElement('span');
       c.className = 'c';
-      c.style.setProperty('--c', shades[(i * 7 + Math.floor(i / 12)) % shades.length]);
+      c.style.setProperty('--c', shades[Math.floor(Math.random() * shades.length)]);
       c.style.setProperty('--d', (order[i] * 9) + 'ms');
       g.appendChild(c);
     }

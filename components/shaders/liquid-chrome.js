@@ -74,43 +74,65 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
-uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse;
-float h(vec2 p,float t){return sin(p.x*5.+t)*.5+sin(p.y*7.-t*1.3+p.x*2.)*.5+sin((p.x+p.y)*3.+t*.7)*.3;}
+// Liquid chrome: the pill is a chrome tube (cylindrical normal across its height) with a slow fbm
+// height field on top. Each pixel reflects a studio environment — cool sky, a bright horizon line,
+// warm dark ground and a softbox — so the face reads as polished metal; the pointer tilts the
+// environment and hover whips the liquid up, press sends a ring through it.
+const FS = `precision highp float;
+uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse,u_pt;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+ return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){return noise(p)*.6+noise(p*2.03+7.)*.3+noise(p*4.1+3.)*.1;}
+vec2 tilt;
+vec3 env(vec3 r){
+ float y=r.y+tilt.y, x=r.x+tilt.x;
+ vec3 sky=mix(vec3(.66,.74,.86),vec3(.97,.98,1.),smoothstep(-.1,.75,y));
+ vec3 gnd=mix(vec3(.26,.22,.2),vec3(.05,.05,.06),smoothstep(-.6,-1.,y));
+ vec3 c=mix(gnd,sky,smoothstep(-.6,-.5,y));
+ c+=vec3(1.,.98,.95)*exp(-pow((y+.55)/.035,2.))*.55;
+ c+=vec3(1.)*smoothstep(.2,.1,abs(x+.45))*smoothstep(.25,.12,abs(y-.55))*.5;
+ c+=vec3(1.)*smoothstep(.1,.04,abs(x-.55))*smoothstep(.3,.18,abs(y-.4))*.35;
+ return c;}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; vec2 p=uv*vec2(u_res.x/u_res.y,1.);
- float t=u_time*1.4; float amp=(.12+.3*u_hover)*(1.-.7*u_press);
- vec2 e=vec2(.012,0.);
- float hx=(h(p+e,t)-h(p-e,t))*amp, hy=(h(p+e.yx,t)-h(p-e.yx,t))*amp;
- vec3 n=normalize(vec3(-hx,-hy,.25));
- vec3 v=normalize(vec3((u_mouse-.5)*vec2(1.6,1.),1.));
- vec3 r=reflect(-v,n);
- float y=r.y*.5+.5;
- vec3 env=mix(vec3(.08,.06,.07),vec3(.95,.97,1.),smoothstep(.47,.5,y));
- env=mix(env,vec3(.3,.42,.6),smoothstep(.5,1.,y)*.7);
- env=mix(env,vec3(.25,.14,.08),smoothstep(.45,.0,y)*.6);
- float fr=pow(1.-max(dot(n,v),0.),3.);
- vec3 col=env*(.75+.5*fr)+pow(max(dot(r,normalize(vec3(.3,.8,.5))),0.),48.)*vec3(1.);
- col+=pow(max(dot(r,normalize(vec3(-.6,.4,.7))),0.),24.)*vec3(.8,.9,1.)*.5;
+ vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y; vec2 p=vec2(uv.x*ar,uv.y);
+ float t=u_time*.45;
+ tilt=(u_mouse-.5)*vec2(.6,.5)*u_hover;
+ float amp=.14+.26*u_hover;
+ vec2 pp=p*1.25+vec2(t*.6,-t*.25);
+ float rr=length((uv-u_pt)*vec2(ar,1.)); float ring=u_press*sin(rr*28.-(1.-u_press)*18.)*exp(-rr*2.)*.6;
+ float e=.01;
+ float h0=fbm(pp)+ring;
+ float hx=(fbm(pp+vec2(e,0.))-fbm(pp-vec2(e,0.)))/(2.*e);
+ float hy=(fbm(pp+vec2(0.,e))-fbm(pp-vec2(0.,e)))/(2.*e);
+ float rx=u_press*cos(rr*28.-(1.-u_press)*18.)*exp(-rr*2.)*5.*(uv.x-u_pt.x)*ar/max(rr,1e-3);
+ float ry=u_press*cos(rr*28.-(1.-u_press)*18.)*exp(-rr*2.)*5.*(uv.y-u_pt.y)/max(rr,1e-3);
+ float cy=clamp((uv.y-.5)*2.,-.999,.999);
+ vec3 n=normalize(vec3(-(hx+rx)*amp,-(hy+ry)*amp+cy*1.05,sqrt(1.-cy*cy)*1.2+.05));
+ vec3 r=reflect(vec3(0.,0.,-1.),n);
+ vec3 col=env(r);
+ float fr=pow(1.-n.z,3.);
+ col=mix(col,col*vec3(.92,.95,1.05),.4)*(1.+fr*.25);
+ col*=.96+.06*h0;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-liquid-chrome',
-  credit: 'Liquid chrome pill — procedural metal: a rippling height field shaded with a horizon environment map that tilts with the pointer (Y2K chrome, in GLSL)',
+  credit: 'Liquid chrome pill (Y2K chrome) in GLSL — a chrome tube with a flowing fbm surface reflecting a studio environment (sky, horizon line, ground, softboxes); the pointer tilts the environment, hover churns the metal, press sends a ripple',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 72px; max-width: 100%; padding: 0; border: 0; border-radius: 999px; overflow: hidden; background: #9aa; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(255,255,255,.4), 0 12px 30px -12px rgba(0,0,0,.6); }
+    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 72px; max-width: 100%; padding: 0; border: 0; border-radius: 999px; overflow: hidden; background: #b9c0ca; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(255,255,255,.55), inset 0 -1px 0 1px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.25), 0 10px 22px -12px rgba(0,0,0,.55); transition: transform .15s; }
+    .btn:active { transform: scale(.98); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(180deg, #e8eef5 0%, #7f8894 48%, #f8fbff 52%, #3a3f48 100%); }
-    .l { position: relative; z-index: 1; color: #0d0f14; font: 800 22px/1 'Unbounded', 'Syne', system-ui, sans-serif; letter-spacing: .04em; text-transform: uppercase; mix-blend-mode: multiply; pointer-events: none; }
-    .btn:active .l { transform: translateY(1px); }
-    .btn:focus-visible { outline: 2px solid #0d0f14; outline-offset: 3px; }
+    .cv.nogl { background: linear-gradient(180deg, #f6f8fb 0%, #c3cad5 38%, #fffdf7 62%, #3a3633 70%, #121214 100%); }
+    .l { position: relative; z-index: 1; color: #181b22; font: 800 19px/1 'Unbounded', 'Syne', system-ui, sans-serif; letter-spacing: .06em; margin-right: -.06em; text-transform: uppercase; pointer-events: none; text-shadow: 0 1px 0 rgba(255,255,255,.75), 0 -1px 0 rgba(0,0,0,.25); }
+    .btn:focus-visible { outline: 2px solid #181b22; outline-offset: 3px; }
   `,
   html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">chrome</span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 260, 72, FS, { pressDecay: 2.5 });
+    const s = shade(cv, btn, 260, 72, FS, { pressDecay: 1.1 });
     return () => s.destroy();
   },
 };

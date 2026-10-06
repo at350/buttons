@@ -1,45 +1,26 @@
 export default {
   id: 'mb-linear-start',
-  credit: 'Linear.app 2024 homepage — "Start building" with a hairline conic-gradient border that wakes up and spins on hover',
+  credit: 'Linear.app homepage — the pill "Get started" (invert variant, #e5e5e6 → white on hover) beside the translucent "Contact sales"; 160ms ease-out-quad, scale(.97) press',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { padding: 22px 26px; border-radius: 12px; background: #08090a; display: flex; gap: 10px; flex-wrap: wrap; }
-    .ln { position: relative; height: 38px; padding: 0 16px; border-radius: 8px; border: 0; cursor: pointer; isolation: isolate;
-      background: #0f1012; color: #f7f8f8; font: 510 14px/1 Inter, -apple-system, system-ui, sans-serif; letter-spacing: -.012em;
-      display: inline-flex; align-items: center; gap: 8px; -webkit-tap-highlight-color: transparent;
-      transition: transform .18s cubic-bezier(.2,.8,.2,1), background .2s, box-shadow .25s; }
-    .rim { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; z-index: -1; transition: opacity .3s; }
-    .rim::before { content: ''; position: absolute; inset: -400px; transform: rotate(200deg);
-      background: conic-gradient(#2b2d31, #5e6ad2 25%, #b8c0ff 32%, #2b2d31 45%, #2b2d31 70%, #5e6ad2 88%, #2b2d31); }
-    .rim::after { content: ''; position: absolute; inset: 1px; border-radius: 7px; background: #0f1012; transition: background .2s; }
-    .ln:hover .rim::before { animation: turn 2.4s linear infinite; }
-    .ln:hover .rim::after { background: #141518; }
-    .ln:hover { background: #141518; box-shadow: 0 0 0 1px rgba(94,106,210,.15), 0 8px 30px -8px rgba(94,106,210,.5); }
-    .ln:active { transform: scale(.975); }
-    .ln:focus-visible { outline: none; box-shadow: 0 0 0 2px #08090a, 0 0 0 4px #5e6ad2; }
-    .ln[aria-pressed="true"] { background: #5e6ad2; box-shadow: 0 0 0 1px #6e79e0, 0 10px 32px -8px rgba(94,106,210,.8); }
-    .ln[aria-pressed="true"] .rim { opacity: 0; }
-    .ln svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
-      transition: transform .3s cubic-bezier(.2,.8,.2,1); }
-    .ln:hover svg { transform: translateX(2px); }
-    .ln[aria-pressed="true"] svg { transform: rotate(-90deg) translateX(0); }
-    .ghost { background: transparent; color: #8a8f98; }
-    .ghost:hover { color: #f7f8f8; background: rgba(255,255,255,.04); box-shadow: none; }
-    @keyframes turn { from { transform: rotate(200deg); } to { transform: rotate(560deg); } }
+    .stage { padding: 26px 28px; border-radius: 12px; background: radial-gradient(120% 140% at 50% 0%, #15161a 0%, #08090a 60%); display: flex; gap: 12px; align-items: center;
+      font: 510 15px/1 Inter, -apple-system, system-ui, sans-serif; letter-spacing: -.011em; -webkit-font-smoothing: antialiased; }
+    .logo { width: 22px; height: 22px; fill: #f7f8f8; margin-right: 8px; flex: none; }
+    .b { height: 40px; padding: 0 16px; border-radius: 9999px; cursor: pointer; font: inherit; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+      transition: .16s cubic-bezier(.25,.46,.45,.94); transition-property: border, background-color, color, box-shadow, opacity, filter, transform; -webkit-tap-highlight-color: transparent; }
+    .b:active { transform: scale(.97); }
+    .b:focus-visible { outline: none; box-shadow: 0 0 0 2px #08090a, 0 0 0 4px #5e6ad2; }
+    .inv { background: #e5e5e6; border: 1px solid #e5e5e6; color: #08090a; }
+    .inv:hover { background: #fff; border-color: #fff; }
+    .sec { border: none; background: rgba(255,255,255,.05); color: #f7f8f8; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), inset 0 1px rgba(255,255,255,.04), 0 0 0 1px rgba(0,0,0,.6), 0 4px 4px rgba(0,0,0,.1); }
+    .sec:hover { background: #232326; }
   `,
   html: `
     <div class="stage">
-      <button class="ln" type="button" aria-pressed="false"><span class="rim"></span><span class="lbl">Start building</span><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-      <button class="ln ghost" type="button">Introducing Linear for Agents<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+      <svg class="logo" viewBox="0 0 24 24" role="img" aria-label="Linear"><path d="M2.886 4.18A11.982 11.982 0 0 1 11.99 0C18.624 0 24 5.376 24 12.009c0 3.64-1.62 6.903-4.18 9.105L2.887 4.18ZM1.817 5.626l16.556 16.556c-.524.33-1.075.62-1.65.866L.951 7.277c.247-.575.537-1.126.866-1.65ZM.322 9.163l14.515 14.515c-.71.172-1.443.282-2.195.322L0 11.358a12 12 0 0 1 .322-2.195Zm-.17 4.862 9.823 9.824a12.02 12.02 0 0 1-9.824-9.824Z"/></svg>
+      <button class="b inv" type="button">Get started</button>
+      <button class="b sec" type="button">Contact sales</button>
     </div>`,
-  init(root) {
-    const b = root.querySelector('.ln:not(.ghost)');
-    const lbl = b.querySelector('.lbl');
-    b.addEventListener('click', () => {
-      const on = b.getAttribute('aria-pressed') !== 'true';
-      b.setAttribute('aria-pressed', String(on));
-      lbl.textContent = on ? 'Workspace ready' : 'Start building';
-    });
-  },
 };

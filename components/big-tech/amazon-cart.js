@@ -1,37 +1,42 @@
+// Amazon buy box: yellow "Add to cart" and orange "Buy Now" pills, plus the nav-bar cart whose orange count ticks up.
 export default {
   id: 'bt-amazon-cart',
-  credit: 'Amazon — yellow "Add to Cart" and orange "Buy Now" pill pair with cart badge',
+  credit: 'Amazon — buy box "Add to cart" / "Buy Now" pills and the nav cart counter',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .col { display: flex; flex-direction: column; gap: 8px; width: 220px; max-width: 100%; }
+    .col { display: flex; flex-direction: column; gap: 8px; width: 240px; max-width: 100%; font-family: "Amazon Ember", Arial, sans-serif; }
+    .nav { align-self: flex-end; display: inline-flex; align-items: flex-end; gap: 2px; height: 40px; padding: 0 10px 6px 8px; border-radius: 4px; background: #131921; color: #fff; border: 1px solid transparent; }
+    .nav:hover { border-color: #fff; }
+    .cw { position: relative; width: 38px; height: 28px; }
+    .cw svg { position: absolute; left: 2px; bottom: 0; width: 30px; height: 26px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .cnt { position: absolute; left: 14px; top: -3px; width: 18px; text-align: center; font: 700 16px/16px Arial, sans-serif; color: #f08804; }
+    .cnt.bump { animation: bump .3s cubic-bezier(.2,0,0,1); }
+    @keyframes bump { 40% { transform: translateY(-4px) scale(1.15); } }
+    .nav b { font: 700 14px/15px Arial, sans-serif; }
     .am {
-      height: 31px; border-radius: 100px; border: 1px solid; cursor: pointer; font: 400 13px/29px "Amazon Ember", Arial, -apple-system, system-ui, sans-serif; color: #0f1111;
-      display: flex; align-items: center; justify-content: center; gap: 6px; -webkit-tap-highlight-color: transparent;
+      height: 32px; border-radius: 100px; border: 1px solid; cursor: pointer; font: 400 13px/29px "Amazon Ember", Arial, sans-serif; color: #0f1111;
+      display: grid; place-items: center; box-shadow: 0 2px 5px 0 rgba(213,217,217,.5); -webkit-tap-highlight-color: transparent;
     }
+    .am > span { grid-area: 1 / 1; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
     .cart { background: #ffd814; border-color: #fcd200; }
     .cart:hover { background: #f7ca00; border-color: #f2c200; }
-    .cart:active { background: #f0b800; }
     .buy { background: #ffa41c; border-color: #ff8f00; }
-    .buy:hover { background: #fa8900; border-color: #e37c00; }
-    .buy:active { background: #f08200; }
-    .am:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #007185; }
-    .am .lbl::after { content: 'Add to Cart'; }
-    .am.added .lbl::after { content: 'Added to Cart'; }
-    .am svg { width: 14px; height: 14px; stroke: #0f1111; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; display: none; }
-    .am.added svg { display: block; animation: tick .3s ease-out; }
-    @keyframes tick { from { transform: scale(0); } to { transform: scale(1); } }
-    .buy .lbl::after { content: 'Buy Now'; }
-    .buy[aria-pressed="true"] .lbl::after { content: 'Place your order'; }
-    .buy[aria-pressed="true"] { background: #ffd814; border-color: #fcd200; }
-    .badge { align-self: flex-end; display: inline-flex; align-items: center; gap: 4px; font: 700 14px Arial, system-ui, sans-serif; color: #f08804; }
-    .badge svg { width: 22px; height: 22px; fill: none; stroke: #0f1111; stroke-width: 1.6; stroke-linejoin: round; }
+    .buy:hover { background: #fa8900; border-color: #e3931e; }
+    .am:active { box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset; filter: brightness(.96); }
+    .am:focus-visible { outline: none; border-color: #007185; box-shadow: 0 0 0 3px #c8f3fa, 0 1px 2px rgba(15,17,17,.15) inset; }
+    .am .b { visibility: hidden; }
+    .am.on .a { visibility: hidden; }
+    .am.on .b { visibility: visible; }
+    .cart .b { color: #067d62; font-weight: 700; }
+    .cart .b svg { width: 16px; height: 16px; fill: none; stroke: #067d62; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .cart.on { background: #fff; border-color: #d5d9d9; }
   `,
   html: `
     <div class="col">
-      <span class="badge"><span class="cnt">0</span><svg viewBox="0 0 24 24"><path d="M2 3h2.5l2.3 11.2a1 1 0 0 0 1 .8h9.8a1 1 0 0 0 1-.8L20.5 7H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg></span>
-      <button class="am cart" type="button"><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></svg><span class="lbl"></span></button>
-      <button class="am buy" type="button" aria-pressed="false"><span class="lbl"></span></button>
+      <span class="nav" aria-live="polite"><span class="cw"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg><span class="cnt">0</span></span><b>Cart</b></span>
+      <button class="am cart" type="button"><span class="a">Add to cart</span><span class="b" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Added to cart</span></button>
+      <button class="am buy" type="button" aria-pressed="false"><span class="a">Buy Now</span><span class="b" aria-hidden="true">Place your order</span></button>
     </div>`,
   init(root) {
     const cart = root.querySelector('.cart');
@@ -39,10 +44,12 @@ export default {
     const cnt = root.querySelector('.cnt');
     let n = 0, t;
     cart.addEventListener('click', () => {
-      n++; cnt.textContent = n; cart.classList.add('added');
-      clearTimeout(t); t = setTimeout(() => cart.classList.remove('added'), 1200);
+      n = n >= 99 ? 99 : n + 1; cnt.textContent = n;
+      cnt.classList.remove('bump'); void cnt.offsetWidth; cnt.classList.add('bump');
+      cart.classList.add('on');
+      clearTimeout(t); t = setTimeout(() => cart.classList.remove('on'), 1400);
     });
-    buy.addEventListener('click', () => buy.setAttribute('aria-pressed', buy.getAttribute('aria-pressed') !== 'true'));
+    buy.addEventListener('click', () => { const on = buy.classList.toggle('on'); buy.setAttribute('aria-pressed', String(on)); });
     return () => clearTimeout(t);
   },
 };

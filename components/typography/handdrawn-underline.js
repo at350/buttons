@@ -4,10 +4,11 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .lnk {
       display: inline-block;
       position: relative;
-      padding: 6px 2px 10px;
+      padding: 6px 8px 14px;
       cursor: pointer;
       text-decoration: none;
       color: #1a1a1a;
@@ -23,11 +24,10 @@ export default {
     }
     .scrib {
       position: absolute;
-      left: -4px;
-      right: -4px;
-      bottom: -2px;
+      left: 4px;
+      bottom: 0;
       height: 16px;
-      width: calc(100% + 8px);
+      width: calc(100% - 8px);
       overflow: visible;
       pointer-events: none;
     }
@@ -39,19 +39,18 @@ export default {
       stroke-linejoin: round;
       stroke-dasharray: 1;
       stroke-dashoffset: 1;
-      opacity: .9;
-      transition: stroke-dashoffset .55s cubic-bezier(.4, 0, .2, 1);
+      opacity: 0;
+      transition: stroke-dashoffset .55s cubic-bezier(.4, 0, .2, 1), stroke .3s, opacity 0s linear .55s;
     }
     .scrib path.second {
-      stroke-dashoffset: 1;
-      transition-delay: 0s;
       stroke-width: 2.5;
     }
-    .lnk:hover .scrib path, .lnk:focus-visible .scrib path, .lnk.on .scrib path { stroke-dashoffset: 0; }
-    .lnk:hover .scrib path.second, .lnk:focus-visible .scrib path.second, .lnk.on .scrib path.second { transition-delay: .3s; }
+    .lnk:hover .scrib path, .lnk:focus-visible .scrib path, .lnk.on .scrib path { stroke-dashoffset: 0; opacity: .9; transition: stroke-dashoffset .55s cubic-bezier(.4, 0, .2, 1), stroke .3s, opacity 0s; }
+    .lnk:hover .scrib path.second, .lnk:focus-visible .scrib path.second, .lnk.on .scrib path.second { transition: stroke-dashoffset .45s cubic-bezier(.4, 0, .2, 1) .3s, stroke .3s, opacity 0s .3s; }
     .lnk.on .scrib path { stroke: #16a34a; }
-    .lnk .ital { font-style: italic; transition: letter-spacing .3s; }
-    .lnk:active .scrib path { stroke-dashoffset: .5; }
+    .lnk .ital { font-style: italic; }
+    .lnk:active .scrib { transform: scaleY(.7); transform-origin: 50% 40%; }
+    .scrib { transition: transform .15s; }
   `,
   html: `<a class="lnk" href="#">Mark <span class="ital">this</span> up<svg class="scrib" viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 9 C 30 4, 60 12, 95 7 S 160 3, 197 9"/><path class="second" pathLength="1" d="M8 13 C 50 9, 90 14, 130 10 S 175 8, 192 12"/></svg></a>`,
   init(root) {

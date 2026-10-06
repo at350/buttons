@@ -15,6 +15,8 @@ export default {
     .btn:hover { filter: brightness(1.06); }
     .btn:active, .btn.done { background: linear-gradient(#5aae27 0%, #76c83a 60%, #8bd84a 100%); box-shadow: inset 0 2px 5px rgba(0,0,0,.35); }
     .btn:focus-visible { outline: 3px solid #ffb400; outline-offset: 2px; }
+    .txt { display: inline-grid; position: relative; } .txt > span { grid-area: 1 / 1; white-space: nowrap; } .txt .b { visibility: hidden; }
+    .btn.done .txt .a { visibility: hidden; } .btn.done .txt .b { visibility: visible; }
     .arr { position: absolute; right: 14px; top: 50%; margin-top: -9px; width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,.9); display: grid; place-items: center; box-shadow: 0 1px 1px rgba(0,0,0,.3); }
     .arr svg { transition: transform .2s; }
     .btn.done .arr svg { transform: rotate(90deg); }
@@ -22,12 +24,12 @@ export default {
   `,
   html: `
     <div class="stage">
-      <button class="btn" type="button" aria-pressed="false"><span class="txt">Sign Up Free!</span>
+      <button class="btn" type="button" aria-pressed="false"><span class="txt"><span class="a">Sign Up Free!</span><span class="b">Welcome aboard!</span></span>
         <span class="arr"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M3 1l4 4-4 4" fill="none" stroke="#3c8a1c" stroke-width="2.4" stroke-linecap="round"/></svg></span>
       </button>
     </div>`,
   init(root) {
-    const b = root.querySelector('.btn'); const t = root.querySelector('.txt');
-    b.addEventListener('click', () => { const on = b.classList.toggle('done'); b.setAttribute('aria-pressed', String(on)); t.textContent = on ? 'Welcome aboard!' : 'Sign Up Free!'; });
+    const b = root.querySelector('.btn');
+    b.addEventListener('click', () => { const on = b.classList.toggle('done'); b.setAttribute('aria-pressed', String(on)); });
   },
 };

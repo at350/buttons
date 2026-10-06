@@ -4,10 +4,11 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .btn {
       cursor: pointer; background: #fffdf7; color: #1c1917; border: 1.5px solid #1c1917; border-radius: 6px; padding: 14px 20px;
-      font: 500 18px/1 'IBM Plex Mono', ui-monospace, monospace; display: inline-grid; text-align: left;
-      box-shadow: 3px 3px 0 #1c1917; transition: transform .12s, box-shadow .12s, background .2s;
+      font: 400 18px/1 'IBM Plex Mono', ui-monospace, monospace; display: inline-grid; text-align: left;
+      box-shadow: 3px 3px 0 #1c1917; margin: 0 4px 4px 0; transition: transform .12s, box-shadow .12s, background .2s;
     }
     .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #1c1917; }
     .btn:focus-visible { outline: 2px solid #ea580c; outline-offset: 3px; }
@@ -17,8 +18,7 @@ export default {
     .v .typed { color: #1c1917; }
     .caret { display: inline-block; width: .6ch; height: 1.05em; vertical-align: -.15em; background: #ea580c; margin-left: 1px; animation: blink 1s steps(1) infinite; }
     .btn.typing .caret { animation: none; }
-    .btn.done .v { color: #1c1917; }
-    .btn.done { background: #ea580c; color: #fff; border-color: #ea580c; box-shadow: 3px 3px 0 #7c2d12; }
+        .btn.done { font-weight: 600; background: #ea580c; color: #fff; border-color: #ea580c; box-shadow: 3px 3px 0 #7c2d12; }
     .btn.done .v, .btn.done .v .typed { color: #fff; }
     .btn.done .caret { background: #fff; }
     @keyframes blink { 50% { opacity: 0; } }

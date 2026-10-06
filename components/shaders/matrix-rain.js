@@ -1,116 +1,81 @@
-// Shared shader-surface pattern, inlined per file (components may not import anything).
-// shade(canvas, pointerTarget, cssW, cssH, fragmentSrc, opts) -> state object `s`
-// uniforms: u_time, u_res, u_mouse (0..1, y up), u_pt (last press point), u_hover (eased), u_press (1 -> 0), u_value (eased)
-const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-const UNI = ['u_time', 'u_res', 'u_mouse', 'u_pt', 'u_hover', 'u_press', 'u_value'];
-function shade(cv, el, w, h, fs, o = {}) {
-  const dpr = Math.min(2, globalThis.devicePixelRatio || 1);
-  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-  const s = { t: 0, hover: 0, hoverT: 0, press: 0, value: 0, valueT: 0, mx: .5, my: .5, px: .5, py: .5, down: false };
-  let gl = null, prog = null, U = null, raf = 0, lastT = 0, vis = false, dead = false, io = null;
-  const name = () => ((cv.getRootNode().host || {}).dataset || {}).id || '';
-  const setup = () => {
-    gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
-    if (!gl) return false;
-    const sh = (type, src) => {
-      const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
-      if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) { console.error('[shader]', name(), gl.getShaderInfoLog(x)); return null; }
-      return x;
-    };
-    const v = sh(gl.VERTEX_SHADER, VS), f = sh(gl.FRAGMENT_SHADER, fs);
-    if (!v || !f) return false;
-    prog = gl.createProgram(); gl.attachShader(prog, v); gl.attachShader(prog, f); gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error('[shader link]', name(), gl.getProgramInfoLog(prog)); return false; }
-    gl.useProgram(prog);
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const a = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
-    U = {}; for (const n of UNI) U[n] = gl.getUniformLocation(prog, n);
-    gl.viewport(0, 0, cv.width, cv.height);
-    o.after && o.after(gl, prog);
-    return true;
-  };
-  const draw = () => {
-    if (!gl || gl.isContextLost()) return;
-    gl.uniform1f(U.u_time, s.t); gl.uniform2f(U.u_res, cv.width, cv.height);
-    gl.uniform2f(U.u_mouse, s.mx, s.my); gl.uniform2f(U.u_pt, s.px, s.py);
-    gl.uniform1f(U.u_hover, s.hover); gl.uniform1f(U.u_press, s.press); gl.uniform1f(U.u_value, s.value);
-    o.uniforms && o.uniforms(gl, prog, s);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  };
-  const ease = (a, b, k) => (Math.abs(b - a) < .002 ? b : a + (b - a) * k);
-  const busy = () => s.hoverT > 0 || s.hover !== s.hoverT || s.press > 0 || s.value !== s.valueT || s.down
-    || (o.idle && vis && (!o.idleWhen || o.idleWhen(s))) || (o.busy ? o.busy(s) : false);
-  const tick = (now) => {
-    raf = 0;
-    const dt = Math.min(.1, (now - lastT) / 1000);
-    if (o.idle && !s.hoverT && !s.down && dt < 1 / 30) { raf = requestAnimationFrame(tick); return; } // idle shaders: <= 30fps
-    lastT = now; s.t += dt;
-    s.hover = ease(s.hover, s.hoverT, Math.min(1, dt * 9));
-    s.value = ease(s.value, s.valueT, Math.min(1, dt * (o.valueRate || 7)));
-    s.press = Math.max(0, s.press - dt * (o.pressDecay || 1));
-    o.step && o.step(s, dt);
-    draw();
-    if (busy()) raf = requestAnimationFrame(tick);
-  };
-  const kick = () => { if (!raf && gl && !dead) { lastT = performance.now(); raf = requestAnimationFrame(tick); } };
-  const pos = (e) => { const r = cv.getBoundingClientRect(); if (r.width) { s.mx = (e.clientX - r.left) / r.width; s.my = 1 - (e.clientY - r.top) / r.height; } };
-  el.addEventListener('pointerenter', (e) => { pos(e); s.hoverT = 1; kick(); });
-  el.addEventListener('pointerleave', () => { s.hoverT = 0; s.down = false; kick(); });
-  el.addEventListener('pointermove', (e) => { pos(e); kick(); });
-  el.addEventListener('pointerdown', (e) => { pos(e); s.down = true; s.press = 1; s.px = s.mx; s.py = s.my; kick(); });
-  el.addEventListener('pointerup', () => { s.down = false; kick(); });
-  el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { s.px = .5; s.py = .5; s.press = 1; kick(); } });
-  el.addEventListener('focus', () => { if (el.matches(':focus-visible')) { s.hoverT = 1; kick(); } });
-  el.addEventListener('blur', () => { if (!el.matches(':hover')) { s.hoverT = 0; kick(); } });
-  cv.addEventListener('webglcontextlost', (e) => { e.preventDefault(); cancelAnimationFrame(raf); raf = 0; if (!dead) cv.classList.add('nogl'); });
-  cv.addEventListener('webglcontextrestored', () => { if (!dead && setup()) { cv.classList.remove('nogl'); draw(); kick(); } });
-  if (setup()) draw(); else cv.classList.add('nogl');
-  if (o.idle && typeof IntersectionObserver === 'function') {
-    io = new IntersectionObserver((en) => { vis = en.some((x) => x.isIntersecting); if (vis) kick(); });
-    io.observe(cv);
-  }
-  s.kick = kick; s.draw = draw;
-  s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
-  return s;
-}
-const FS = `precision mediump float;
-uniform float u_time,u_hover,u_press;uniform vec2 u_res;
-float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-void main(){
- vec2 uv=gl_FragCoord.xy/u_res;
- vec2 grid=vec2(floor(u_res.x/u_res.y*9.),9.);
- vec2 g=uv*grid; vec2 id=floor(g), f=fract(g);
- float sp=(.5+hash(vec2(id.x,7.)))*(1.+1.6*u_hover); float off=hash(vec2(id.x,3.))*31.;
- float head=(grid.y+6.)*fract(-u_time*sp*.18+off)-3.;
- float d=id.y-head; float tr=d<0.?0.:exp(-d*.32);
- vec2 sub=floor(f*vec2(3.,5.));
- float gk=floor(u_time*(2.5+2.5*hash(id))*(.4+u_hover));
- float bit=step(.42,hash(id*vec2(1.3,7.1)+sub*vec2(13.7,3.1)+gk*.37));
- float inner=step(.12,f.x)*step(f.x,.88)*step(.1,f.y)*step(f.y,.9);
- float gly=bit*inner*tr;
- vec3 c=vec3(.01,.04,.02)+gly*mix(vec3(.1,.85,.3),vec3(.8,1.,.9),smoothstep(.55,1.,tr))*(.75+.5*u_hover);
- c+=u_press*bit*inner*vec3(.9,1.,.95)*step(.35,hash(id+floor(u_time*20.)));
- c*=.92+.08*sin(uv.y*u_res.y*1.5);
- gl_FragColor=vec4(c,1.);}`;
+// Canvas 2D Matrix "digital rain": columns of mirrored half-width katakana, digits and symbols (the glyph
+// set from the film's titles) fall at their own speed; each drop has a white-hot head and a #00ff41 trail
+// that fades over 8–18 cells while glyphs randomly mutate. Hover doubles the speed; press flashes a white
+// wave down the screen. Idle rain runs at ≤30fps only while visible.
+const W = 240, H = 90, CW = 10, CH = 12, COLS = 24, ROWS = 8;
+const GLYPHS = 'ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ012345789Z:・."=*+-<>¦｜';
 
 export default {
   id: 'sh-matrix-rain',
-  credit: 'Matrix digital rain inside a button — procedural 3×5 glyph columns in GLSL fall and mutate; hover speeds the rain, press flashes it white',
+  credit: 'The Matrix digital rain inside a button — mirrored half-width katakana, digits and symbols fall in columns with white heads and fading #00ff41 trails, glyphs mutating; hover speeds the rain, press sends a white wave',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 240px; height: 90px; max-width: 100%; padding: 0; border: 1px solid #0f3; border-radius: 4px; overflow: hidden; background: #020; cursor: pointer; isolation: isolate; box-shadow: 0 0 18px -6px #0f6; }
+    .btn { position: relative; display: grid; place-items: center; width: 240px; height: 90px; max-width: 100%; padding: 0; border: 0; border-radius: 6px; overflow: hidden; background: #000; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(0,255,65,.35), 0 0 18px -8px rgba(0,255,65,.8); transition: box-shadow .2s; }
+    .btn:hover { box-shadow: inset 0 0 0 1px rgba(0,255,65,.6), 0 0 22px -6px rgba(0,255,65,.9); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: repeating-linear-gradient(90deg, #031 0 10px, #053 10px 12px); }
-    .l { position: relative; z-index: 1; color: #c8ffd8; background: rgba(0,20,8,.75); padding: 6px 12px; font: 600 16px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .12em; pointer-events: none; text-shadow: 0 0 8px #3f9; }
-    .btn:hover .l { background: rgba(0,20,8,.5); }
-    .btn:focus-visible { outline: 2px solid #3f9; outline-offset: 3px; }
+    .l { position: relative; z-index: 1; color: #d6ffe0; background: rgba(0,0,0,.78); padding: 7px 12px; border-radius: 3px; font: 500 15px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .06em; white-space: nowrap; pointer-events: none; text-shadow: 0 0 6px rgba(0,255,65,.8); box-shadow: 0 0 0 1px rgba(0,255,65,.25); }
+    .btn:active .l { background: rgba(0,0,0,.6); }
+    .btn:focus-visible { outline: 2px solid #00ff41; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">&gt; wake up</span></button>`,
-  init(root) {
+  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">&gt; wake up_</span></button>`,
+  init(root, host) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 240, 90, FS, { idle: true, pressDecay: 1.6 });
-    return () => s.destroy();
+    const dpr = Math.min(2, globalThis.devicePixelRatio || 1);
+    cv.width = W * dpr; cv.height = H * dpr;
+    const ctx = cv.getContext('2d'); if (!ctx) return;
+    const pick = () => GLYPHS[(Math.random() * GLYPHS.length) | 0];
+    const cells = Array.from({ length: COLS * ROWS }, pick);
+    const drops = Array.from({ length: COLS }, () => ({ y: Math.random() * (ROWS + 14) - 4, v: 5 + Math.random() * 7, len: 8 + Math.random() * 10 }));
+    let raf = 0, last = 0, acc = 0, hover = 0, hoverT = 0, press = 0, vis = false, io = null, dead = false;
+    const draw = () => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+      ctx.font = `500 ${CH - 1}px "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "MS Gothic", "Noto Sans JP", "JetBrains Mono", monospace`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const wave = (1 - press) * (ROWS + 6) - 3;
+      for (let c = 0; c < COLS; c++) {
+        const d = drops[c];
+        for (let r = 0; r < ROWS; r++) {
+          const k = d.y - r; // cells above the head (k>=0) are trail
+          let a = 0, head = false;
+          if (k >= 0 && k < d.len) { a = 1 - k / d.len; head = k < 1; }
+          const w = press > 0 ? Math.max(0, 1 - Math.abs(r - wave) / 2.2) * press : 0;
+          if (a <= .02 && w <= .02) continue;
+          const g = cells[r * COLS + c];
+          const x = c * CW + CW / 2, y = r * CH + CH / 2 - 1;
+          ctx.save(); ctx.translate(x, y); ctx.scale(-1, 1);
+          if (head || w > .3) { ctx.shadowColor = 'rgba(160,255,180,.9)'; ctx.shadowBlur = 6; ctx.fillStyle = `rgba(225,255,232,${Math.max(head ? 1 : 0, w).toFixed(3)})`; }
+          else { ctx.shadowBlur = 0; ctx.fillStyle = `rgba(0,255,65,${(a * a * .9 + .1).toFixed(3)})`; if (w > 0) ctx.fillStyle = `rgba(${Math.round(200 * w)},255,${Math.round(65 + 160 * w)},${Math.max(a * a, w).toFixed(3)})`; }
+          ctx.fillText(g, 0, 0); ctx.restore();
+        }
+      }
+    };
+    const step = (dt) => {
+      const sp = 1 + 1.4 * hover;
+      for (const d of drops) { d.y += d.v * sp * dt; if (d.y - d.len > ROWS) { d.y = -Math.random() * 6; d.v = 5 + Math.random() * 7; d.len = 8 + Math.random() * 10; } }
+      for (let i = 0; i < cells.length; i++) if (Math.random() < dt * 1.8) cells[i] = pick();
+    };
+    const tick = (now) => {
+      raf = 0; if (dead) return;
+      const dt = Math.min(.1, (now - last) / 1000 || .016); last = now; acc += dt;
+      if (acc >= 1 / 30) {
+        const s = acc; acc = 0;
+        hover += (hoverT - hover) * Math.min(1, s * 8); press = Math.max(0, press - s * 1.6);
+        step(s); draw();
+      }
+      if (vis || hoverT || press > 0) raf = requestAnimationFrame(tick);
+    };
+    const kick = () => { if (!raf && !dead) { last = performance.now(); raf = requestAnimationFrame(tick); } };
+    for (let i = 0; i < 20; i++) step(1 / 30);
+    draw();
+    btn.addEventListener('pointerenter', () => { hoverT = 1; kick(); });
+    btn.addEventListener('pointerleave', () => { hoverT = 0; kick(); });
+    btn.addEventListener('pointerdown', () => { press = 1; kick(); });
+    btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { press = 1; kick(); } });
+    btn.addEventListener('focus', () => { if (btn.matches(':focus-visible')) { hoverT = 1; kick(); } });
+    btn.addEventListener('blur', () => { if (!btn.matches(':hover')) { hoverT = 0; kick(); } });
+    if (typeof IntersectionObserver === 'function') { io = new IntersectionObserver((en) => { vis = en.some((x) => x.isIntersecting); if (vis) kick(); }); io.observe(cv); }
+    return () => { dead = true; cancelAnimationFrame(raf); io && io.disconnect(); };
   },
 };

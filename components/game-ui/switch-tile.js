@@ -1,51 +1,77 @@
+// Nintendo Switch HOME Menu (Basic White): #EBEBEB canvas, square software tiles, the pulsing cyan selection
+// frame with a gap, the title in #0AB9E6 above the selected tile, the round shortcut buttons (News in #E60012,
+// Joy-Con in #E60012 / #0AB9E6) and the Ⓐ Start footer.
+const GAMES = [
+  ['Animal Crossing: New Horizons', 'linear-gradient(180deg, #8fd8ff 0 55%, #7ccf6a 56% 74%, #f2e2a8 75%)'],
+  ['Mario Kart 8 Deluxe', 'radial-gradient(circle at 50% 46%, #fff 0 14%, #e60012 15% 30%, transparent 31%), linear-gradient(135deg, #ffd23c, #ff7a00)'],
+  ['The Legend of Zelda: Tears of the Kingdom', 'radial-gradient(circle at 50% 40%, #6ff0c8 0 9%, transparent 10%), linear-gradient(180deg, #0f5c4a, #062a27 70%, #2c1e10)'],
+  ['Splatoon 3', 'radial-gradient(circle at 30% 35%, #eaff3d 0 22%, transparent 23%), radial-gradient(circle at 70% 68%, #7b2cff 0 26%, transparent 27%), #111'],
+  ['Super Mario Odyssey', 'radial-gradient(circle at 50% 34%, #fff 0 12%, transparent 13%), linear-gradient(180deg, #e60012 0 50%, #2b4fd8 51%)'],
+];
+const ICONS = [
+  ['News', '#e60012', '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>'],
+  ['Nintendo eShop', '#f6851f', '<path d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/>'],
+  ['Album', '#0ab9e6', '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>'],
+  ['Controllers', '', '<rect x="5" y="4" width="6" height="16" rx="3" fill="#0ab9e6"/><rect x="13" y="4" width="6" height="16" rx="3" fill="#e60012"/>'],
+  ['System Settings', '#6e6e6e', '<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>'],
+  ['Sleep Mode', '#6e6e6e', '<path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>'],
+];
 export default {
   id: 'gm-switch-tile',
-  credit: 'Nintendo Switch HOME menu — game tiles with the pulsing cyan selection frame, title above and the Ⓐ "Start" prompt',
+  credit: 'Nintendo Switch HOME Menu (Basic White) — software tiles with the pulsing cyan selection frame and title above, the round shortcut icons and the Ⓐ Start footer',
   size: 'wide',
   css: `
     :host { display: block; max-width: 100%; }
-    .stage { background: #ebebeb; border-radius: 12px; padding: 14px 18px 12px; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; }
-    .title { height: 16px; font: 600 12px/16px 'Inter', system-ui, sans-serif; color: #2d2d2d; margin-bottom: 8px; padding-left: 2px; }
-    .row { display: flex; gap: 8px; }
-    .tile { width: 56px; height: 56px; flex: none; border: none; padding: 0; cursor: pointer; border-radius: 3px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
-    .tile::after { content: ""; position: absolute; inset: -4px; border: 4px solid #22c4d6; border-radius: 5px; opacity: 0; pointer-events: none; }
-    .tile.sel::after { opacity: 1; animation: glow 1.3s ease-in-out infinite alternate; }
-    @keyframes glow { from { border-color: #19a7d9; box-shadow: 0 0 6px rgba(25,167,217,.6); } to { border-color: #7fe7ff; box-shadow: 0 0 12px rgba(127,231,255,.9); } }
-    .tile:focus-visible { outline: 2px solid #ff4554; outline-offset: 6px; }
-    .a1 { background: linear-gradient(135deg, #ffd34d, #ff8a00 60%, #d94f00); } .a2 { background: linear-gradient(135deg, #8ad6ff, #2a7fd6 60%, #163f99); }
-    .a3 { background: linear-gradient(135deg, #e74c3c, #7a1313); } .a4 { background: linear-gradient(135deg, #9be68c, #2e8b57 65%, #14472b); }
-    .a5 { background: linear-gradient(135deg, #f7f7f7, #c7c7c7); } .a6 { background: linear-gradient(135deg, #c993ff, #6b2fbf); }
-    .tile svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .foot { display: flex; justify-content: flex-end; align-items: center; gap: 14px; margin-top: 10px; font: 500 11px 'Inter', system-ui, sans-serif; color: #2d2d2d; }
-    .k { display: inline-flex; align-items: center; gap: 5px; }
-    .key { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #2d2d2d; display: grid; place-items: center; font: 700 9px 'Inter', system-ui, sans-serif; }
-    .foot .btn { border: none; background: none; cursor: pointer; padding: 0; font: inherit; color: inherit; }
-    .foot .btn:focus-visible { outline: 2px solid #22c4d6; border-radius: 4px; }
-    .k.on .key { background: #2d2d2d; color: #fff; }
+    .stage { position: relative; background: #ebebeb; border-radius: 12px; padding: 10px 0 0; overflow: hidden; font-family: 'Inter', 'DM Sans', system-ui, sans-serif; color: #2d2d2d; }
+    .top { display: flex; align-items: center; gap: 10px; padding: 0 16px; height: 22px; font: 500 12px 'Inter', system-ui, sans-serif; }
+    .user { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #ffd8a8 0 28%, transparent 29%), #0ab9e6; box-shadow: 0 0 0 2px #fff; }
+    .stat { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .stat svg { width: 15px; height: 15px; fill: #2d2d2d; }
+    .title { position: relative; height: 18px; margin: 8px 0 4px; overflow: hidden; }
+    .title span { position: absolute; left: var(--x, 16px); top: 0; max-width: calc(100% - var(--x, 16px) - 12px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font: 600 13px/18px 'Inter', system-ui, sans-serif; color: #0ab9e6; }
+    .row { display: flex; gap: 10px; padding: 6px 16px 8px; overflow: hidden; }
+    .tile { position: relative; flex: none; width: 66px; height: 66px; border: none; padding: 0; cursor: pointer; border-radius: 2px; background: var(--art); box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+    .tile::after { content: ""; position: absolute; inset: -6px; border: 3px solid #00c3e3; border-radius: 4px; opacity: 0; pointer-events: none; }
+    .tile.sel::after { opacity: 1; animation: pulse 1.2s ease-in-out infinite alternate; }
+    @keyframes pulse { from { border-color: #00b4e6; box-shadow: 0 0 0 0 rgba(0,195,227,0); } to { border-color: #7af2ff; box-shadow: 0 0 6px rgba(0,195,227,.55); } }
+    .tile:focus-visible { outline: none; }
+    .tile:focus-visible::after { opacity: 1; }
+    .icons { display: flex; justify-content: center; gap: 12px; padding: 8px 0 10px; }
+    .ic { width: 38px; height: 38px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: #fff; display: grid; place-items: center; box-shadow: 0 1px 2px rgba(0,0,0,.18); transition: transform 120ms; }
+    .ic svg { width: 20px; height: 20px; }
+    .ic:hover { transform: translateY(-1px); }
+    .ic:focus-visible, .ic.sel { outline: 3px solid #00c3e3; outline-offset: 2px; }
+    .foot { display: flex; justify-content: flex-end; align-items: center; gap: 16px; height: 36px; padding: 0 16px; border-top: 1px solid #cfcfcf; margin: 0 10px; font: 500 12px 'Inter', system-ui, sans-serif; }
+    .fb { border: none; background: none; cursor: pointer; padding: 2px 4px; font: inherit; color: inherit; display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; white-space: nowrap; }
+    .key { width: 18px; height: 18px; border-radius: 50%; background: #2d2d2d; color: #ebebeb; display: grid; place-items: center; font: 700 10px 'Inter', system-ui, sans-serif; }
+    .fb:hover { background: rgba(0,0,0,.06); }
+    .fb:focus-visible { outline: 2px solid #00c3e3; }
+    .fb.go .key { background: #0ab9e6; }
   `,
   html: `
     <div class="stage">
-      <div class="title">Animal Crossing: New Horizons</div>
+      <div class="top"><span class="user"></span><span class="stat">12:34<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 0 0-6 0zm-4-4l2 2a7.074 7.074 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" transform="rotate(90 12 12)"/></svg></span></div>
+      <div class="title"><span>${GAMES[0][0]}</span></div>
       <div class="row" role="listbox" aria-label="Software">
-        <button class="tile a1 sel" type="button" role="option" aria-selected="true" aria-label="Animal Crossing: New Horizons"><svg viewBox="0 0 10 10"><path d="M5 2 7 4.5 5 7 3 4.5z" fill="#fff" opacity=".8"/></svg></button>
-        <button class="tile a2" type="button" role="option" aria-selected="false" aria-label="Mario Kart 8 Deluxe"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="2.2" fill="#fff" opacity=".8"/></svg></button>
-        <button class="tile a3" type="button" role="option" aria-selected="false" aria-label="Super Mario Odyssey"><svg viewBox="0 0 10 10"><rect x="3" y="2.5" width="4" height="5" rx=".5" fill="#fff" opacity=".8"/></svg></button>
-        <button class="tile a4" type="button" role="option" aria-selected="false" aria-label="Zelda"><svg viewBox="0 0 10 10"><path d="M5 2 8 7H2z" fill="#fff" opacity=".8"/></svg></button>
-        <button class="tile a5" type="button" role="option" aria-selected="false" aria-label="Nintendo eShop"><svg viewBox="0 0 10 10"><path d="M2 4h6l-.6 4H2.6z" fill="#ff4554"/></svg></button>
-        <button class="tile a6" type="button" role="option" aria-selected="false" aria-label="Tetris 99"><svg viewBox="0 0 10 10"><path d="M2 5h2v2H2zM4 3h2v2H4zM6 5h2v2H6z" fill="#fff" opacity=".8"/></svg></button>
+        ${GAMES.map(([n, art], i) => `<button class="tile${i === 0 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 0}" aria-label="${n}" style="--art:${art}"></button>`).join('')}
       </div>
-      <div class="foot">
-        <button class="btn k" type="button" aria-pressed="false"><span class="key">+</span>Options</button>
-        <button class="btn k start" type="button" aria-pressed="false"><span class="key">A</span>Start</button>
-      </div>
+      <div class="icons">${ICONS.map(([n, c, p]) => `<button class="ic" type="button" aria-label="${n}"><svg viewBox="0 0 24 24" fill="${c}" aria-hidden="true">${p}</svg></button>`).join('')}</div>
+      <div class="foot"><button class="fb opt" type="button"><span class="key">+</span>Options</button><button class="fb start" type="button" aria-pressed="false"><span class="key">A</span>Start</button></div>
     </div>`,
   init(root) {
-    const tiles = [...root.querySelectorAll('.tile')], title = root.querySelector('.title'), start = root.querySelector('.start');
-    const pick = (t) => { tiles.forEach((o) => { const on = o === t; o.classList.toggle('sel', on); o.setAttribute('aria-selected', String(on)); }); title.textContent = t.getAttribute('aria-label'); start.classList.remove('on'); start.setAttribute('aria-pressed', 'false'); };
+    const tiles = [...root.querySelectorAll('.tile')], title = root.querySelector('.title'), tspan = title.querySelector('span'), start = root.querySelector('.start');
+    const pick = (t) => {
+      tiles.forEach((o) => { const on = o === t; o.classList.toggle('sel', on); o.setAttribute('aria-selected', String(on)); });
+      tspan.textContent = t.getAttribute('aria-label'); title.style.setProperty('--x', t.offsetLeft + 'px');
+      start.classList.remove('go'); start.setAttribute('aria-pressed', 'false');
+    };
     tiles.forEach((t, i) => {
       t.addEventListener('click', () => pick(t));
       t.addEventListener('keydown', (e) => { const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!d) return; e.preventDefault(); const n = tiles[(i + d + tiles.length) % tiles.length]; pick(n); n.focus(); });
     });
-    root.querySelectorAll('.foot .btn').forEach((b) => b.addEventListener('click', () => { const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', String(on)); }));
+    const ics = [...root.querySelectorAll('.ic')];
+    ics.forEach((b) => b.addEventListener('click', () => ics.forEach((o) => o.classList.toggle('sel', o === b && !o.classList.contains('sel')))));
+    start.addEventListener('click', () => { const on = start.classList.toggle('go'); start.setAttribute('aria-pressed', String(on)); });
   },
 };

@@ -1,51 +1,65 @@
 export default {
   id: 'cr-heart-explode',
-  credit: 'Like button that bursts into hearts — Twitter heart animation reimagined with DOM particles',
+  credit: 'Twitter "Like" heart animation (2016) — colour-shifting circle → ring burst, 7 dot pairs, heart pops in; count rolls up',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 140px; height: 140px; display: grid; place-items: center; }
-    .btn { position: relative; width: 64px; height: 64px; border: 0; border-radius: 50%; background: #fff; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, .12); display: grid; place-items: center; transition: transform .15s, box-shadow .2s; }
-    .btn:hover { transform: scale(1.08); box-shadow: 0 8px 22px rgba(0, 0, 0, .16); }
-    .btn:active { transform: scale(.92); }
-    .btn:focus-visible { outline: 2px solid #e0245e; outline-offset: 3px; }
-    .h { width: 30px; height: 30px; fill: none; stroke: #777; stroke-width: 2; transition: fill .2s, stroke .2s; }
-    .btn[aria-pressed="true"] .h { fill: #e0245e; stroke: #e0245e; animation: beat .5s cubic-bezier(.34, 1.56, .64, 1); }
-    .ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid #e0245e; opacity: 0; pointer-events: none; }
-    .btn[aria-pressed="true"] .ring { animation: ring .6s ease-out; }
-    .p { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; pointer-events: none; fill: var(--c);
-      animation: fly .8s cubic-bezier(.2, .7, .3, 1) forwards; }
-    @keyframes beat { 0% { transform: scale(0); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
-    @keyframes ring { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(1.8); opacity: 0; } }
-    @keyframes fly { 0% { transform: translate(-50%, -50%) scale(.4); opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity: 0; } }
+    .stage { background: #fff; border-radius: 12px; padding: 24px 30px 24px 22px; }
+    .like {
+      display: inline-flex; align-items: center; gap: 2px; border: 0; padding: 0; background: none; cursor: pointer; color: #536471;
+      font: 400 13px/16px system-ui, -apple-system, 'Segoe UI', sans-serif; font-variant-numeric: tabular-nums;
+      transition: color .2s ease;
+    }
+    .like:hover, .like[aria-pressed="true"] { color: #f91880; }
+    .ic { position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; transition: background-color .2s ease; }
+    .like:hover .ic { background: rgba(249, 24, 128, .1); }
+    .like:focus-visible { outline: 0; }
+    .like:focus-visible .ic { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1d9bf0; }
+    .h { position: relative; z-index: 1; width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+    .like[aria-pressed="true"] .h { fill: #f91880; stroke: #f91880; }
+    .like:active .h { transform: scale(.85); }
+    .pop .h { animation: heart .8s cubic-bezier(.17, .89, .32, 1.28) both; }
+    .circ { position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px; border-radius: 50%; border: 17px solid #e2264d; opacity: 0; pointer-events: none; }
+    .pop .circ { animation: circ .45s cubic-bezier(.21, .61, .35, 1) both; }
+    .dot { position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px; border-radius: 50%; background: var(--c); opacity: 0; pointer-events: none; }
+    .pop .dot { animation: dot .6s .22s cubic-bezier(.21, .61, .35, 1) both; }
+    .cnt { display: block; height: 16px; overflow: hidden; padding: 0 2px; }
+    .cnt span { display: block; transition: transform .3s cubic-bezier(.2, 0, 0, 1); }
+    .like[aria-pressed="true"] .cnt span { transform: translateY(-100%); }
+    @keyframes heart { 0%, 28% { transform: scale(0); } 55% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    @keyframes circ {
+      0% { opacity: 1; transform: scale(0); border-color: #e2264d; border-width: 17px; }
+      45% { opacity: 1; transform: scale(1); border-color: #cd8aeb; border-width: 17px; }
+      100% { opacity: 1; transform: scale(1.05); border-color: #cd8aeb; border-width: 0; }
+    }
+    @keyframes dot {
+      0% { opacity: 1; transform: rotate(var(--a)) translateY(-14px) scale(1); }
+      100% { opacity: 1; transform: rotate(var(--a)) translateY(-31px) scale(0); }
+    }
   `,
   html: `
     <div class="stage">
-      <button class="btn" type="button" aria-pressed="false" aria-label="like">
-        <span class="ring"></span>
-        <svg class="h" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.3C1 7.8 3.6 4 7.3 4c2 0 3.5 1.1 4.7 2.6C13.2 5.1 14.7 4 16.7 4c3.7 0 6.3 3.8 4.8 7.7C19.5 16.4 12 21 12 21z"/></svg>
+      <button class="like" type="button" aria-pressed="false" aria-label="Like, 1,203 likes">
+        <span class="ic" aria-hidden="true"><span class="circ"></span><span class="dots"></span><svg class="h" viewBox="0 0 24 24"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+        <span class="cnt" aria-hidden="true"><span>1,203</span><span>1,204</span></span>
       </button>
     </div>`,
   init(root) {
-    const stage = root.querySelector('.stage'), b = root.querySelector('.btn');
-    const path = 'M12 21s-7.5-4.6-9.5-9.3C1 7.8 3.6 4 7.3 4c2 0 3.5 1.1 4.7 2.6C13.2 5.1 14.7 4 16.7 4c3.7 0 6.3 3.8 4.8 7.7C19.5 16.4 12 21 12 21z';
-    const cols = ['#e0245e', '#f472b6', '#fb7185', '#f9a8d4', '#be123c'];
+    const b = root.querySelector('.like'), ic = root.querySelector('.ic'), dots = root.querySelector('.dots');
+    const pairs = [['#9fc7fa', '#9fdeb4'], ['#9fdeb4', '#f0928d'], ['#cc8ef5', '#91d2fa'], ['#91d2fa', '#9ae4cf'], ['#9ae4cf', '#cc8ef5'], ['#cc8ef5', '#f48ea7'], ['#f48ea7', '#9fc7fa']];
+    dots.innerHTML = pairs.map((p, i) => {
+      const a = (360 / 7) * i;
+      return `<span class="dot" style="--a:${a - 7}deg;--c:${p[0]}"></span><span class="dot" style="--a:${a + 7}deg;--c:${p[1]}"></span>`;
+    }).join('');
+    let t = 0;
     b.addEventListener('click', () => {
       const on = b.getAttribute('aria-pressed') !== 'true';
       b.setAttribute('aria-pressed', String(on));
-      if (!on) return;
-      for (let i = 0; i < 10; i++) {
-        const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'p');
-        const a = (Math.PI * 2 * i) / 10 + Math.random() * .4, v = 44 + Math.random() * 20;
-        s.style.setProperty('--dx', (Math.cos(a) * v).toFixed(0) + 'px');
-        s.style.setProperty('--dy', (Math.sin(a) * v).toFixed(0) + 'px');
-        s.style.setProperty('--c', cols[i % cols.length]);
-        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', path);
-        s.appendChild(p); s.addEventListener('animationend', () => s.remove()); setTimeout(() => s.remove(), 1100);
-        stage.appendChild(s);
-      }
+      b.setAttribute('aria-label', on ? 'Unlike, 1,204 likes' : 'Like, 1,203 likes');
+      ic.classList.remove('pop');
+      clearTimeout(t);
+      if (on) { void ic.offsetWidth; ic.classList.add('pop'); t = setTimeout(() => ic.classList.remove('pop'), 900); }
     });
+    return () => clearTimeout(t);
   },
 };

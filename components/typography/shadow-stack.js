@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .stage {
       background: #ffe4e6;
       border-radius: 12px;
@@ -15,7 +16,7 @@ export default {
       border: 0;
       padding: 0;
       color: #fff1f2;
-      font: 900 54px/1 Inter, system-ui, sans-serif; letter-spacing: -.04em;
+      font: 900 54px/1 Inter, system-ui, sans-serif; letter-spacing: -.01em;
       transform: translate(0, 0); transition: transform .15s cubic-bezier(.34, 1.56, .64, 1), text-shadow .15s cubic-bezier(.34, 1.56, .64, 1), color .2s;
       text-shadow: 1px 1px 0 #be123c, 2px 2px 0 #be123c, 3px 3px 0 #be123c, 4px 4px 0 #be123c, 5px 5px 0 #be123c, 6px 6px 0 #be123c, 7px 7px 0 #be123c, 8px 8px 0 #9f1239;
     }

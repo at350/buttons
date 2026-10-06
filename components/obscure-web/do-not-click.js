@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .wrap { width: 260px; max-width: 100%; height: 110px; display: grid; place-items: center; border-radius: 12px; background: #fff7f7; transition: background .3s; }
-    .btn { position: relative; padding: 14px 26px; border: 2px solid #c33; border-radius: 8px; background: #fff; color: #c33; cursor: pointer; font: 700 15px/1 Inter, system-ui, sans-serif; letter-spacing: .3px; transition: background .2s, color .2s, transform .15s, border-color .2s, font-size .2s; white-space: nowrap; }
+    .btn { position: relative; padding: 14px 26px; border: 2px solid #c33; border-radius: 8px; background: #fff; color: #c33; cursor: pointer; font: 700 15px/1 Inter, system-ui, sans-serif; letter-spacing: .3px; transition: background .2s, color .2s, transform .15s, border-color .2s, font-size .2s; white-space: nowrap; min-width: 196px; }
     .btn:hover { background: #fff0f0; }
     .btn:focus-visible { outline: 2px solid #c33; outline-offset: 3px; }
     .btn.l1 { background: #fde2e2; }

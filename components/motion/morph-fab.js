@@ -1,4 +1,6 @@
-const SPRING = 'linear(0, 0.143, 0.453, 0.779, 1.028, 1.168, 1.205, 1.173, 1.109, 1.043, 0.992, 0.965, 0.958, 0.965, 0.978, 0.992, 1.002, 1.007, 1.009, 1.007, 1.004, 1.002, 1)';
+// Morphing FAB: the 56px circle stretches into a pill on a spring (stiffness 300, damping 24 → linear()), the plus turns
+// 135° into a close icon and three actions pop in 55ms apart. Lucide icons.
+const SPRING = 'linear(0, 0.032, 0.103, 0.206, 0.315, 0.435, 0.543, 0.649, 0.743, 0.818, 0.885, 0.934, 0.975, 1.004, 1.025, 1.038, 1.045, 1.047, 1.046, 1.043, 1.039, 1.034, 1.028, 1.023, 1.018, 1.013, 1.009, 1.006, 1.004, 1.002, 1, 0.999, 0.998, 0.998, 0.998, 0.998, 0.998, 0.998, 0.998, 0.999, 1)';
 
 export default {
   id: 'mo-morph-fab',
@@ -6,7 +8,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .box { position: relative; width: 220px; height: 56px; }
+    .box { position: relative; width: 232px; height: 56px; }
     .pill {
       position: absolute; left: 0; top: 0; height: 56px; width: var(--w, 56px); border-radius: 28px; background: #111; box-shadow: 0 8px 24px -8px rgba(0,0,0,.45);
       transition: width .6s ${SPRING}, background .3s;
@@ -30,10 +32,10 @@ export default {
   html: `
     <div class="box">
       <span class="pill"></span>
-      <button class="fab" type="button" aria-expanded="false" aria-label="Create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-      <button class="act" type="button" style="--i:1" aria-label="Note"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 9h8M8 13h6"/></svg></button>
-      <button class="act" type="button" style="--i:2" aria-label="Photo"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/></svg></button>
-      <button class="act" type="button" style="--i:3" aria-label="Link"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button>
+      <button class="fab" type="button" aria-expanded="false" aria-label="Create"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <button class="act" type="button" style="--i:1" aria-label="Note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+      <button class="act" type="button" style="--i:2" aria-label="Photo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></button>
+      <button class="act" type="button" style="--i:3" aria-label="Link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
     </div>`,
   init(root) {
     const box = root.querySelector('.box'), fab = root.querySelector('.fab');

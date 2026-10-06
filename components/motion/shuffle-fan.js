@@ -18,8 +18,8 @@ export default {
     .btn { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); height: 36px; padding: 0 16px; border-radius: 999px; border: 0; background: #fff; color: #0f172a; font: 600 13px Inter, system-ui, sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), background .2s; }
     .btn:hover { background: #e2e8f0; transform: translateX(-50%) scale(1.05); } .btn:active { transform: translateX(-50%) scale(.95); }
     .btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-    .btn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .6s ${SPRING}; }
-    .stage.fan .btn svg { transform: rotate(180deg); }
+    .btn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .6s ${SPRING}; }
+    .stage.fan .btn svg { transform: scaleX(-1); }
   `,
   html: `
     <div class="stage">
@@ -28,7 +28,7 @@ export default {
         <div class="card" data-k="1" style="--i:1;background:linear-gradient(145deg,#8b5cf6,#3b82f6)">K</div>
         <div class="card" data-k="2" style="--i:2;background:linear-gradient(145deg,#10b981,#84cc16)">Q</div>
       </div>
-      <button class="btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Shuffle</button>
+      <button class="btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg>Shuffle</button>
     </div>`,
   init(root) {
     const stage = root.querySelector('.stage'), cards = [...root.querySelectorAll('.card')], btn = root.querySelector('.btn');

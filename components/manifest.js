@@ -16,6 +16,11 @@ export const CATEGORIES = [
   'game-ui',
   'obscure-web',
   'libraries',
+  'automotive',
+  'kiosks',
+  'scifi',
+  'industrial',
+  'toys',
 ];
 
 export async function loadComponents() {

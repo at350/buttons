@@ -1,34 +1,40 @@
+// macOS Finder toolbar "View" control (Big Sur → Sequoia): four borderless 36×28 toolbar segments —
+// Icons, List, Columns, Gallery — on the #f6f6f6 unified toolbar; the selected one sits on a 6px-radius
+// rgba(0,0,0,.1) plate that glides between segments (AppKit spring), unselected glyphs labelColor at 50%.
 export default {
   id: 'in-sliding-radio',
-  credit: 'Icon radio group with a sliding highlight pill behind the selected option (view switcher pattern)',
+  credit: 'macOS Finder toolbar view control — Icons / List / Columns / Gallery, the gray selection plate glides between them',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .g { position: relative; display: inline-flex; padding: 4px; gap: 0; border-radius: 10px; background: #e4e4e7; }
-    .pill { position: absolute; top: 4px; left: 4px; width: 40px; height: 36px; border-radius: 7px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.15); transition: transform .28s cubic-bezier(.4,0,.2,1); }
+    .bar { display: inline-flex; padding: 8px 10px; border-radius: 12px; background: #f6f6f6; box-shadow: inset 0 -1px 0 rgba(0,0,0,.1); }
+    .g { position: relative; display: inline-flex; }
+    .plate { position: absolute; top: 0; left: 0; width: 36px; height: 28px; border-radius: 6px; background: rgba(0,0,0,.1); transition: transform .3s cubic-bezier(.32,.72,0,1); }
     .o {
-      position: relative; z-index: 1; width: 40px; height: 36px; border: 0; background: none; padding: 0; cursor: pointer; border-radius: 7px;
-      display: grid; place-items: center; color: #71717a; transition: color .2s; -webkit-tap-highlight-color: transparent;
+      position: relative; z-index: 1; width: 36px; height: 28px; border: 0; background: none; padding: 0; cursor: default; border-radius: 6px;
+      display: grid; place-items: center; color: rgba(0,0,0,.5); transition: color .15s, background-color .15s; -webkit-tap-highlight-color: transparent;
     }
-    .o:hover { color: #3f3f46; }
-    .o:focus-visible { outline: 2px solid #2563eb; outline-offset: -2px; }
-    .o[aria-checked="true"] { color: #18181b; }
-    .o svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .o:hover:not([aria-checked="true"]) { background: rgba(0,0,0,.05); color: rgba(0,0,0,.7); }
+    .o:active { color: rgba(0,0,0,.9); }
+    .o:focus-visible { outline: 3px solid rgba(0,122,255,.5); outline-offset: -1px; }
+    .o[aria-checked="true"] { color: rgba(0,0,0,.85); }
+    .o svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   `,
-  html: `<div class="g" role="radiogroup" aria-label="View">
-    <span class="pill"></span>
-    <button class="o" type="button" role="radio" aria-checked="true" aria-label="Grid"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
-    <button class="o" type="button" role="radio" aria-checked="false" aria-label="List"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
-    <button class="o" type="button" role="radio" aria-checked="false" aria-label="Columns"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="18" rx="1.5"/><rect x="9.5" y="3" width="5" height="18" rx="1.5"/><rect x="16" y="3" width="5" height="18" rx="1.5"/></svg></button>
-  </div>`,
+  html: `<div class="bar"><div class="g" role="radiogroup" aria-label="View">
+    <span class="plate"></span>
+    <button class="o" type="button" role="radio" aria-checked="true" aria-label="as Icons"><svg viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></button>
+    <button class="o" type="button" role="radio" aria-checked="false" aria-label="as List"><svg viewBox="0 0 24 24"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg></button>
+    <button class="o" type="button" role="radio" aria-checked="false" aria-label="as Columns"><svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg></button>
+    <button class="o" type="button" role="radio" aria-checked="false" aria-label="as Gallery"><svg viewBox="0 0 24 24"><path d="M7 2h10"/><path d="M5 6h14"/><rect width="18" height="12" x="3" y="10" rx="2"/></svg></button>
+  </div></div>`,
   init(root) {
-    const g = root.querySelector('.g'), pill = root.querySelector('.pill');
+    const g = root.querySelector('.g'), plate = root.querySelector('.plate');
     const opts = [...root.querySelectorAll('.o')];
     let idx = 0;
     const set = (i, focus) => {
       idx = (i + opts.length) % opts.length;
       opts.forEach((o, j) => o.setAttribute('aria-checked', j === idx));
-      pill.style.transform = 'translateX(' + idx * 40 + 'px)';
+      plate.style.transform = 'translateX(' + idx * 36 + 'px)';
       if (focus) opts[idx].focus({ preventScroll: true });
     };
     opts.forEach((o, i) => o.addEventListener('click', () => set(i)));

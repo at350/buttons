@@ -4,15 +4,16 @@ export default {
   size: 'wide',
   css: `
     :host { display: block; }
-    .stage { background: #18181b; border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
+    .stage { background: #18181b; border-radius: 12px; padding: 14px; display: grid; gap: 10px; max-width: 640px; }
     .out { height: 34px; border: 1px solid #3f3f46; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; overflow: hidden; }
     .out span { font: 500 16px/1 'JetBrains Mono', ui-monospace, monospace; color: #e4e4e7; letter-spacing: .1em; white-space: pre; }
     .out span:empty::before { content: ''; display: inline-block; width: 0; }
     .out .cur { display: inline-block; width: 9px; height: 18px; background: #a3e635; margin-left: 3px; animation: blink 1s steps(1) infinite; }
     .grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 5px; }
     .k {
-      cursor: pointer; aspect-ratio: 1; min-width: 0; border: 0; border-radius: 5px; background: #27272a; color: #d4d4d8; padding: 0;
-      font: 600 14px/1 'JetBrains Mono', ui-monospace, monospace; box-shadow: 0 2px 0 #09090b;
+      cursor: pointer; height: 40px; min-width: 0; border: 0; border-radius: 5px; background: #27272a; color: #d4d4d8; padding: 0;
+      font: 600 15px/1 'JetBrains Mono', ui-monospace, monospace; box-shadow: 0 2px 0 #09090b;
       transition: transform .12s, box-shadow .12s, background .15s, color .15s;
     }
     .k:hover { transform: translateY(-3px); box-shadow: 0 5px 0 #09090b, 0 8px 14px -6px rgba(163, 230, 53, .4); color: #fff; }

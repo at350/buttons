@@ -74,48 +74,71 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Soap bubble: thin-film interference on a sphere. Film thickness drains with gravity (thin, gold/
+// black at the top; thick, banded at the bottom) and swirls with noise; per-pixel colour is the
+// spectral sum of ½(1 − cos 4πn·d·cosθt/λ). It is Fresnel-weighted — clear in the middle, vivid at the
+// rim — with two window reflections. Press pops it into droplets; it re-forms in about a second.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
-vec3 hue(float h){return .5+.5*cos(6.2832*(h+vec3(0.,.33,.67)));}
+vec3 film(float d,float ct){vec3 acc=vec3(0.),nrm=vec3(0.);
+ for(int i=0;i<9;i++){float l=400.+float(i)*37.5;
+  vec3 cm=vec3(exp(-pow((l-605.)/48.,2.))+.3*exp(-pow((l-440.)/22.,2.)),exp(-pow((l-545.)/42.,2.)),exp(-pow((l-455.)/32.,2.)));
+  acc+=(.5-.5*cos(12.566*1.33*d*ct/l))*cm; nrm+=cm;}
+ return acc/nrm;}
+float rbox(vec2 p,vec2 b,float r){vec2 q=abs(p)-b+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
 void main(){
- vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y*2.;
+ vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y*2.; float px=2./u_res.y;
+ vec3 bg=mix(vec3(.05,.12,.2),vec3(.13,.27,.36),smoothstep(-1.,1.,uv.y+uv.x*.3));
+ bg+=vec3(.9,.7,.45)*smoothstep(.22,.0,length(uv-vec2(-.55,-.62)))*.18+vec3(.5,.8,1.)*smoothstep(.16,.0,length(uv-vec2(.62,.5)))*.12;
  float ang=atan(uv.y,uv.x);
- float wob=1.+.035*sin(u_time*3.+ang*3.)*u_hover+.02*sin(u_time*5.-ang*2.)*u_hover;
+ float wob=1.+(.03*sin(u_time*3.1+ang*3.)+.02*sin(u_time*4.7-ang*2.))*u_hover;
+ float R=.76*smoothstep(.66,.08,u_press);
  float r=length(uv)*wob;
- float R=.8*smoothstep(.5,.12,u_press);
- float z=sqrt(max(0.,R*R-r*r)); vec3 n=normalize(vec3(uv,z+1e-3));
- float thick=noise(uv*2.+vec2(u_time*.35,-u_time*.5))*1.2+n.z*1.6+u_hover*.3;
- vec3 film=hue(thick*.7+u_time*.04)*1.25;
- float fr=pow(1.-n.z,1.4);
- float edge=smoothstep(R,R-.02,r);
- vec3 bg=vec3(.03,.04,.08)+.05*uv.y;
- vec3 l=normalize(vec3(u_mouse*2.-1.,1.4));
- float spec=pow(max(dot(n,l),0.),70.);
- vec3 col=bg+edge*(film*fr*.95+spec+.02);
- float ringR=.8+(1.-u_press)*1.4; float ring=abs(length(uv)-ringR);
- float drops=step(.55,hash(floor(vec2(ang*7.+ringR*3.,0.))))*smoothstep(.07,0.,ring)*smoothstep(.45,.7,u_press);
- col+=drops*vec3(.85,.92,1.);
+ vec3 col=bg;
+ if(R>.01){
+  float z=sqrt(max(0.,R*R-r*r)); vec3 n=normalize(vec3(uv*wob,z+1e-4));
+  float ct=n.z; float ctt=sqrt(1.-(1.-ct*ct)/1.77);
+  vec2 sw=n.xy*1.6; float a=u_time*.25; sw=mat2(cos(a),-sin(a),sin(a),cos(a))*sw;
+  float wy=n.y+.22*(noise(sw*1.6+vec2(u_time*.15,-u_time*.25))-.5)+.08*(noise(sw*4.-u_time*.3)-.5);
+  float d=120.+820.*smoothstep(1.,-1.,wy);
+  vec3 f=film(d,ctt); float g=dot(f,vec3(.333)); f=clamp(mix(vec3(g),f,1.6),0.,1.);
+  float fr=.07+.93*pow(1.-ct,2.4);
+  float inside=smoothstep(R+px,R-px,r);
+  col=mix(bg,bg*(1.-.25*fr)+f*fr*1.25,inside);
+  // window reflections
+  vec2 w=(n.xy-vec2(-.42,.42))*vec2(1.,1.15); float wd=rbox(w,vec2(.16,.13),.05);
+  float win=smoothstep(.02,-.02,wd)*(1.-smoothstep(.006,.0,min(abs(w.x),abs(w.y)))*.85);
+  col+=win*inside*.55*(.6+.4*u_hover);
+  col+=smoothstep(.12,.0,length(n.xy-vec2(.45,-.48)))*inside*.18;
+  col+=smoothstep(px*1.5,0.,abs(r-R))*.25;
+ }
+ // droplets after the pop
+ float po=smoothstep(.4,.9,u_press);
+ if(po>0.){float rr=.72+(1.-u_press)*.55; float N=22.; float sa=floor((ang+3.1416)/6.2832*N);
+  float ca=(sa+.5)/N*6.2832-3.1416; float h=hash(vec2(sa,3.));
+  vec2 dp=vec2(cos(ca),sin(ca))*(rr*(.85+.3*h));
+  col+=smoothstep(.05*(.6+h*.5),.0,length(uv-dp))*po*vec3(.85,.95,1.)*step(.3,h);}
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-soap-bubble',
-  credit: 'Iridescent soap-bubble button — thin-film colours from a shaded sphere in GLSL; it wobbles under the pointer, pops into droplets on press and re-forms',
+  credit: 'Iridescent soap bubble in GLSL — spectral thin-film interference with gravity drainage and swirling thickness, Fresnel-weighted (clear centre, vivid rim) with window reflections; it wobbles under the pointer, pops into droplets on press and re-forms',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: block; width: 140px; height: 140px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; background: #070a12; cursor: pointer; isolation: isolate; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+    .btn { position: relative; display: block; width: 140px; height: 140px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; background: #0d2130; cursor: pointer; isolation: isolate; box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 1px 2px rgba(0,0,0,.25), 0 10px 24px -14px rgba(0,30,60,.7); transition: transform .2s cubic-bezier(.2,.8,.2,1); }
+    .btn:active { transform: scale(.97); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: radial-gradient(circle at 40% 35%, rgba(255,255,255,.6), rgba(120,200,255,.25) 40%, rgba(255,120,220,.3) 60%, #070a12 72%); }
-    .l { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 1; color: rgba(255,255,255,.75); font: 400 11px/1 'Instrument Serif', Georgia, serif; font-style: italic; letter-spacing: .1em; pointer-events: none; }
-    .btn:focus-visible { outline: 2px solid #c7e6ff; outline-offset: 3px; }
+    .cv.nogl { background: radial-gradient(circle at 38% 32%, rgba(255,255,255,.55), rgba(140,210,255,.2) 30%, rgba(255,140,220,.3) 52%, rgba(255,210,120,.25) 54%, #0d2130 56%); }
+    .btn:focus-visible { outline: 2px solid #b8e4ff; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">pop</span></button>`,
+  html: `<button class="btn" type="button" aria-label="Pop bubble"><canvas class="cv"></canvas></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 140, 140, FS, { pressDecay: .7 });
+    const s = shade(cv, btn, 140, 140, FS, { pressDecay: .75 });
     return () => s.destroy();
   },
 };

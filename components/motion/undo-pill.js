@@ -1,4 +1,6 @@
-const SPRING = 'linear(0, 0.143, 0.453, 0.779, 1.028, 1.168, 1.205, 1.173, 1.109, 1.043, 0.992, 0.965, 0.958, 0.965, 0.978, 0.992, 1.002, 1.007, 1.009, 1.007, 1.004, 1.002, 1)';
+// Undo snackbar (Gmail / Linear): deleting springs a dark pill up from the bottom (stiffness 300, damping 24 → linear())
+// with a 5s countdown bar; Undo puts the row back. When time runs out the row is gone, then a fresh copy fades back in.
+const SPRING = 'linear(0, 0.032, 0.103, 0.206, 0.315, 0.435, 0.543, 0.649, 0.743, 0.818, 0.885, 0.934, 0.975, 1.004, 1.025, 1.038, 1.045, 1.047, 1.046, 1.043, 1.039, 1.034, 1.028, 1.023, 1.018, 1.013, 1.009, 1.006, 1.004, 1.002, 1, 0.999, 0.998, 0.998, 0.998, 0.998, 0.998, 0.998, 0.998, 0.999, 1)';
 
 export default {
   id: 'mo-undo-pill',
@@ -17,7 +19,7 @@ export default {
     .del:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
     .del svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .pill {
-      position: absolute; left: 50%; bottom: 14px; transform: translate(-50%, 70px) scale(.8); opacity: 0; display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 8px 0 16px; border-radius: 999px;
+      position: absolute; left: 50%; bottom: 14px; transform: translate(-50%, 70px) scale(.9); opacity: 0; display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 8px 0 16px; border-radius: 999px;
       background: #111; color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; box-shadow: 0 10px 24px -8px rgba(0,0,0,.5); transition: transform .6s ${SPRING}, opacity .25s;
     }
     .stage.on .pill { transform: translate(-50%, 0) scale(1); opacity: 1; }
@@ -29,19 +31,19 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="row"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h16M9 20V9"/></svg></span><span class="txt"><b>Q3 roadmap.fig</b><span>Edited 2h ago</span></span><button class="del" type="button" aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></div>
+      <div class="row"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg></span><span class="txt"><b>Q3 roadmap.fig</b><span>Edited 2h ago</span></span><button class="del" type="button" aria-label="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>
       <div class="pill" role="status">File deleted<button type="button">Undo <span class="n">5</span></button><span class="bar"></span></div>
     </div>`,
   init(root) {
     const stage = root.querySelector('.stage'), row = root.querySelector('.row'), n = root.querySelector('.n');
-    let iv = 0, left = 5;
+    let iv = 0, left = 5, rt = 0;
     const stop = () => { clearInterval(iv); iv = 0; stage.classList.remove('on'); };
     root.querySelector('.del').addEventListener('click', () => {
       row.classList.add('gone'); left = 5; n.textContent = left; stage.classList.add('on');
       clearInterval(iv);
-      iv = setInterval(() => { left--; n.textContent = Math.max(0, left); if (left <= 0) stop(); }, 1000);
+      iv = setInterval(() => { left--; n.textContent = Math.max(0, left); if (left <= 0) { stop(); clearTimeout(rt); rt = setTimeout(() => row.classList.remove('gone'), 1400); } }, 1000);
     });
     root.querySelector('.pill button').addEventListener('click', () => { stop(); row.classList.remove('gone'); });
-    return () => clearInterval(iv);
+    return () => { clearInterval(iv); clearTimeout(rt); };
   },
 };

@@ -4,18 +4,18 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .gb { width: 300px; max-width: 100%; padding: 14px; border-radius: 12px; background: #000080; color: #fff; font: 13px "Times New Roman", Times, serif; display: grid; gap: 10px; justify-items: center; text-align: center; }
+    .gb { width: 330px; max-width: 100%; padding: 14px; border-radius: 12px; background: #000080; color: #fff; font: 13px "Times New Roman", Times, serif; display: grid; gap: 10px; justify-items: center; text-align: center; }
     .book { width: 52px; height: 36px; }
     .btns { display: flex; gap: 10px; }
-    .b { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; background: #c0c0c0; color: #000; border: 0; cursor: pointer; font: 12px Arial, Helvetica, sans-serif; box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf; }
+    .b { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; white-space: nowrap; background: #c0c0c0; color: #000; border: 0; cursor: pointer; font: 12px Arial, Helvetica, sans-serif; box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf; }
     .b:active, .b.dn { box-shadow: inset 1px 1px #000, inset -1px -1px #fff, inset 2px 2px #808080, inset -2px -2px #dfdfdf; }
     .b:focus-visible { outline: 1px dotted #000; outline-offset: -4px; }
     .b i { width: 12px; height: 12px; display: inline-block; background: #fff; border: 1px solid #000; }
     .b .pen { background: none; border: 0; width: 12px; height: 12px; }
     .b .pen svg { width: 12px; height: 12px; }
-    .vis { font: 11px Verdana, Arial, sans-serif; color: #ffff00; }
+    .vis { font: 11px Verdana, Arial, sans-serif; color: #ffff00; white-space: nowrap; }
     .vis b { font-family: "Courier New", monospace; background: #000; color: #0f0; padding: 1px 4px; border: 1px solid #0f0; letter-spacing: 2px; }
-    .msg { font: italic 12px "Times New Roman", serif; color: #ffcc00; min-height: 16px; }
+    .msg { font: italic 12px "Times New Roman", serif; color: #ffcc00; height: 16px; white-space: nowrap; overflow: hidden; max-width: 100%; }
     .cnt { display: inline-block; margin-top: 2px; }
   `,
   html: `

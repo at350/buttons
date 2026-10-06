@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .btn {
       cursor: pointer; background: #111; color: #fff; border: 0; border-radius: 999px; padding: 16px 30px;
       font: 500 18px/1 'DM Sans', Inter, system-ui, sans-serif; letter-spacing: .01em;

@@ -20,7 +20,7 @@ export default {
       color: #fde047;
       transform-style: preserve-3d;
       transform: rotateX(24deg);
-      box-shadow: 0 18px 0 -6px #000, 0 26px 30px rgba(0, 0, 0, .35);
+      box-shadow: 0 18px 0 -6px #000, 0 22px 16px -4px rgba(0, 0, 0, .35);
       transition: transform .25s cubic-bezier(.3, 1.3, .4, 1), box-shadow .25s;
     }
     .plate:hover { transform: rotateX(18deg) translateZ(8px); }
@@ -38,7 +38,7 @@ export default {
     .plate[aria-pressed="true"] {
       background: #fde047;
       color: #111;
-      box-shadow: inset 0 0 0 3px #111, 0 18px 0 -6px #000, 0 26px 30px rgba(0, 0, 0, .35);
+      box-shadow: inset 0 0 0 3px #111, 0 18px 0 -6px #000, 0 22px 16px -4px rgba(0, 0, 0, .35);
     }
     .plate[aria-pressed="true"] .t { text-shadow: 0 1px 0 #444, 0 2px 0 #333, 0 3px 0 #222, 0 4px 0 #111, 0 8px 12px rgba(0, 0, 0, .45); }
     .plate:focus-visible { outline: 3px solid #111; outline-offset: 4px; }

@@ -6,7 +6,7 @@ export default {
     :host { display: inline-block; }
     .stage { background: radial-gradient(ellipse at 50% 100%, #1e2a44, #0a0f1d 70%); padding: 18px 26px 16px; border-radius: 12px; display: flex; gap: 18px; align-items: center; font-family: 'Unbounded', 'Syne', system-ui, sans-serif; user-select: none; -webkit-user-select: none; }
     .gauge { position: relative; width: 110px; height: 110px; }
-    .gauge svg { width: 100%; height: 100%; transform: rotate(135deg); }
+    .gauge svg { width: 100%; height: 100%; }
     .trk { fill: none; stroke: rgba(255,255,255,.12); stroke-width: 10; stroke-linecap: round; }
     .arc { fill: none; stroke: #ff9a1f; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 254 339; transition: stroke-dasharray .1s linear, stroke .2s, filter .2s; }
     .burn .arc { stroke: #ffd21f; filter: drop-shadow(0 0 6px #ffb21f); }
@@ -29,7 +29,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="gauge"><svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="54" stroke-dasharray="254 339"/><circle class="arc" cx="60" cy="60" r="54"/></svg><div class="num"><div><span class="v">100</span><small style="display:block;text-align:center">BOOST</small></div></div></div>
+      <div class="gauge"><svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="54" stroke-dasharray="254 339" transform="rotate(135 60 60)"/><circle class="arc" cx="60" cy="60" r="54" transform="rotate(135 60 60)"/></svg><div class="num"><div><span class="v">100</span><small style="display:block;text-align:center">BOOST</small></div></div></div>
       <div class="col">
         <button class="btn boost" type="button" aria-label="Hold to boost">BOOST</button>
         <button class="btn pad" type="button" aria-label="Boost pad">PAD</button>

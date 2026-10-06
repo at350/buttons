@@ -74,58 +74,83 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Aurora borealis: two folded ribbons with a sharp lower edge, vertical ray structure (field-aligned
+// rays) and an exponential fade upward; oxygen green (557.7 nm) at the base shading to the red / violet
+// upper fringe, over stars and a spruce treeline. The slider is the Kp index: higher Kp brightens the
+// curtains, drops them lower and brings out the red fringe.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
-float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-vec3 hue(float h){return .5+.5*cos(6.2832*(h+vec3(0.,.33,.67)));}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; float t=u_time*.25;
- float x=uv.x*3.3;
- float f=fbm(vec2(x*1.5+t,uv.y*.6+t*.3));
- float c=fbm(vec2(x*3.-t*.8,.3));
- float curtain=smoothstep(.25,.85,f)*smoothstep(1.,.25,uv.y)*smoothstep(.0,.4,uv.y+c*.35);
- float hs=u_value*.62;
- vec3 lo=hue(.33+hs+uv.y*.12), hi=hue(.52+hs);
- vec3 col=vec3(.01,.02,.06)+curtain*mix(lo,hi,uv.y)*(1.25+.5*u_hover);
- col+=step(.996,hash(floor(gl_FragCoord.xy/2.)))*smoothstep(.3,1.,uv.y)*.7;
- col=mix(col,vec3(.05,.08,.1),smoothstep(.14,.0,uv.y)*(.5+.3*noise(vec2(uv.x*40.,0.))));
- float dx=abs(uv.x-u_value)*u_res.x; float dy=abs(uv.y-.5)*u_res.y;
- col+=smoothstep(2.5,0.,dx)*.9;
- col+=smoothstep(16.,0.,dx)*.08;
- col+=smoothstep(8.,5.,length(vec2(dx,dy)))*vec3(1.)*(.8+.2*u_hover);
- col+=u_press*.25*smoothstep(40.,0.,length(vec2(dx,dy)));
+ vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y; float px=1./u_res.y; float x=uv.x*ar;
+ float t=u_time*(.1+.06*u_hover); float kp=u_value;
+ vec3 col=mix(vec3(.02,.05,.1),vec3(.005,.01,.04),uv.y);
+ col+=step(.995,hash(floor(gl_FragCoord.xy/1.5)))*smoothstep(.25,.9,uv.y)*(.5+.5*hash(floor(gl_FragCoord.xy/1.5)+3.));
+ vec3 C=vec3(0.);
+ for(int k=0;k<2;k++){float fk=float(k);
+  float base=.56+.08*fk-.12*kp+.09*sin(x*1.4+t*2.3+fk*2.1)+.07*(noise(vec2(x*.8+t+fk*5.,t*.6))-.5);
+  float fold=sin(x*3.1+t*3.+fk)*.6;
+  float h=uv.y-base;
+  float rays=.3+.7*pow(noise(vec2(x*24.+fold*3.+fk*13.,t*1.6)),1.6)*(.6+.4*noise(vec2(x*7.-t,fk)));
+  float low=smoothstep(-.01,.025,h);
+  float tall=mix(.2,.42,kp);
+  float I=low*exp(-max(h,0.)/tall*2.3)*rays*(.55+.9*kp)*(1.-.45*fk);
+  I*=.75+.25*sin(x*1.7-t*4.+fk*3.);
+  vec3 c=mix(vec3(.2,1.,.5),mix(vec3(.5,.35,1.),vec3(1.,.22,.42),kp),smoothstep(.05,tall*1.2,h)*(.35+.65*kp));
+  C+=c*I;}
+ col+=C*(1.1+.25*u_hover);
+ col+=vec3(.1,.35,.2)*exp(-(uv.y-.36)*6.)*(.3+.6*kp)*.3;
+ // spruce treeline + snow
+ float cx=x*16.; float id=floor(cx); float f=fract(cx)-.5; float th=.08+.1*hash(vec2(id,1.)); float tb=.37;
+ float ty=tb+th*(1.-abs(f+(hash(vec2(id,2.))-.5)*.3)*2.4)+.012*sin(uv.y*400.)*step(uv.y,tb+th);
+ float tree=smoothstep(px,-px,uv.y-max(ty,tb));
+ col=mix(col,vec3(.01,.015,.025),tree);
+ col=mix(col,vec3(.05,.08,.12)+C*.06,smoothstep(px,-px,uv.y-.37+.008*sin(x*3.)));
+ col+=u_press*.06;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-aurora-slider',
-  credit: 'Northern-lights slider — fbm aurora curtains in GLSL; dragging the value shifts the hue from green through violet to magenta',
+  credit: 'Aurora borealis slider in GLSL — folded curtains with a sharp lower edge, field-aligned rays and an oxygen-green base fading to a red/violet fringe over a spruce treeline; the slider is the Kp index (brighter, lower, redder as it rises)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .sl { position: relative; width: 300px; height: 90px; max-width: 100%; border-radius: 16px; overflow: hidden; background: #040816; cursor: ew-resize; touch-action: none; user-select: none; isolation: isolate; }
+    .sl { position: relative; width: 300px; height: 90px; max-width: 100%; border-radius: 16px; overflow: hidden; background: #020610; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 1px 2px rgba(0,0,0,.3); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(0deg, #040816 0%, #0b6b4a 40%, #4bd3a0 60%, #040816 100%); }
-    .v { position: absolute; right: 10px; top: 8px; z-index: 1; color: rgba(255,255,255,.75); font: 500 11px/1 'JetBrains Mono', ui-monospace, monospace; pointer-events: none; }
-    .sl:focus-visible { outline: 2px solid #8ef0c8; outline-offset: 3px; }
+    .cv.nogl { background: linear-gradient(0deg, #020610 0%, #0b6b4a 40%, #4bd3a0 60%, #020610 100%); }
+    .rail { position: absolute; left: 8px; right: 8px; bottom: 8px; height: 22px; z-index: 1; border-radius: 11px; background: rgba(2,6,16,.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); pointer-events: none; }
+    .track { position: absolute; left: 13px; right: 13px; top: 9px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.22); }
+    .fill { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--v, .5) * 100%); border-radius: 2px; background: #5cf2a0; }
+    .thumb { position: absolute; top: 2px; left: calc(var(--v, .5) * 100%); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 .5px rgba(0,0,0,.25), 0 1px 3px rgba(0,0,0,.45); transition: transform .15s cubic-bezier(.2,.8,.2,1); }
+    .sl:hover .thumb { transform: scale(1.15); }
+    .sl.drag .thumb { transform: scale(1.25); }
+    .chip { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 4px 7px; border-radius: 6px; background: rgba(0,0,0,.5); color: #c9ffe2; font: 600 11px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .02em; white-space: nowrap; pointer-events: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+    .sl:focus-visible { outline: 2px solid #5cf2a0; outline-offset: 3px; }
   `,
-  html: `<div class="sl" role="slider" tabindex="0" aria-label="Hue" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><canvas class="cv"></canvas><span class="v">40</span></div>`,
+  html: `<div class="sl" role="slider" tabindex="0" aria-label="Kp index" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" style="--v:0.45"><canvas class="cv"></canvas><span class="chip"></span><span class="rail"><span class="track"><span class="fill"></span><span class="thumb"></span></span></span></div>`,
   init(root) {
-    const el = root.querySelector('.sl'), cv = root.querySelector('.cv'), out = root.querySelector('.v');
-    const s = shade(cv, el, 300, 90, FS, { idle: true, pressDecay: 2 });
+    const el = root.querySelector('.sl'), cv = root.querySelector('.cv');
+    const fmt = (v) => 'Kp ' + (v * 9).toFixed(0);
+    const s = shade(cv, el, 300, 90, FS, { idle: true, pressDecay: 2, valueRate: 5 });
+    const track = root.querySelector('.track'), chip = root.querySelector('.chip');
     const set = (v) => {
-      v = Math.max(0, Math.min(1, v)); s.value = s.valueT = v;
-      const n = Math.round(v * 100); el.setAttribute('aria-valuenow', n); out.textContent = n; s.kick();
+      v = Math.max(0, Math.min(1, v)); s.valueT = v;
+      el.style.setProperty('--v', v.toFixed(4)); el.setAttribute('aria-valuenow', String(Math.round(v * 100)));
+      const txt = fmt(v); chip.textContent = txt; el.setAttribute('aria-valuetext', txt); s.kick();
     };
-    set(.4);
-    el.addEventListener('pointerdown', (e) => { el.setPointerCapture(e.pointerId); set(s.mx); });
-    el.addEventListener('pointermove', () => { if (s.down) set(s.mx); });
+    const fromX = (x) => { const r = track.getBoundingClientRect(); return r.width ? (x - r.left) / r.width : s.valueT; };
+    let drag = false;
+    el.addEventListener('pointerdown', (e) => { drag = true; el.classList.add('drag'); try { el.setPointerCapture(e.pointerId); } catch (err) {} set(fromX(e.clientX)); });
+    el.addEventListener('pointermove', (e) => { if (drag) set(fromX(e.clientX)); });
+    const end = () => { drag = false; el.classList.remove('drag'); };
+    el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
     el.addEventListener('keydown', (e) => {
-      const k = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? .05 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -.05 : 0;
-      if (k) { e.preventDefault(); set(s.valueT + k); }
+      const k = { ArrowRight: 0.0556, ArrowUp: 0.0556, ArrowLeft: -0.0556, ArrowDown: -0.0556, PageUp: .1, PageDown: -.1 }[e.key];
+      if (k) { e.preventDefault(); set(s.valueT + k); } else if (e.key === 'Home') { e.preventDefault(); set(0); } else if (e.key === 'End') { e.preventDefault(); set(1); }
     });
+    set(0.45); s.value = s.valueT;
     return () => s.destroy();
   },
 };

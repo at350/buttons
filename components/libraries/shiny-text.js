@@ -1,27 +1,29 @@
 export default {
   id: 'lb-shiny-text',
-  credit: 'Magic UI / 21st.dev — Animated Shiny Text announcement pill: a specular sweep runs through the gray label via background-clip:text; click to flip to the dark variant',
+  credit: 'Magic UI — Animated Shiny Text announcement pill: a 100px black/80 highlight sweeps through the neutral-600/70 label via background-clip:text (8s, holds at 30–60%); Radix ArrowRightIcon nudges on hover; click for the dark variant',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { padding: 20px 28px; border-radius: 12px; background: #fff; display: inline-block; transition: background .3s; }
+    .stage { padding: 24px 32px; border-radius: 12px; background: #fff; display: inline-block; transition: background .3s; }
     .stage.dark { background: #0a0a0a; }
-    .pill { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 16px 0 14px; border-radius: 9999px; border: 1px solid rgba(0,0,0,.08); background: #f5f5f5; cursor: pointer; font: 500 14px/1 Inter, -apple-system, system-ui, sans-serif; transition: background .3s, border-color .3s, box-shadow .3s; -webkit-tap-highlight-color: transparent; }
-    .pill:hover { background: #e5e5e5; border-color: rgba(0,0,0,.14); }
-    .pill:focus-visible { outline: 2px solid #737373; outline-offset: 3px; }
-    .dark .pill { background: #171717; border-color: rgba(255,255,255,.1); }
+    .pill { display: block; padding: 0; border-radius: 9999px; border: 1px solid rgba(0,0,0,.05); background: #f5f5f5; cursor: pointer; font: 400 16px/24px Inter, -apple-system, system-ui, sans-serif; transition: all .15s cubic-bezier(.4,0,1,1); -webkit-tap-highlight-color: transparent; }
+    .pill:hover { background: #e5e5e5; }
+    .pill:focus-visible { outline: 2px solid #a1a1a1; outline-offset: 3px; }
+    .dark .pill { border-color: rgba(255,255,255,.05); background: #171717; }
     .dark .pill:hover { background: #262626; }
-    .sh { --w: 100px; display: inline-block; max-width: 400px; color: rgba(0,0,0,.6); background: linear-gradient(110deg, transparent calc(50% - var(--w)), rgba(0,0,0,.7) 50%, transparent calc(50% + var(--w))); background-size: 250% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; animation: shine 2.5s cubic-bezier(.6,.6,0,1) infinite; }
-    .dark .sh { color: rgba(255,255,255,.6); background-image: linear-gradient(110deg, transparent calc(50% - var(--w)), rgba(255,255,255,.9) 50%, transparent calc(50% + var(--w))); }
-    @keyframes shine { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
-    .em { font-size: 14px; }
-    .pill svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; color: rgba(0,0,0,.6); transition: transform .3s cubic-bezier(.2,0,0,1), color .3s; }
-    .dark .pill svg { color: rgba(255,255,255,.7); }
-    .pill:hover svg { transform: translateX(3px); }
+    .sh { --shiny-width: 100px; display: inline-flex; align-items: center; justify-content: center; padding: 4px 16px; color: rgba(82,82,82,.7);
+      background-image: linear-gradient(to right, transparent, rgba(0,0,0,.8) 50%, transparent); background-size: var(--shiny-width) 100%; background-position: 0 0; background-repeat: no-repeat;
+      -webkit-background-clip: text; background-clip: text; animation: shiny-text 8s infinite; transition: color .15s cubic-bezier(0,0,.2,1); white-space: nowrap; }
+    .pill:hover .sh { color: #525252; transition-duration: .3s; }
+    .dark .sh { color: rgba(163,163,163,.7); background-image: linear-gradient(to right, transparent, rgba(255,255,255,.8) 50%, transparent); }
+    .dark .pill:hover .sh { color: #a3a3a3; }
+    @keyframes shiny-text { 0%, 90%, 100% { background-position: calc(-100% - var(--shiny-width)) 0; } 30%, 60% { background-position: calc(100% + var(--shiny-width)) 0; } }
+    .sh svg { width: 12px; height: 12px; margin-left: 4px; transition: transform .3s cubic-bezier(.4,0,.2,1); }
+    .pill:hover .sh svg { transform: translateX(2px); }
   `,
   html: `
     <div class="stage">
-      <button class="pill" type="button" aria-pressed="false"><span class="em">✨</span><span class="sh">Introducing Magic UI</span><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      <button class="pill" type="button" aria-pressed="false"><span class="sh"><span>✨ Introducing Magic UI</span><svg viewBox="0 0 15 15" fill="none"><path d="M8.14648 3.14669C8.31735 2.97583 8.58131 2.95407 8.77539 3.08224L8.85352 3.14669L12.8535 7.14669C13.0488 7.34195 13.0488 7.65846 12.8535 7.85372L8.85352 11.8537C8.65825 12.049 8.34175 12.049 8.14648 11.8537C7.95122 11.6585 7.95122 11.342 8.14648 11.1467L11.293 8.00021H2.5C2.22386 8.00021 2 7.77635 2 7.50021C2 7.22406 2.22386 7.00021 2.5 7.00021H11.293L8.14648 3.85372L8.08203 3.7756C7.95387 3.58152 7.97562 3.31756 8.14648 3.14669Z" fill="currentColor"/></svg></span></button>
     </div>`,
   init(root) {
     const st = root.querySelector('.stage'), b = root.querySelector('.pill');

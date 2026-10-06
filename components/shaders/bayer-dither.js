@@ -74,37 +74,38 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Ordered (Bayer) dithering, 1-bit: an 8×8 threshold matrix built recursively from [[0,2],[3,1]]
+// (M2n = 4·Mn + M2 offsets) applied to a smooth light field on a 2-css-px grid — the classic
+// System 6 desktop look. The label sits on a Macintosh default button (1px frame + 3px outer ring);
+// a pointer spotlight walks through the threshold levels, press inverts the button like the real one.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_mouse;
-float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
- return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 float b2(vec2 p){p=floor(mod(p,2.));return 2.*p.x+3.*p.y-4.*p.x*p.y;}
-float bayer4(vec2 p){return (4.*b2(p)+b2(floor(p*.5))+.5)/16.;}
+float bayer8(vec2 p){return (16.*b2(p)+4.*b2(floor(p*.5))+b2(floor(p*.25))+.5)/64.;}
 void main(){
- float cell=u_res.y/36.; vec2 pp=floor(gl_FragCoord.xy/cell);
- vec2 cuv=(pp+.5)*cell/u_res; vec2 ar=vec2(u_res.x/u_res.y,1.);
- float l=.22+.18*sin(cuv.x*7.+u_time)*sin(cuv.y*5.-u_time*.8);
- vec2 dm=(cuv-u_mouse)*ar; l+=u_hover*1.3*exp(-dot(dm,dm)*4.5);
- l+=noise(cuv*ar*3.5+u_time*.35)*.35;
- l=mix(l,1.-l,u_press);
- float on=step(bayer4(pp),l);
- vec3 ink=vec3(.08,.08,.1), paper=vec3(.94,.9,.82);
+ float dpr=u_res.y/72.; vec2 pp=floor(gl_FragCoord.xy/(2.*dpr));
+ vec2 cuv=(pp+.5)*2.*dpr/u_res; float ar=u_res.x/u_res.y; vec2 q=vec2(cuv.x*ar,cuv.y);
+ float l=.12+.62*smoothstep(-.1,1.15,cuv.x+.25*cuv.y)+.09*sin(q.x*2.3+u_time*.6)*sin(q.y*3.1-u_time*.4);
+ vec2 dm=(cuv-u_mouse)*vec2(ar,1.); l+=u_hover*.55*exp(-dot(dm,dm)*2.6)-u_hover*.12;
+ float on=step(bayer8(pp),clamp(l,0.,1.));
+ vec3 ink=vec3(.098,.098,.09), paper=vec3(.95,.94,.9);
  gl_FragColor=vec4(mix(ink,paper,on),1.);}`;
 
 export default {
   id: 'sh-bayer-dither',
-  credit: '1-bit Bayer-dithered button — ordered 4×4 dithering of a noise field in GLSL; a spotlight follows the pointer through the dots, press inverts ink and paper',
+  credit: '1-bit Bayer dither in GLSL — an 8×8 ordered-dither matrix over a moving light field (System 6 desktop look) behind a Macintosh default button; the spotlight follows the pointer, press inverts the button',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 240px; height: 72px; max-width: 100%; padding: 0; border: 2px solid #15151a; border-radius: 6px; overflow: hidden; background: #15151a; cursor: pointer; isolation: isolate; image-rendering: pixelated; }
+    .btn { position: relative; display: grid; place-items: center; width: 240px; height: 72px; max-width: 100%; padding: 0; border: 0; border-radius: 4px; overflow: hidden; background: #f2f0e6; cursor: pointer; isolation: isolate; box-shadow: 0 0 0 2px #191917; -webkit-tap-highlight-color: transparent; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; image-rendering: pixelated; }
-    .cv.nogl { background: repeating-conic-gradient(#15151a 0 25%, #f0e6d2 0 50%) 0 0 / 6px 6px; }
-    .l { position: relative; z-index: 1; color: #fff; mix-blend-mode: difference; font: 700 22px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .18em; pointer-events: none; }
-    .btn:focus-visible { outline: 2px solid #15151a; outline-offset: 3px; }
+    .cv.nogl { background: repeating-conic-gradient(#191917 0 25%, #f2f0e6 0 50%) 0 0 / 4px 4px; }
+    .ring { position: relative; z-index: 1; padding: 3px; border: 3px solid #191917; border-radius: 13px; background: #f2f0e6; pointer-events: none; }
+    .l { display: block; padding: 7px 20px 8px; border: 1px solid #191917; border-radius: 8px; background: #f2f0e6; color: #191917; font: 600 15px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .02em; white-space: nowrap; }
+    .btn:active .l { background: #191917; color: #f2f0e6; }
+    .btn:focus-visible { outline: 2px solid #191917; outline-offset: 4px; }
   `,
-  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">DITHER</span></button>`,
+  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="ring"><span class="l">Print</span></span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
     const s = shade(cv, btn, 240, 72, FS, { pressDecay: 2.5 });

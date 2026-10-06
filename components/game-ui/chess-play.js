@@ -24,9 +24,9 @@ export default {
   html: `
     <div class="stage">
       <div class="tc" role="radiogroup">
-        <button type="button" role="radio" aria-checked="false"><svg viewBox="0 0 12 12"><path d="M6 0 2 7h3l-1 5 5-7H6z"/></svg>1 min</button>
+        <button type="button" role="radio" aria-checked="false"><svg viewBox="0 0 12 12" style="fill:#c9a23f"><path d="M9.6 1.2c.9-.3 1.5.3 1.2 1.2L9.4 6.3 5.7 2.6zM5 3.3l3.7 3.7-3.4 3.4-3.7-3.7zM1.2 7.4l3.4 3.4-.9.9H.3v-3.4z"/></svg>1 min</button>
         <button type="button" role="radio" aria-checked="true" class="on"><svg viewBox="0 0 12 12"><path d="M6 0 2 7h3l-1 5 5-7H6z"/></svg>3 min</button>
-        <button type="button" role="radio" aria-checked="false"><svg viewBox="0 0 12 12"><circle cx="6" cy="6.5" r="5"/><path d="M6 3v4h3" stroke="#312e2b" stroke-width="1.4" fill="none"/></svg>10 min</button>
+        <button type="button" role="radio" aria-checked="false"><svg viewBox="0 0 12 12"><circle cx="6" cy="6.5" r="5" style="fill:#81b64c"/><path d="M6 3v4h3" stroke="#312e2b" stroke-width="1.4" fill="none"/></svg>10 min</button>
       </div>
       <button class="play" type="button" aria-pressed="false">Play</button>
       <div class="clock"><button class="side w act" type="button" aria-label="White clock">3:00</button><button class="side b" type="button" aria-label="Black clock">3:00</button></div>

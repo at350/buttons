@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .stage { background: #0b0b0f; border-radius: 12px; padding: 20px 26px; perspective: 500px; }
     .btn {
       cursor: pointer; background: transparent; color: #f8fafc; border: 0; padding: 4px 0;

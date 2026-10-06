@@ -1,47 +1,57 @@
+// Sampled from the live sfbay.craigslist.org front page: #eee left bar with the #800080 serif "craigslist"
+// logo and peace sign, the white "post an ad" box in #009900 with a pen-square icon, the rounded #ccc
+// "search craigslist" field, and a category column — #eee ban header in bold #0000ee, #0000ee links over
+// 1px #ccc rules, visited links #551a8b.
 export default {
   id: 'ob-craigslist',
-  credit: 'Craigslist — the bordered "post to classifieds" box, a plain 1px-border search input + button, and links that go purple when visited',
+  credit: 'Craigslist — the front page: purple peace-sign logo, green "post an ad", the #eee "community" ban and blue links that go purple once visited',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .cl { width: 300px; max-width: 100%; background: #fff; padding: 12px 14px; border-radius: 12px; font: 13px/1.5 "Times New Roman", Times, serif; color: #000; display: grid; gap: 8px; }
-    .post { display: block; width: 150px; padding: 2px 6px; background: #eee; border: 1px solid #ccc; color: #00e; text-decoration: none; text-align: center; font: 13px/1.5 "Times New Roman", Times, serif; cursor: pointer; }
-    .post:hover { background: #e4e4e4; text-decoration: underline; }
+    .cl { display: flex; width: 360px; max-width: 100%; border-radius: 12px; overflow: hidden; background: #fff; font: 14px/1.35 Arial, Helvetica, sans-serif; color: #222; }
+    .left { width: 156px; flex: none; background: #eee; padding: 10px 10px 14px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .logo { display: flex; align-items: center; gap: 5px; color: #800080; font: 26px/1 "Times New Roman", Times, serif; letter-spacing: -.5px; white-space: nowrap; }
+    .logo svg { width: 26px; height: 26px; flex: none; }
+    .post { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; background: #fff; color: #009900; font: 18px/1.2 Arial, Helvetica, sans-serif; text-decoration: none; cursor: pointer; white-space: nowrap; }
+    .post svg { width: 17px; height: 17px; flex: none; }
+    .post:hover { text-decoration: underline; }
     .post.v { color: #551a8b; }
-    .post:focus-visible, .lnk:focus-visible, .q:focus-visible, .go:focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
-    form { display: flex; gap: 4px; align-items: center; }
-    .q { width: 150px; height: 20px; border: 1px solid #999; padding: 0 3px; font: 12px Arial, sans-serif; background: #fff; border-radius: 0; }
-    .go { height: 20px; padding: 0 6px; border: 1px solid #999; background: #e9e9e9; font: 12px Arial, sans-serif; cursor: pointer; border-radius: 0; color: #000; }
-    .go:hover { background: #ddd; }
-    .go:active { background: #ccc; }
-    .links { display: flex; gap: 14px; flex-wrap: wrap; }
-    .lnk { color: #00e; text-decoration: underline; cursor: pointer; }
+    .sch { position: relative; width: 100%; }
+    .sch svg { position: absolute; left: 6px; top: 50%; width: 13px; height: 13px; margin-top: -6.5px; color: #757575; pointer-events: none; }
+    .q { width: 100%; height: 29px; padding: 0 6px 0 23px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font: 14px Arial, Helvetica, sans-serif; color: #222; outline: none; }
+    .q::placeholder { color: #757575; }
+    .q:focus { border-color: #0000ee; }
+    .right { flex: 1; min-width: 0; padding: 10px 8px 10px; }
+    .ban { display: flex; align-items: center; justify-content: center; gap: 6px; height: 34px; background: #eee; color: #0000ee; font: 700 16px/1 Arial, Helvetica, sans-serif; cursor: default; }
+    .ban .em { font: 17px/1 "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+    ul { list-style: none; margin: 4px 0 0; padding: 0; }
+    li { border-bottom: 1px solid #ccc; }
+    .lnk { display: block; padding: 2px 3px 1px; color: #0000ee; text-decoration: none; cursor: pointer; white-space: nowrap; }
+    .lnk:hover { text-decoration: underline; }
     .lnk.v { color: #551a8b; }
-    .res { font: 11px Arial, sans-serif; color: #555; min-height: 14px; }
-    .reply { display: inline-flex; align-items: center; gap: 5px; justify-self: start; padding: 3px 10px; border: 1px solid #5c7fbf; border-radius: 3px; background: linear-gradient(#7fa0d8, #5c7fbf); color: #fff; font: 700 12px Arial, sans-serif; cursor: pointer; text-shadow: 0 1px 0 #3d5a8f; }
-    .reply svg { width: 12px; height: 12px; }
-    .reply:hover { background: linear-gradient(#8fb0e8, #6c8fcf); }
-    .reply.on { background: #ddd; border-color: #999; color: #333; text-shadow: none; }
-    .reply:focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
+    a:focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
   `,
   html: `
     <div class="cl">
-      <a class="post" href="#" role="button">post to classifieds</a>
-      <form><input class="q" type="text" placeholder="search craigslist" aria-label="search craigslist"><button class="go" type="button">search</button></form>
-      <div class="links"><a class="lnk" href="#">free stuff</a><a class="lnk" href="#">missed connections</a><a class="lnk" href="#">rants &amp; raves</a></div>
-      <button class="reply" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 2h10v6H5L2 11V8H1z" fill="#fff"/></svg>reply</button>
-      <div class="res" aria-live="polite"></div>
+      <div class="left">
+        <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 3v18"/><path d="M12 12l6.3 6.3"/><path d="M12 12l-6.3 6.3"/></svg>craigslist</div>
+        <a class="post" href="#" role="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>post an ad</a>
+        <div class="sch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><input class="q" type="text" placeholder="search craigslist" aria-label="search craigslist"></div>
+      </div>
+      <div class="right">
+        <div class="ban"><span class="em" aria-hidden="true">🌈</span>community</div>
+        <ul>
+          <li><a class="lnk" href="#">activities</a></li>
+          <li><a class="lnk" href="#">lost + found</a></li>
+          <li><a class="lnk" href="#">missed connections</a></li>
+          <li><a class="lnk" href="#">rants &amp; raves</a></li>
+          <li><a class="lnk" href="#">volunteers</a></li>
+        </ul>
+      </div>
     </div>`,
   init(root) {
-    const post = root.querySelector('.post'), q = root.querySelector('.q'), go = root.querySelector('.go'), res = root.querySelector('.res'), form = root.querySelector('form');
-    let posts = 0;
-    form.addEventListener('submit', (e) => e.preventDefault());
-    post.addEventListener('click', (e) => { e.preventDefault(); posts++; post.classList.add('v'); post.textContent = posts === 1 ? 'posted (1)' : `posted (${posts})`; });
-    const search = () => { const v = q.value.trim(); res.textContent = v ? `${Math.floor(Math.random() * 900 + 100)} results for "${v}"` : 'nothing found'; };
-    go.addEventListener('click', search);
-    q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); search(); } });
-    root.querySelectorAll('.lnk').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); a.classList.toggle('v'); }));
-    const reply = root.querySelector('.reply');
-    reply.addEventListener('click', () => { const on = reply.classList.toggle('on'); reply.setAttribute('aria-pressed', String(on)); reply.lastChild.textContent = on ? 'show contact info' : 'reply'; });
+    const q = root.querySelector('.q');
+    root.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); a.classList.add('v'); }));
+    q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); q.select(); } if (e.key === 'Escape') q.value = ''; });
   },
 };

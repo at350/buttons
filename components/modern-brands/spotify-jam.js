@@ -1,46 +1,39 @@
 export default {
   id: 'mb-spotify-jam',
-  credit: 'Spotify Jam — "Start a Jam" pill with the Jam waves icon; starting one stacks listener avatars in and the pill flips to "End Jam"',
+  credit: 'Spotify Jam — the green "Start a Jam" pill (scale 1.04 on hover); starting one stacks listener avatars in and the pill flips to the outlined "End Jam"',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { padding: 18px 22px; border-radius: 12px; background: #121212; display: flex; align-items: center; gap: 14px; font: 700 14px/1 Inter, -apple-system, system-ui, sans-serif; }
-    .jam { height: 40px; padding: 0 18px 0 14px; border-radius: 999px; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: #000;
-      background: linear-gradient(90deg, #1ed760, #19e68c); letter-spacing: -.01em; -webkit-tap-highlight-color: transparent;
-      transition: transform .15s cubic-bezier(.2,.8,.2,1), filter .15s, background .3s, color .3s; }
-    .jam:hover { transform: scale(1.04); filter: brightness(1.08); }
-    .jam:active { transform: scale(.98); }
-    .jam:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-    .jam[aria-pressed="true"] { background: #2a2a2a; color: #fff; }
-    .jam svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .jam svg path { transition: transform .4s cubic-bezier(.2,.8,.2,1); transform-origin: 50% 50%; }
-    .jam:hover svg .w1 { transform: translateX(-1px); } .jam:hover svg .w3 { transform: translateX(1px); }
-    .jam[aria-pressed="true"] svg .w1, .jam[aria-pressed="true"] svg .w3 { animation: wv .9s ease-in-out infinite alternate; }
-    .jam[aria-pressed="true"] svg .w3 { animation-delay: -.45s; }
-    @keyframes wv { from { opacity: .35; } to { opacity: 1; } }
+    .stage { padding: 18px 20px; border-radius: 12px; background: #121212; display: flex; align-items: center; gap: 14px;
+      font: 700 16px/1 "Spotify Mix", "Circular Std", Inter, -apple-system, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    .logo { width: 28px; height: 28px; fill: #1ed760; flex: none; }
+    .jam { display: grid; height: 48px; padding: 0 32px; border-radius: 500px; border: 0; cursor: pointer; color: #000; background: #1ed760; font: inherit; letter-spacing: 0;
+      transition: transform 33ms cubic-bezier(.3,0,0,1), background 33ms, box-shadow .2s; -webkit-tap-highlight-color: transparent; }
+    .jam span { grid-area: 1 / 1; align-self: center; white-space: nowrap; }
+    .jam .b { visibility: hidden; }
+    .jam:hover { transform: scale(1.04); background: #3be477; }
+    .jam:active { transform: scale(1); background: #1abc54; }
+    .jam:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+    .jam[aria-pressed="true"] { background: transparent; color: #fff; box-shadow: inset 0 0 0 1px #7c7c7c; }
+    .jam[aria-pressed="true"]:hover { box-shadow: inset 0 0 0 1px #fff; background: transparent; }
+    .jam[aria-pressed="true"] .a { visibility: hidden; } .jam[aria-pressed="true"] .b { visibility: visible; }
     .ppl { display: flex; align-items: center; }
-    .ppl b { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #121212; margin-left: -8px; display: block;
-      transform: scale(0); opacity: 0; transition: transform .45s linear(0, 0.4 10%, 0.9 22%, 1.15 35%, 1.02 50%, 0.98 65%, 1), opacity .2s; }
-    .ppl b:nth-child(1) { margin-left: 0; background: linear-gradient(135deg, #f037a5, #ff6f3c); transition-delay: 0s; }
-    .ppl b:nth-child(2) { background: linear-gradient(135deg, #509bf5, #2ebd59); transition-delay: .08s; }
-    .ppl b:nth-child(3) { background: linear-gradient(135deg, #ffd93d, #e9142b); transition-delay: .16s; }
-    .ppl b:nth-child(4) { background: #333; color: #b3b3b3; font: 600 10px/24px Inter, system-ui, sans-serif; text-align: center; transition-delay: .24s; }
+    .ppl b { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #121212; margin-left: -10px; display: grid; place-items: center; color: #fff; font: 700 11px/1 Inter, system-ui, sans-serif;
+      transform: scale(0); opacity: 0; transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .2s; }
+    .ppl b:nth-child(1) { margin-left: 0; background: #e8115b; }
+    .ppl b:nth-child(2) { background: #509bf5; transition-delay: .07s; }
+    .ppl b:nth-child(3) { background: #ff6437; transition-delay: .14s; }
+    .ppl b:nth-child(4) { background: #2a2a2a; color: #b3b3b3; transition-delay: .21s; }
     .stage.on .ppl b { transform: scale(1); opacity: 1; }
   `,
   html: `
     <div class="stage">
-      <button class="jam" type="button" aria-pressed="false">
-        <svg viewBox="0 0 24 24"><path class="w1" d="M5 9v6"/><path class="w2" d="M9 6v12M15 6v12"/><path class="w3" d="M19 9v6"/><path d="M12 3v18" stroke-width="2.6"/></svg>
-        <span class="lbl">Start a Jam</span>
-      </button>
-      <span class="ppl" aria-hidden="true"><b></b><b></b><b></b><b>+2</b></span>
+      <svg class="logo" viewBox="0 0 24 24" role="img" aria-label="Spotify"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+      <button class="jam" type="button" aria-pressed="false"><span class="a">Start a Jam</span><span class="b">End Jam</span></button>
+      <span class="ppl" aria-hidden="true"><b>M</b><b>J</b><b>K</b><b>+2</b></span>
     </div>`,
   init(root) {
-    const b = root.querySelector('.jam'), stage = root.querySelector('.stage'), lbl = b.querySelector('.lbl');
-    b.addEventListener('click', () => {
-      const on = b.getAttribute('aria-pressed') !== 'true';
-      b.setAttribute('aria-pressed', String(on)); stage.classList.toggle('on', on);
-      lbl.textContent = on ? 'End Jam' : 'Start a Jam';
-    });
+    const b = root.querySelector('.jam'), stage = root.querySelector('.stage');
+    b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); stage.classList.toggle('on', on); });
   },
 };

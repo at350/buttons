@@ -1,55 +1,75 @@
+// NYT Wordle, light theme: 62px-style tiles (scaled to 52), #d3d6da empty border, #878a8c filled border,
+// reveal colors #6aaa64 / #c9b458 / #787c7e, 100ms pop on type, 500ms rotateX flip staggered 250ms per tile,
+// keyboard keys #d3d6da that take the reveal color, shake on a short guess.
 export default {
   id: 'gm-wordle',
-  credit: 'NYT Wordle — a row of five tiles: click and type letters, Enter flips them one by one to green / yellow / gray (answer: CRANE)',
+  credit: 'NYT Wordle — a guess row and keys in the light theme: type, Enter flips the tiles one by one to green / yellow / gray (answer: CRANE)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: #121213; padding: 18px 20px 14px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .row { display: flex; gap: 5px; outline: none; cursor: text; border-radius: 4px; }
-    .row:focus-visible { box-shadow: 0 0 0 2px #538d4e; }
-    .t { width: 52px; height: 52px; border: 2px solid #3a3a3c; display: grid; place-items: center; color: #fff; font: 700 28px 'Inter', system-ui, sans-serif; text-transform: uppercase; transform-style: preserve-3d; transition: border-color .1s; }
-    .t.has { border-color: #565758; animation: pop .1s ease-out; }
-    @keyframes pop { 50% { transform: scale(1.1); } }
-    .t.flip { animation: flip .5s ease-in-out forwards; }
-    @keyframes flip { 0% { transform: rotateX(0); } 49% { transform: rotateX(90deg); } 51% { transform: rotateX(90deg); border-color: transparent; } 100% { transform: rotateX(0); border-color: transparent; } }
-    .t.g { background: #538d4e; border-color: #538d4e; } .t.y { background: #b59f3b; border-color: #b59f3b; } .t.x { background: #3a3a3c; border-color: #3a3a3c; }
-    .row.shake { animation: shake .5s; }
+    .stage { background: #fff; padding: 18px 18px 14px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+      font-family: 'Helvetica Neue', Arial, system-ui, sans-serif; box-shadow: inset 0 0 0 1px #e3e3e1; }
+    .row { display: grid; grid-template-columns: repeat(5, 52px); gap: 5px; outline: none; cursor: text; border-radius: 2px; }
+    .row:focus-visible { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #6aaa64; }
+    .t { width: 52px; height: 52px; border: 2px solid #d3d6da; display: grid; place-items: center; color: #000; background: #fff;
+      font: 700 28px/1 'Helvetica Neue', Arial, system-ui, sans-serif; text-transform: uppercase; }
+    .t.has { border-color: #878a8c; animation: pop 100ms ease-in-out; }
+    @keyframes pop { 0% { transform: scale(.8); opacity: 0; } 40% { transform: scale(1.1); opacity: 1; } }
+    .t.flip { animation: flip 500ms ease-in forwards; animation-delay: var(--d); }
+    @keyframes flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(-90deg); } 100% { transform: rotateX(0); } }
+    .t.g { background: #6aaa64; border-color: #6aaa64; color: #fff; }
+    .t.y { background: #c9b458; border-color: #c9b458; color: #fff; }
+    .t.x { background: #787c7e; border-color: #787c7e; color: #fff; }
+    .row.shake { animation: shake 600ms; }
     @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
-    .keys { display: flex; gap: 4px; }
-    .k { height: 30px; min-width: 36px; padding: 0 8px; border: none; border-radius: 4px; background: #818384; color: #fff; font: 700 11px 'Inter', system-ui, sans-serif; cursor: pointer; text-transform: uppercase; }
-    .k:hover { background: #9a9b9c; } .k:active { transform: translateY(1px); }
-    .k:focus-visible { outline: 2px solid #538d4e; }
-    .k.wide { min-width: 52px; }
+    .row.win .t { animation: bounce 1000ms ease; animation-delay: var(--d); }
+    @keyframes bounce { 0%, 20% { transform: translateY(0); } 40% { transform: translateY(-14px); } 50% { transform: translateY(2px); } 60% { transform: translateY(-6px); } 80% { transform: translateY(1px); } 100% { transform: translateY(0); } }
+    .keys { display: flex; gap: 5px; }
+    .k { height: 46px; width: 32px; padding: 0; border: none; border-radius: 4px; background: #d3d6da; color: #1a1a1b; cursor: pointer;
+      font: 700 13px 'Helvetica Neue', Arial, system-ui, sans-serif; text-transform: uppercase; display: grid; place-items: center; transition: background-color .1s; }
+    .k:hover { background: #c4c7cb; }
+    .k:active { background: #b8bbbf; }
+    .k:focus-visible { outline: 2px solid #1a1a1b; outline-offset: 1px; }
+    .k.wide { width: 54px; font-size: 11px; }
+    .k svg { width: 22px; height: 22px; fill: #1a1a1b; }
+    .k.g { background: #6aaa64; color: #fff; } .k.y { background: #c9b458; color: #fff; } .k.x { background: #787c7e; color: #fff; }
   `,
   html: `
     <div class="stage">
       <div class="row" tabindex="0" role="textbox" aria-label="Guess, five letters">
-        <div class="t"></div><div class="t"></div><div class="t"></div><div class="t"></div><div class="t"></div>
+        <div class="t" style="--d:0ms"></div><div class="t" style="--d:250ms"></div><div class="t" style="--d:500ms"></div><div class="t" style="--d:750ms"></div><div class="t" style="--d:1000ms"></div>
       </div>
       <div class="keys">
         <button class="k wide" type="button" data-k="Enter">Enter</button>
         <button class="k" type="button" data-k="c">c</button><button class="k" type="button" data-k="r">r</button><button class="k" type="button" data-k="a">a</button><button class="k" type="button" data-k="t">t</button><button class="k" type="button" data-k="e">e</button>
-        <button class="k wide" type="button" data-k="Backspace" aria-label="Backspace">⌫</button>
+        <button class="k wide" type="button" data-k="Backspace" aria-label="Backspace"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"/></svg></button>
       </div>
     </div>`,
   init(root) {
     const ANSWER = 'crane'; const row = root.querySelector('.row'); const tiles = [...root.querySelectorAll('.t')];
+    const keyEls = [...root.querySelectorAll('.k')];
     let guess = '', locked = false; const timers = [];
-    const render = () => tiles.forEach((t, i) => { t.textContent = guess[i] || ''; t.classList.toggle('has', !!guess[i]); });
+    const render = () => tiles.forEach((t, i) => { const c = guess[i] || ''; if (t.textContent !== c) { t.textContent = c; t.classList.toggle('has', !!c); } });
     const key = (k) => {
-      if (locked) { if (k === 'Enter' || k === 'Backspace') { locked = false; guess = ''; tiles.forEach((t) => { t.className = 't'; }); render(); } return; }
+      if (locked) { if (k === 'Enter' || k === 'Backspace') { locked = false; guess = ''; tiles.forEach((t) => { t.className = 't'; t.textContent = ''; }); row.classList.remove('win'); keyEls.forEach((b) => b.classList.remove('g', 'y', 'x')); } return; }
       if (k === 'Backspace') { guess = guess.slice(0, -1); render(); return; }
       if (k === 'Enter') {
         if (guess.length < 5) { row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); return; }
-        locked = true; const pool = [...ANSWER]; const res = [...guess].map((c, i) => { if (c === ANSWER[i]) { pool[i] = null; return 'g'; } return null; });
+        locked = true; const pool = [...ANSWER];
+        const res = [...guess].map((c, i) => { if (c === ANSWER[i]) { pool[i] = null; return 'g'; } return null; });
         res.forEach((r, i) => { if (r) return; const j = pool.indexOf(guess[i]); if (j > -1) { pool[j] = null; res[i] = 'y'; } else res[i] = 'x'; });
-        tiles.forEach((t, i) => { timers.push(setTimeout(() => t.classList.add('flip'), i * 300)); timers.push(setTimeout(() => t.classList.add(res[i]), i * 300 + 250)); });
+        tiles.forEach((t, i) => { t.classList.add('flip'); timers.push(setTimeout(() => t.classList.add(res[i]), i * 250 + 250)); });
+        timers.push(setTimeout(() => {
+          const rank = { g: 3, y: 2, x: 1 };
+          [...guess].forEach((c, i) => { const b = keyEls.find((x) => x.dataset.k === c); if (!b) return; const cur = ['g', 'y', 'x'].find((x) => b.classList.contains(x)); if (!cur || rank[res[i]] > rank[cur]) { b.classList.remove('g', 'y', 'x'); b.classList.add(res[i]); } });
+          if (res.every((r) => r === 'g')) row.classList.add('win');
+        }, 4 * 250 + 520));
         return;
       }
       if (/^[a-z]$/i.test(k) && guess.length < 5) { guess += k.toLowerCase(); render(); }
     };
     row.addEventListener('keydown', (e) => { if (e.key.length === 1 || e.key === 'Enter' || e.key === 'Backspace') { e.preventDefault(); key(e.key); } });
-    root.querySelectorAll('.k').forEach((b) => b.addEventListener('click', () => { key(b.dataset.k); }));
+    keyEls.forEach((b) => b.addEventListener('click', () => key(b.dataset.k)));
     return () => timers.forEach(clearTimeout);
   },
 };

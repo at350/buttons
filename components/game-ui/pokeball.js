@@ -8,9 +8,12 @@ export default {
     .target { position: absolute; left: 50%; top: 56px; width: 44px; height: 44px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffe680, #f0a500 70%); box-shadow: 0 4px 8px rgba(0,0,0,.2); transition: transform .3s, opacity .3s; }
     .target::before, .target::after { content: ""; position: absolute; top: 15px; width: 6px; height: 8px; border-radius: 50%; background: #222; }
     .target::before { left: 13px; } .target::after { right: 13px; }
-    .ring { position: absolute; left: 50%; top: 56px; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; border: 3px solid rgba(255,255,255,.9); opacity: 0; transform: scale(1); box-shadow: 0 0 0 2px rgba(60,180,90,.7), inset 0 0 0 2px rgba(60,180,90,.7); }
+    .ring, .outer { position: absolute; left: 50%; top: 56px; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; opacity: 0; pointer-events: none; }
+    .outer { border: 2px solid rgba(255,255,255,.95); }
+    .ring { border: 4px solid #6fe04a; transform: scale(1); }
+    .hold .outer { opacity: 1; }
     .hold .ring { opacity: 1; animation: shrink 1.4s linear infinite; }
-    @keyframes shrink { from { transform: scale(1); } to { transform: scale(.2); } }
+    @keyframes shrink { from { transform: scale(1); border-color: #6fe04a; } 60% { border-color: #f6d523; } to { transform: scale(.2); border-color: #f2702a; } }
     .ball { position: absolute; left: 50%; bottom: 14px; width: 54px; height: 54px; margin-left: -27px; border: none; padding: 0; border-radius: 50%; cursor: grab; touch-action: none;
       background: linear-gradient(180deg, #ee1c25 0 46%, #111 46% 54%, #f4f4f4 54%); box-shadow: 0 4px 8px rgba(0,0,0,.3), inset -4px -4px 8px rgba(0,0,0,.2); transition: transform .08s; }
     .ball::after { content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: #fff; border: 3px solid #111; box-shadow: inset 0 0 0 2px #ddd; transition: background .2s, box-shadow .2s; }
@@ -30,7 +33,7 @@ export default {
   html: `
     <div class="stage">
       <div class="msg">Gotcha!</div>
-      <div class="ring"></div>
+      <div class="outer"></div><div class="ring"></div>
       <div class="target"></div>
       <button class="ball" type="button" aria-label="Hold and release to throw"></button>
     </div>`,

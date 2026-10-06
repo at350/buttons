@@ -1,41 +1,47 @@
+// Netflix billboard buttons. Play/Pause labels share one grid cell so toggling never changes the width.
 export default {
   id: 'bt-netflix-play',
-  credit: 'Netflix — billboard "Play" button and translucent "More Info" button',
+  credit: 'Netflix — billboard white "Play" and translucent gray "More Info" buttons',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: flex; gap: 12px; flex-wrap: wrap; padding: 20px 24px; border-radius: 12px; background: linear-gradient(135deg, #2b0d0f, #141414 60%); }
+    .stage { display: flex; gap: 12px; padding: 24px; border-radius: 12px; background: linear-gradient(77deg, rgba(0,0,0,.6), rgba(0,0,0,0) 85%), linear-gradient(160deg, #3a2a20, #141414 70%); }
     .nf {
-      height: 44px; padding: 0 24px 0 20px; border: 0; border-radius: 4px; cursor: pointer;
-      font: 700 17px/44px "Netflix Sans", -apple-system, "Helvetica Neue", system-ui, sans-serif;
-      display: inline-flex; align-items: center; gap: 10px; transition: background .2s, opacity .2s; -webkit-tap-highlight-color: transparent;
+      height: 42px; padding: 0 26px 0 22px; border: 0; border-radius: 4px; cursor: pointer; white-space: nowrap;
+      font: 500 17.6px/24px "Netflix Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      display: inline-flex; align-items: center; gap: 12px; transition: background-color .2s ease, opacity .2s ease; -webkit-tap-highlight-color: transparent;
     }
     .play { background: #fff; color: #000; }
     .play:hover { background: rgba(255,255,255,.75); }
     .info { background: rgba(109,109,110,.7); color: #fff; }
     .info:hover { background: rgba(109,109,110,.4); }
-    .nf:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-    .nf svg { width: 24px; height: 24px; fill: currentColor; }
-    .play .pause { display: none; }
-    .play[aria-pressed="true"] .tri { display: none; }
-    .play[aria-pressed="true"] .pause { display: block; }
-    .play .lbl::after { content: 'Play'; }
-    .play[aria-pressed="true"] .lbl::after { content: 'Pause'; }
-    .info[aria-pressed="true"] { background: #e50914; }
+    .nf:active { opacity: .7; }
+    .nf:focus-visible { outline: none; box-shadow: 0 0 0 2px #141414, 0 0 0 4px #fff; }
+    .nf svg { width: 24px; height: 24px; fill: currentColor; display: block; }
+    .stk { display: grid; }
+    .stk > * { grid-area: 1 / 1; }
+    .play .b { visibility: hidden; }
+    .play[aria-pressed="true"] .a { visibility: hidden; }
+    .play[aria-pressed="true"] .b { visibility: visible; }
   `,
   html: `
     <div class="stage">
       <button class="nf play" type="button" aria-pressed="false">
-        <svg class="tri" viewBox="0 0 24 24"><path d="M5 2.69a1 1 0 0 1 1.5-.86l15.5 9.31a1 1 0 0 1 0 1.72L6.5 22.17A1 1 0 0 1 5 21.31V2.69z"/></svg>
-        <svg class="pause" viewBox="0 0 24 24"><path d="M5 3h5v18H5V3zm9 0h5v18h-5V3z"/></svg>
-        <span class="lbl"></span>
+        <span class="stk" aria-hidden="true">
+          <svg class="a" viewBox="0 0 24 24"><path d="M5 2.69127C5 1.93067 5.81547 1.44851 6.48192 1.81506L23.4069 11.1238C24.0977 11.5037 24.0977 12.4963 23.4069 12.8762L6.48192 22.1849C5.81546 22.5515 5 22.0693 5 21.3087V2.69127Z"/></svg>
+          <svg class="b" viewBox="0 0 24 24"><path d="M4.5 3C4.22386 3 4 3.22386 4 3.5V20.5C4 20.7761 4.22386 21 4.5 21H9.5C9.77614 21 10 20.7761 10 20.5V3.5C10 3.22386 9.77614 3 9.5 3H4.5ZM14.5 3C14.2239 3 14 3.22386 14 3.5V20.5C14 20.7761 14.2239 21 14.5 21H19.5C19.7761 21 20 20.7761 20 20.5V3.5C20 3.22386 19.7761 3 19.5 3H14.5Z"/></svg>
+        </span>
+        <span class="stk"><span class="a">Play</span><span class="b">Pause</span></span>
       </button>
-      <button class="nf info" type="button" aria-pressed="false">
-        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm-1 5h2v8h-2V9zm0-3h2v2h-2V6z"/></svg>
+      <button class="nf info" type="button" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3ZM1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM13 10V18H11V10H13ZM12 8.5C12.8284 8.5 13.5 7.82843 13.5 7C13.5 6.17157 12.8284 5.5 12 5.5C11.1716 5.5 10.5 6.17157 10.5 7C10.5 7.82843 11.1716 8.5 12 8.5Z"/></svg>
         More Info
       </button>
     </div>`,
   init(root) {
-    root.querySelectorAll('.nf').forEach((b) => b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')));
+    const play = root.querySelector('.play');
+    const info = root.querySelector('.info');
+    play.addEventListener('click', () => play.setAttribute('aria-pressed', String(play.getAttribute('aria-pressed') !== 'true')));
+    info.addEventListener('click', () => info.setAttribute('aria-expanded', String(info.getAttribute('aria-expanded') !== 'true')));
   },
 };

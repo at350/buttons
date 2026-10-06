@@ -1,19 +1,19 @@
 export default {
   id: 'cr-elastic-line',
-  credit: 'Elastic SVG underline — a rubber-band path that bends toward the cursor and springs back',
+  credit: 'Elastic SVG underline — a plucked-string quadratic path that follows the cursor and springs back (portfolio footer links)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 260px; height: 130px; max-width: 100%; border-radius: 12px; background: #fafaf9; display: grid; place-items: center; cursor: crosshair; }
     .lnk { position: relative; z-index: 1; cursor: pointer; background: transparent; border: 0; padding: 8px 10px 22px;
-      font: 700 24px/1 Georgia, 'Times New Roman', serif; color: #1c1917; letter-spacing: .02em; }
+      font: 400 28px/1 'Instrument Serif', Georgia, serif; color: #1c1917; letter-spacing: -.01em; white-space: nowrap; }
     .lnk:focus-visible { outline: 2px solid #1c1917; outline-offset: 2px; border-radius: 4px; }
     .lnk.on { color: #ea580c; }
     svg { position: absolute; left: 20px; right: 20px; bottom: 14px; width: calc(100% - 40px); height: 80px; overflow: visible; pointer-events: none; }
     path { fill: none; stroke: #1c1917; stroke-width: 3; stroke-linecap: round; }
     .lnk.on + svg path { stroke: #ea580c; }
   `,
-  html: `<div class="stage"><button class="lnk" type="button" aria-pressed="false">Stretch</button><svg viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 Q100 40 200 40"/></svg></div>`,
+  html: `<div class="stage"><button class="lnk" type="button" aria-pressed="false">Let’s talk</button><svg viewBox="0 0 200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 Q100 40 200 40"/></svg></div>`,
   init(root) {
     const stage = root.querySelector('.stage'), svg = root.querySelector('svg'), path = root.querySelector('path'), lnk = root.querySelector('.lnk');
     const Y = 40; let cx = 100, cy = Y, vy = 0, raf = 0;
@@ -23,7 +23,7 @@ export default {
       const r = svg.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width * 200, py = (e.clientY - r.top) / r.height * 80;
       cx = Math.max(10, Math.min(190, px));
-      cy = Math.max(-30, Math.min(110, 2 * py - Y));
+      cy = Math.max(Y - 14, Math.min(112, 2 * py - Y));
       draw();
     });
     const spring = () => {

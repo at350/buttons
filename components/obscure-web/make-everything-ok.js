@@ -1,43 +1,56 @@
+// make-everything-ok.com (2011, Yury Fonareff & Dmitry Nikolaev), from its live style.css / script.js: a big
+// grey keyboard-key button on a pale grey page, then the "Making everything OK is in progress" panel with the
+// #2BCF18 bar, then the #167519 answer card (10px #025200 border, 20px radius, white Tahoma) with "continue".
 export default {
   id: 'ob-make-everything-ok',
-  credit: 'make-everything-ok.com — one grey button that says "Make Everything OK"; a progress bar runs, and then everything is OK',
+  credit: 'make-everything-ok.com — the magic keycap: press it, watch the progress bar, and everything is OK now',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .pg { width: 280px; max-width: 100%; padding: 22px 20px; border-radius: 12px; background: #fff; border: 1px solid #ddd; display: grid; gap: 14px; justify-items: center; font: 14px/1.3 Arial, Helvetica, sans-serif; color: #333; }
-    .btn { padding: 12px 30px; border: 1px solid #aaa; border-radius: 4px; background: linear-gradient(#fefefe, #dcdcdc); color: #333; cursor: pointer; font: 700 16px Arial, Helvetica, sans-serif; box-shadow: 0 1px 2px rgba(0,0,0,.15); transition: background .15s, transform .08s; }
-    .btn:hover { background: linear-gradient(#fff, #e8e8e8); }
-    .btn:active { transform: translateY(1px); box-shadow: none; }
-    .btn:focus-visible { outline: 2px solid #4a90e2; outline-offset: 2px; }
-    .btn:disabled { color: #999; cursor: progress; }
-    .btn.ok { background: linear-gradient(#7fe08a, #3cb94c); border-color: #2b8a37; color: #fff; text-shadow: 0 1px 0 #2b8a37; }
-    .bar { width: 100%; height: 14px; border: 1px solid #bbb; border-radius: 7px; background: #eee; overflow: hidden; opacity: 0; transition: opacity .2s; }
-    .bar.show { opacity: 1; }
-    .bar i { display: block; height: 100%; width: 0; background: linear-gradient(#8fd4ff, #2a8ad4); transition: width .3s linear; }
-    .msg { min-height: 18px; color: #555; text-align: center; }
-    .msg.ok { color: #2b8a37; font-weight: 700; }
+    .pg { position: relative; width: 300px; max-width: 100%; height: 190px; border-radius: 12px; overflow: hidden; background: linear-gradient(#d9d8de, #ececee 60%, #fafafa); display: grid; place-items: center; font-family: Tahoma, Verdana, sans-serif; }
+    .pg > * { grid-area: 1 / 1; transition: opacity .25s, transform .25s; }
+    .key { position: relative; width: 210px; height: 66px; padding: 0; border: 0; background: none; cursor: pointer; }
+    .key::before { content: ""; position: absolute; inset: 6px -6px -6px; border-radius: 9px; background: #1c1c1c; box-shadow: 0 0 0 2px #f4f4f4, 0 6px 10px rgba(0,0,0,.25); }
+    .cap { position: absolute; inset: 0 0 6px; border-radius: 8px; display: grid; place-items: center; font: 17px/1 Tahoma, Verdana, sans-serif; color: #333;
+      background: linear-gradient(#fbfbfb, #e8e8e8); box-shadow: inset 0 1px 0 #fff, inset 0 -9px 0 -2px #d4d4d4, inset 0 -10px 0 -2px #c4c4c4, 0 1px 0 #aaa; transition: transform .07s; }
+    .key:hover .cap { background: linear-gradient(#fff, #efefef); }
+    .key:active .cap, .key.dn .cap { transform: translateY(5px); }
+    .key:focus-visible { outline: 2px solid #4a90e2; outline-offset: 10px; border-radius: 8px; }
+    .prog { width: 260px; padding: 14px 16px 16px; background: #f4f4f4; border: 1px solid #b9b9b9; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,.2); text-align: center; font-size: 13px; color: #000; }
+    .bar { height: 10px; margin-top: 12px; border: 1px solid #9a9a9a; background: #fff; }
+    .bar i { display: block; height: 100%; width: 0; background: #2bcf18; }
+    .ans { width: 270px; padding: 12px 10px 14px; background: #167519; border: 8px solid #025200; border-radius: 18px; box-shadow: #555 3px 3px 14px; text-align: center; color: #fff; }
+    .ans h4 { margin: 0 0 6px; font: 700 22px/1.1 Tahoma, sans-serif; }
+    .ans p { margin: 0; font: 12px/1.2 Tahoma, sans-serif; }
+    .cont { margin-top: 10px; padding: 4px 36px; border: 0; border-radius: 15px; box-shadow: 1px 1px 4px #051f00; background: rgba(255,255,255,.7); color: #189900; font: 12px Tahoma, sans-serif; text-transform: uppercase; cursor: pointer; }
+    .cont:hover { background: #fff; }
+    .cont:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .pg:not(.s0) .key, .pg:not(.s1) .prog, .pg:not(.s2) .ans { opacity: 0; pointer-events: none; transform: scale(.96); }
   `,
   html: `
-    <div class="pg">
-      <button class="btn" type="button">Make Everything OK</button>
-      <div class="bar" aria-hidden="true"><i></i></div>
-      <div class="msg" aria-live="polite">&nbsp;</div>
+    <div class="pg s0">
+      <button class="key" type="button"><span class="cap">Make everything OK</span></button>
+      <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">Making everything OK is in progress<div class="bar"><i></i></div></div>
+      <div class="ans" aria-live="polite"><h4>Everything is OK now</h4><p>If everything is still not OK, try checking your settings of perception of objective reality.</p><button class="cont" type="button" tabindex="-1">continue</button></div>
     </div>`,
   init(root) {
-    const btn = root.querySelector('.btn'), bar = root.querySelector('.bar'), fill = root.querySelector('.bar i'), msg = root.querySelector('.msg');
-    const steps = ['Making everything OK...', 'Fixing the economy...', 'Untangling headphones...', 'Calling your mom...', 'Watering the plants...'];
-    let iv = 0, i = 0, ok = false;
-    const stop = () => { clearInterval(iv); iv = 0; };
-    btn.addEventListener('click', () => {
-      stop();
-      if (ok) { ok = false; btn.classList.remove('ok'); btn.textContent = 'Make Everything OK'; msg.className = 'msg'; msg.innerHTML = '&nbsp;'; bar.classList.remove('show'); fill.style.width = '0'; return; }
-      btn.disabled = true; i = 0; bar.classList.add('show'); msg.textContent = steps[0]; fill.style.width = '12%';
-      iv = setInterval(() => {
-        i++;
-        if (i < steps.length) { msg.textContent = steps[i]; fill.style.width = (12 + i * 20) + '%'; return; }
-        stop(); ok = true; btn.disabled = false; btn.classList.add('ok'); btn.textContent = 'Everything is OK'; fill.style.width = '100%'; msg.className = 'msg ok'; msg.textContent = 'Everything is OK now.';
-      }, 550);
+    const pg = root.querySelector('.pg'), key = root.querySelector('.key'), fill = root.querySelector('.bar i'), prog = root.querySelector('.prog'), cont = root.querySelector('.cont');
+    let raf = 0, t = 0;
+    const set = (s) => { pg.className = 'pg s' + s; key.tabIndex = s === 0 ? 0 : -1; cont.tabIndex = s === 2 ? 0 : -1; };
+    const stop = () => { cancelAnimationFrame(raf); clearTimeout(t); raf = 0; };
+    key.addEventListener('click', () => {
+      stop(); key.classList.add('dn');
+      t = setTimeout(() => {
+        key.classList.remove('dn'); set(1); fill.style.width = '0';
+        const t0 = performance.now(), D = 3200;
+        const step = (now) => {
+          const p = Math.min(1, (now - t0) / D); fill.style.width = (p * 100) + '%'; prog.setAttribute('aria-valuenow', String(Math.round(p * 100)));
+          if (p < 1) raf = requestAnimationFrame(step); else { raf = 0; set(2); cont.focus(); }
+        };
+        raf = requestAnimationFrame(step);
+      }, 450);
     });
+    cont.addEventListener('click', () => { stop(); set(0); key.focus(); });
     return stop;
   },
 };

@@ -1,35 +1,35 @@
 export default {
   id: 'lb-aceternity-bg-gradient',
-  credit: 'Aceternity UI — "Background Gradient" wrapper: blurred animated blue → purple → pink → orange halo behind a zinc-900 "Buy now" card',
+  credit: 'Aceternity UI — Background Gradient: two layers of teal / violet / amber / sky radial gradients drift (bg-position 0 → 100%, 5s, reversing); the blur-xl halo goes 60% → 100% on hover behind the zinc-900 "Air Jordan" card',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { padding: 28px 36px; border-radius: 12px; background: #000; display: inline-block; }
-    .bg { position: relative; padding: 4px; border-radius: 22px; width: 220px; cursor: pointer; border: 0; background: transparent; text-align: left; -webkit-tap-highlight-color: transparent; }
+    .stage { padding: 30px 36px; border-radius: 12px; background: #000; display: inline-block; }
+    .bg { position: relative; display: block; padding: 4px; border-radius: 24px; width: 236px; cursor: pointer; border: 0; background: transparent; text-align: left; color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; }
     .bg:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
-    .g { position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle farthest-side at 0 100%, #00ccb1, transparent), radial-gradient(circle farthest-side at 100% 0, #7b61ff, transparent), radial-gradient(circle farthest-side at 100% 100%, #ffc414, transparent), radial-gradient(circle farthest-side at 0 0, #1ca0fb, #141316); background-size: 400% 400%; animation: shift 5s ease infinite; transition: opacity .5s; will-change: background-position; }
-    .g.blur { filter: blur(16px); opacity: .6; }
-    .bg:hover .g.blur, .bg[aria-pressed="true"] .g.blur { opacity: 1; }
-    .bg:hover .g { animation-duration: 2s; }
-    @keyframes shift { 0%, 100% { background-position: 0 50%; } 50% { background-position: 100% 50%; } }
-    .card { position: relative; z-index: 1; border-radius: 18px; background: #18181b; padding: 14px 16px; color: #fff; font: 14px/20px Inter, -apple-system, system-ui, sans-serif; display: flex; flex-direction: column; gap: 10px; }
-    .card .t { font-weight: 600; font-size: 16px; }
-    .card .p { color: #a1a1aa; font-size: 13px; }
-    .pill { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px 0 14px; border-radius: 9999px; background: #000; color: #fff; font-size: 12px; font-weight: 600; transition: background .2s; }
-    .pill b { background: #27272a; border-radius: 9999px; padding: 2px 8px; font-weight: 700; }
-    .bg[aria-pressed="true"] .pill { background: #16a34a; }
-    .bg[aria-pressed="true"] .pill .lb::after { content: 'Added'; }
-    .pill .lb::after { content: 'Buy now'; }
-    .bg:active .card { transform: scale(.985); }
+    .g { position: absolute; inset: 0; z-index: 1; border-radius: 24px; background: radial-gradient(circle farthest-side at 0 100%, #00ccb1, transparent), radial-gradient(circle farthest-side at 100% 0, #7b61ff, transparent), radial-gradient(circle farthest-side at 100% 100%, #ffc414, transparent), radial-gradient(circle farthest-side at 0 0, #1ca0fb, #141316); background-size: 400% 400%; animation: drift 5s ease-in-out infinite; will-change: transform; }
+    .g.blur { filter: blur(24px); opacity: .6; transition: opacity .5s cubic-bezier(.4,0,.2,1); }
+    .bg:hover .g.blur, .bg:focus-visible .g.blur { opacity: 1; }
+    @keyframes drift { 0%, 100% { background-position: 0 50%; } 50% { background-position: 100% 50%; } }
+    .card { position: relative; z-index: 10; display: flex; flex-direction: column; border-radius: 22px; background: #18181b; padding: 16px; color: #e5e5e5; font: 400 16px/24px Inter, -apple-system, system-ui, sans-serif; }
+    .t { margin: 0 0 8px; }
+    .pill { align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; padding: 4px 4px 4px 16px; border-radius: 9999px; background: #27272a; color: #fff; font-size: 12px; line-height: 16px; font-weight: 700; white-space: nowrap; transition: background .2s; }
+    .pill .p { display: grid; background: #3f3f46; border-radius: 9999px; font-size: .6rem; line-height: 16px; padding: 0 8px; }
+    .pill .lb { display: grid; }
+    .pill .lb > span { grid-area: 1 / 1; transition: opacity .15s; }
+    .pill .lb .on { opacity: 0; }
+    .bg[aria-pressed="true"] .pill .lb .on { opacity: 1; }
+    .bg[aria-pressed="true"] .pill .lb .off { opacity: 0; }
+    .bg:hover .pill { background: #3f3f46; }
+    .bg:hover .pill .p { background: #52525b; }
   `,
   html: `
     <div class="stage">
       <button class="bg" type="button" aria-pressed="false">
         <span class="g blur"></span><span class="g"></span>
         <span class="card">
-          <span class="t">Air Jordan 4 Retro</span>
-          <span class="p">Reimagined Bred</span>
-          <span class="pill"><span class="lb"></span><b>$100</b></span>
+          <span class="t">Air Jordan 4 Retro Reimagined</span>
+          <span class="pill"><span class="lb"><span class="off">Buy now</span><span class="on">In cart</span></span><span class="p">$100</span></span>
         </span>
       </button>
     </div>`,

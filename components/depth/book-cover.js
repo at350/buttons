@@ -38,7 +38,7 @@ export default {
       background: #7c2d12;
       border-radius: 2px 6px 6px 2px;
       transform: translateZ(-8px);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, .3);
+      box-shadow: 0 12px 20px -4px rgba(0, 0, 0, .3);
     }
     .spine {
       position: absolute;

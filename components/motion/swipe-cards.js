@@ -2,13 +2,13 @@ const SPRING = 'linear(0, 0.144, 0.433, 0.717, 0.926, 1.046, 1.091, 1.09, 1.066,
 
 export default {
   id: 'mo-swipe-cards',
-  credit: 'Tinder-style swipe stack — drag the top card, it tilts with your hand and flies off; the next card scales up into place',
+  credit: 'Tinder swipe deck — drag the top card: it pivots below your hand, LIKE / NOPE stamps fade in with distance, past the threshold it flies off and the next card springs up',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 240px; height: 250px; max-width: 100%; border-radius: 12px; background: #111; overflow: hidden; touch-action: none; font-family: Inter, system-ui, sans-serif; }
+    .stage { position: relative; width: 240px; height: 262px; max-width: 100%; border-radius: 12px; background: #111; overflow: hidden; touch-action: none; font-family: Inter, system-ui, sans-serif; }
     .card {
-      position: absolute; left: 40px; top: 30px; width: 160px; height: 190px; border-radius: 18px; cursor: grab; user-select: none; -webkit-user-select: none;
+      position: absolute; left: 40px; top: 16px; width: 160px; height: 172px; border-radius: 18px; cursor: grab; user-select: none; -webkit-user-select: none;
       display: flex; align-items: flex-end; padding: 14px; color: #fff; font-weight: 600; font-size: 15px; letter-spacing: -.01em;
       transform: translate(var(--x, 0px), calc(var(--i) * 10px)) rotate(var(--r, 0deg)) scale(calc(1 - var(--i) * .06)); transform-origin: 50% 120%;
       transition: transform .55s ${SPRING}, opacity .3s; z-index: calc(10 - var(--i)); box-shadow: 0 12px 30px -10px rgba(0,0,0,.6);
@@ -17,20 +17,20 @@ export default {
     .card.out { transition: transform .5s cubic-bezier(.3, .6, .4, 1), opacity .4s .1s; opacity: 0; }
     .card.hide { opacity: 0; transform: translate(0, 40px) scale(.8); }
     .card .tag { position: absolute; top: 14px; padding: 4px 8px; border-radius: 6px; border: 2px solid; font-size: 12px; font-weight: 800; letter-spacing: .08em; opacity: 0; transform: rotate(-12deg); transition: opacity .15s; }
-    .card .yes { left: 12px; color: #4ade80; border-color: #4ade80; } .card .no { right: 12px; color: #f87171; border-color: #f87171; transform: rotate(12deg); }
-    .btns { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 14px; }
-    .btns button { width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center; background: #222; color: #fff; transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), background .2s; }
+    .card .yes { left: 12px; color: #21d07c; border-color: #21d07c; } .card .no { right: 12px; color: #fe3c72; border-color: #fe3c72; transform: rotate(12deg); }
+    .btns { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 20; display: flex; justify-content: center; gap: 14px; }
+    .btns button { width: 38px; height: 38px; border-radius: 50%; border: 1px solid #2e2e30; cursor: pointer; display: grid; place-items: center; background: #1a1a1c; color: #fff; transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), background .2s; }
     .btns button:hover { transform: scale(1.12); background: #333; } .btns button:active { transform: scale(.92); }
     .btns button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
     .btns svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-    .btns .l svg { stroke: #f87171; } .btns .r svg { stroke: #4ade80; }
+    .btns .l svg { stroke: #fe3c72; stroke-width: 3; } .btns .r svg { stroke: none; fill: #21d07c; }
   `,
   html: `
     <div class="stage">
       <div class="card" style="background:linear-gradient(160deg,#f472b6,#7c3aed)"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span>Aurora</div>
       <div class="card" style="background:linear-gradient(160deg,#fb923c,#dc2626)"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span>Ember</div>
       <div class="card" style="background:linear-gradient(160deg,#22d3ee,#1d4ed8)"><span class="tag yes">LIKE</span><span class="tag no">NOPE</span>Tide</div>
-      <div class="btns"><button class="l" type="button" aria-label="Nope"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="r" type="button" aria-label="Like"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
+      <div class="btns"><button class="l" type="button" aria-label="Nope"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><button class="r" type="button" aria-label="Like"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></button></div>
     </div>`,
   init(root) {
     const stage = root.querySelector('.stage'), cards = [...root.querySelectorAll('.card')];

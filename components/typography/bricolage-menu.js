@@ -4,6 +4,7 @@ export default {
   size: 'wide',
   css: `
     :host { display: block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .nav {
       display: flex;
       flex-wrap: wrap;
@@ -24,10 +25,10 @@ export default {
       font: 400 22px/1 'Bricolage Grotesque', 'Space Grotesk', system-ui, sans-serif; display: inline-grid;
     }
     .it > span { grid-area: 1 / 1; white-space: nowrap; }
-    .it .g { visibility: hidden; font-variation-settings: 'opsz' 24, 'wdth' 100, 'wght' 800; }
-    .it .v { font-variation-settings: 'opsz' 24, 'wdth' 75, 'wght' 400; transition: font-variation-settings .4s cubic-bezier(.2, .8, .2, 1), color .3s; }
-    .it:hover .v, .it:focus-visible .v { font-variation-settings: 'opsz' 24, 'wdth' 100, 'wght' 800; }
-    .it[aria-current=true] .v { font-variation-settings: 'opsz' 24, 'wdth' 100, 'wght' 800; color: #d6241f; }
+    .it .g { visibility: hidden; font-variation-settings: 'opsz' 22, 'wdth' 100, 'wght' 800; }
+    .it .v { font-variation-settings: 'opsz' 22, 'wdth' 75, 'wght' 400; transition: font-variation-settings .4s cubic-bezier(.2, .8, .2, 1), color .3s; }
+    .it:hover .v, .it:focus-visible .v { font-variation-settings: 'opsz' 22, 'wdth' 100, 'wght' 800; }
+    .it[aria-current=true] .v { font-variation-settings: 'opsz' 22, 'wdth' 100, 'wght' 800; color: #d6241f; }
     .it::before {
       content: '';
       position: absolute;
@@ -41,7 +42,7 @@ export default {
       transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
     }
     .it[aria-current=true]::before { transform: translateY(-50%) scale(1); }
-    .it:active .v { font-variation-settings: 'opsz' 24, 'wdth' 85, 'wght' 800; }
+    .it:active .v { font-variation-settings: 'opsz' 22, 'wdth' 85, 'wght' 800; }
     .it:focus-visible {
       outline: 2px solid #111;
       outline-offset: 4px;

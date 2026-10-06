@@ -1,6 +1,6 @@
 export default {
   id: 'lb-material-you-group',
-  credit: 'Material You (Android 14) — dynamic color: tap a wallpaper seed and the connected button group re-tints its primary / tonal roles; the selected segment morphs into a pill',
+  credit: 'Material 3 Expressive — connected button group with dynamic color: pick a wallpaper seed and the group re-tints its primary / primary-container roles; the selected segment morphs to a full pill and grows a Material Symbols check',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -14,12 +14,17 @@ export default {
     .sg { height: 40px; padding: 0 20px; border: 0; cursor: pointer; font: inherit; letter-spacing: inherit; color: var(--onpc); background: var(--pc); border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; transition: border-radius .35s cubic-bezier(.2,0,0,1), background .3s, color .3s, transform .15s; -webkit-tap-highlight-color: transparent; }
     .sg:first-child { border-radius: 20px 8px 8px 20px; }
     .sg:last-child { border-radius: 8px 20px 20px 8px; }
-    .sg:hover { filter: brightness(.96); }
+    .sg { position: relative; overflow: hidden; }
+    .sg::before { content: ''; position: absolute; inset: 0; background: currentColor; opacity: 0; transition: opacity .2s cubic-bezier(.2,0,0,1); pointer-events: none; }
+    .sg:hover::before { opacity: .08; }
+    .sg:active::before, .sg:focus-visible::before { opacity: .1; }
     .sg:active { transform: scale(.96); border-radius: 12px; }
     .sg:focus-visible { outline: 3px solid var(--p); outline-offset: 2px; }
     .sg[aria-checked="true"] { background: var(--p); color: var(--onp); border-radius: 20px; }
-    .sg svg { width: 18px; height: 18px; fill: currentColor; display: none; }
-    .sg[aria-checked="true"] svg { display: block; }
+    .sg svg { position: relative; width: 18px; height: 18px; fill: currentColor; flex: none; }
+    .sg .ck { display: grid; width: 0; overflow: hidden; margin-right: -8px; transition: width .35s cubic-bezier(.2,0,0,1), margin .35s cubic-bezier(.2,0,0,1); }
+    .sg[aria-checked="true"] .ck { width: 18px; margin-right: 0; }
+    .sg span { position: relative; }
   `,
   html: `
     <div class="stage">
@@ -30,9 +35,9 @@ export default {
         <button class="seed" type="button" role="radio" aria-checked="false" style="--s:#8b5000" data-p="#8b5000" data-onp="#fff" data-pc="#ffdcbe" data-onpc="#2c1600" data-sf="#fff8f5" aria-label="Orange"></button>
       </div>
       <div class="grp" role="radiogroup" aria-label="View">
-        <button class="sg" type="button" role="radio" aria-checked="true"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Day</button>
-        <button class="sg" type="button" role="radio" aria-checked="false"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Week</button>
-        <button class="sg" type="button" role="radio" aria-checked="false"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>Month</button>
+        <button class="sg" type="button" role="radio" aria-checked="true"><span class="ck"><svg viewBox="0 -960 960 960"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></span><span>Day</span></button>
+        <button class="sg" type="button" role="radio" aria-checked="false"><span class="ck"><svg viewBox="0 -960 960 960"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></span><span>Week</span></button>
+        <button class="sg" type="button" role="radio" aria-checked="false"><span class="ck"><svg viewBox="0 -960 960 960"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg></span><span>Month</span></button>
       </div>
     </div>`,
   init(root) {

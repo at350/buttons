@@ -1,37 +1,33 @@
+// stripe.com hero CTAs with Stripe's HoverArrow: the chevron slides 3px right and the shaft fades in on hover.
+const ARROW = '<svg class="ha" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><g fill-rule="evenodd"><path class="ln" d="M0 5h7"/><path class="tp" d="M1 1l4 4-4 4"/></g></svg>';
 export default {
   id: 'bt-stripe-start',
-  credit: 'Stripe — "Start now" pill button with sliding arrow (Stripe blurple)',
+  credit: 'Stripe — "Start now" and "Contact sales" pill CTAs with the HoverArrow',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .row { display: flex; gap: 16px; align-items: center; white-space: nowrap; }
     .st {
-      height: 36px; padding: 0 16px; border: 0; border-radius: 18px; cursor: pointer;
-      background: #635bff; color: #fff; font: 500 15px/36px -apple-system, "Segoe UI", system-ui, sans-serif;
-      display: inline-flex; align-items: center; gap: 2px; transition: background .2s, color .2s;
+      height: 36px; padding: 0 12px 1px 16px; border: 0; border-radius: 16.5px; cursor: pointer;
+      font: 500 15px/24px sohne-var, "Sohne", "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .1px;
+      display: inline-flex; align-items: center; transition: background-color .2s cubic-bezier(.215,.61,.355,1), color .2s cubic-bezier(.215,.61,.355,1);
       -webkit-tap-highlight-color: transparent;
     }
-    .st:hover { background: #0a2540; }
-    .st:focus-visible { outline: 3px solid rgba(99,91,255,.5); outline-offset: 2px; }
-    .arrow { width: 14px; height: 14px; position: relative; display: inline-block; margin-left: 4px; }
-    .arrow svg { position: absolute; inset: 0; width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .arrow .shaft { stroke-dasharray: 10; stroke-dashoffset: 10; transition: stroke-dashoffset .2s; }
-    .arrow .head { transition: transform .2s; }
-    .st:hover .arrow .shaft { stroke-dashoffset: 0; }
-    .st:hover .arrow .head { transform: translateX(3px); }
-    .ghost { background: transparent; color: #635bff; }
-    .ghost:hover { background: transparent; color: #0a2540; }
-    .st[aria-pressed="true"] { background: #0a2540; }
-    .lbl::after { content: 'Start now'; }
-    .st[aria-pressed="true"] .lbl::after { content: 'Started'; }
+    .pri { background: #635bff; color: #fff; }
+    .pri:hover { background: #0a2540; }
+    .sec { background: transparent; color: #0a2540; }
+    .sec:hover { color: #425466; }
+    .st:active { opacity: .85; }
+    .st:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(99,91,255,.45); }
+    .ha { margin-left: 8px; margin-top: 1px; fill: none; stroke: currentColor; stroke-width: 2; overflow: visible; }
+    .ha .ln { opacity: 0; transition: opacity .15s cubic-bezier(.215,.61,.355,1); }
+    .ha .tp { transition: transform .15s cubic-bezier(.215,.61,.355,1); }
+    .st:hover .ln, .st:focus-visible .ln { opacity: 1; }
+    .st:hover .tp, .st:focus-visible .tp { transform: translateX(3px); }
   `,
   html: `
     <div class="row">
-      <button class="st" type="button" aria-pressed="false"><span class="lbl"></span><span class="arrow"><svg viewBox="0 0 14 14"><path class="shaft" d="M1.5 7h9"/><path class="head" d="M6.5 2.5 11 7l-4.5 4.5"/></svg></span></button>
-      <button class="st ghost" type="button">Contact sales<span class="arrow"><svg viewBox="0 0 14 14"><path class="shaft" d="M1.5 7h9"/><path class="head" d="M6.5 2.5 11 7l-4.5 4.5"/></svg></span></button>
+      <button class="st pri" type="button">Start now${ARROW}</button>
+      <button class="st sec" type="button">Contact sales${ARROW}</button>
     </div>`,
-  init(root) {
-    const b = root.querySelector('.st:not(.ghost)');
-    b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'));
-  },
 };

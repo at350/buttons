@@ -1,35 +1,55 @@
+// Duolingo lesson footer: chunky "SKIP" and "CHECK" buttons with a 4px hard bottom edge that press flat.
+// Checking turns the footer into the green "correct" banner (check badge + "CONTINUE"); both states share one
+// grid cell, so the footer never changes size.
 export default {
   id: 'bt-duolingo-check',
-  credit: 'Duolingo — chunky 3D green "CHECK" button with hard bottom edge that presses flat',
+  credit: 'Duolingo — lesson footer "CHECK" button (3D press) that turns into the green correct-answer banner',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .row { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+    .foot { display: grid; align-items: center; padding: 16px 20px; border-radius: 12px; background: #fff; border-top: 2px solid #e5e5e5; transition: background-color .2s; }
+    .foot.ok { background: #d7ffb8; border-top-color: #d7ffb8; }
+    .side { grid-area: 1 / 1; display: flex; align-items: center; }
+    .badge { display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; background: #fff; visibility: hidden; transform: scale(.4); opacity: 0; transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .15s; }
+    .badge svg { width: 30px; height: 30px; fill: none; stroke: #58a700; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+    .foot.ok .badge { visibility: visible; transform: none; opacity: 1; }
+    .foot.ok .skip { visibility: hidden; }
+    .row { grid-area: 1 / 1; display: flex; gap: 48px; align-items: center; justify-content: space-between; }
     .duo {
-      height: 50px; min-width: 150px; padding: 0 24px; border: 0; border-radius: 16px; cursor: pointer;
-      font: 700 15px/46px "din-round", Nunito, -apple-system, "Segoe UI", system-ui, sans-serif; letter-spacing: .8px; text-transform: uppercase;
-      transform: translateY(0); transition: transform .08s, box-shadow .08s, background .15s, color .15s; -webkit-tap-highlight-color: transparent;
+      position: relative; height: 50px; min-width: 150px; padding: 0 16px 4px; border: 0; border-radius: 16px; cursor: pointer;
+      font: 700 15px/1 "din-round", "DIN Round Pro", "DM Sans", sans-serif; letter-spacing: .8px; text-transform: uppercase;
+      transition: filter .1s; -webkit-tap-highlight-color: transparent;
     }
+    .duo::before { content: ''; position: absolute; inset: 0 0 4px; border-radius: 16px; background: var(--top); transition: transform .08s; }
+    .duo span { position: relative; display: block; transition: transform .08s; }
+    .duo:hover { filter: brightness(1.1); }
+    .duo:active::before, .duo:active span { transform: translateY(4px); }
+    .duo:active { background: transparent; }
     .duo:focus-visible { outline: 3px solid #1cb0f6; outline-offset: 3px; }
-    .check { background: #58cc02; color: #fff; box-shadow: 0 4px 0 #58a700; }
-    .check:hover { background: #61e002; }
-    .check:active, .duo.pressed { transform: translateY(4px); box-shadow: 0 0 0 #58a700; }
-    .check.done { background: #ffc800; color: #4b3b00; box-shadow: 0 4px 0 #e5a500; }
-    .check .lbl::after { content: 'Check'; }
-    .check.done .lbl::after { content: 'Continue'; }
-    .skip { background: #fff; color: #afafaf; box-shadow: 0 4px 0 #e5e5e5; border: 2px solid #e5e5e5; line-height: 42px; }
-    .skip:hover { background: #f7f7f7; }
-    .skip:active { transform: translateY(4px); box-shadow: 0 0 0 #e5e5e5; }
+    .check { --top: #58cc02; background: #58a700; color: #fff; }
+    .skip { --top: #fff; background: #e5e5e5; color: #afafaf; }
+    .skip::before { box-shadow: inset 0 0 0 2px #e5e5e5; }
+    .stk { display: grid; }
+    .stk > i { grid-area: 1 / 1; font-style: normal; }
+    .stk .b { visibility: hidden; }
+    .foot.ok .stk .a { visibility: hidden; }
+    .foot.ok .stk .b { visibility: visible; }
   `,
   html: `
-    <div class="row">
-      <button class="duo skip" type="button">Skip</button>
-      <button class="duo check" type="button" aria-pressed="false"><span class="lbl"></span></button>
+    <div class="foot">
+      <div class="row">
+        <span class="side">
+          <button class="duo skip" type="button"><span>Skip</span></button>
+        </span>
+        <button class="duo check" type="button" aria-pressed="false"><span class="stk"><i class="a">Check</i><i class="b">Continue</i></span></button>
+      </div>
+      <span class="side badge-wrap" style="pointer-events:none"><span class="badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></span>
     </div>`,
   init(root) {
+    const foot = root.querySelector('.foot');
     const c = root.querySelector('.check');
     const s = root.querySelector('.skip');
-    c.addEventListener('click', () => { const on = c.classList.toggle('done'); c.setAttribute('aria-pressed', on); });
-    s.addEventListener('click', () => { c.classList.remove('done'); c.setAttribute('aria-pressed', 'false'); });
+    c.addEventListener('click', () => { const on = foot.classList.toggle('ok'); c.setAttribute('aria-pressed', String(on)); });
+    s.addEventListener('click', () => { foot.classList.remove('ok'); c.setAttribute('aria-pressed', 'false'); });
   },
 };

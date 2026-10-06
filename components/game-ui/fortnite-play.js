@@ -30,8 +30,10 @@ export default {
       place-items: center;
       transform: skewX(10deg);
       color: #1a1340;
-      font: 800 italic 26px 'Unbounded', 'Syne', system-ui, sans-serif;
-      letter-spacing: 1px;
+      font: 800 italic 36px/1 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+      font-variation-settings: 'wdth' 75;
+      letter-spacing: .5px;
+      white-space: nowrap;
       transition: color .12s; }
     .play:hover { transform: skewX(-10deg) scale(1.06); }
     .play:hover .bg { background: #fff; box-shadow: 0 5px 0 #b8b8c8, 0 12px 22px rgba(255,255,255,.25); }
@@ -48,13 +50,16 @@ export default {
       transform: skewX(-10deg);
       background: rgba(255,255,255,.1);
       color: #fff;
-      font: 700 italic 12px 'Unbounded', 'Syne', system-ui, sans-serif;
+      font: 800 italic 17px/1.05 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+      font-variation-settings: 'wdth' 75;
+      text-transform: uppercase;
+      white-space: nowrap;
       text-align: left;
       padding: 0 14px;
       line-height: 1.25;
       border-left: 4px solid #ffe64d; }
     .mode span { display: block; transform: skewX(10deg); }
-    .mode small { display: block; font-weight: 400; opacity: .7; font-size: 9px; letter-spacing: .5px; text-transform: uppercase; }
+    .mode small { display: block; font-weight: 600; opacity: .75; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; }
     .mode:hover { background: rgba(255,255,255,.2); }
     .mode:focus-visible { outline: 2px solid #ffe64d; }
   `,

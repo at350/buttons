@@ -2,7 +2,7 @@ const SPRING = 'linear(0, 0.143, 0.453, 0.779, 1.028, 1.168, 1.205, 1.173, 1.109
 
 export default {
   id: 'mo-radial-hold-delete',
-  credit: 'Radial hold-to-delete — a conic-gradient sweep (@property-animated) fills behind the bin while it wobbles, then bursts; let go early and it rewinds',
+  credit: 'Hold-to-delete (the long-press confirm pattern from iOS / Linear) — an @property-animated conic ring fills while the Lucide bin trembles, completes with a burst; let go early and it rewinds',
   size: 'auto',
   css: `
     @property --p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
@@ -20,19 +20,19 @@ export default {
     .btn.hold .bin { animation: wobble .25s ease-in-out infinite alternate; }
     @keyframes wobble { from { transform: rotate(-6deg) translateX(-1px); } to { transform: rotate(6deg) translateX(1px); } }
     .btn.done { --p: 100%; transform: scale(1.1); color: #fff; } .btn.done::before { background: #ef4444; }
-    .bin { position: relative; width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .4s ${SPRING}, color .2s; }
-    .lid { transform-origin: 6px 7px; transition: transform .3s ${SPRING}; }
+    .bin { position: relative; width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .4s ${SPRING}, color .2s; }
+    .lid { transform-origin: 3px 6px; transition: transform .3s ${SPRING}; }
     .btn.done .lid { transform: rotate(-30deg) translate(-3px, -4px); }
     .burst { position: absolute; inset: 0; pointer-events: none; }
     .burst i { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: #ef4444; opacity: 0; transform: rotate(calc(var(--a) * 1deg)) translateX(0); }
     .wrap.boom .burst i { animation: burst .7s cubic-bezier(.2, .7, .3, 1) forwards; }
-    @keyframes burst { 0% { opacity: 1; transform: rotate(calc(var(--a) * 1deg)) translateX(30px) scale(1); } 100% { opacity: 0; transform: rotate(calc(var(--a) * 1deg)) translateX(62px) scale(.2); } }
+    @keyframes burst { 0% { opacity: 1; transform: rotate(calc(var(--a) * 1deg)) translateX(30px) scale(1); } 100% { opacity: 0; transform: rotate(calc(var(--a) * 1deg)) translateX(52px) scale(.2); } }
   `,
   html: `
     <div class="wrap">
       <span class="burst" aria-hidden="true"><i style="--a:0"></i><i style="--a:45"></i><i style="--a:90"></i><i style="--a:135"></i><i style="--a:180"></i><i style="--a:225"></i><i style="--a:270"></i><i style="--a:315"></i></span>
       <button class="btn" type="button" aria-label="Hold to delete">
-        <svg class="bin" viewBox="0 0 24 24" aria-hidden="true"><path class="lid" d="M4 7h16M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>
+        <svg class="bin" viewBox="0 0 24 24" aria-hidden="true"><g class="lid"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></g><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
       </button>
     </div>`,
   init(root) {

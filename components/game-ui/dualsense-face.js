@@ -1,44 +1,45 @@
+// DualSense face buttons: glossy smoked-black caps set into the white shell, thin-stroke PlayStation
+// shapes in the brand colours (△ #40e2a0, ○ #ff6a81, ✕ #7cb7ff, □ #f7a7cb); press sinks 2px, toggled caps glow.
 export default {
   id: 'gm-dualsense-face',
-  credit: 'Sony DualSense (PS5) — △ ○ ✕ □ face-button cluster; each lights up and stays lit when pressed',
+  credit: 'Sony DualSense (PS5) — the △ ○ ✕ □ face-button cluster on the white shell; caps sink when pressed and stay lit when toggled',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: radial-gradient(circle at 50% 40%, #f4f4f6, #d9d9de 70%, #c4c4cb); padding: 16px; border-radius: 12px; }
-    .pad { position: relative; width: 112px; height: 112px; }
-    .fb { position: absolute; width: 36px; height: 36px; border-radius: 50%; border: none; padding: 0; cursor: pointer;
-      background: radial-gradient(circle at 50% 35%, #2c2c33, #15151a 70%); box-shadow: 0 2px 0 #0a0a0c, 0 3px 4px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
-      display: grid; place-items: center; transition: transform .06s, box-shadow .06s, filter .2s; }
-    .fb svg { width: 16px; height: 16px; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: filter .2s; }
-    .tri { left: 38px; top: 0; }
-    .tri svg { stroke: #2fbf7f; }
-    .cir { right: 0; top: 38px; }
-    .cir svg { stroke: #ff4a5a; }
-    .cro { left: 38px; bottom: 0; }
-    .cro svg { stroke: #6f9cff; }
-    .squ { left: 0; top: 38px; }
-    .squ svg { stroke: #ff7bd1; }
-    .fb:active { transform: translateY(2px); box-shadow: 0 0 0 #0a0a0c, inset 0 2px 4px rgba(0,0,0,.6); }
-    .fb.on svg { filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 9px currentColor); }
-    .tri.on svg { color: #2fbf7f; }
-    .cir.on svg { color: #ff4a5a; }
-    .cro.on svg { color: #6f9cff; }
-    .squ.on svg { color: #ff7bd1; }
-    .fb.on { background: radial-gradient(circle at 50% 35%, #3a3a44, #1b1b22 70%); }
-    .fb:focus-visible { outline: 2px solid #2e6cf6; outline-offset: 3px; }
+    .stage { position: relative; border-radius: 12px; padding: 18px; overflow: hidden;
+      background: radial-gradient(circle at 30% 20%, #ffffff, #eceef2 55%, #d6d9df); box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+    .well { position: relative; width: 128px; height: 128px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 45%, #f7f8fa, #e4e6eb 70%); box-shadow: inset 0 2px 5px rgba(0,0,0,.12), inset 0 -1px 0 rgba(255,255,255,.9); }
+    .fb { position: absolute; width: 38px; height: 38px; border-radius: 50%; border: none; padding: 0; cursor: pointer; display: grid; place-items: center;
+      background: radial-gradient(circle at 50% 28%, #4a4c55 0%, #22232a 45%, #0e0f13 100%);
+      box-shadow: 0 2px 0 #0a0a0d, 0 4px 6px rgba(0,0,0,.28), inset 0 1px 1px rgba(255,255,255,.22), inset 0 -2px 3px rgba(0,0,0,.5);
+      transition: transform 60ms ease-out, box-shadow 60ms ease-out; }
+    .fb::before { content: ""; position: absolute; left: 7px; right: 7px; top: 3px; height: 12px; border-radius: 50%; background: linear-gradient(rgba(255,255,255,.22), transparent); pointer-events: none; }
+    .fb svg { width: 22px; height: 22px; fill: none; stroke: var(--c); stroke-width: 1.7; stroke-linejoin: miter; stroke-linecap: butt; opacity: .88; transition: opacity 150ms, filter 150ms; }
+    .tri { left: 45px; top: 5px; --c: #40e2a0; }
+    .cir { left: 85px; top: 45px; --c: #ff6a81; }
+    .cro { left: 45px; top: 85px; --c: #7cb7ff; }
+    .squ { left: 5px; top: 45px; --c: #f7a7cb; }
+    .fb:hover svg { opacity: 1; }
+    .fb:active, .fb.down { transform: translateY(2px); box-shadow: 0 0 0 #0a0a0d, 0 1px 2px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.12), inset 0 -1px 2px rgba(0,0,0,.5); }
+    .fb.on svg { opacity: 1; filter: drop-shadow(0 0 2px var(--c)) drop-shadow(0 0 5px var(--c)); }
+    .fb.on { box-shadow: 0 2px 0 #0a0a0d, 0 4px 6px rgba(0,0,0,.28), 0 0 0 2px color-mix(in srgb, var(--c) 45%, transparent), inset 0 1px 1px rgba(255,255,255,.22), inset 0 -2px 3px rgba(0,0,0,.5); }
+    .fb:focus-visible { outline: 2px solid #0070cc; outline-offset: 2px; }
   `,
   html: `
     <div class="stage">
-      <div class="pad">
-        <button class="fb tri" type="button" aria-label="Triangle" aria-pressed="false"><svg viewBox="0 0 16 16"><path d="M8 2.5 14 13H2z"/></svg></button>
-        <button class="fb cir" type="button" aria-label="Circle" aria-pressed="false"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/></svg></button>
-        <button class="fb cro" type="button" aria-label="Cross" aria-pressed="false"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3 3 13"/></svg></button>
-        <button class="fb squ" type="button" aria-label="Square" aria-pressed="false"><svg viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10"/></svg></button>
+      <div class="well">
+        <button class="fb tri" type="button" aria-label="Triangle" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 5.2 18.9 17.2H5.1z"/></svg></button>
+        <button class="fb cir" type="button" aria-label="Circle" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.6"/></svg></button>
+        <button class="fb cro" type="button" aria-label="Cross" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6"/></svg></button>
+        <button class="fb squ" type="button" aria-label="Square" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="6.3" y="6.3" width="11.4" height="11.4"/></svg></button>
       </div>
     </div>`,
   init(root) {
+    const keys = { Triangle: '.tri', Circle: '.cir', Cross: '.cro', Square: '.squ' };
     root.querySelectorAll('.fb').forEach((b) => b.addEventListener('click', () => {
       const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', String(on));
     }));
+    void keys;
   },
 };

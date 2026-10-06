@@ -4,7 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 260px; height: 150px; border-radius: 12px; overflow: hidden; background: radial-gradient(ellipse at 20% 0%, #1f3a5a, #0f1823 60%, #0b1118); font-family: 'Inter', system-ui, sans-serif; }
+    .stage { position: relative; width: 260px; height: 150px; border-radius: 12px; overflow: hidden; background: radial-gradient(ellipse at 20% 0%, #1f3a5a, #0f1823 60%, #0b1118); font-family: 'Motiva Sans', 'DM Sans', Arial, sans-serif; }
     .hero { position: absolute; left: 16px; top: 18px; width: 120px; height: 68px; border-radius: 4px; background: linear-gradient(135deg, #ff9a3c, #c23616 70%); box-shadow: 0 4px 12px rgba(0,0,0,.5); }
     .hero::after { content: "Play"; position: absolute; left: 8px; bottom: 8px; background: #59bf40; color: #fff; font: 700 10px 'Inter', system-ui, sans-serif; padding: 3px 9px; border-radius: 2px; }
     .dots { position: absolute; left: 16px; bottom: 14px; width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b4a5c; background: #141c26; color: #8fa3b8; cursor: pointer;

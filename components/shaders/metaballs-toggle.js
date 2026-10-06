@@ -12,6 +12,7 @@ function shade(cv, el, w, h, fs, o = {}) {
   const setup = () => {
     gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
     if (!gl) return false;
+    gl.getExtension('OES_standard_derivatives'); // fwidth() for pixel-exact anti-aliasing
     const sh = (type, src) => {
       const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
       if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) { console.error('[shader]', name(), gl.getShaderInfoLog(x)); return null; }
@@ -74,43 +75,63 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
-uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res;
+// Metaball switch: the thumb is two metaballs on springs — a fast lead and a slow trail. At rest they
+// overlap into one round knob; when toggled the lead shoots across and the trail lags behind, so the
+// knob stretches a goo neck across the track, snaps off and settles with overshoot (iOS-green when on).
+const FS = `#extension GL_OES_standard_derivatives : enable
+precision highp float;
+uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res;uniform vec2 u_x;
 void main(){
  float W=u_res.x/u_res.y; vec2 p=gl_FragCoord.xy/u_res*vec2(W,1.);
- float t=u_time*2.2; float w=.035*u_hover;
- vec2 a=vec2(mix(.5,W*.5-.14,u_value),.5+w*sin(t));
- vec2 b=vec2(mix(W-.5,W*.5+.14,u_value),.5+w*cos(t*1.3));
- float f=.1/dot(p-a,p-a)+.1/dot(p-b,p-b);
- float body=smoothstep(.95,1.1,f), core=smoothstep(1.1,2.2,f);
- vec3 off=vec3(.5,.53,.6), on=vec3(.15,.85,.5);
- vec3 c=mix(off,on,u_value);
- vec3 col=mix(vec3(.11,.12,.16),vec3(.08,.09,.12),p.y);
- col=mix(col,c*.55,body); col=mix(col,c*(1.+.3*u_value),core);
- col+=vec3(1.)*smoothstep(1.1,1.6,f)*smoothstep(.0,.3,p.y-.55)*.25;
- col+=u_press*.35*body;
- gl_FragColor=vec4(col,1.);}`;
+ float x0=.5, x1=W-.5;
+ vec2 a=vec2(mix(x0,x1,u_x.x),.5), b=vec2(mix(x0,x1,u_x.y),.5);
+ float r=.265*(1.+.04*u_hover-.06*u_press);
+ float f=r*r/dot(p-a,p-a)+r*r/dot(p-b,p-b);
+ float s=1.-1./max(f,1e-3); // ~signed: 0 at the iso-line f=1
+ float w=fwidth(s); float m=clamp(.5+s/max(w,1e-4),0.,1.);
+ float hh=sqrt(clamp(1.-1./max(f,1e-4),0.,1.)); vec2 g=vec2(dFdx(hh),dFdy(hh))*r*u_res.y; vec3 n=normalize(vec3(-clamp(g,-4.,4.),1.));
+ float lit=.8+.2*dot(n,normalize(vec3(-.3,.6,.75)));
+ vec3 c=vec3(1.)*lit;
+ 
+ c=mix(c*.94,c,smoothstep(.0,.25,p.y-.35));
+ // soft drop shadow under the knob
+ float fs=r*r/dot(p-a-vec2(0.,-.06),p-a-vec2(0.,-.06))+r*r/dot(p-b-vec2(0.,-.06),p-b-vec2(0.,-.06));
+ float sh=smoothstep(.6,1.1,fs)*.28*(1.-m);
+ gl_FragColor=vec4(c*m,m+sh*(1.-m));}`;
 
 export default {
   id: 'sh-metaballs-toggle',
-  credit: 'Metaballs toggle — two inverse-square blobs in GLSL that slide together and fuse into one green blob when switched on',
+  credit: 'Metaball switch in GLSL — the knob is two spring-driven metaballs (a fast lead and a lagging trail) that stretch a goo neck across the track when toggled and fuse back into one round thumb; iOS green when on',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .tg { position: relative; display: block; width: 180px; height: 72px; max-width: 100%; padding: 0; border: 0; border-radius: 36px; overflow: hidden; background: #1a1c22; cursor: pointer; isolation: isolate; box-shadow: inset 0 2px 6px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.08); }
+    .tg { position: relative; display: block; width: 180px; height: 72px; max-width: 100%; padding: 0; border: 0; border-radius: 36px; overflow: hidden; background: #e3e3e8; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06), inset 0 2px 5px rgba(0,0,0,.12); transition: background .35s cubic-bezier(.32,.72,0,1); -webkit-tap-highlight-color: transparent; }
+    .tg[aria-checked="true"] { background: #34c759; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: #1a1c22; }
-    .tg[aria-pressed="true"] .cv.nogl { background: radial-gradient(circle, #27d98a 30%, #1a1c22 32%); }
-    .tg:focus-visible { outline: 2px solid #27d98a; outline-offset: 3px; }
+    .cv.nogl { background: radial-gradient(circle at 36px 50%, #fff 0 26px, transparent 27px); }
+    .tg[aria-checked="true"] .cv.nogl { background: radial-gradient(circle at 144px 50%, #fff 0 26px, transparent 27px); }
+    .tg:focus-visible { outline: 2px solid #34c759; outline-offset: 3px; }
   `,
-  html: `<button class="tg" type="button" role="switch" aria-checked="false" aria-pressed="false" aria-label="Merge"><canvas class="cv"></canvas></button>`,
+  html: `<button class="tg" type="button" role="switch" aria-checked="false" aria-label="Merge"><canvas class="cv"></canvas></button>`,
   init(root) {
     const btn = root.querySelector('.tg'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 180, 72, FS, { valueRate: 5, pressDecay: 2 });
+    let loc = null, lead = 0, trail = 0, vl = 0, vt = 0, target = 0;
+    const s = shade(cv, btn, 180, 72, FS, {
+      pressDecay: 3,
+      after(gl, prog) { loc = gl.getUniformLocation(prog, 'u_x'); },
+      uniforms(gl) { gl.uniform2f(loc, lead, trail); },
+      step(st, dt) {
+        const n = Math.max(1, Math.ceil(dt / .008)), h = dt / n;
+        for (let i = 0; i < n; i++) {
+          vl += ((target - lead) * 150 - vl * 17) * h; lead += vl * h;
+          vt += ((lead - trail) * 95 - vt * 13) * h; trail += vt * h;
+        }
+      },
+      busy: () => Math.abs(vl) + Math.abs(vt) > .002 || Math.abs(target - lead) + Math.abs(target - trail) > .002,
+    });
     btn.addEventListener('click', () => {
-      const on = btn.getAttribute('aria-pressed') !== 'true';
-      btn.setAttribute('aria-pressed', String(on)); btn.setAttribute('aria-checked', String(on));
-      s.valueT = on ? 1 : 0; s.kick();
+      const on = btn.getAttribute('aria-checked') !== 'true';
+      btn.setAttribute('aria-checked', String(on)); target = on ? 1 : 0; s.valueT = target; s.kick();
     });
     return () => s.destroy();
   },

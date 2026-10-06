@@ -1,42 +1,58 @@
-const SPRING = 'linear(0, 0.144, 0.433, 0.717, 0.926, 1.046, 1.091, 1.09, 1.066, 1.038, 1.014, 1, 0.992, 0.991, 0.993, 0.995, 0.998, 1, 1.001)';
+// Aceternity UI "Animated Tooltip" (Manu Arora): avatars overlap by 16px (-mr-4), hovering one springs a black
+// tooltip up from y:20 scale:.6 with { stiffness: 260, damping: 10 }, and the tooltip rotates (±45° over ±100px)
+// and slides (±50px) toward the pointer through a { stiffness: 100, damping: 15 } spring. Both springs → linear().
+const ENTER = 'linear(0, 0.135, 0.447, 0.807, 1.111, 1.299, 1.358, 1.311, 1.2, 1.071, 0.962, 0.894, 0.872, 0.888, 0.928, 0.974, 1.013, 1.038, 1.046, 1.04, 1.026, 1.009, 0.995, 0.986, 0.984, 0.986, 0.991, 0.997, 1.002, 1.005, 1.006, 1.005, 1.003, 1.001, 0.999, 0.998, 0.998, 0.998, 0.999, 1, 1)';
+const FOLLOW = 'linear(0, 0.021, 0.076, 0.15, 0.236, 0.333, 0.425, 0.514, 0.601, 0.676, 0.743, 0.805, 0.854, 0.896, 0.932, 0.959, 0.981, 0.998, 1.01, 1.018, 1.023, 1.026, 1.027, 1.027, 1.026, 1.024, 1.022, 1.019, 1.017, 1.014, 1.012, 1.01, 1.008, 1.006, 1.004, 1.003, 1.002, 1.001, 1.001, 1, 1)';
+const PEOPLE = [
+  ['John Doe', 'Software Engineer', 'JD', '#f59e0b', '#ea580c'],
+  ['Robert Johnson', 'Product Manager', 'RJ', '#38bdf8', '#2563eb'],
+  ['Jane Smith', 'Data Scientist', 'JS', '#f472b6', '#c026d3'],
+  ['Emily Davis', 'UX Designer', 'ED', '#34d399', '#0d9488'],
+];
 
 export default {
   id: 'mo-avatar-stack',
-  credit: 'Avatar stack — overlapping faces fan apart with a staggered spring on hover, name tags float up (Aceternity "Animated Tooltip")',
+  credit: 'Aceternity UI "Animated Tooltip" — hover a face and the name card springs up (stiffness 260, damping 10), then tilts and slides after your cursor on a softer spring',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .wrap { position: relative; width: 240px; height: 86px; padding-top: 34px; font-family: Inter, system-ui, sans-serif; }
-    .stack { position: relative; height: 44px; width: 100%; cursor: default; }
-    .stack:focus-visible { outline: 2px solid #111; outline-offset: 4px; border-radius: 999px; }
+    .stage { position: relative; width: 310px; height: 178px; max-width: 100%; border-radius: 12px; background: #fff; border: 1px solid #ececec; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 26px; font-family: Inter, system-ui, sans-serif; overflow: hidden; }
+    .row { display: flex; padding-right: 16px; }
+    .it { position: relative; margin-right: -16px; }
     .av {
-      position: absolute; top: 0; left: 0; width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid #ecece8; display: grid; place-items: center;
-      color: #fff; font-weight: 600; font-size: 14px; transform: translateX(calc(var(--i) * 30px)); z-index: calc(10 - var(--i));
-      transition: transform .55s ${SPRING}; transition-delay: calc(var(--i) * 40ms); box-shadow: 0 2px 6px rgba(0,0,0,.12);
+      position: relative; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-size: 16px; font-weight: 600;
+      background: linear-gradient(150deg, var(--a), var(--b)); cursor: pointer; transition: transform .5s cubic-bezier(.4, 0, .2, 1); outline: none;
     }
-    .stack:hover .av, .stack.open .av { transform: translateX(calc(var(--i) * 50px)) scale(1.08); }
-    .av:hover { z-index: 20; }
-    .tag {
-      position: absolute; left: 50%; top: -32px; transform: translate(-50%, 8px) scale(.8); opacity: 0; padding: 4px 8px; border-radius: 6px; background: #111; color: #fff;
-      font-size: 11px; font-weight: 600; white-space: nowrap; pointer-events: none; transition: transform .4s ${SPRING}, opacity .2s; transition-delay: calc(var(--i) * 40ms + 120ms);
+    .it:hover, .it:focus-within { z-index: 30; }
+    .it:hover .av, .av:focus-visible { transform: scale(1.05); }
+    .av:focus-visible { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #111; }
+    .tw { position: absolute; left: 50%; bottom: calc(100% + 8px); translate: calc(-50% + var(--tx, 0px)) 0; rotate: var(--rot, 0deg); transition: translate .85s ${FOLLOW}, rotate .85s ${FOLLOW}; pointer-events: none; z-index: 50; }
+    .tip {
+      position: relative; display: flex; flex-direction: column; align-items: center; padding: 8px 16px; border-radius: 6px; background: #000; white-space: nowrap;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1);
+      opacity: 0; transform: translateY(20px) scale(.6); transition: opacity .2s, transform .3s cubic-bezier(.4, 0, 1, 1);
     }
-    .tag::after { content: ''; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; background: #111; transform: translateX(-50%) rotate(45deg); border-radius: 1px; }
-    .stack:hover .tag, .stack.open .tag { transform: translate(-50%, 0) scale(1); opacity: 1; }
-    .av.more { background: #fff; color: #555; font-size: 12px; }
+    .it:hover .tip, .it:focus-within .tip { opacity: 1; transform: none; transition: opacity .15s, transform 1.36s ${ENTER}; }
+    .tip b { font-size: 16px; font-weight: 700; line-height: 24px; color: #fff; }
+    .tip span { font-size: 12px; line-height: 16px; color: #fff; }
+    .tip i { position: absolute; bottom: -1px; height: 1px; }
+    .tip i.e { left: 40px; right: 40px; width: 20%; background: linear-gradient(90deg, transparent, #10b981, transparent); }
+    .tip i.s { left: 40px; width: 40%; background: linear-gradient(90deg, transparent, #0ea5e9, transparent); }
   `,
   html: `
-    <div class="wrap">
-      <div class="stack" tabindex="0" role="group" aria-label="Collaborators">
-        <span class="av" style="--i:0;background:linear-gradient(135deg,#f97316,#ef4444)">AC<span class="tag">Alex Chen</span></span>
-        <span class="av" style="--i:1;background:linear-gradient(135deg,#8b5cf6,#ec4899)">MJ<span class="tag">Mia Jones</span></span>
-        <span class="av" style="--i:2;background:linear-gradient(135deg,#06b6d4,#3b82f6)">RK<span class="tag">Ravi Kumar</span></span>
-        <span class="av" style="--i:3;background:linear-gradient(135deg,#22c55e,#14b8a6)">SL<span class="tag">Sara Lee</span></span>
-        <span class="av more" style="--i:4">+3<span class="tag">3 more</span></span>
-      </div>
-    </div>`,
+    <div class="stage"><div class="row">
+      ${PEOPLE.map(([n, d, ini, a, b]) => `<div class="it"><div class="tw"><div class="tip" role="tooltip"><i class="e"></i><i class="s"></i><b>${n}</b><span>${d}</span></div></div><div class="av" tabindex="0" aria-label="${n}, ${d}" style="--a:${a};--b:${b}">${ini}</div></div>`).join('')}
+    </div></div>`,
   init(root) {
-    const s = root.querySelector('.stack');
-    s.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); s.classList.toggle('open'); } });
-    s.addEventListener('blur', () => s.classList.remove('open'));
+    root.querySelectorAll('.it').forEach((it) => {
+      const av = it.querySelector('.av'), tw = it.querySelector('.tw');
+      av.addEventListener('pointermove', (e) => {
+        const r = av.getBoundingClientRect();
+        const x = Math.max(-100, Math.min(100, (e.clientX - r.left) / r.width * 56 - 28));
+        tw.style.setProperty('--rot', (x * .45).toFixed(2) + 'deg');
+        tw.style.setProperty('--tx', (x * .5).toFixed(1) + 'px');
+      });
+      av.addEventListener('pointerleave', () => { tw.style.setProperty('--rot', '0deg'); tw.style.setProperty('--tx', '0px'); });
+    });
   },
 };

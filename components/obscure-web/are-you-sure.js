@@ -11,8 +11,8 @@ export default {
     .tb { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #f3f4f6; border-bottom: 1px solid #e5e7eb; }
     .tb i { width: 10px; height: 10px; border-radius: 50%; display: block; } .tb i:nth-child(1) { background: #ff5f57; } .tb i:nth-child(2) { background: #febc2e; } .tb i:nth-child(3) { background: #28c840; }
     .bd { padding: 14px 14px 12px; display: flex; gap: 10px; align-items: flex-start; }
-    .ic { width: 28px; height: 28px; flex: none; border-radius: 50%; background: #fde68a; color: #92400e; font: 900 18px/28px Inter, system-ui, sans-serif; text-align: center; }
-    .dlg.danger .ic { background: #fecaca; color: #991b1b; }
+    .ic { width: 28px; height: 28px; flex: none; fill: none; stroke: #d97706; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .dlg.danger .ic { stroke: #dc2626; }
     .q { font-weight: 600; min-height: 36px; }
     .ft { display: flex; justify-content: flex-end; gap: 8px; padding: 0 14px 12px; }
     .b { padding: 6px 14px; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; color: #111; cursor: pointer; font: 600 13px Inter, system-ui, sans-serif; transition: background .15s, transform .1s; }
@@ -27,7 +27,7 @@ export default {
     <div class="stage">
       <div class="dlg" role="alertdialog" aria-labelledby="q">
         <div class="tb" aria-hidden="true"><i></i><i></i><i></i></div>
-        <div class="bd"><span class="ic" aria-hidden="true">!</span><div class="q" id="q">Delete everything?</div></div>
+        <div class="bd"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><div class="q" id="q">Delete everything?</div></div>
         <div class="ft"><button class="b no" type="button">No</button><button class="b yes" type="button">Yes</button></div>
       </div>
     </div>`,

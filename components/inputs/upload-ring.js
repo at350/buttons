@@ -1,6 +1,6 @@
 export default {
   id: 'in-upload-ring',
-  credit: 'Upload button — click, the arrow collapses into a ring that fills, then a check draws in (Dribbble micro-interaction)',
+  credit: 'Upload micro-interaction — the Lucide upload glyph lifts away, a progress ring sweeps the rim, then a check draws in and the button turns green',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -18,7 +18,7 @@ export default {
     @keyframes fill { to { stroke-dashoffset: 0; } }
     .u.busy .track { opacity: .3; }
     .ck { opacity: 0; transform: scale(.4); }
-    .ck path { stroke-dasharray: 24; stroke-dashoffset: 24; }
+    .ck path { stroke-dasharray: 23; stroke-dashoffset: 23; }
     .u.done .ck { opacity: 1; transform: scale(1); }
     .u.done .ck path { animation: draw .35s .1s ease-out forwards; }
     @keyframes draw { to { stroke-dashoffset: 0; } }
@@ -26,8 +26,8 @@ export default {
   html: `<button class="u" type="button" aria-label="Upload">
     <svg class="ring track" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26"/></svg>
     <svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26"/></svg>
-    <svg class="arrow" viewBox="0 0 24 24"><path d="M12 17V5M6 11l6-6 6 6M4 20h16"/></svg>
-    <svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+    <svg class="arrow" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+    <svg class="ck" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
   </button>`,
   init(root) {
     const b = root.querySelector('.u'), ring = root.querySelector('.ring:not(.track) circle');

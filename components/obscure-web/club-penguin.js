@@ -17,6 +17,7 @@ export default {
     .cp.login:hover { background: linear-gradient(#ffc38a 0, #ff8a33 50%, #ec6508 51%, #ff7a1a); }
     .cp.login:active { box-shadow: 0 1px 0 #8a3a00, 0 3px 6px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.5); }
     .cp.login.on { background: linear-gradient(#b9f09a 0, #5cc83a 50%, #3fa522 51%, #4db52b); border-color: #246a12; text-shadow: 0 2px 0 #246a12; box-shadow: 0 5px 0 #246a12, 0 8px 14px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.5); }
+    .cp { display: inline-grid; } .cp span { grid-area: 1 / 1; position: relative; } .cp .b { visibility: hidden; } .cp.on .a { visibility: hidden; } .cp.on .b { visibility: visible; }
     .snow { display: flex; gap: 6px; }
     .snow i { width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: .5; transition: opacity .2s, transform .3s; }
     .stage.on .snow i { opacity: 1; animation: bob 1s ease-in-out infinite alternate; }
@@ -27,14 +28,14 @@ export default {
   html: `
     <div class="stage">
       <div class="row">
-        <button class="cp play" type="button" aria-pressed="false">PLAY NOW!</button>
-        <button class="cp login" type="button" aria-pressed="false">LOG IN</button>
+        <button class="cp play" type="button" aria-pressed="false"><span class="a">PLAY NOW!</span><span class="b">WADDLE ON!</span></button>
+        <button class="cp login" type="button" aria-pressed="false"><span class="a">LOG IN</span><span class="b">LOGGED IN</span></button>
       </div>
       <span class="snow" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>`,
   init(root) {
     const s = root.querySelector('.stage'), play = root.querySelector('.play'), login = root.querySelector('.login');
-    play.addEventListener('click', () => { const on = play.classList.toggle('on'); s.classList.toggle('on', on); play.setAttribute('aria-pressed', String(on)); play.textContent = on ? 'WADDLE ON!' : 'PLAY NOW!'; });
-    login.addEventListener('click', () => { const on = login.classList.toggle('on'); login.setAttribute('aria-pressed', String(on)); login.textContent = on ? 'LOGGED IN' : 'LOG IN'; });
+    play.addEventListener('click', () => { const on = play.classList.toggle('on'); s.classList.toggle('on', on); play.setAttribute('aria-pressed', String(on));  });
+    login.addEventListener('click', () => { const on = login.classList.toggle('on'); login.setAttribute('aria-pressed', String(on));  });
   },
 };

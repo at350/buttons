@@ -4,13 +4,17 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .stage { background: #0f172a; border-radius: 12px; padding: 18px 26px; }
     .btn {
-      cursor: pointer; background: transparent; border: 0; padding: 0; display: inline-grid;
-      font: 900 48px/1 Unbounded, Syne, system-ui, sans-serif; letter-spacing: -.02em;
+      cursor: pointer; background: transparent; border: 0; padding: 2px; display: inline-grid;
+      font: 900 48px/1 Unbounded, Syne, system-ui, sans-serif; letter-spacing: 0;
     }
     .btn > span { grid-area: 1 / 1; white-space: nowrap; }
-    .o { color: transparent; -webkit-text-stroke: 1.5px #38bdf8; transition: -webkit-text-stroke-color .4s; }
+    /* outline = a double-width stroke under a knockout fill in the stage color, so the overlapping contours
+       inside Unbounded's variable glyphs never show (plain text-stroke draws them) */
+    .o { color: #38bdf8; -webkit-text-stroke: 3px #38bdf8; transition: color .4s, -webkit-text-stroke-color .4s; }
+    .k { color: #0f172a; }
     .f {
       color: transparent; -webkit-background-clip: text; background-clip: text;
       background-image:
@@ -24,13 +28,13 @@ export default {
     .btn:active .f { background-position: 0 22px, 0 37px; transition-duration: .35s; }
     .f { animation: slosh 1.6s linear infinite; animation-play-state: paused; }
     .btn:hover .f, .btn.on .f { animation-play-state: running; }
-    .btn.on .o { -webkit-text-stroke-color: #22d3ee; }
+    .btn.on .o { color: #22d3ee; -webkit-text-stroke-color: #22d3ee; }
     .btn.on .f { filter: drop-shadow(0 0 10px rgba(56, 189, 248, .55)); }
     .btn:focus-visible { outline: 2px solid #38bdf8; outline-offset: 6px; border-radius: 4px; }
     @keyframes slosh { from { background-position-x: 0, 0; } to { background-position-x: 80px, 0; } }
     @media (prefers-reduced-motion: reduce) { .f { animation: none; } }
   `,
-  html: `<div class="stage"><button class="btn" type="button" aria-pressed="false" aria-label="Pour"><span class="o" aria-hidden="true">POUR</span><span class="f" aria-hidden="true">POUR</span></button></div>`,
+  html: `<div class="stage"><button class="btn" type="button" aria-pressed="false" aria-label="Pour"><span class="o" aria-hidden="true">POUR</span><span class="k" aria-hidden="true">POUR</span><span class="f" aria-hidden="true">POUR</span></button></div>`,
   init(root) {
     const btn = root.querySelector('.btn');
     btn.addEventListener('click', () => {

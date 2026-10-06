@@ -1,43 +1,76 @@
+const I = (p) => `<svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const CHEV = I('<path d="m9 18 6-6-6-6"/>').replace('class="ic"', 'class="ch"');
+const UPDOWN = I('<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>').replace('class="ic"', 'class="ud"');
+const groups = [
+  ['Playground', '<path d="m7 11 2-2-2-2"/><path d="M11 13h4"/><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>', ['History', 'Starred', 'Settings'], true],
+  ['Models', '<path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>', ['Genesis', 'Explorer', 'Quantum']],
+  ['Documentation', '<path d="M12 5v16"/><path d="M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/>', ['Introduction', 'Get Started', 'Tutorials', 'Changelog']],
+  ['Settings', '<path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>', ['General', 'Team', 'Billing', 'Limits']],
+];
 export default {
   id: 'mn-accordion-sidebar',
-  credit: 'Admin dashboard sidebar with expanding groups (CoreUI / AdminLTE style, dark)',
-  size: 'wide',
+  credit: 'shadcn/ui Sidebar (sidebar-07, floating) — team switcher, collapsible "Platform" groups with Lucide icons, user footer',
+  size: 'auto',
   css: `
-    :host { display: block; }
-    .sb { max-width: 260px; background: #1e2a3a; color: #c7d0dc; border-radius: 12px; padding: 10px 8px; font: 14px/20px -apple-system, system-ui, "Segoe UI", sans-serif; }
-    .it, .g { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; transition: background .15s, color .15s; }
-    .it:hover, .g:hover { background: rgba(255,255,255,.06); color: #fff; }
-    .it:focus-visible, .g:focus-visible { outline: 2px solid #5aa2ff; outline-offset: -2px; }
-    .it[aria-current="page"] { background: #3178e6; color: #fff; }
-    .it svg, .g svg.i { color: #8b98a9; flex: none; }
-    .it[aria-current="page"] svg { color: #fff; }
-    .g .ch { margin-left: auto; transition: transform .25s; color: #8b98a9; }
-    .g[aria-expanded="true"] .ch { transform: rotate(90deg); }
-    .sub { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s cubic-bezier(.2,.8,.2,1); }
-    .sub > div { overflow: hidden; min-height: 0; }
-    .sub.open { grid-template-rows: 1fr; }
-    .sub .it { padding-left: 42px; font-size: 13px; }
-    .sub .it::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .5; margin-left: -16px; margin-right: 10px; flex: none; }
-    .sub .it[aria-current="page"] { background: rgba(49,120,230,.25); color: #fff; }
-    .bdg { margin-left: auto; font-size: 11px; background: #e5484d; color: #fff; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
+    :host { display: inline-block; }
+    .wrap { width: 256px; height: 404px; padding: 8px; background: #ecece8; border-radius: 12px; }
+    .sb { height: 100%; display: flex; flex-direction: column; background: #fafafa; color: #0a0a0a; border: 1px solid #e5e5e5; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.05); font: 14px/20px Inter, "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; }
+    .hd, .ft { padding: 8px; flex: none; }
+    .ct { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 0 8px; scrollbar-width: none; }
+    .ct::-webkit-scrollbar { display: none; }
+    .lbl { height: 32px; display: flex; align-items: center; padding: 0 8px; font-size: 12px; font-weight: 500; color: rgba(10,10,10,.7); }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-align: left; }
+    .mb { display: flex; align-items: center; gap: 8px; width: 100%; height: 32px; padding: 8px; border-radius: 6px; outline: 0; white-space: nowrap; transition: background-color .15s cubic-bezier(.4,0,.2,1), color .15s; }
+    .mb:hover { background: #f5f5f5; color: #171717; }
+    .mb:active { background: #f5f5f5; }
+    .mb:focus-visible, .sbn:focus-visible { box-shadow: 0 0 0 2px #a1a1a1; }
+    .mb .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .ic { flex: none; }
+    .ch { flex: none; margin-left: auto; transition: transform .2s cubic-bezier(.4,0,.2,1); }
+    .mb[aria-expanded="true"] .ch { transform: rotate(90deg); }
+    .lg { height: 48px; padding: 8px; }
+    .lg[aria-expanded="true"], .lg:hover { background: #f5f5f5; }
+    .logo { width: 32px; height: 32px; flex: none; border-radius: 8px; background: #171717; color: #fafafa; display: grid; place-items: center; }
+    .av { width: 32px; height: 32px; flex: none; border-radius: 8px; background: #f5f5f5; color: #0a0a0a; display: grid; place-items: center; font-size: 12px; font-weight: 500; border: 1px solid #e5e5e5; }
+    .two { flex: 1; min-width: 0; display: grid; line-height: 1.25; }
+    .two b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+    .two span { font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
+    .ud { flex: none; margin-left: auto; }
+    ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+    .col { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .2s cubic-bezier(.4,0,.2,1); }
+    .col.open { grid-template-rows: 1fr; }
+    .col > div { min-height: 0; overflow: hidden; }
+    .sub { margin: 0 14px; border-left: 1px solid #e5e5e5; padding: 2px 10px; transform: translateX(1px); gap: 4px; }
+    .sbn { display: flex; align-items: center; width: 100%; height: 28px; padding: 0 8px; border-radius: 6px; color: #0a0a0a; outline: 0; white-space: nowrap; transition: background-color .15s; }
+    .sbn:hover { background: #f5f5f5; color: #171717; }
+    .sbn[aria-current="page"] { background: #f5f5f5; color: #171717; font-weight: 500; }
   `,
   html: `
-    <nav class="sb">
-      <button class="it" type="button" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
-      <button class="g" type="button" aria-expanded="false"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Projects<span class="bdg">3</span><svg class="ch" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3.5L10.5 8 6 12.5"/></svg></button>
-      <div class="sub"><div><button class="it" type="button">Active</button><button class="it" type="button">Archived</button><button class="it" type="button">Templates</button></div></div>
-      <button class="g" type="button" aria-expanded="false"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0114 0M17 11a3 3 0 100-6M22 20a6 6 0 00-5-5.9"/></svg>Team<svg class="ch" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3.5L10.5 8 6 12.5"/></svg></button>
-      <div class="sub"><div><button class="it" type="button">Members</button><button class="it" type="button">Roles</button></div></div>
-      <button class="g" type="button" aria-expanded="false"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 15V9M12 15v-4M16 15V7"/></svg>Reports<svg class="ch" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3.5L10.5 8 6 12.5"/></svg></button>
-      <div class="sub"><div><button class="it" type="button">Weekly</button><button class="it" type="button">Monthly</button><button class="it" type="button">Custom</button></div></div>
-      <button class="it" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Settings</button>
-    </nav>`,
+    <div class="wrap">
+      <nav class="sb" aria-label="Sidebar">
+        <div class="hd"><button class="mb lg" type="button" aria-haspopup="menu" aria-expanded="false"><span class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10"/><path d="M5 6h14"/><rect width="18" height="12" x="3" y="10" rx="2"/></svg></span><span class="two"><b>Acme Inc</b><span>Enterprise</span></span>${UPDOWN}</button></div>
+        <div class="ct">
+          <div class="lbl">Platform</div>
+          <ul>
+            ${groups.map(([name, icon, subs, open], gi) => `<li>
+              <button class="mb grp" type="button" aria-expanded="${open ? 'true' : 'false'}">${I(icon)}<span class="t">${name}</span>${CHEV}</button>
+              <div class="col${open ? ' open' : ''}"><div><ul class="sub">${subs.map((s, si) => `<li><button class="sbn" type="button"${gi === 0 && si === 0 ? ' aria-current="page"' : ''}${open ? '' : ' tabindex="-1"'}>${s}</button></li>`).join('')}</ul></div></div>
+            </li>`).join('')}
+          </ul>
+        </div>
+        <div class="ft"><button class="mb lg" type="button" aria-haspopup="menu" aria-expanded="false"><span class="av">CN</span><span class="two"><b>shadcn</b><span>m@example.com</span></span>${UPDOWN}</button></div>
+      </nav>
+    </div>`,
   init(root) {
-    root.querySelectorAll('.g').forEach((g) => g.addEventListener('click', () => {
+    root.querySelectorAll('.grp').forEach((g) => g.addEventListener('click', () => {
       const v = g.getAttribute('aria-expanded') !== 'true';
-      g.setAttribute('aria-expanded', v); g.nextElementSibling.classList.toggle('open', v);
+      g.setAttribute('aria-expanded', String(v));
+      const col = g.nextElementSibling;
+      col.classList.toggle('open', v);
+      col.querySelectorAll('.sbn').forEach((b) => (b.tabIndex = v ? 0 : -1));
     }));
-    const items = [...root.querySelectorAll('.it')];
-    items.forEach((it) => it.addEventListener('click', () => items.forEach((x) => (x === it ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current')))));
+    const subs = [...root.querySelectorAll('.sbn')];
+    subs.forEach((s) => s.addEventListener('click', () => subs.forEach((x) => (x === s ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current')))));
+    root.querySelectorAll('.lg').forEach((b) => b.addEventListener('click', () => b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'))));
   },
 };

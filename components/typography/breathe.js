@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .stage {
       background: radial-gradient(circle at 50% 50%, #312e81, #0f0c29 70%);
       border-radius: 12px;
@@ -20,6 +21,7 @@ export default {
       text-transform: lowercase;
       display: inline-grid;
       place-items: center;
+      position: relative;
       transition: border-color .4s, box-shadow .6s;
     }
     .btn:hover, .btn.on { border-color: rgba(255,255,255,.8); box-shadow: 0 0 0 10px rgba(129, 140, 248, .12), 0 0 40px rgba(129, 140, 248, .35); }
@@ -29,7 +31,7 @@ export default {
       visibility: hidden;
       letter-spacing: .5em;
       padding-left: .5em;
-      font-weight: 700;
+      font-variation-settings: 'wght' 700;
     }
     .v {
       letter-spacing: .12em;
@@ -41,12 +43,11 @@ export default {
     .btn:hover .v, .btn:focus-visible .v, .btn.on .v { animation-play-state: running; }
     .btn:active .v { animation-play-state: paused; }
     .halo {
-      grid-area: 1 / 1;
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      inset: -1px;
       border-radius: 999px;
-      background: rgba(129, 140, 248, .25);
-      transform: scale(.8);
+      border: 1px solid rgba(165, 180, 252, .7);
+      transform: scale(.96);
       opacity: 0;
       animation: halo 5s ease-in-out infinite;
       animation-play-state: paused;
@@ -65,7 +66,7 @@ export default {
         font-variation-settings: 'wght' 700;
       }
     }
-    @keyframes halo { 0%, 100% { transform: scale(.8); opacity: 0; } 45%, 55% { transform: scale(1.25); opacity: 1; } }
+    @keyframes halo { 0%, 100% { transform: scale(.96); opacity: 0; } 45%, 55% { transform: scale(1.14, 1.4); opacity: .9; } }
     @media (prefers-reduced-motion: reduce) { .v, .halo { animation: none; } }
   `,
   html: `<div class="stage"><button class="btn" type="button" aria-pressed="false"><i class="halo" aria-hidden="true"></i><span class="g" aria-hidden="true">breathe</span><span class="v">breathe</span></button></div>`,

@@ -1,55 +1,110 @@
+// macOS Sonoma Dock. App icons are inline SVG: Safari / Messages / Music use the Simple Icons glyphs
+// (CC0) on their real gradient squircles; Mail and Settings use Material Symbols glyphs; Finder,
+// Photos and Trash are composed from their real geometric parts (no icon set ships them).
+const SQ = (id, a, b) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+const PETALS = ['#f9a23b', '#f7d23e', '#a6d14f', '#4fc58c', '#45a9e6', '#7d6ad9', '#d062b2', '#ef5559']
+  .map((c, i) => `<ellipse cx="50" cy="31" rx="11.5" ry="19" fill="${c}" opacity=".88" style="mix-blend-mode:multiply" transform="rotate(${i * 45} 50 50)"/>`).join('');
+const APPS = [
+  ['Finder', true, `<defs>${SQ('fL', '#2fc0fb', '#0f6fe4')}${SQ('fR', '#f3f9fe', '#c4e2f8')}<clipPath id="fC"><rect width="100" height="100" rx="22.5"/></clipPath></defs><g clip-path="url(#fC)"><rect width="100" height="100" fill="url(#fL)"/><path d="M55 0C52 14 47 27 45 41c-1 6-3 11-6 15l10 1c-1 14 1 29 5 43h46V0z" fill="url(#fR)"/><rect x="30" y="27" width="6" height="16" rx="3" fill="#1b2a49"/><rect x="66" y="27" width="6" height="16" rx="3" fill="#1b2a49"/><path d="M24 70c16 11 37 11 53-1" fill="none" stroke="#1b2a49" stroke-width="4.5" stroke-linecap="round"/></g>`],
+  ['Safari', true, `<defs>${SQ('sB', '#ffffff', '#dfe1e6')}${SQ('sC', '#1fd2ff', '#1c63ef')}</defs><rect width="100" height="100" rx="22.5" fill="url(#sB)"/><svg x="9" y="9" width="82" height="82" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11.6" fill="#fff"/><path fill="url(#sC)" d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm-.004.953h.006c.063 0 .113.05.113.113v1.842c0 .063-.05.113-.113.113h-.006a.112.112 0 0 1-.113-.113V1.066c0-.063.05-.113.113-.113zm-.941.041c.056.001.104.046.11.104l.077.918a.112.112 0 0 1-.101.12h-.01a.11.11 0 0 1-.12-.1l-.08-.919a.112.112 0 0 1 .102-.12h.01l.012-.003zm1.892 0H12.965a.113.113 0 0 1 .103.121l-.08.92a.111.111 0 0 1-.12.102h-.009a.111.111 0 0 1-.101-.121l.078-.92a.112.112 0 0 1 .111-.102zm-2.838.123a.11.11 0 0 1 .106.092l.32 1.818c.01.06-.03.119-.09.13l-.01.001a.111.111 0 0 1-.128-.09l-.32-1.818a.111.111 0 0 1 .09-.129l.01-.002a.103.103 0 0 1 .022-.002zm3.784.002h.021l.008.002c.061.01.102.07.092.131l-.32 1.814c-.011.062-.07.101-.132.09h-.005a.113.113 0 0 1-.092-.13l.32-1.815a.111.111 0 0 1 .108-.092zm-4.715.203c.048.002.09.035.103.084l.239.893a.112.112 0 0 1-.079.139l-.005.001a.114.114 0 0 1-.14-.08l-.237-.894a.11.11 0 0 1 .078-.137l.006-.002a.123.123 0 0 1 .035-.004zm5.644 0a.11.11 0 0 1 .033.004l.006.002c.06.016.097.079.08.139l-.24.892a.112.112 0 0 1-.137.08l-.005-.002a.114.114 0 0 1-.08-.138l.24-.893a.112.112 0 0 1 .103-.084zm-6.562.285a.11.11 0 0 1 .107.073L9 3.42a.107.107 0 0 1-.064.139l-.012.005a.11.11 0 0 1-.14-.066L8.15 1.76a.11.11 0 0 1 .065-.14l.014-.005a.106.106 0 0 1 .03-.008zm7.469.002c.014 0 .028.001.042.006l.012.006c.057.02.087.082.067.139l-.633 1.738a.11.11 0 0 1-.14.066l-.013-.003A.11.11 0 0 1 15 3.42l.633-1.738a.108.108 0 0 1 .096-.073zm-8.352.366a.112.112 0 0 1 .105.064l.393.838a.112.112 0 0 1-.055.148l-.008.004a.11.11 0 0 1-.146-.054l-.395-.838a.112.112 0 0 1 .055-.149l.008-.004a.11.11 0 0 1 .043-.01zm9.246 0a.11.11 0 0 1 .043.01l.006.003a.11.11 0 0 1 .053.149l-.391.838a.112.112 0 0 1-.148.054l-.006-.002a.112.112 0 0 1-.055-.148l.393-.84a.112.112 0 0 1 .105-.064zm-10.092.44c.04-.002.08.018.102.056l.922 1.597a.113.113 0 0 1-.041.155l-.006.002a.113.113 0 0 1-.154-.041l-.922-1.598a.113.113 0 0 1 .04-.154l.007-.002a.11.11 0 0 1 .052-.016zm10.94.001c.018 0 .035.004.052.014l.004.002a.114.114 0 0 1 .041.156l-.923 1.596a.114.114 0 0 1-.157.04l-.004-.001a.112.112 0 0 1-.04-.155l.925-1.595a.113.113 0 0 1 .102-.057zM5.729 2.93a.11.11 0 0 1 .093.047l.532.753a.114.114 0 0 1-.028.159l-.004.002a.114.114 0 0 1-.158-.028l-.531-.752a.114.114 0 0 1 .027-.158l.006-.002a.113.113 0 0 1 .063-.021zm12.542 0a.11.11 0 0 1 .063.02l.006.003a.112.112 0 0 1 .027.156l-.531.756a.112.112 0 0 1-.156.028l-.006-.004a.112.112 0 0 1-.028-.157l.532-.755a.11.11 0 0 1 .093-.047zm.747.578a.11.11 0 0 1 .08.027l.006.004c.047.04.053.111.013.158L17.932 5.11a.11.11 0 0 1-.157.016l-.005-.006a.11.11 0 0 1-.014-.156l1.185-1.414a.114.114 0 0 1 .077-.041zM4.984 3.51a.11.11 0 0 1 .077.039L6.244 4.96a.112.112 0 0 1-.014.158l-.003.004a.112.112 0 0 1-.159-.014L4.883 3.697a.112.112 0 0 1 .013-.158l.006-.004a.111.111 0 0 1 .082-.025zm-.714.64c.027 0 .055.01.076.032l.658.66a.107.107 0 0 1 0 .152l-.01.01a.107.107 0 0 1-.152 0l-.66-.658a.11.11 0 0 1 0-.155l.01-.01a.111.111 0 0 1 .078-.03zm15.462 0c.028 0 .055.01.077.032l.007.007a.109.109 0 0 1 0 .155l-.658.66a.109.109 0 0 1-.154 0l-.008-.008a.109.109 0 0 1 0-.154l.658-.66a.11.11 0 0 1 .078-.032zm.707.66c.038 0 .071.02.092.075a.112.112 0 0 1-.023.117l-7.606 8.08c-3.084 2.024-6.149 4.04-9.222 6.05-.078.051-.17.082-.211-.028a.112.112 0 0 1 .023-.118l7.594-8.08c3.084-2.023 6.161-4.039 9.234-6.049a.247.247 0 0 1 .12-.046zm-16.824.045a.109.109 0 0 1 .08.026l1.416 1.187a.11.11 0 0 1 .014.157l-.006.005a.11.11 0 0 1-.156.014L3.549 5.057a.109.109 0 0 1-.014-.155l.006-.007a.108.108 0 0 1 .074-.04zm17.336.756c.036 0 .072.017.094.05l.004.003a.114.114 0 0 1-.028.158l-.753.53a.112.112 0 0 1-.157-.028l-.004-.004a.114.114 0 0 1 .028-.158l.754-.53a.113.113 0 0 1 .062-.02zm-17.904.002c.02 0 .042.007.06.02l.76.531c.05.035.06.103.026.152l-.006.01a.109.109 0 0 1-.153.026l-.76-.532a.109.109 0 0 1-.025-.152l.006-.01a.108.108 0 0 1 .092-.045zm-.512.803c.018 0 .036.006.053.016l1.596.923a.111.111 0 0 1 .04.153l-.003.006a.111.111 0 0 1-.153.04L2.473 6.63a.111.111 0 0 1-.041-.152l.004-.006a.11.11 0 0 1 .1-.055zm18.932 0a.11.11 0 0 1 .1.055l.001.004a.113.113 0 0 1-.04.154l-1.596.926a.113.113 0 0 1-.155-.041l-.002-.004a.113.113 0 0 1 .041-.155l1.596-.925a.115.115 0 0 1 .055-.014zm-19.373.846c.014 0 .029.003.043.01l.838.392a.11.11 0 0 1 .052.147l-.004.01a.11.11 0 0 1-.146.052l-.838-.393a.11.11 0 0 1-.053-.146l.004-.01a.109.109 0 0 1 .104-.062zm19.81.002a.11.11 0 0 1 .106.062l.002.008a.11.11 0 0 1-.053.146l-.838.393a.11.11 0 0 1-.146-.053l-.004-.008a.11.11 0 0 1 .052-.146l.838-.393a.11.11 0 0 1 .043-.01zm-20.183.88c.014 0 .028.001.043.006l1.732.631a.112.112 0 0 1 .067.145l-.002.006a.11.11 0 0 1-.143.066l-1.732-.63a.113.113 0 0 1-.069-.145l.002-.004a.115.115 0 0 1 .102-.074zm20.549 0a.113.113 0 0 1 .11.075l.003.004a.115.115 0 0 1-.069.146l-1.732.629a.112.112 0 0 1-.145-.066l-.001-.006a.113.113 0 0 1 .068-.145l1.732-.63a.11.11 0 0 1 .034-.006zm-20.836.909a.11.11 0 0 1 .033.004l.892.24c.06.016.096.077.08.137l-.002.007a.11.11 0 0 1-.136.079l-.895-.239a.113.113 0 0 1-.078-.138l.002-.006a.113.113 0 0 1 .104-.084zm21.13.002a.115.115 0 0 1 .106.084v.004a.112.112 0 0 1-.078.138l-.893.239a.112.112 0 0 1-.138-.079v-.005a.112.112 0 0 1 .078-.14l.892-.237a.11.11 0 0 1 .033-.004zm-21.335.93.023.001 1.814.323c.062.01.101.069.09.13v.006a.111.111 0 0 1-.13.09l-1.815-.322a.113.113 0 0 1-.092-.131l.002-.006a.11.11 0 0 1 .108-.092zm21.519.001h.022c.052.002.1.038.109.092v.006c.01.062-.03.12-.092.13l-1.814.321a.113.113 0 0 1-.131-.092v-.005a.113.113 0 0 1 .092-.131l1.814-.32zm-21.644.944h.011l.922.084a.11.11 0 0 1 .102.119l-.002.01a.11.11 0 0 1-.121.1l-.922-.083a.11.11 0 0 1-.1-.12v-.009a.111.111 0 0 1 .11-.101zm21.779.002h.012c.056 0 .106.043.11.101v.008a.111.111 0 0 1-.1.121l-.923.08a.111.111 0 0 1-.12-.101v-.008a.111.111 0 0 1 .1-.121l.92-.08zm-11.82.73L6.091 16.95c2.02-1.324 4.039-2.646 6.066-3.976l-1.095-1.31zm11.87.219c.063 0 .114.05.114.113v.004c0 .063-.05.113-.113.113l-1.844.004a.113.113 0 0 1-.113-.113v-.004c0-.063.05-.113.113-.113l1.844-.004zm-21.869.002h1.844c.062 0 .112.05.112.111v.008c0 .062-.05.111-.112.111H1.064a.111.111 0 0 1-.11-.111v-.008c0-.061.049-.111.11-.111zm.952.875h.011a.11.11 0 0 1 .11.101v.006a.111.111 0 0 1-.102.121l-.922.08a.11.11 0 0 1-.119-.101l-.002-.006a.111.111 0 0 1 .102-.121l.922-.08zm19.955 0h.011l.922.08a.11.11 0 0 1 .102.119v.008a.112.112 0 0 1-.121.101l-.922-.08a.11.11 0 0 1-.102-.119v-.008a.111.111 0 0 1 .11-.101zm-18.924.705c.053.001.098.04.107.094l.002.004c.011.061-.03.12-.092.13l-1.812.32a.113.113 0 0 1-.13-.091v-.004a.115.115 0 0 1 .09-.133l1.811-.318a.117.117 0 0 1 .024-.002zm17.902 0c.008 0 .016 0 .024.002l1.816.32c.061.011.1.07.09.131v.004a.113.113 0 0 1-.131.092l-1.816-.32a.112.112 0 0 1-.09-.131v-.004a.113.113 0 0 1 .107-.094zM2.332 14.477a.11.11 0 0 1 .104.082l.002.005c.016.06-.02.121-.08.137l-.891.24a.112.112 0 0 1-.137-.08l-.002-.006a.112.112 0 0 1 .08-.136l.89-.239a.112.112 0 0 1 .034-.003zm19.332 0c.011 0 .024 0 .035.003l.893.239c.06.016.096.077.08.136l-.002.006a.111.111 0 0 1-.137.078l-.894-.238a.111.111 0 0 1-.078-.137l.002-.005a.109.109 0 0 1 .101-.082zm-18.213.517a.11.11 0 0 1 .11.074l.002.004a.112.112 0 0 1-.067.145l-1.732.63a.113.113 0 0 1-.145-.068l-.002-.004a.113.113 0 0 1 .069-.144L3.418 15a.11.11 0 0 1 .033-.006zm17.086 0c.015 0 .029 0 .043.006l1.734.63a.111.111 0 0 1 .067.143l-.002.008a.111.111 0 0 1-.143.067l-1.734-.631a.111.111 0 0 1-.066-.143l.002-.008a.111.111 0 0 1 .1-.072zM2.92 16.117a.109.109 0 0 1 .103.063l.004.01a.108.108 0 0 1-.052.144l-.838.393a.11.11 0 0 1-.147-.055l-.004-.008a.11.11 0 0 1 .053-.146l.838-.391a.112.112 0 0 1 .043-.01zm18.158 0a.11.11 0 0 1 .043.01l.838.39c.056.027.08.093.055.149l-.002.004a.112.112 0 0 1-.149.055l-.838-.391a.112.112 0 0 1-.054-.148l.002-.004a.112.112 0 0 1 .105-.065zm-16.957.315c.04-.001.078.02.1.056l.004.004a.11.11 0 0 1-.041.153l-1.596.921a.113.113 0 0 1-.154-.04l-.002-.005a.113.113 0 0 1 .04-.154l1.596-.922a.109.109 0 0 1 .053-.013zm15.756 0c.018 0 .036.004.053.013l1.597.924a.11.11 0 0 1 .041.152l-.002.004a.11.11 0 0 1-.152.041l-1.598-.921a.113.113 0 0 1-.04-.155l.001-.002a.111.111 0 0 1 .1-.056zm.328 1.193a.11.11 0 0 1 .06.021l.758.534c.05.035.061.102.026.152l-.004.008a.111.111 0 0 1-.154.027l-.756-.535a.109.109 0 0 1-.028-.152l.006-.008a.11.11 0 0 1 .092-.047zm-16.412.002c.035 0 .072.016.094.047l.004.008a.109.109 0 0 1-.028.152l-.756.531a.108.108 0 0 1-.152-.025l-.006-.008a.109.109 0 0 1 .028-.152l.755-.534a.107.107 0 0 1 .061-.019zm15.162.102a.112.112 0 0 1 .082.025l1.414 1.187a.11.11 0 0 1 .014.157l-.004.004a.113.113 0 0 1-.158.013L18.89 17.93a.11.11 0 0 1-.014-.157l.004-.005a.108.108 0 0 1 .074-.04zm-12.812 1.12a.11.11 0 0 1 .08.026l.007.008a.11.11 0 0 1 .014.154L5.06 20.451a.11.11 0 0 1-.155.012l-.008-.006a.11.11 0 0 1-.013-.154l1.185-1.414a.11.11 0 0 1 .075-.04zm11.703 0c.032 0 .065.015.088.042l1.181 1.41c.04.048.035.12-.013.16l-.002.002a.114.114 0 0 1-.16-.014l-1.182-1.41a.114.114 0 0 1 .013-.16l.002-.002a.115.115 0 0 1 .073-.027zm-12.928.114c.027 0 .054.01.074.031l.014.012a.107.107 0 0 1 0 .15l-.662.66a.105.105 0 0 1-.149 0l-.011-.011a.105.105 0 0 1 0-.149l.66-.662a.105.105 0 0 1 .074-.031zm14.164 0c.027 0 .053.01.074.031l.66.662a.106.106 0 0 1 0 .15l-.011.012a.106.106 0 0 1-.15-.002l-.66-.66a.106.106 0 0 1 .001-.15l.01-.012a.108.108 0 0 1 .076-.031zm-11.627.797c.018 0 .034.006.05.015l.007.004a.11.11 0 0 1 .04.15l-.921 1.598a.11.11 0 0 1-.15.041l-.008-.004a.111.111 0 0 1-.04-.152l.922-1.596a.113.113 0 0 1 .1-.056zm9.088.002a.11.11 0 0 1 .1.054l.925 1.596a.113.113 0 0 1-.04.154h-.005a.11.11 0 0 1-.152-.039l-.926-1.595a.113.113 0 0 1 .041-.155l.004-.002a.108.108 0 0 1 .053-.013zm-10.285.324c.021 0 .043.008.062.021l.004.002c.051.036.063.106.028.157l-.53.755a.112.112 0 0 1-.156.028l-.004-.002a.112.112 0 0 1-.027-.156l.53-.756a.113.113 0 0 1 .093-.05zm11.484.002c.036 0 .072.015.094.047l.53.756c.035.05.023.12-.028.156l-.004.002a.112.112 0 0 1-.156-.028l-.53-.755a.112.112 0 0 1 .028-.157l.004-.002a.112.112 0 0 1 .062-.02zm-8.863.342a.11.11 0 0 1 .043.006l.012.005c.056.02.084.081.064.137l-.633 1.74a.105.105 0 0 1-.136.063l-.014-.004a.106.106 0 0 1-.065-.137l.633-1.74a.107.107 0 0 1 .096-.07zm6.232 0a.107.107 0 0 1 .106.07l.633 1.738a.107.107 0 0 1-.065.137l-.015.006a.107.107 0 0 1-.137-.065L15 20.578a.107.107 0 0 1 .064-.137l.014-.005a.117.117 0 0 1 .033-.006zm-4.695.41c.008 0 .014 0 .021.002l.006.002c.062.01.101.067.09.129l-.318 1.812a.113.113 0 0 1-.131.092l-.004-.002a.111.111 0 0 1-.092-.129l.32-1.812a.113.113 0 0 1 .108-.094zm3.146.002c.008-.002.015 0 .022 0a.111.111 0 0 1 .107.092l.32 1.812c.012.061-.03.12-.091.131l-.004.002a.113.113 0 0 1-.13-.092l-.321-1.812a.113.113 0 0 1 .092-.131l.005-.002zm-5.79.119a.11.11 0 0 1 .042.01l.004.002a.114.114 0 0 1 .055.15l-.393.834a.112.112 0 0 1-.148.055l-.004-.002a.112.112 0 0 1-.055-.149l.393-.836a.112.112 0 0 1 .105-.064zm8.458 0a.108.108 0 0 1 .104.062l.39.84a.11.11 0 0 1-.052.147l-.008.004a.11.11 0 0 1-.146-.055l-.391-.838a.11.11 0 0 1 .053-.146l.008-.004a.11.11 0 0 1 .042-.01zm-4.236.018H12c.063 0 .115.05.115.113l.002 1.84c0 .063-.05.113-.113.113h-.006a.113.113 0 0 1-.113-.113l-.004-1.838c0-.063.05-.115.113-.115zm-2.592.578c.011 0 .022 0 .034.004l.005.002c.06.016.095.077.079.136l-.24.893a.111.111 0 0 1-.137.078l-.006-.002a.111.111 0 0 1-.078-.137l.24-.89a.113.113 0 0 1 .103-.084zm5.196.002a.11.11 0 0 1 .103.082l.24.89a.11.11 0 0 1-.078.137l-.006.002a.11.11 0 0 1-.136-.078l-.24-.89a.11.11 0 0 1 .078-.138l.005-.002a.112.112 0 0 1 .034-.003zm-3.475.302h.01l.008.002c.061.006.107.06.101.121l-.08.92a.112.112 0 0 1-.121.102h-.008a.11.11 0 0 1-.1-.121l.08-.922a.111.111 0 0 1 .11-.102zm1.736 0h.02a.11.11 0 0 1 .107.102l.08.924a.11.11 0 0 1-.101.119l-.008.002a.11.11 0 0 1-.12-.102l-.08-.924a.112.112 0 0 1 .102-.12z"/></svg><path d="M45.8 45.8 74 26 54.2 54.2z" fill="#ff3b30"/><path d="M45.8 45.8 26 74 54.2 54.2z" fill="#f2f2f7"/>`],
+  ['Messages', true, `<defs>${SQ('mG', '#69f27e', '#0bbd3a')}</defs><rect x="8" y="12" width="84" height="76" rx="30" fill="#fff"/><svg width="100" height="100" viewBox="0 0 24 24"><path fill="url(#mG)" d="M5.285 0A5.273 5.273 0 0 0 0 5.285v13.43A5.273 5.273 0 0 0 5.285 24h13.43A5.273 5.273 0 0 0 24 18.715V5.285A5.273 5.273 0 0 0 18.715 0ZM12 4.154a8.809 7.337 0 0 1 8.809 7.338A8.809 7.337 0 0 1 12 18.828a8.809 7.337 0 0 1-2.492-.303A8.656 7.337 0 0 1 5.93 19.93a9.929 7.337 0 0 0 1.54-2.155 8.809 7.337 0 0 1-4.279-6.283A8.809 7.337 0 0 1 12 4.154"/></svg>`],
+  ['Mail', false, `<defs>${SQ('aG', '#2fb6ff', '#1063f1')}</defs><rect width="100" height="100" rx="22.5" fill="url(#aG)"/><svg x="16" y="16" width="68" height="68" viewBox="0 -960 960 960"><path fill="#fff" d="M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm348.5-309.5q3.5-1.5 7.5-3.5l314-205q5-3 7.5-8t2.5-11q0-13-11.5-20.5t-23.5.5L480-522 176-717q-12-8-24-1t-12 20q0 6 3 11.5t7 8.5l314 205q4 2 7.5 3.5t8.5 1.5q5 0 8.5-1.5Z"/></svg>`],
+  ['Music', true, `<defs>${SQ('uG', '#fb5c74', '#fa233b')}</defs><rect x="15" y="15" width="70" height="70" fill="#fff"/><svg width="100" height="100" viewBox="0 0 24 24"><path fill="url(#uG)" d="M23.994 6.124a9.23 9.23 0 00-.24-2.19c-.317-1.31-1.062-2.31-2.18-3.043a5.022 5.022 0 00-1.877-.726 10.496 10.496 0 00-1.564-.15c-.04-.003-.083-.01-.124-.013H5.986c-.152.01-.303.017-.455.026-.747.043-1.49.123-2.193.4-1.336.53-2.3 1.452-2.865 2.78-.192.448-.292.925-.363 1.408-.056.392-.088.785-.1 1.18 0 .032-.007.062-.01.093v12.223c.01.14.017.283.027.424.05.815.154 1.624.497 2.373.65 1.42 1.738 2.353 3.234 2.801.42.127.856.187 1.293.228.555.053 1.11.06 1.667.06h11.03a12.5 12.5 0 001.57-.1c.822-.106 1.596-.35 2.295-.81a5.046 5.046 0 001.88-2.207c.186-.42.293-.87.37-1.324.113-.675.138-1.358.137-2.04-.002-3.8 0-7.595-.003-11.393zm-6.423 3.99v5.712c0 .417-.058.827-.244 1.206-.29.59-.76.962-1.388 1.14-.35.1-.706.157-1.07.173-.95.045-1.773-.6-1.943-1.536a1.88 1.88 0 011.038-2.022c.323-.16.67-.25 1.018-.324.378-.082.758-.153 1.134-.24.274-.063.457-.23.51-.516a.904.904 0 00.02-.193c0-1.815 0-3.63-.002-5.443a.725.725 0 00-.026-.185c-.04-.15-.15-.243-.304-.234-.16.01-.318.035-.475.066-.76.15-1.52.303-2.28.456l-2.325.47-1.374.278c-.016.003-.032.01-.048.013-.277.077-.377.203-.39.49-.002.042 0 .086 0 .13-.002 2.602 0 5.204-.003 7.805 0 .42-.047.836-.215 1.227-.278.64-.77 1.04-1.434 1.233-.35.1-.71.16-1.075.172-.96.036-1.755-.6-1.92-1.544-.14-.812.23-1.685 1.154-2.075.357-.15.73-.232 1.108-.31.287-.06.575-.116.86-.177.383-.083.583-.323.6-.714v-.15c0-2.96 0-5.922.002-8.882 0-.123.013-.25.042-.37.07-.285.273-.448.546-.518.255-.066.515-.112.774-.165.733-.15 1.466-.296 2.2-.444l2.27-.46c.67-.134 1.34-.27 2.01-.403.22-.043.442-.088.663-.106.31-.025.523.17.554.482.008.073.012.148.012.223.002 1.91.002 3.822 0 5.732z"/></svg>`],
+  ['Photos', false, `<defs>${SQ('pB', '#ffffff', '#ececf0')}</defs><rect width="100" height="100" rx="22.5" fill="url(#pB)"/><g style="isolation:isolate">${PETALS}</g>`],
+  ['System Settings', false, `<defs>${SQ('gB', '#d7d7dc', '#8e8e94')}${SQ('gG', '#6e6e73', '#3a3a3d')}</defs><rect width="100" height="100" rx="22.5" fill="url(#gB)"/><svg x="10" y="10" width="80" height="80" viewBox="0 -960 960 960"><path fill="url(#gG)" d="M421-80q-14 0-25-9t-13-23l-15-94q-19-7-40-19t-37-25l-86 40q-14 6-28 1.5T155-226L97-330q-8-13-4.5-27t15.5-23l80-59q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521l-80-59q-12-9-15.5-23t4.5-27l58-104q8-13 22-17.5t28 1.5l86 40q16-13 37-25t40-18l15-95q2-14 13-23t25-9h118q14 0 25 9t13 23l15 94q19 7 40.5 18.5T669-710l86-40q14-6 27.5-1.5T804-734l59 104q8 13 4.5 27.5T852-580l-80 57q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l80 58q12 8 15.5 22.5T863-330l-58 104q-8 13-22 17.5t-28-1.5l-86-40q-16 13-36.5 25.5T592-206l-15 94q-2 14-13 23t-25 9H421Zm59-270q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Z"/></svg><circle cx="50" cy="50" r="10" fill="none" stroke="#c7c7cc" stroke-width="3"/>`],
+  '|',
+  ['Trash', false, `<defs><linearGradient id="tB" x1="0" x2="1"><stop offset="0" stop-color="#d9dde2"/><stop offset=".5" stop-color="#f7f8fa"/><stop offset="1" stop-color="#c3c8cf"/></linearGradient></defs><path d="M21 22h58l-6.5 70.5a4 4 0 0 1-4 3.5h-37a4 4 0 0 1-4-3.5z" fill="url(#tB)" fill-opacity=".92" stroke="rgba(0,0,0,.18)"/><path d="M33 30l3.5 58M44.5 30l1.5 58M55.5 30L54 88M67 30l-3.5 58" stroke="rgba(0,0,0,.13)" stroke-width="2.4" stroke-linecap="round"/><rect x="16" y="13" width="68" height="11" rx="5.5" fill="#eef0f3" stroke="rgba(0,0,0,.2)"/>`, 'trash'],
+];
+
 export default {
   id: 'mn-macos-dock',
-  credit: 'macOS Dock with cursor-proximity magnification and bounce on launch',
+  credit: 'macOS Sonoma Dock — cursor magnification, launch bounce, running dots, hover labels, frosted glass',
   size: 'wide',
   css: `
     :host { display: block; }
-    .stage { position: relative; height: 170px; border-radius: 12px; overflow: hidden; background: linear-gradient(160deg, #ff9a6a 0%, #d94c8a 35%, #4a2e8a 70%, #1a2a6c 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; }
-    .dock { display: flex; align-items: flex-end; gap: 6px; height: 64px; padding: 0 8px; border-radius: 18px; background: rgba(255,255,255,.22); backdrop-filter: blur(20px) saturate(1.6); -webkit-backdrop-filter: blur(20px) saturate(1.6); border: 1px solid rgba(255,255,255,.3); box-shadow: 0 8px 30px rgba(0,0,0,.25); }
-    .app { position: relative; width: 48px; height: 48px; margin-bottom: 8px; border: 0; padding: 0; background: none; cursor: pointer; transform-origin: bottom center; transition: transform .08s linear, width .08s linear, height .08s linear; flex: none; }
-    .app::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: rgba(0,0,0,.5); opacity: 0; }
+    .stage { position: relative; width: 560px; max-width: 100%; height: 196px; border-radius: 12px; overflow: hidden; isolation: isolate; container-type: inline-size;
+      background: radial-gradient(120% 70% at 20% 110%, #f2a36b 0%, rgba(242,163,107,0) 60%), radial-gradient(90% 80% at 85% 100%, #c45a86 0%, rgba(196,90,134,0) 65%), linear-gradient(180deg, #16244a 0%, #31396f 45%, #7a4f86 75%, #c87a7e 100%);
+      font: 400 13px/16px -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; user-select: none; }
+    .dock { --b: 46px; position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); display: flex; align-items: flex-end; gap: 4px; height: calc(var(--b) + 12px); padding: 6px 6px; border-radius: 18px;
+      background: rgba(56,56,64,.32); -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
+      box-shadow: inset 0 0 0 .5px rgba(255,255,255,.28), 0 0 0 .5px rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.25); }
+    @container (max-width: 500px) { .dock { --b: 30px; gap: 3px; padding: 5px; height: calc(var(--b) + 10px); border-radius: 13px; } }
+    .app { position: relative; flex: none; width: var(--b); height: var(--b); padding: 0; border: 0; background: none; cursor: default; outline: 0; }
+    .dock.ease .app, .dock.ease .ic { transition: width .22s cubic-bezier(.25,.1,.25,1), height .22s cubic-bezier(.25,.1,.25,1); }
+    .ic { position: absolute; left: 50%; bottom: 0; width: var(--b); height: var(--b); transform: translateX(-50%); display: block; }
+    .ic svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.28)); }
+    .app:active .ic svg { filter: brightness(.62) drop-shadow(0 1px 1.5px rgba(0,0,0,.28)); }
+    .app:focus-visible .ic { outline: 2px solid rgba(255,255,255,.9); outline-offset: 2px; border-radius: 24%; }
+    .app::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: rgba(255,255,255,.78); opacity: 0; transition: opacity .3s; }
     .app.run::after { opacity: 1; }
-    .app.bounce { animation: bounce .55s cubic-bezier(.3,.6,.4,1) 2; }
-    @keyframes bounce { 0%, 100% { translate: 0 0; } 45% { translate: 0 -26px; } }
-    .ic { width: 100%; height: 100%; border-radius: 22%; display: block; box-shadow: 0 2px 5px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.4); }
-    .app:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 22%; }
-    .sep { width: 1px; height: 46px; margin: 0 4px 9px; background: rgba(0,0,0,.25); flex: none; }
-    .dock:not(:hover) .app { transform: none !important; width: 48px !important; height: 48px !important; }
+    .sep { flex: none; width: 1px; height: calc(var(--b) - 6px); margin: 0 5px 3px; background: rgba(255,255,255,.3); }
+    .tip { position: absolute; left: 0; bottom: 0; z-index: 2; padding: 3px 11px 4px; border-radius: 7px; white-space: nowrap; color: #fff; pointer-events: none;
+      background: rgba(30,30,32,.78); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: inset 0 0 0 .5px rgba(255,255,255,.18), 0 0 0 .5px rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.25);
+      opacity: 0; transition: opacity .12s; }
+    .tip.on { opacity: 1; }
   `,
-  html: `
-    <div class="stage"><div class="dock" role="toolbar" aria-label="Dock">
-      <button class="app run" type="button" aria-label="Finder"><span class="ic" style="background:linear-gradient(180deg,#5ac8fa,#1f8ef1)"></span></button>
-      <button class="app" type="button" aria-label="Launchpad"><span class="ic" style="background:linear-gradient(180deg,#f5f5f7,#c9c9ce)"></span></button>
-      <button class="app run" type="button" aria-label="Safari"><span class="ic" style="background:radial-gradient(circle at 50% 50%,#fff 0 22%,#1e90ff 23% 100%)"></span></button>
-      <button class="app" type="button" aria-label="Messages"><span class="ic" style="background:linear-gradient(180deg,#5cf777,#2bc44a)"></span></button>
-      <button class="app" type="button" aria-label="Mail"><span class="ic" style="background:linear-gradient(180deg,#5fb3ff,#1a6dff)"></span></button>
-      <button class="app" type="button" aria-label="Photos"><span class="ic" style="background:conic-gradient(#ff5e57,#ffb142,#fff200,#32ff7e,#18dcff,#7d5fff,#ff5e57)"></span></button>
-      <button class="app run" type="button" aria-label="Music"><span class="ic" style="background:linear-gradient(180deg,#ff6b81,#fc2d55)"></span></button>
-      <button class="app" type="button" aria-label="Settings"><span class="ic" style="background:linear-gradient(180deg,#9a9aa0,#5e5e63)"></span></button>
-      <span class="sep"></span>
-      <button class="app" type="button" aria-label="Trash"><span class="ic" style="background:linear-gradient(180deg,#dfe4ea,#a4b0be);border-radius:16%"></span></button>
-    </div></div>`,
+  html: `<div class="stage"><div class="dock" role="toolbar" aria-label="Dock">${APPS.map((a) => a === '|' ? '<span class="sep" aria-hidden="true"></span>'
+    : `<button class="app${a[1] ? ' run' : ''}" type="button" aria-label="${a[0]}"${a[3] ? ' data-k="' + a[3] + '"' : ''}><span class="ic"><svg viewBox="0 0 100 100" aria-hidden="true">${a[2]}</svg></span></button>`).join('')}</div><span class="tip" aria-hidden="true"></span></div>`,
   init(root) {
-    const dock = root.querySelector('.dock');
-    const apps = [...root.querySelectorAll('.app')];
-    let raf = 0, mx = null;
+    const stage = root.querySelector('.stage'), dock = root.querySelector('.dock'), tip = root.querySelector('.tip');
+    const kids = [...dock.children], apps = kids.filter((k) => k.classList.contains('app'));
+    const MAX = 1.65;
+    let GAP = 4, raf = 0, px = null, hover = null, base = 46, anims = [];
+    const centers = () => { // centres of the un-magnified layout, relative to the dock centre
+      const cs = getComputedStyle(dock); base = parseFloat(cs.getPropertyValue('--b')) || 46; GAP = parseFloat(cs.columnGap) || 4;
+      const w = kids.map((k) => (k.classList.contains('sep') ? 11 : base));
+      const total = w.reduce((a, b) => a + b, 0) + GAP * (w.length - 1);
+      let x = -total / 2; const c = new Map();
+      kids.forEach((k, i) => { c.set(k, x + w[i] / 2); x += w[i] + GAP; });
+      return c;
+    };
+    let C = centers();
+    const placeTip = () => {
+      if (!hover) { tip.classList.remove('on'); return; }
+      const s = stage.getBoundingClientRect(), r = hover.querySelector('.ic').getBoundingClientRect();
+      tip.textContent = hover.getAttribute('aria-label');
+      const w = tip.offsetWidth; const left = Math.max(4, Math.min(s.width - w - 4, r.left - s.left + r.width / 2 - w / 2));
+      tip.style.transform = `translate(${left}px, ${-(s.bottom - r.top) - 8}px)`;
+      tip.classList.add('on');
+    };
     const paint = () => {
       raf = 0;
-      if (mx === null) return;
+      const s = stage.getBoundingClientRect(); const u = px === null ? null : px - (s.left + s.width / 2);
+      const R = 2.7 * (base + GAP);
       for (const a of apps) {
-        const r = a.getBoundingClientRect();
-        const d = Math.abs(mx - (r.left + r.width / 2));
-        const s = 1 + 0.75 * Math.max(0, 1 - d / 110) ** 2;
-        a.style.width = a.style.height = 48 * s + 'px';
+        const d = u === null ? Infinity : Math.abs(u - C.get(a));
+        const f = d < R ? (Math.cos(Math.PI * d / R) + 1) / 2 : 0;
+        const size = base * (1 + (MAX - 1) * f);
+        a.style.width = size + 'px'; a.firstElementChild.style.width = a.firstElementChild.style.height = size + 'px';
       }
+      placeTip();
     };
-    dock.addEventListener('pointermove', (e) => { mx = e.clientX; if (!raf) raf = requestAnimationFrame(paint); });
-    dock.addEventListener('pointerleave', () => { mx = null; if (raf) cancelAnimationFrame(raf); raf = 0; apps.forEach((a) => { a.style.width = a.style.height = ''; }); });
-    apps.forEach((a) => a.addEventListener('click', () => {
-      if (a.classList.contains('run')) { a.classList.remove('run'); return; }
-      a.classList.remove('bounce'); void a.offsetWidth; a.classList.add('bounce');
-      a.addEventListener('animationend', () => { a.classList.remove('bounce'); a.classList.add('run'); }, { once: true });
-    }));
-    return () => { if (raf) cancelAnimationFrame(raf); };
+    const onMove = (e) => { if (px === null) { C = centers(); dock.classList.add('ease'); setTimeout(() => dock.classList.remove('ease'), 180); } px = e.clientX; if (!raf) raf = requestAnimationFrame(paint); };
+    const onLeave = () => {
+      px = null; hover = null; if (raf) cancelAnimationFrame(raf); raf = 0;
+      dock.classList.add('ease'); tip.classList.remove('on');
+      apps.forEach((a) => { a.style.width = ''; a.firstElementChild.style.width = a.firstElementChild.style.height = ''; });
+    };
+    dock.addEventListener('pointermove', onMove);
+    dock.addEventListener('pointerleave', onLeave);
+    apps.forEach((a) => {
+      a.addEventListener('pointerenter', () => { hover = a; if (!raf) raf = requestAnimationFrame(paint); });
+      a.addEventListener('focus', () => { if (px === null) { hover = a; placeTip(); } });
+      a.addEventListener('blur', () => { if (px === null) { hover = null; placeTip(); } });
+      a.addEventListener('click', () => {
+        if (a.classList.contains('run') || a.dataset.k || a._b) return;
+        // launch bounce: three hops that decay, gravity-shaped (ease-out up, ease-in down)
+        const h = base * 0.62, up = 'cubic-bezier(.2,.6,.35,1)', dn = 'cubic-bezier(.55,0,.8,.4)';
+        a._b = a.firstElementChild.animate([
+          { transform: 'translate(-50%, 0)', easing: up }, { transform: `translate(-50%, ${-h}px)`, easing: dn, offset: .17 },
+          { transform: 'translate(-50%, 0)', easing: up, offset: .36 }, { transform: `translate(-50%, ${-h * 0.62}px)`, easing: dn, offset: .51 },
+          { transform: 'translate(-50%, 0)', easing: up, offset: .67 }, { transform: `translate(-50%, ${-h * 0.3}px)`, easing: dn, offset: .8 },
+          { transform: 'translate(-50%, 0)', offset: .92 }, { transform: 'translate(-50%, 0)' },
+        ], { duration: 1500 });
+        anims.push(a._b);
+        a._b.onfinish = () => { a._b = null; a.classList.add('run'); };
+      });
+    });
+    return () => { if (raf) cancelAnimationFrame(raf); anims.forEach((x) => x.cancel()); };
   },
 };

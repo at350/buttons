@@ -74,31 +74,45 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res,u_mouse;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-float arc(vec2 q,float seed,float t){
- float env=sin(q.x*3.1416);
- float y=(fbm(vec2(q.x*5.+seed*7.,t))-.5)*.7*env+(fbm(vec2(q.x*18.+seed,t*1.3))-.5)*.15*env;
- y+=(u_mouse.y-.5)*u_hover*env*.9;
- return abs(q.y-y);}
+float AR,X0,X1;
+float arc(vec2 uv,float seed,float t){
+ float qx=(uv.x-X0)/(X1-X0); float cx=clamp(qx,0.,1.); float env=sin(cx*3.1416);
+ float y=(fbm(vec2(cx*5.+seed*7.,t))-.5)*.62*env+(fbm(vec2(cx*18.+seed,t*1.3))-.5)*.14*env;
+ y+=(u_mouse.y-.5)*u_hover*env*.8;
+ vec2 dd=vec2((qx-cx)*(X1-X0)*AR,uv.y-.5-y);
+ return length(dd);}
+vec3 ball(vec2 uv,vec2 c,float R,inout float m){
+ vec2 d=(uv-c)*vec2(AR,1.); float r=length(d); float px=1.5/u_res.y;
+ m=smoothstep(R+px,R-px,r);
+ vec3 n=vec3(d/R,sqrt(max(0.,1.-dot(d,d)/(R*R))));
+ vec3 env=mix(vec3(.12,.13,.18),vec3(.75,.78,.86),smoothstep(-.3,.6,n.y))*(.35+.65*n.z);
+ env+=pow(max(dot(n,normalize(vec3(-.4,.6,.7))),0.),26.)*.9;
+ env+=vec3(.55,.65,1.)*pow(1.-n.z,2.)*u_value*.6;
+ return env;}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; vec2 ar=vec2(u_res.x/u_res.y,1.);
+ vec2 uv=gl_FragCoord.xy/u_res; AR=u_res.x/u_res.y; X0=.15; X1=.85;
  float t=floor(u_time*18.)*.41;
- float x0=.13,x1=.87; float inX=step(x0,uv.x)*step(uv.x,x1);
- vec2 q=vec2((uv.x-x0)/(x1-x0),uv.y-.5);
- float d1=arc(q,1.,t), d2=arc(q,2.,t+5.);
- float core=exp(-d1*140.)+exp(-d2*180.)*.6; float glow=exp(-d1*9.)*.45+exp(-d2*11.)*.25;
- float on=u_value*(.65+.35*hash(vec2(t,1.)));
- vec3 col=vec3(.03,.03,.07)+.02*uv.y;
- col+=(core*vec3(.92,.95,1.)+glow*vec3(.45,.55,1.))*inX*on*(1.+u_press*2.5);
- float e=min(length((uv-vec2(x0,.5))*ar),length((uv-vec2(x1,.5))*ar));
- vec3 metal=vec3(.55,.57,.65)+u_value*vec3(.3,.4,.6)*(.7+.3*hash(vec2(t,2.)));
- col=mix(col,metal,smoothstep(.095,.075,e));
- col+=smoothstep(.2,.08,e)*vec3(.4,.5,1.)*.4*u_value;
+ vec3 col=mix(vec3(.025,.025,.06),vec3(.06,.06,.13),uv.y)*(1.-.35*pow(abs(uv.x-.5)*2.,2.));
+ // rods from the walls to the terminals
+ float rod=smoothstep(.035,.02,abs(uv.y-.5))*(step(uv.x,X0)+step(X1,uv.x));
+ col=mix(col,vec3(.22,.23,.28)+vec3(.25)*smoothstep(.03,0.,abs(uv.y-.512)),rod);
+ float on=u_value*(.7+.3*hash(vec2(t,1.)));
+ float d1=arc(uv,1.,t), d2=arc(uv,2.,t+5.);
+ float core=exp(-d1*150.)+exp(-d2*190.)*.6; float glow=exp(-d1*10.)*.4+exp(-d2*12.)*.22;
+ col+=(core*vec3(.94,.96,1.)+glow*vec3(.42,.52,1.))*on*(1.+u_press*2.2);
+ // idle corona while hovered off: the terminals are charging
+ float ea=length((uv-vec2(X0,.5))*vec2(AR,1.)), eb=length((uv-vec2(X1,.5))*vec2(AR,1.));
+ float ch=u_hover*(1.-u_value)*(.6+.4*sin(u_time*14.));
+ col+=(exp(-max(ea-.12,0.)*30.)+exp(-max(eb-.12,0.)*30.))*vec3(.35,.45,1.)*.35*ch;
+ col+=(exp(-max(ea-.11,0.)*14.)+exp(-max(eb-.11,0.)*14.))*vec3(.35,.45,1.)*.45*u_value;
+ float ma,mb; vec3 ba=ball(uv,vec2(X0,.5),.115,ma), bb=ball(uv,vec2(X1,.5),.115,mb);
+ col=mix(col,ba,ma); col=mix(col,bb,mb);
  gl_FragColor=vec4(col,1.);}`;
 
 export default {

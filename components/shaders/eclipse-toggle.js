@@ -74,31 +74,46 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
 void main(){
- vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y; float r=length(uv); float a=atan(uv.y,uv.x);
- float v=u_value; float dark=smoothstep(.55,1.,v);
- vec3 sky=mix(vec3(.5,.72,1.)+uv.y*.25,vec3(.02,.02,.08),dark);
- float cor=fbm(vec2(a*2.5+u_time*.12,r*3.5-u_time*.25))*exp(-max(r-.22,0.)*7.)*(.4+1.4*dark+.6*u_hover);
- float sun=smoothstep(.232,.224,r);
- vec3 col=sky+cor*vec3(1.,.82,.55)*2.;
- col=mix(col,vec3(1.,.96,.8),sun*(1.-dark*.3));
- col+=smoothstep(.45,.22,r)*vec3(1.,.9,.6)*.25*(1.-dark);
- vec2 mp=vec2(mix(-.95,0.,v),.02*sin(v*3.14)); float moon=smoothstep(.236,.229,length(uv-mp));
- col=mix(col,vec3(.03,.03,.04)+.02*noise(uv*30.),moon);
- float ring=pow(max(0.,1.-abs(v-.9)*14.),2.); col+=ring*smoothstep(.25,0.,length(uv-vec2(.2,.1)))*vec3(1.)*1.5;
- col+=step(.997,hash(floor(gl_FragCoord.xy/2.)))*dark*(.6+.4*sin(u_time*3.+uv.x*40.));
- col+=u_press*.15;
+ vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y; float px=1.5/u_res.y; float r=length(uv); float a=atan(uv.y,uv.x);
+ float v=u_value; float R=.2;
+ vec2 mp=vec2(mix(-1.32,0.,v)+.4*u_hover*(1.-v),.015*sin(v*3.14));
+ float mr=length(uv-mp);
+ // fraction of the sun still uncovered drives the light
+ float cover=clamp(1.-(length(mp)-.02)/(2.*R),0.,1.); float dark=smoothstep(.55,1.,cover);
+ vec3 day=mix(vec3(.62,.8,1.),vec3(.2,.48,.95),smoothstep(-.5,.5,uv.y));
+ vec3 sky=mix(day,vec3(.015,.02,.06),dark);
+ vec3 col=sky;
+ // daytime bloom and limb-darkened photosphere
+ col=mix(col,vec3(1.,.98,.92),exp(-max(r-R,0.)*9.)*.8*(1.-dark)); col+=vec3(1.,.95,.85)*exp(-max(r-R,0.)*3.)*.18*(1.-dark);
+ float mu=sqrt(max(0.,1.-r*r/(R*R)));
+ vec3 disc=mix(vec3(1.,.95,.84),vec3(1.,1.,.97),smoothstep(0.,.5,mu));
+ float sun=smoothstep(R+px,R-px,r);
+ col=mix(col,disc,sun);
+ // corona: streamers, only visible as the light falls
+ float a2=a<0.?a+6.2832:a; float cf=mix(fbm(vec2(a*2.6+u_time*.08,r*3.2-u_time*.18)),fbm(vec2(a2*2.6+u_time*.08+31.,r*3.2-u_time*.18)),smoothstep(1.2,1.9,abs(a)));
+ float cor=cf*exp(-max(r-R,0.)*6.)*(1.2+.5*u_hover)*dark;
+ col+=cor*vec3(1.,.88,.7)*1.4*(1.-sun*.5);
+ col+=exp(-max(r-R,0.)*30.)*vec3(1.,.4,.45)*.5*dark; // chromosphere rim
+ float moon=smoothstep(R*1.04+px,R*1.04-px,mr);
+ vec3 mc=mix(sky*.8+vec3(0.,.01,.03),vec3(.025,.025,.03)+.02*noise(uv*24.),max(dark,sun));
+ col=mix(col,mc,moon);
+ // diamond ring just before totality
+ float ring=pow(max(0.,1.-abs(v-.93)*16.),2.); vec2 gp=normalize(vec2(.5,.3))*R;
+ col+=ring*(exp(-length(uv-gp)*30.)*1.6+exp(-abs((uv-gp).y)*90.)*exp(-abs((uv-gp).x)*8.)*.6)*vec3(1.,.97,.9);
+ col+=step(.997,hash(floor(gl_FragCoord.xy/2.)))*dark*(.5+.4*sin(u_time*3.+uv.x*40.))*(1.-sun);
+ col+=u_press*.08;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-eclipse-toggle',
-  credit: 'Solar eclipse toggle — the moon slides across a GLSL sun; the sky falls dark, the fbm corona blooms, a diamond-ring glint flashes just before totality',
+  credit: 'Solar eclipse toggle in GLSL — a limb-darkened sun in a blue sky; hover lets the moon peek in, toggling slides it across: the sky falls dark, the corona and chromosphere bloom, and a diamond ring flashes just before totality',
   size: 'auto',
   css: `
     :host { display: inline-block; }

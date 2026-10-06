@@ -1,9 +1,10 @@
 export default {
   id: 'cr-leather-stitch',
-  credit: 'Skeuomorphic stitched leather button — iOS 6 / Find My Friends era',
+  credit: 'Skeuomorphic stitched leather — iOS 6 Find My Friends era: tanned grain, dashed thread stitching, letterpress label',
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    .wrap { display: inline-block; padding: 4px 8px 16px; }
     .btn {
       position: relative; cursor: pointer;
       font: 700 14px/1 Georgia, 'Times New Roman', serif; letter-spacing: .12em; text-transform: uppercase;
@@ -25,5 +26,5 @@ export default {
     }
     .btn:focus-visible { box-shadow: 0 4px 0 #35190c, 0 0 0 3px #fff, 0 0 0 5px #8a4b2a; }
   `,
-  html: `<button class="btn" type="button">Saddle up</button>`,
+  html: `<span class="wrap"><button class="btn" type="button">Add Friend</button></span>`,
 };

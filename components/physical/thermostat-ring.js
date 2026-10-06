@@ -1,66 +1,96 @@
+// Nest Learning Thermostat (3rd gen): polished stainless ring around a black glass lens with the round
+// display — a 300° arc of fine ticks, the setpoint as a big light numeral, the room temperature as a small
+// figure on its tick, and the whole disc turning orange (heating) or blue (cooling). Turn the ring to set.
+const N = 121, A0 = -150, SPAN = 300, MIN = 50, MAX = 90, ROOM = 70;
+const C = 60;
+const TICKS = Array.from({ length: N }, (_, i) => {
+  const a = (A0 + i * SPAN / (N - 1)) * Math.PI / 180;
+  const x1 = C + 44 * Math.sin(a), y1 = C - 44 * Math.cos(a), x2 = C + 51 * Math.sin(a), y2 = C - 51 * Math.cos(a);
+  return `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}"/>`;
+}).join('');
+const idx = (t) => Math.round((t - MIN) / (MAX - MIN) * (N - 1));
+
 export default {
   id: 'ph-thermostat-ring',
-  credit: 'Nest Learning Thermostat — drag around the steel ring; the glass warms or cools with the setpoint',
+  credit: 'Nest Learning Thermostat — turn the stainless ring; the display arcs from room temp to setpoint and glows orange or blue',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: inline-block; padding: 16px; border-radius: 12px; background: linear-gradient(#f0eee8, #dcd9d0); }
+    .stage { display: inline-block; padding: 18px; border-radius: 12px; background: linear-gradient(160deg, #f1efe9, #dedad1); }
     .ring {
-      position: relative; width: 156px; height: 156px; border-radius: 50%; cursor: grab; touch-action: none;
-      background: conic-gradient(from 90deg, #cfd2d6, #8e9196 12%, #e4e6e9 25%, #9a9da2 40%, #d9dbde 55%, #86898e 70%, #e0e2e5 85%, #cfd2d6);
-      box-shadow: 0 8px 16px rgba(0,0,0,.35), 0 2px 3px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.7);
+      position: relative; width: 160px; height: 160px; border-radius: 50%; cursor: grab; touch-action: none; outline: none;
+      background:
+        repeating-conic-gradient(rgba(255,255,255,.06) 0 1deg, rgba(0,0,0,.03) 1deg 2deg),
+        conic-gradient(from 0deg, #f4f5f6, #9aa0a6 9%, #e6e8ea 17%, #6f757b 27%, #d3d6d9 38%, #fdfdfd 47%, #8b9197 58%, #dfe2e4 68%, #61666c 78%, #c9cdd1 88%, #f4f5f6);
+      box-shadow: 0 2px 2px rgba(0,0,0,.25), 0 14px 20px -6px rgba(0,0,0,.4), inset 0 0 0 1px rgba(0,0,0,.25), inset 0 1px 1px rgba(255,255,255,.9);
     }
     .ring.drag { cursor: grabbing; }
-    .ring:focus-visible { outline: 2px solid #1a73e8; outline-offset: 4px; }
-    .glass {
-      position: absolute; inset: 12px; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #2a2a2e, #0b0b0d 75%);
-      box-shadow: inset 0 3px 8px rgba(0,0,0,.9), inset 0 -1px 0 rgba(255,255,255,.08); transition: background .35s;
-      display: flex; align-items: center; justify-content: center; pointer-events: none;
-    }
-    .glass.heat { background: radial-gradient(circle at 50% 38%, #ff8b3d, #d94a0a 75%); }
-    .glass.cool { background: radial-gradient(circle at 50% 38%, #3a8fe8, #1456b0 75%); }
-    .glass svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .ticks { fill: none; stroke: rgba(255,255,255,.28); stroke-width: 7; stroke-dasharray: 1 3.4; }
-    .mark { stroke: #fff; stroke-width: 2.5; stroke-linecap: round; transform-box: view-box; transform-origin: 50% 50%; }
-    .num { position: relative; color: #fff; font: 300 46px/1 system-ui, -apple-system, "Helvetica Neue", sans-serif; letter-spacing: -1px; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
-    .num::after { content: '°'; font-size: 22px; vertical-align: top; margin-left: 1px; }
+    .ring:focus-visible { box-shadow: 0 0 0 3px #f1efe9, 0 0 0 5px #1d4ed8, 0 14px 20px -6px rgba(0,0,0,.4); }
+    .lens { position: absolute; inset: 11px; border-radius: 50%; overflow: hidden; pointer-events: none;
+      background: #050506; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), inset 0 3px 6px rgba(0,0,0,.9); }
+    .disp { position: absolute; inset: 9px; border-radius: 50%; background: #000; transition: background .5s;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .disp.heat { background: radial-gradient(circle at 50% 40%, #ff8a2b, #f05a00 70%, #c74300); }
+    .disp.cool { background: radial-gradient(circle at 50% 40%, #2ea0ff, #0a73e0 70%, #0656b3); }
+    .disp svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .disp line { stroke: rgba(255,255,255,.32); stroke-width: 1; }
+    .disp line.span { stroke: rgba(255,255,255,.85); }
+    .disp line.set { stroke: #fff; stroke-width: 2.2; }
+    .disp line.room { stroke: #fff; stroke-width: 1.6; }
+    .mode { position: relative; height: 9px; font: 600 6.5px/9px "DM Sans", Inter, Arial, sans-serif; letter-spacing: 1.4px; color: rgba(255,255,255,.85); visibility: hidden; }
+    .disp.heat .mode, .disp.cool .mode { visibility: visible; }
+    .num { position: relative; font: 300 40px/1 "DM Sans", Inter, "Helvetica Neue", sans-serif; font-variation-settings: "opsz" 40; letter-spacing: -1.5px; color: #fff; font-variant-numeric: tabular-nums; }
+    .roomt { position: absolute; font: 600 7px/1 "DM Sans", Inter, Arial, sans-serif; color: #fff; transform: translate(-50%, -50%); }
+    .glare { position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,0) 40%); }
   `,
   html: `
     <div class="stage">
-      <div class="ring" role="slider" tabindex="0" aria-label="thermostat" aria-valuemin="50" aria-valuemax="90" aria-valuenow="70">
-        <div class="glass">
-          <svg viewBox="0 0 132 132" aria-hidden="true">
-            <circle class="ticks" cx="66" cy="66" r="56"/>
-            <line class="mark" x1="66" y1="6" x2="66" y2="18"/>
-          </svg>
-          <span class="num">70</span>
+      <div class="ring" role="slider" tabindex="0" aria-label="Thermostat setpoint" aria-valuemin="${MIN}" aria-valuemax="${MAX}" aria-valuenow="${ROOM}">
+        <div class="lens">
+          <div class="disp">
+            <svg viewBox="0 0 120 120" aria-hidden="true">${TICKS}</svg>
+            <span class="mode" aria-hidden="true">HEATING</span>
+            <span class="num">${ROOM}</span>
+            <span class="roomt" aria-hidden="true">${ROOM}</span>
+          </div>
+          <span class="glare"></span>
         </div>
       </div>
     </div>`,
   init(root) {
-    const ring = root.querySelector('.ring'), glass = root.querySelector('.glass'), mark = root.querySelector('.mark'), num = root.querySelector('.num');
-    const MIN = 50, MAX = 90;
-    let temp = 70, last = 0, dragging = false, raf = 0, acc = 0;
+    const ring = root.querySelector('.ring'), disp = root.querySelector('.disp'), num = root.querySelector('.num'), mode = root.querySelector('.mode'), roomt = root.querySelector('.roomt');
+    const lines = [...root.querySelectorAll('.disp line')];
+    let temp = ROOM, last = 0, dragging = false, raf = 0;
+    const ri = idx(ROOM);
+    lines[ri].classList.add('room');
+    // put the small room-temperature figure just outside the arc, beside its tick
+    const ra = (A0 + ri * SPAN / (N - 1) - 9) * Math.PI / 180;
+    roomt.style.left = `${(50 + 33 * Math.sin(ra)).toFixed(1)}%`; roomt.style.top = `${(50 - 33 * Math.cos(ra)).toFixed(1)}%`;
     const angleAt = (e) => { const r = ring.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI; };
     const render = () => {
-      const t = Math.round(temp);
+      const t = Math.round(temp), si = idx(t), lo = Math.min(si, ri), hi = Math.max(si, ri);
+      lines.forEach((l, i) => { l.classList.toggle('span', i >= lo && i <= hi); l.classList.toggle('set', i === si); });
       num.textContent = t; ring.setAttribute('aria-valuenow', t);
-      mark.style.transform = `rotate(${-135 + (temp - MIN) / (MAX - MIN) * 270}deg)`;
-      glass.classList.toggle('heat', t >= 73); glass.classList.toggle('cool', t <= 67);
+      const m = t > ROOM ? 'heat' : t < ROOM ? 'cool' : '';
+      disp.classList.toggle('heat', m === 'heat'); disp.classList.toggle('cool', m === 'cool');
+      mode.textContent = m === 'cool' ? 'COOLING' : 'HEATING';
+      ring.setAttribute('aria-valuetext', `${t}°${m ? `, ${m}ing` : ''}`);
+      roomt.style.visibility = m ? 'visible' : 'hidden';
     };
-    ring.addEventListener('pointerdown', (e) => { dragging = true; last = angleAt(e); acc = 0; ring.setPointerCapture(e.pointerId); ring.classList.add('drag'); });
+    ring.addEventListener('pointerdown', (e) => { dragging = true; last = angleAt(e); ring.setPointerCapture(e.pointerId); ring.classList.add('drag'); });
     ring.addEventListener('pointermove', (e) => {
       if (!dragging) return;
       const a = angleAt(e); let d = a - last; if (d > 180) d -= 360; if (d < -180) d += 360; last = a;
-      temp = Math.max(MIN, Math.min(MAX, temp + d / 6.75));
+      temp = Math.max(MIN, Math.min(MAX, temp + d / 7.5));
       if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); });
     });
-    const end = () => { dragging = false; ring.classList.remove('drag'); temp = Math.round(temp); render(); };
+    const end = () => { if (!dragging) return; dragging = false; ring.classList.remove('drag'); temp = Math.round(temp); render(); };
     ring.addEventListener('pointerup', end); ring.addEventListener('pointercancel', end);
     ring.addEventListener('keydown', (e) => {
       const s = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -1 : 0;
-      if (!s) return; e.preventDefault(); temp = Math.max(MIN, Math.min(MAX, temp + s)); render();
+      if (!s) return; e.preventDefault(); temp = Math.max(MIN, Math.min(MAX, Math.round(temp) + s)); render();
     });
     render();
+    return () => { if (raf) cancelAnimationFrame(raf); };
   },
 };

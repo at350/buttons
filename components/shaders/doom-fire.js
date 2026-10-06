@@ -1,68 +1,87 @@
-// Canvas 2D: the classic Doom (PSX) fire propagation algorithm, upscaled with nearest-neighbour.
-const FW = 96, FH = 40, CW = 240, CH = 100;
-const PAL = Array.from({ length: 37 }, (_, i) => {
-  const t = i / 36;
-  return [Math.min(255, Math.round(t * 3 * 255)), Math.max(0, Math.min(255, Math.round((t - .3) * 1.6 * 255))), Math.max(0, Math.min(255, Math.round((t - .78) * 5 * 255)))];
-});
+// Canvas 2D: the PSX Doom fire (Fabien Sanglard's write-up) — the exact 37-entry palette and the
+// spreadFire() rule: each cell copies the one below, shifted -1..+2 columns (wind), decaying by 0..1.
+// The grid is drawn 1:1 into a 120×50 canvas and upscaled by CSS with nearest-neighbour.
+const FW = 120, FH = 50;
+const RGB = [
+  0x07, 0x07, 0x07, 0x1f, 0x07, 0x07, 0x2f, 0x0f, 0x07, 0x47, 0x0f, 0x07, 0x57, 0x17, 0x07, 0x67, 0x1f, 0x07,
+  0x77, 0x1f, 0x07, 0x8f, 0x27, 0x07, 0x9f, 0x2f, 0x07, 0xaf, 0x3f, 0x07, 0xbf, 0x47, 0x07, 0xc7, 0x47, 0x07,
+  0xdf, 0x4f, 0x07, 0xdf, 0x57, 0x07, 0xdf, 0x57, 0x07, 0xd7, 0x5f, 0x07, 0xd7, 0x5f, 0x07, 0xd7, 0x67, 0x0f,
+  0xcf, 0x6f, 0x0f, 0xcf, 0x77, 0x0f, 0xcf, 0x7f, 0x0f, 0xcf, 0x87, 0x17, 0xc7, 0x87, 0x17, 0xc7, 0x8f, 0x17,
+  0xc7, 0x97, 0x1f, 0xbf, 0x9f, 0x1f, 0xbf, 0x9f, 0x1f, 0xbf, 0xa7, 0x27, 0xbf, 0xa7, 0x27, 0xbf, 0xaf, 0x2f,
+  0xb7, 0xaf, 0x2f, 0xb7, 0xb7, 0x2f, 0xb7, 0xb7, 0x37, 0xcf, 0xcf, 0x6f, 0xdf, 0xdf, 0x9f, 0xef, 0xef, 0xc7,
+  0xff, 0xff, 0xff,
+]; // 37 colours, index 0 = background, 36 = white-hot source
 
 export default {
   id: 'sh-doom-fire',
-  credit: 'Doom fire button — the PlayStation Doom fire algorithm (36-colour palette, random upward decay) on a 2D canvas; hover ignites it, press flares it, leave and it burns out',
+  credit: 'Doom fire button — the PlayStation Doom fire (Fabien Sanglard): the original 37-colour palette and spreadFire() decay on a 2D canvas; embers smoulder at rest, hover ignites it, press flares it',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: end center; width: 240px; height: 100px; max-width: 100%; padding: 0 0 10px; border: 0; border-radius: 10px; overflow: hidden; background: #070707; cursor: pointer; isolation: isolate; box-shadow: 0 0 0 2px #1a1a1a; }
+    .btn { position: relative; display: grid; place-items: center; width: 240px; height: 100px; max-width: 100%; padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: #070707; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 1px 2px rgba(0,0,0,.3); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; image-rendering: pixelated; }
-    .l { position: relative; z-index: 1; color: #fff1d6; font: 900 30px/1 'Unbounded', 'Inter', system-ui, sans-serif; letter-spacing: .06em; text-shadow: 0 0 14px #ff6a00, 0 2px 0 #4a1000; pointer-events: none; transition: transform .2s; }
-    .btn:hover .l { transform: translateY(-6px); }
-    .btn:active .l { transform: translateY(-2px) scale(.97); }
-    .btn:focus-visible { outline: 2px solid #ff8c1a; outline-offset: 3px; }
+    .l { position: relative; z-index: 1; margin-top: -8px; color: #ffefc7; font: 800 30px/1 'Unbounded', 'Inter', system-ui, sans-serif; letter-spacing: .04em; pointer-events: none;
+         text-shadow: 0 2px 0 #470f07, 0 0 18px rgba(223, 79, 7, .85); transition: transform .2s cubic-bezier(.2,.8,.2,1), color .2s; }
+    .btn:hover .l { color: #fff; transform: translateY(-3px); }
+    .btn:active .l { transform: translateY(0) scale(.97); }
+    .btn:focus-visible { outline: 2px solid #df4f07; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">BURN</span></button>`,
+  html: `<button class="btn" type="button"><canvas class="cv" width="120" height="50"></canvas><span class="l">BURN</span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    cv.width = CW; cv.height = CH; // low-res by design; nearest-neighbour upscaled by CSS
     const ctx = cv.getContext('2d'); if (!ctx) return;
-    ctx.imageSmoothingEnabled = false;
-    const off = document.createElement('canvas'); off.width = FW; off.height = FH;
-    const octx = off.getContext('2d'); const img = octx.createImageData(FW, FH);
+    const img = ctx.createImageData(FW, FH), d = img.data;
     const fire = new Uint8Array(FW * FH);
-    let raf = 0, lit = false, flare = 0, acc = 0, last = 0;
-    const paint = () => {
-      const d = img.data;
-      for (let i = 0; i < fire.length; i++) { const c = PAL[fire[i]]; d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = fire[i] ? 255 : 0; }
-      octx.putImageData(img, 0, 0);
-      ctx.clearRect(0, 0, CW, CH); ctx.drawImage(off, 0, 0, FW, FH, 0, 0, CW, CH);
+    let raf = 0, lit = false, flare = 0, acc = 0, clock = 0, last = 0, vis = true, io = null, dead = false;
+    // Source row: white-hot (36) when lit; a flickering low ember bed at rest so it never looks dead.
+    const feed = () => {
+      const base = (FH - 1) * FW;
+      for (let x = 0; x < FW; x++) {
+        if (lit || flare > 0) fire[base + x] = 36;
+        else fire[base + x] = 10 + ((Math.random() * 7) | 0) + (Math.sin(x * .21 + clock * 1.7) > .55 ? 6 : 0);
+      }
     };
+    // Sanglard's spreadFire, with extra decay so a 50-row grid burns ~75% high (the PSX grid is 168 rows).
     const step = () => {
-      for (let x = 0; x < FW; x++) fire[(FH - 1) * FW + x] = lit ? 36 : 0;
-      if (flare > 0) for (let k = 0; k < 40; k++) fire[(FH - 1 - (Math.random() * 10 | 0)) * FW + (Math.random() * FW | 0)] = 36;
-      let any = false;
+      clock += 1 / 30;
+      feed();
+      const extra = flare > 0 ? .08 : .4;
       for (let x = 0; x < FW; x++) for (let y = 1; y < FH; y++) {
         const src = y * FW + x, p = fire[src];
         if (p === 0) { fire[src - FW] = 0; continue; }
-        any = true;
-        const rnd = Math.random() * 3 | 0, dst = src - rnd + 1;
-        if (dst - FW >= 0 && dst - FW < fire.length) fire[dst - FW] = Math.max(0, p - (rnd & 1) - (flare > 0 ? 0 : 0));
+        const r = (Math.random() * 3.99) | 0;
+        let dst = src - r + 1 - FW; const row = (y - 1) * FW;
+        if (dst < row) dst += FW; else if (dst >= row + FW) dst -= FW;
+        const v = p - (r & 1) - (Math.random() < extra ? 1 : 0);
+        fire[dst] = v > 0 ? v : 0;
       }
-      return any;
+    };
+    const paint = () => {
+      for (let i = 0; i < fire.length; i++) { const k = fire[i] * 3; d[i * 4] = RGB[k]; d[i * 4 + 1] = RGB[k + 1]; d[i * 4 + 2] = RGB[k + 2]; d[i * 4 + 3] = 255; }
+      ctx.putImageData(img, 0, 0);
     };
     const tick = (now) => {
       raf = 0;
       const dt = Math.min(.1, (now - last) / 1000 || .016); last = now; acc += dt; flare = Math.max(0, flare - dt);
-      let any = lit;
-      while (acc > 1 / 30) { acc -= 1 / 30; any = step() || any; }
-      paint();
-      if (any || lit) raf = requestAnimationFrame(tick);
+      let n = 0; while (acc > 1 / 30 && n < 3) { acc -= 1 / 30; step(); n++; }
+      if (acc > 1 / 30) acc = 0;
+      if (n) paint();
+      if (!dead && vis) raf = requestAnimationFrame(tick);
     };
-    const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
-    btn.addEventListener('pointerenter', () => { lit = true; kick(); });
-    btn.addEventListener('pointerleave', () => { lit = false; kick(); });
-    btn.addEventListener('pointerdown', () => { flare = .5; kick(); });
-    btn.addEventListener('focus', () => { if (btn.matches(':focus-visible')) { lit = true; kick(); } });
-    btn.addEventListener('blur', () => { if (!btn.matches(':hover')) { lit = false; kick(); } });
-    btn.addEventListener('click', (e) => { if (!e.detail) { flare = .5; kick(); } });
+    const kick = () => { if (!raf && !dead && vis) { last = performance.now(); raf = requestAnimationFrame(tick); } };
+    for (let i = 0; i < 70; i++) step(); // prewarm: the ember bed is at its final look immediately
     paint();
-    return () => cancelAnimationFrame(raf);
+    btn.addEventListener('pointerenter', () => { lit = true; kick(); });
+    btn.addEventListener('pointerleave', () => { lit = false; });
+    btn.addEventListener('pointerdown', () => { flare = .6; kick(); });
+    btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { flare = .6; kick(); } });
+    btn.addEventListener('focus', () => { if (btn.matches(':focus-visible')) { lit = true; kick(); } });
+    btn.addEventListener('blur', () => { if (!btn.matches(':hover')) lit = false; });
+    if (typeof IntersectionObserver === 'function') {
+      vis = false;
+      io = new IntersectionObserver((en) => { vis = en.some((x) => x.isIntersecting); if (vis) kick(); else { cancelAnimationFrame(raf); raf = 0; } });
+      io.observe(cv);
+    } else kick();
+    return () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); };
   },
 };

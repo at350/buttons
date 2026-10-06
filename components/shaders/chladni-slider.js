@@ -74,7 +74,10 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Chladni plate: sand collects on the nodal lines of a square plate's standing wave,
+// u = sin(nπx)sin(mπy) + sin(mπx)sin(nπy); the slider is the drive frequency, which picks (n, m), and
+// hovering makes the sand dance. Grains are a per-pixel random threshold so the lines look granular.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res,u_pt;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
@@ -83,44 +86,55 @@ void main(){
  vec2 uv=gl_FragCoord.xy/u_res; vec2 p=uv*vec2(u_res.x/u_res.y,1.);
  float n=1.+u_value*5., m=2.+u_value*3.5;
  float u=sin(n*3.1416*p.x)*sin(m*3.1416*p.y)+sin(m*3.1416*p.x)*sin(n*3.1416*p.y);
- float jit=(noise(gl_FragCoord.xy*.6+floor(u_time*24.)*7.)-.5)*.2*u_hover;
- float sand=smoothstep(.28,.0,abs(u)+jit);
+ float jit=(noise(gl_FragCoord.xy*.6+floor(u_time*24.)*7.)-.5)*.22*u_hover;
+ float sand=smoothstep(.26,.02,abs(u)+jit);
  float grain=hash(floor(gl_FragCoord.xy/1.5)+floor(u_time*4.)*u_hover);
- sand*=step(.22,grain);
- vec3 plate=vec3(.11,.11,.12)+.025*grain+vec3(.02,.02,.03)*(1.-uv.y);
- vec3 col=mix(plate,vec3(.92,.86,.7),sand);
- col+=u_press*.3*smoothstep(1.,0.,length((uv-u_pt)*vec2(u_res.x/u_res.y,1.)));
- float dx=abs(uv.x-u_value)*u_res.x; col+=smoothstep(1.5,0.,dx)*vec3(1.,.6,.2)*.9;
- col+=smoothstep(12.,0.,dx)*vec3(1.,.6,.2)*.08;
+ sand*=step(.25,grain)*(.75+.25*grain);
+ vec3 plate=vec3(.13,.13,.14)+.02*grain+vec3(.03,.03,.035)*(1.-uv.y);
+ vec3 col=mix(plate,vec3(.93,.87,.72),sand);
+ col+=u_press*.25*smoothstep(1.,0.,length((uv-u_pt)*vec2(u_res.x/u_res.y,1.)));
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-chladni-slider',
-  credit: 'Chladni plate slider — sand gathers along the nodal lines of a vibrating plate (sin(nπx)sin(mπy)+sin(mπx)sin(nπy)) in GLSL; drag the frequency and the figure reshapes',
+  credit: 'Chladni plate slider in GLSL — sand gathers on the nodal lines of sin(nπx)sin(mπy)+sin(mπx)sin(nπy); drag the drive frequency and the figure reshapes, hover makes the sand dance',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .sl { position: relative; width: 300px; height: 90px; max-width: 100%; border-radius: 6px; overflow: hidden; background: #1c1c1e; cursor: ew-resize; touch-action: none; user-select: none; isolation: isolate; box-shadow: 0 0 0 3px #2a2a2e, 0 0 0 4px #0c0c0e; }
+    .sl { position: relative; width: 300px; height: 90px; max-width: 100%; border-radius: 8px; overflow: hidden; background: #1c1c1e; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; isolation: isolate; box-shadow: 0 0 0 3px #2a2a2e, 0 0 0 4px #0c0c0e; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
     .cv.nogl { background: repeating-radial-gradient(circle at 50% 50%, #1c1c1e 0 10px, #d8c9a0 10px 12px); }
-    .v { position: absolute; right: 10px; bottom: 8px; z-index: 1; color: #ff9a3c; font: 500 11px/1 'JetBrains Mono', ui-monospace, monospace; pointer-events: none; }
-    .sl:focus-visible { outline: 2px solid #ff9a3c; outline-offset: 5px; }
+    .rail { position: absolute; left: 8px; right: 8px; bottom: 8px; height: 22px; z-index: 1; border-radius: 11px; background: rgba(12,12,14,.72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); pointer-events: none; }
+    .track { position: absolute; left: 13px; right: 13px; top: 9px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.22); }
+    .fill { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--v, .5) * 100%); border-radius: 2px; background: #ff9a3c; }
+    .thumb { position: absolute; top: 2px; left: calc(var(--v, .5) * 100%); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 .5px rgba(0,0,0,.25), 0 1px 3px rgba(0,0,0,.45); transition: transform .15s cubic-bezier(.2,.8,.2,1); }
+    .sl:hover .thumb { transform: scale(1.15); }
+    .sl.drag .thumb { transform: scale(1.25); }
+    .chip { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 4px 7px; border-radius: 6px; background: rgba(0,0,0,.5); color: #ffb46a; font: 600 11px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .02em; white-space: nowrap; pointer-events: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+    .sl:focus-visible { outline: 2px solid #ff9a3c; outline-offset: 3px; }
   `,
-  html: `<div class="sl" role="slider" tabindex="0" aria-label="Frequency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><canvas class="cv"></canvas><span class="v">440 Hz</span></div>`,
+  html: `<div class="sl" role="slider" tabindex="0" aria-label="Frequency" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="--v:0.5"><canvas class="cv"></canvas><span class="chip"></span><span class="rail"><span class="track"><span class="fill"></span><span class="thumb"></span></span></span></div>`,
   init(root) {
-    const el = root.querySelector('.sl'), cv = root.querySelector('.cv'), out = root.querySelector('.v');
-    const s = shade(cv, el, 300, 90, FS, { pressDecay: 2.5 });
+    const el = root.querySelector('.sl'), cv = root.querySelector('.cv');
+    const fmt = (v) => Math.round(110 + v * 660) + ' Hz';
+    const s = shade(cv, el, 300, 90, FS, { pressDecay: 2.5, valueRate: 9 });
+    const track = root.querySelector('.track'), chip = root.querySelector('.chip');
     const set = (v) => {
-      v = Math.max(0, Math.min(1, v)); s.value = s.valueT = v;
-      el.setAttribute('aria-valuenow', Math.round(v * 100)); out.textContent = Math.round(110 + v * 660) + ' Hz'; s.kick();
+      v = Math.max(0, Math.min(1, v)); s.valueT = v;
+      el.style.setProperty('--v', v.toFixed(4)); el.setAttribute('aria-valuenow', String(Math.round(v * 100)));
+      const txt = fmt(v); chip.textContent = txt; el.setAttribute('aria-valuetext', txt); s.kick();
     };
-    set(.5);
-    el.addEventListener('pointerdown', (e) => { el.setPointerCapture(e.pointerId); set(s.mx); });
-    el.addEventListener('pointermove', () => { if (s.down) set(s.mx); });
+    const fromX = (x) => { const r = track.getBoundingClientRect(); return r.width ? (x - r.left) / r.width : s.valueT; };
+    let drag = false;
+    el.addEventListener('pointerdown', (e) => { drag = true; el.classList.add('drag'); try { el.setPointerCapture(e.pointerId); } catch (err) {} set(fromX(e.clientX)); });
+    el.addEventListener('pointermove', (e) => { if (drag) set(fromX(e.clientX)); });
+    const end = () => { drag = false; el.classList.remove('drag'); };
+    el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
     el.addEventListener('keydown', (e) => {
-      const k = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? .04 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -.04 : 0;
-      if (k) { e.preventDefault(); set(s.valueT + k); }
+      const k = { ArrowRight: 0.04, ArrowUp: 0.04, ArrowLeft: -0.04, ArrowDown: -0.04, PageUp: .1, PageDown: -.1 }[e.key];
+      if (k) { e.preventDefault(); set(s.valueT + k); } else if (e.key === 'Home') { e.preventDefault(); set(0); } else if (e.key === 'End') { e.preventDefault(); set(1); }
     });
+    set(0.5); s.value = s.valueT;
     return () => s.destroy();
   },
 };

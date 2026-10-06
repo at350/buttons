@@ -1,33 +1,55 @@
-const SPRING = 'linear(0, 0.143, 0.453, 0.779, 1.028, 1.168, 1.205, 1.173, 1.109, 1.043, 0.992, 0.965, 0.958, 0.965, 0.978, 0.992, 1.002, 1.007, 1.009, 1.007, 1.004, 1.002, 1)';
+// Apple Music now playing — the signature move: pausing shrinks the artwork back into the card and drops its shadow,
+// playing springs it forward to full size. Spring response .5s / damping .7 → linear(). SF-style filled transport
+// glyphs (play/pause morph via matching path commands; skip glyphs from Phosphor fill).
+const SPRING = 'linear(0, 0.044, 0.144, 0.278, 0.422, 0.555, 0.68, 0.785, 0.867, 0.932, 0.98, 1.012, 1.031, 1.041, 1.045, 1.043, 1.039, 1.033, 1.027, 1.021, 1.015, 1.01, 1.007, 1.003, 1.001, 1, 0.999, 0.998, 0.998, 0.998, 0.998, 0.998, 1)';
 
 export default {
   id: 'mo-album-play',
-  credit: 'Now-playing card — press play and the album art lifts, tilts in 3D and glows in its own colours while the bars dance (Apple Music / Spotify widget)',
+  credit: 'Apple Music now playing — pause and the artwork sinks back to ~84% with a flatter shadow, play and it springs forward to full size',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 280px; height: 120px; max-width: 100%; border-radius: 12px; background: #111; display: flex; align-items: center; gap: 16px; padding: 18px; font-family: Inter, system-ui, sans-serif; perspective: 600px; }
-    .art { position: relative; width: 84px; height: 84px; flex: none; border-radius: 12px; background: linear-gradient(135deg, #f472b6 0%, #fb923c 50%, #facc15 100%); transform-style: preserve-3d; transition: transform .8s ${SPRING}, box-shadow .6s; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
-    .art::after { content: ''; position: absolute; inset: 26px; border-radius: 50%; background: #111; box-shadow: inset 0 0 0 10px rgba(255,255,255,.18); }
-    .stage.on .art { transform: translateY(-6px) rotateX(10deg) rotateY(-14deg) scale(1.06); box-shadow: 0 20px 40px -12px rgba(251, 146, 60, .7), 0 0 50px -10px rgba(244, 114, 182, .5); }
-    .meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
-    .meta b { font-size: 14px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .meta span { font-size: 12px; color: #888; }
-    .bars { display: flex; gap: 3px; align-items: flex-end; height: 16px; margin-top: 8px; }
-    .bars i { width: 3px; height: 4px; border-radius: 2px; background: #fb923c; transition: height .4s ${SPRING}; }
-    .stage.on .bars i { animation: eq .8s ease-in-out infinite alternate; }
-    .stage.on .bars i:nth-child(2) { animation-delay: -.2s; } .stage.on .bars i:nth-child(3) { animation-delay: -.5s; } .stage.on .bars i:nth-child(4) { animation-delay: -.35s; }
-    @keyframes eq { from { height: 4px; } to { height: 16px; } }
-    .play { width: 44px; height: 44px; border-radius: 50%; border: 0; background: #fff; color: #111; cursor: pointer; display: grid; place-items: center; flex: none; transition: transform .5s ${SPRING}, background .2s; }
-    .play:hover { transform: scale(1.08); background: #f3f3f3; } .play:active { transform: scale(.92); }
-    .play:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-    .play svg { width: 18px; height: 18px; } .play path { fill: currentColor; transition: d .35s cubic-bezier(.4, 0, .2, 1); }
-    .stage.on .play .p1 { d: path('M6 4h4v16H6z'); } .stage.on .play .p2 { d: path('M14 4h4v16h-4z'); }
+    .stage {
+      position: relative; width: 290px; height: 128px; max-width: 100%; border-radius: 12px; display: flex; align-items: center; gap: 14px; padding: 0 16px 0 14px; overflow: hidden;
+      background: radial-gradient(120% 140% at 0% 0%, #4b2a6b 0%, transparent 60%), radial-gradient(120% 140% at 100% 100%, #13305a 0%, transparent 60%), #1a1626;
+      font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; color: #fff;
+    }
+    .art {
+      position: relative; width: 96px; height: 96px; flex: none; border-radius: 8px; overflow: hidden;
+      background: radial-gradient(60% 60% at 70% 30%, #ffd2f0 0%, #ff7ac6 22%, transparent 55%), radial-gradient(90% 70% at 20% 100%, #3b82f6 0%, transparent 60%), linear-gradient(170deg, #241047 0%, #6d28d9 55%, #f472b6 100%);
+      transform: scale(.84); box-shadow: 0 4px 10px -4px rgba(0,0,0,.45); transition: transform .8s ${SPRING}, box-shadow .6s ease;
+    }
+    .art::after { content: 'M83'; position: absolute; left: 8px; bottom: 6px; font: 800 13px/1 'Space Grotesk', system-ui, sans-serif; letter-spacing: .04em; color: rgba(255,255,255,.85); }
+    .stage.on .art { transform: none; box-shadow: 0 14px 28px -10px rgba(0,0,0,.65); }
+    .meta { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .meta b { font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .meta .ar { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 1px; }
+    .bar { position: relative; height: 4px; margin-top: 10px; border-radius: 2px; background: rgba(255,255,255,.2); overflow: hidden; }
+    .bar i { position: absolute; inset: 0; transform-origin: left; transform: scaleX(.3); background: rgba(255,255,255,.75); animation: prog 240s linear forwards paused; }
+    .stage.on .bar i { animation-play-state: running; }
+    @keyframes prog { from { transform: scaleX(.3); } to { transform: scaleX(1); } }
+    .ctl { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; padding: 0 2px; }
+    .ctl button { width: 36px; height: 36px; border-radius: 50%; border: 0; background: transparent; color: #fff; display: grid; place-items: center; cursor: pointer; transition: background .2s, transform .35s ${SPRING}; }
+    .ctl button:hover { background: rgba(255,255,255,.1); } .ctl button:active { transform: scale(.86); background: rgba(255,255,255,.18); }
+    .ctl button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+    .ctl .sk svg { width: 20px; height: 20px; fill: currentColor; }
+    .play svg { width: 26px; height: 26px; }
+    .play path { fill: currentColor; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; transition: d .32s cubic-bezier(.32, .72, 0, 1); }
+    .stage.on .play .p1 { d: path('M6.5 4.5 L10.5 4.5 L10.5 19.5 L6.5 19.5 Z'); }
+    .stage.on .play .p2 { d: path('M13.5 4.5 L17.5 4.5 L17.5 19.5 L13.5 19.5 Z'); }
   `,
   html: `
     <div class="stage">
       <div class="art" aria-hidden="true"></div>
-      <div class="meta"><b>Midnight City</b><span>M83</span><span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
-      <button class="play" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="p1" d="M7 4l6.5 4v8L7 20z"/><path class="p2" d="M13.5 8l5.5 4-5.5 4z"/></svg></button>
+      <div class="meta">
+        <b>Midnight City</b><span class="ar">M83</span>
+        <span class="bar" aria-hidden="true"><i></i></span>
+        <div class="ctl">
+          <button class="sk" type="button" aria-label="Previous"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M208,47.88V208.12a16,16,0,0,1-24.43,13.43L64,146.77V216a8,8,0,0,1-16,0V40a8,8,0,0,1,16,0v69.23L183.57,34.45A15.95,15.95,0,0,1,208,47.88Z"/></svg></button>
+          <button class="play" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="p1" d="M7 4.5 L13 8.2 L13 15.8 L7 19.5 Z"/><path class="p2" d="M13 8.2 L19 12 L19 12 L13 15.8 Z"/></svg></button>
+          <button class="sk" type="button" aria-label="Next"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M208,40V216a8,8,0,0,1-16,0V146.77L72.43,221.55A15.95,15.95,0,0,1,48,208.12V47.88A15.95,15.95,0,0,1,72.43,34.45L192,109.23V40a8,8,0,0,1,16,0Z"/></svg></button>
+        </div>
+      </div>
     </div>`,
   init(root) {
     const s = root.querySelector('.stage'), b = root.querySelector('.play');

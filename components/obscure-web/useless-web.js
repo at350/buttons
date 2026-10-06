@@ -1,42 +1,40 @@
+// theuselessweb.com, from its live style.css scaled to fit: the TAKE ME / TO A / USELESS / WEBSITE stack in
+// Josefin Slab #333 with a 2px 2px 4px #999 text-shadow on a white → #f2f2f2 radial page, and the deepPink
+// PLEASE button with its stepped #be3077 / hotpink 3D shadow, #e21a62 hover, and the shift-down press.
 export default {
   id: 'ob-useless-web',
-  credit: 'TheUselessWeb.com — the big pink "PLEASE" button; every press flings you to a different pointless site (here: a different pointless pattern)',
+  credit: 'The Useless Web — "Take me to a useless website → PLEASE ←": the deep-pink stepped-shadow button that flings you somewhere pointless',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 280px; max-width: 100%; height: 160px; border-radius: 12px; overflow: hidden; background: #fff; display: grid; place-items: center; transition: background .4s; }
-    .please { position: relative; padding: 16px 38px; border: 0; border-radius: 6px; background: #ff5a8d; color: #fff; cursor: pointer; font: 700 28px/1 "Open Sans", Arial, Helvetica, sans-serif; letter-spacing: 1px; box-shadow: 0 6px 0 #c23a66, 0 10px 20px rgba(0,0,0,.2); transition: transform .08s, box-shadow .08s, background .15s; }
-    .please:hover { background: #ff6d9b; }
-    .please:active { transform: translateY(5px); box-shadow: 0 1px 0 #c23a66, 0 4px 8px rgba(0,0,0,.2); }
-    .please:focus-visible { outline: 3px solid #333; outline-offset: 4px; }
-    .n { position: absolute; left: 10px; top: 8px; font: 700 11px Arial, Helvetica, sans-serif; color: rgba(0,0,0,.45); }
-    .stage.p7 .n { color: #0f0; }
-    .site { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font: 700 10px Arial, Helvetica, sans-serif; letter-spacing: 1px; color: rgba(0,0,0,.45); text-transform: lowercase; }
-    .stage.p1 { background: repeating-linear-gradient(45deg, #ffe600 0 14px, #000 14px 28px); }
-    .stage.p2 { background: radial-gradient(circle, #0ff 20%, transparent 21%) 0 0 / 24px 24px, #f0f; }
-    .stage.p3 { background: linear-gradient(90deg, #f00, #ff8000, #ff0, #0f0, #0ff, #00f, #8000ff); }
-    .stage.p4 { background: repeating-radial-gradient(circle at 50% 50%, #fff 0 8px, #222 8px 16px); }
-    .stage.p5 { background: conic-gradient(#39f, #f93, #3f9, #93f, #39f); }
-    .stage.p6 { background: repeating-linear-gradient(0deg, #cfc 0 6px, #060 6px 8px); }
-    .stage.p7 { background: #000; }
-    .stage.p7 .site { color: #0f0; }
-    .stage.p8 { background: linear-gradient(135deg, #ffd1dc 25%, transparent 25%) -14px 0 / 28px 28px, linear-gradient(225deg, #ffd1dc 25%, transparent 25%) -14px 0 / 28px 28px, #fff0f5; }
+    .pg { width: 280px; max-width: 100%; padding: 16px 10px 12px; border-radius: 12px; background: radial-gradient(ellipse at center, #fff 0%, #f2f2f2 100%); font-family: "Josefin Slab", Rockwell, "Roboto Slab", Georgia, serif; text-align: center; }
+    .h { margin: 0 auto; color: #333; text-shadow: 1px 1px 2px #999; line-height: 1.05; font-weight: 700; }
+    .h1 { font-size: 30px; } .h2 { font-size: 13px; margin-bottom: 3px; } .h3 { font-size: 34px; } .h4 { font-size: 31px; }
+    .h5 { font-size: 20px; display: flex; align-items: center; justify-content: center; gap: 2px; }
+    .please { position: relative; margin: 6px 6px 4px; padding: 6px 7px 1px; border: 0; background: #ff1493; color: #fff; font: 400 22px/1.1 "Josefin Slab", Rockwell, "Roboto Slab", Georgia, serif; cursor: pointer; user-select: none; text-shadow: none;
+      box-shadow: 1px 0 1px #be3077, 0 1px 1px hotpink, 2px 1px 1px #be3077, 1px 2px 1px hotpink, 3px 2px 1px #be3077, 2px 3px 1px hotpink, 4px 3px 1px #be3077, 3px 4px 1px hotpink, 5px 4px 1px #be3077, 4px 5px 1px hotpink, 6px 5px 1px #be3077; }
+    .please:hover { background: #e21a62; }
+    .please:active { top: 2px; left: 3px; box-shadow: 1px 0 1px #be3077, 0 1px 1px hotpink, 2px 1px 1px #be3077, 1px 2px 1px hotpink, 3px 2px 1px #be3077; }
+    .please:focus-visible { outline: 2px solid #333; outline-offset: 4px; }
+    .to { height: 16px; margin-top: 6px; font: 300 12px/16px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #232323; }
+    .to b { color: #ff1493; font-weight: 400; }
   `,
   html: `
-    <div class="stage">
-      <button class="please" type="button">PLEASE</button>
-      <span class="site" aria-live="polite">theuselessweb.com</span>
-      <span class="n" aria-hidden="true"></span>
+    <div class="pg">
+      <div class="h h1">TAKE ME</div>
+      <div class="h h2">TO A</div>
+      <div class="h h3">USELESS</div>
+      <div class="h h4">WEBSITE</div>
+      <div class="h h5"><span aria-hidden="true">→</span><button class="please" type="button">PLEASE</button><span aria-hidden="true">←</span></div>
+      <div class="to" aria-live="polite"></div>
     </div>`,
   init(root) {
-    const stage = root.querySelector('.stage'), btn = root.querySelector('.please'), site = root.querySelector('.site');
-    const sites = ['eelslap.com', 'cat-bounce.com', 'pointerpointer.com', 'heeeeeeeey.com', 'koalastothemax.com', 'ducksarethebest.com', 'hackertyper.net', 'corndog.io', 'staggeringbeauty.com', 'isitchristmas.com'];
-    const n = root.querySelector('.n');
-    let last = 0, visits = 0;
+    const btn = root.querySelector('.please'), to = root.querySelector('.to');
+    const sites = ['eelslap.com', 'cat-bounce.com', 'pointerpointer.com', 'heeeeeeeey.com', 'koalastothemax.com', 'ducksarethebest.com', 'hackertyper.net', 'corndog.io', 'staggeringbeauty.com', 'isitchristmas.com', 'zoomquilt.org', 'puginarug.com'];
+    let last = -1;
     btn.addEventListener('click', () => {
-      visits++; n.textContent = visits + (visits === 1 ? ' site' : ' sites');
-      let k; do { k = 1 + Math.floor(Math.random() * 8); } while (k === last); last = k;
-      stage.className = 'stage p' + k; site.textContent = sites[Math.floor(Math.random() * sites.length)];
+      let k; do { k = Math.floor(Math.random() * sites.length); } while (k === last); last = k;
+      to.innerHTML = 'opening <b>' + sites[k] + '</b>';
     });
   },
 };

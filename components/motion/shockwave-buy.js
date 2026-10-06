@@ -18,10 +18,11 @@ export default {
     .lbl { display: grid; height: 20px; overflow: hidden; }
     .lbl span { grid-area: 1 / 1; line-height: 20px; transform: translateY(120%); opacity: 0; transition: transform .35s cubic-bezier(.34, 1.3, .64, 1), opacity .2s; font-variant-numeric: tabular-nums; }
     .lbl span.cur { transform: none; opacity: 1; } .lbl span.old { transform: translateY(-120%); opacity: 0; }
+    .lbl .ok { display: inline-flex; align-items: center; justify-content: center; gap: 6px; } .lbl .ok svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
     .ring { position: absolute; left: 50%; top: 50%; width: 150px; height: 48px; margin: -24px 0 0 -75px; border-radius: 14px; border: 2px solid #16a34a; opacity: 0; pointer-events: none; }
     .wrap.boom .ring { animation: wave .9s cubic-bezier(.2, .7, .3, 1) forwards; }
     .wrap.boom .ring:nth-child(2) { animation-delay: .12s; } .wrap.boom .ring:nth-child(3) { animation-delay: .24s; border-color: #4ade80; }
-    @keyframes wave { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.9, 2.6); border-width: 1px; } }
+    @keyframes wave { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.45, 2.1); border-width: 1px; } }
     .flash { position: absolute; inset: 0; border-radius: 14px; background: #fff; opacity: 0; pointer-events: none; }
     .btn.boom .flash { animation: flash .4s ease-out; }
     @keyframes flash { 0% { opacity: .6; } 100% { opacity: 0; } }
@@ -31,7 +32,7 @@ export default {
       <span class="ring"></span><span class="ring"></span><span class="ring"></span>
       <button class="btn" type="button" aria-live="polite">
         <span class="flash"></span>
-        <span class="lbl"><span class="cur">Buy now · $29</span><span>3</span><span>2</span><span>1</span><span>Ordered ✓</span></span>
+        <span class="lbl"><span class="cur">Buy now · $29</span><span>3</span><span>2</span><span>1</span><span class="ok">Ordered<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
       </button>
     </div>`,
   init(root) {

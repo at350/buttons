@@ -1,32 +1,43 @@
+// One 1u Cherry-profile PBT keycap on an MX switch, seen slightly from the front:
+// 18 mm skirt (54 px at 3 px/mm), sculpted side walls, cylindrical dish, dye-sub legend.
+// Press travels 4 mm (bottom-out), the spring returns it with a little overshoot.
 export default {
   id: 'ph-keycap',
-  credit: 'Single Cherry-profile mechanical keycap (PBT, dish top) on a switch — 2px travel',
+  credit: 'Cherry-profile PBT keycap on an MX switch — 18 mm cap, cylindrical dish, 4 mm travel with spring return',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: inline-block; padding: 22px; border-radius: 12px; background: linear-gradient(#3a3d44, #24262b); }
-    .housing { position: relative; width: 60px; height: 62px; }
-    .housing::before { content: ''; position: absolute; left: 6px; right: 6px; top: 6px; bottom: 2px; border-radius: 5px; background: #0d0e10; box-shadow: inset 0 3px 6px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.08); }
+    .stage { display: inline-block; padding: 20px 24px; border-radius: 12px;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px), linear-gradient(#3b3e44, #26282d); }
+    .plate { padding: 3px; border-radius: 4px; background: #0e0f11; box-shadow: inset 0 2px 4px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.08); }
+    .slot { position: relative; width: 54px; height: 60px; }
+    .slot::before { content: ''; position: absolute; left: 13px; right: 13px; top: 14px; height: 30px; border-radius: 2px; background: #1b1c1f; } /* switch housing peeking */
     .key {
-      position: absolute; left: 0; top: 0; width: 60px; height: 58px; border: 0; padding: 0; border-radius: 7px; cursor: pointer;
-      background: linear-gradient(#a4a69f 0%, #8a8c86 50%, #6f716c 100%);
-      box-shadow: 0 1px 0 rgba(255,255,255,.3) inset, 0 6px 0 -2px rgba(0,0,0,.6), 0 7px 8px rgba(0,0,0,.5);
-      transition: transform .05s ease-out, box-shadow .05s ease-out; -webkit-tap-highlight-color: transparent;
+      position: absolute; left: 0; top: 0; width: 54px; height: 54px; border: 0; padding: 0; border-radius: 5px; cursor: pointer;
+      background:
+        linear-gradient(180deg, transparent 72%, rgba(255,255,255,.18) 80%, rgba(0,0,0,.06) 100%),
+        linear-gradient(90deg, #9c978b 0%, #c4beb1 13%, #cfc9bc 50%, #c1bbae 87%, #938e82 100%);
+      box-shadow: 0 1px 0 rgba(0,0,0,.5), 0 4px 0 -1px rgba(0,0,0,.55), 0 7px 7px rgba(0,0,0,.45);
+      transition: transform .14s cubic-bezier(.3,1.7,.5,1), box-shadow .14s cubic-bezier(.3,1.7,.5,1); -webkit-tap-highlight-color: transparent;
     }
+    .key::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: .5;
+      background: radial-gradient(circle at 1px 1px, rgba(0,0,0,.08) 0 .5px, transparent .8px) 0 0 / 2px 2px; } /* PBT grain */
     .top {
-      position: absolute; left: 6px; right: 6px; top: 3px; bottom: 11px; border-radius: 5px;
-      background: radial-gradient(ellipse at 50% 45%, #b9bbb4, #c7c9c2 55%, #d2d4cd 100%);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(0,0,0,.08);
-      font: 600 20px/1 system-ui, -apple-system, "Helvetica Neue", sans-serif; color: #2b2d2a;
-      display: flex; align-items: center; justify-content: center; text-align: center;
+      position: absolute; left: 7px; right: 7px; top: 3px; bottom: 12px; border-radius: 5px 5px 4px 4px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 30%, rgba(0,0,0,0) 75%, rgba(0,0,0,.06)),
+        linear-gradient(90deg, #d9d3c6 0%, #e6e1d5 22%, #ece7db 50%, #e5e0d4 78%, #d6d0c3 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.65), inset 0 -1px 1px rgba(0,0,0,.06), 0 0 0 .5px rgba(0,0,0,.1);
+      font: 500 15px/1 Inter, "Helvetica Neue", Arial, sans-serif; color: #3a3833;
+      display: flex; align-items: flex-start; justify-content: flex-start; padding: 6px 0 0 7px;
     }
-    .key:hover .top { background: radial-gradient(ellipse at 50% 45%, #c0c2bb, #ced0c9 55%, #d8dad3 100%); }
-    .key:active, .key.down { transform: translateY(2px); box-shadow: 0 1px 0 rgba(255,255,255,.3) inset, 0 3px 0 -2px rgba(0,0,0,.6), 0 3px 4px rgba(0,0,0,.5); }
+    .key:hover .top { background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,0) 30%, rgba(0,0,0,0) 75%, rgba(0,0,0,.05)), linear-gradient(90deg, #ddd7ca 0%, #e9e4d8 22%, #efeade 50%, #e8e3d7 78%, #dad4c7 100%); }
+    .key:active, .key.down { transform: translateY(5px); box-shadow: 0 1px 0 rgba(0,0,0,.5), 0 0 0 -1px rgba(0,0,0,.55), 0 2px 2px rgba(0,0,0,.45); transition-duration: .035s; transition-timing-function: ease-in; }
     .key:focus-visible { outline: 2px solid #7cc4ff; outline-offset: 3px; }
   `,
   html: `
     <div class="stage">
-      <div class="housing"><button class="key" type="button" aria-label="key A"><span class="top">A</span></button></div>
+      <div class="plate"><div class="slot"><button class="key" type="button" aria-label="A"><span class="top">A</span></button></div></div>
     </div>`,
   init(root) {
     const k = root.querySelector('.key');

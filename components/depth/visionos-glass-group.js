@@ -1,68 +1,72 @@
 export default {
   id: 'dp-visionos-glass-group',
-  credit: 'Apple visionOS — frosted glass button group; hover glow follows the pointer, press pushes the button into the glass',
+  credit: 'Apple visionOS — glass ornament toolbar; gaze-style hover highlight follows the pointer, press pushes the button into the glass, selected buttons turn solid white',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .stage {
-      position: relative; padding: 34px 40px; border-radius: 12px; overflow: hidden; perspective: 900px;
-      background: #1b1d2a;
+      position: relative; padding: 34px 38px; border-radius: 12px; overflow: hidden; isolation: isolate;
+      background:
+        radial-gradient(120px 110px at 14% 18%, #8f7bff, transparent 70%),
+        radial-gradient(140px 120px at 92% 96%, #ff8a5c, transparent 70%),
+        radial-gradient(120px 90px at 60% 0%, #4cc3ff, transparent 70%),
+        linear-gradient(160deg, #2a2d48, #191b2b);
     }
-    .stage::before, .stage::after {
-      content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%; filter: blur(30px); opacity: .9;
-    }
-    .stage::before { left: -40px; top: -60px; background: #7c5cff; }
-    .stage::after { right: -30px; bottom: -70px; background: #ff7a59; }
-    .bar { --x: 50%; --y: 50%; position: relative; display: flex; gap: 8px; padding: 8px; transform-style: preserve-3d; }
+    .bar { position: relative; display: flex; gap: 4px; padding: 6px; border-radius: 999px; }
+    /* the glass: frosted, slightly luminous, with a specular rim brighter at the top-left */
     .glass {
-      position: absolute; inset: 0; border-radius: 999px; pointer-events: none; transform: translateZ(-1px);
-      background: rgba(255, 255, 255, .14);
-      -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), inset 0 -1px 0 rgba(255, 255, 255, .1), 0 18px 40px rgba(0, 0, 0, .35);
+      position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .1));
+      -webkit-backdrop-filter: blur(24px) saturate(1.8) brightness(1.05); backdrop-filter: blur(24px) saturate(1.8) brightness(1.05);
+      box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .18), 0 1px 2px rgba(0, 0, 0, .12), 0 16px 36px rgba(0, 0, 0, .3);
     }
-    .glow {
-      position: absolute; inset: 0; border-radius: 999px; pointer-events: none;
-      background: radial-gradient(90px 60px at var(--x) var(--y), rgba(255, 255, 255, .35), transparent 70%);
-      opacity: 0; transition: opacity .3s;
+    .glass::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.2px;
+      background: linear-gradient(150deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, .14) 32%, rgba(255, 255, 255, .04) 60%, rgba(255, 255, 255, .42));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
     }
-    .bar:hover .glow { opacity: 1; }
     .b {
-      position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer; color: #fff;
-      background: rgba(255, 255, 255, .06); display: grid; place-items: center;
-      transition: transform .25s cubic-bezier(.2, .9, .3, 1.3), background .2s, box-shadow .25s;
-      transform: translateZ(0);
+      --x: 50%; --y: 50%;
+      position: relative; width: 44px; height: 44px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+      color: rgba(255, 255, 255, .96); background: transparent; display: grid; place-items: center; overflow: hidden;
+      transition: transform .3s cubic-bezier(.32, .72, 0, 1), background-color .25s, color .2s, box-shadow .3s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .b:hover { background: rgba(255, 255, 255, .22); transform: translateZ(14px) scale(1.06); box-shadow: 0 10px 22px rgba(0, 0, 0, .3); }
-    .b:active { transform: translateZ(-10px) scale(.92); background: rgba(255, 255, 255, .1); box-shadow: inset 0 2px 8px rgba(0, 0, 0, .35); transition-duration: .08s; }
-    .b[aria-pressed="true"] { background: rgba(255, 255, 255, .92); color: #1b1d2a; }
-    .b svg { width: 22px; height: 22px; }
-    .b:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    /* gaze highlight: a soft specular spot that tracks the pointer inside the hovered button */
+    .b::before {
+      content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .25s;
+      background: radial-gradient(34px 34px at var(--x) var(--y), rgba(255, 255, 255, .42), rgba(255, 255, 255, .1) 70%, rgba(255, 255, 255, .06));
+    }
+    .b:hover::before { opacity: 1; }
+    .b:hover { box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .25); }
+    .b:active { transform: scale(.88); transition-duration: .12s; }
+    .b:active::before { opacity: 1; background: radial-gradient(40px 40px at var(--x) var(--y), rgba(255, 255, 255, .55), rgba(255, 255, 255, .18) 70%); }
+    .b[aria-pressed="true"] { background: rgba(255, 255, 255, .96); color: #111; }
+    .b[aria-pressed="true"]::before { background: radial-gradient(34px 34px at var(--x) var(--y), rgba(255, 255, 255, .9), transparent 70%); mix-blend-mode: overlay; }
+    .b svg { position: relative; width: 20px; height: 20px; }
+    .b:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   `,
   html: `
     <div class="stage">
-      <div class="bar" role="toolbar">
-        <span class="glass"></span><span class="glow"></span>
-        <button class="b" type="button" aria-pressed="false" aria-label="Microphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-        <button class="b" type="button" aria-pressed="false" aria-label="Camera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
-        <button class="b" type="button" aria-pressed="false" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/></svg></button>
-        <button class="b" type="button" aria-pressed="false" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg></button>
+      <div class="bar" role="toolbar" aria-label="Controls">
+        <span class="glass"></span>
+        <button class="b" type="button" aria-pressed="false" aria-label="Microphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg></button>
+        <button class="b" type="button" aria-pressed="false" aria-label="Camera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/></svg></button>
+        <button class="b" type="button" aria-pressed="false" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg></button>
+        <button class="b" type="button" aria-pressed="false" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
       </div>
     </div>`,
   init(root) {
-    const bar = root.querySelector('.bar');
-    let raf = 0, hover = false, tx = 50, ty = 50, cx = 50, cy = 50;
-    const tick = () => {
-      cx += (tx - cx) * .2; cy += (ty - cy) * .2;
-      bar.style.setProperty('--x', cx.toFixed(1) + '%'); bar.style.setProperty('--y', cy.toFixed(1) + '%');
-      raf = hover ? requestAnimationFrame(tick) : 0;
-    };
-    bar.addEventListener('pointerenter', () => { hover = true; if (!raf) raf = requestAnimationFrame(tick); });
-    bar.addEventListener('pointermove', (e) => {
-      const r = bar.getBoundingClientRect();
-      tx = (e.clientX - r.left) / r.width * 100; ty = (e.clientY - r.top) / r.height * 100;
+    const btns = root.querySelectorAll('.b');
+    btns.forEach((b) => {
+      b.addEventListener('pointermove', (e) => {
+        const r = b.getBoundingClientRect();
+        b.style.setProperty('--x', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+        b.style.setProperty('--y', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+      });
+      b.addEventListener('pointerleave', () => { b.style.setProperty('--x', '50%'); b.style.setProperty('--y', '50%'); });
+      b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')));
     });
-    bar.addEventListener('pointerleave', () => { hover = false; });
-    root.querySelectorAll('.b').forEach((b) => b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'))));
-    return () => cancelAnimationFrame(raf);
   },
 };

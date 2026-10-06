@@ -1,51 +1,62 @@
+// One-armed bandit lever seen from the side of the cabinet: chrome rod on a chromed pivot boss,
+// red ball grip. Pull it down (drag, click, or Space) — it swings forward to the stop and the return
+// spring throws it back past upright before settling. The whole swing (−15° … 80°) is reserved
+// inside the stage, so the ball never leaves it.
+const PX = 50, PY = 128, LEN = 104; // pivot and rod length (px)
+
 export default {
   id: 'ph-slot-lever',
-  credit: 'One-armed bandit — chrome slot-machine lever with a ball grip; pull down, it springs back',
+  credit: 'One-armed bandit — chrome slot-machine lever with a red ball grip; pull it down, it springs back past upright',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: inline-block; padding: 14px 18px 12px; border-radius: 12px; background: linear-gradient(#7a1a1a, #4a0d0d); box-shadow: inset 0 1px 0 rgba(255,255,255,.15); }
-    .wrap { position: relative; width: 110px; height: 150px; }
-    .mount { position: absolute; left: 0; top: 96px; width: 44px; height: 54px; border-radius: 6px; background: linear-gradient(90deg, #6f7378, #d9dcdf 35%, #9a9ea3 60%, #5b5f64); box-shadow: 0 3px 5px rgba(0,0,0,.6), inset 0 1px 0 #fff; }
-    .pivot { position: absolute; left: 10px; top: 110px; width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff, #a9acb0 55%, #4a4d51); box-shadow: 0 2px 3px rgba(0,0,0,.7); z-index: 3; }
+    .stage { display: inline-block; padding: 12px 14px 12px 0; border-radius: 12px; overflow: hidden;
+      background: radial-gradient(circle at 70% 20%, #4a1418, #23070a 80%); }
+    .wrap { position: relative; width: 186px; height: 156px; }
+    .cab { position: absolute; left: 0; top: -12px; bottom: -12px; width: 26px;
+      background: linear-gradient(90deg, #7c0d12, #c81d24 55%, #9b1218); box-shadow: inset -3px 0 0 #e9ecef, inset -5px 0 0 #8c9298, 3px 0 6px rgba(0,0,0,.5); }
+    .boss { position: absolute; left: ${PX - 30}px; top: ${PY - 22}px; width: 44px; height: 44px; border-radius: 6px 50% 50% 6px;
+      background: linear-gradient(180deg, #f2f4f6, #9aa0a6 45%, #d9dcdf 60%, #6c7177); box-shadow: 2px 3px 5px rgba(0,0,0,.6); }
     .arm {
-      position: absolute; left: 18px; top: 12px; width: 8px; height: 110px; border-radius: 4px; cursor: grab; touch-action: none;
-      background: linear-gradient(90deg, #4f5358, #e9ebed 40%, #b4b7bb 60%, #43474b); box-shadow: 2px 2px 4px rgba(0,0,0,.5);
-      transform-origin: 4px 110px; transform: rotate(0deg); transition: transform .55s cubic-bezier(.2,1.6,.4,1); z-index: 2;
+      position: absolute; left: ${PX - 5}px; top: ${PY - LEN}px; width: 10px; height: ${LEN}px; border-radius: 5px; cursor: grab; touch-action: none; outline: none;
+      background: linear-gradient(90deg, #5a5f65, #f4f6f7 35%, #c3c7cb 55%, #4c5056); box-shadow: 2px 2px 3px rgba(0,0,0,.45);
+      transform-origin: 5px ${LEN}px; transform: rotate(0deg); transition: transform .7s cubic-bezier(.25,1.9,.45,1);
     }
     .arm.drag { transition: none; cursor: grabbing; }
-    .arm::before { content: ''; position: absolute; left: 50%; top: -22px; width: 38px; height: 38px; margin-left: -19px; border-radius: 50%; background: radial-gradient(circle at 36% 30%, #ff9a95, #e4211c 40%, #7f0a07 90%); box-shadow: 0 4px 6px rgba(0,0,0,.6), inset 0 -3px 5px rgba(0,0,0,.3), inset 0 2px 2px rgba(255,255,255,.4); }
-    .arm::after { content: ''; position: absolute; left: 50%; top: -12px; width: 10px; height: 6px; margin-left: -5px; border-radius: 50%; background: rgba(255,255,255,.55); filter: blur(1px); }
-    .arm:focus-visible { outline: 2px solid #ffd27a; outline-offset: 4px; }
+    .arm.pull { transition: transform .22s cubic-bezier(.5,0,.8,.6); }
+    .ball { position: absolute; left: 50%; top: -17px; width: 38px; height: 38px; margin-left: -19px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle at 36% 30%, #ffd0cc 0, #ff6a5e 14%, #e01d16 42%, #9d0b07 78%, #5c0503 100%);
+      box-shadow: 2px 5px 6px rgba(0,0,0,.55), inset -2px -3px 5px rgba(60,0,0,.4); }
+    .arm:focus-visible .ball { box-shadow: 0 0 0 3px #ffd27a, 2px 5px 6px rgba(0,0,0,.55); }
+    .hub { position: absolute; left: ${PX - 11}px; top: ${PY - 11}px; width: 22px; height: 22px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle at 38% 32%, #ffffff, #b4b9be 50%, #565b61); box-shadow: 0 2px 3px rgba(0,0,0,.7); }
   `,
   html: `
     <div class="stage">
       <div class="wrap">
-        <div class="mount"></div>
-        <div class="arm" role="slider" tabindex="0" aria-label="slot lever" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
-        <div class="pivot"></div>
+        <div class="cab"></div>
+        <div class="boss"></div>
+        <div class="arm" role="slider" tabindex="0" aria-label="Slot machine lever" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="ball"></span></div>
+        <div class="hub"></div>
       </div>
     </div>`,
   init(root) {
     const arm = root.querySelector('.arm');
-    const MAX = 78;
-    let ang = 0, startY = 0, startA = 0, dragging = false, raf = 0;
+    const MAX = 80;
+    let ang = 0, startY = 0, startA = 0, dragging = false, moved = 0, raf = 0, t = 0;
     const render = () => { arm.style.transform = `rotate(${ang}deg)`; arm.setAttribute('aria-valuenow', Math.round(ang / MAX * 100)); };
-    arm.addEventListener('pointerdown', (e) => { dragging = true; startY = e.clientY; startA = ang; arm.setPointerCapture(e.pointerId); arm.classList.add('drag'); });
+    const springBack = () => { arm.classList.remove('drag', 'pull'); if (raf) cancelAnimationFrame(raf); raf = 0; ang = 0; render(); };
+    const fullPull = () => { clearTimeout(t); arm.classList.remove('drag'); arm.classList.add('pull'); ang = MAX; render(); t = setTimeout(springBack, 260); };
+    arm.addEventListener('pointerdown', (e) => { clearTimeout(t); dragging = true; moved = 0; startY = e.clientY; startA = ang; arm.setPointerCapture(e.pointerId); arm.classList.add('drag'); });
     arm.addEventListener('pointermove', (e) => {
       if (!dragging) return;
-      ang = Math.max(0, Math.min(MAX, startA + (e.clientY - startY) / 1.4));
+      moved = Math.max(moved, Math.abs(e.clientY - startY));
+      ang = Math.max(0, Math.min(MAX, startA + (e.clientY - startY) / 1.3));
       if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); });
     });
-    // springs the lever back and clears pointer + keyboard pull state
-    const reset = () => { dragging = false; arm.classList.remove('drag'); if (raf) cancelAnimationFrame(raf); raf = 0; ang = 0; render(); };
-    const release = () => { if (!dragging) return; reset(); };
-    arm.addEventListener('pointerup', release); arm.addEventListener('pointercancel', release); arm.addEventListener('lostpointercapture', release);
-    arm.addEventListener('keydown', (e) => {
-      if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown') { e.preventDefault(); arm.classList.add('drag'); ang = MAX; render(); }
-    });
-    arm.addEventListener('keyup', reset);
-    // focus leaving mid-pull (Tab, window blur) must not leave the lever stuck down
-    arm.addEventListener('blur', reset);
+    const release = (e) => { if (!dragging) return; dragging = false; if (e.type === 'pointerup' && moved < 4) fullPull(); else springBack(); };
+    arm.addEventListener('pointerup', release); arm.addEventListener('pointercancel', release);
+    arm.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown') { e.preventDefault(); if (!e.repeat) fullPull(); } });
+    return () => { clearTimeout(t); if (raf) cancelAnimationFrame(raf); };
   },
 };

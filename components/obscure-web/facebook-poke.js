@@ -1,41 +1,59 @@
+// Facebook 2008 (from a web.archive.org capture of facebook.com): #3b5998 blue, 11px "lucida grande",
+// the #eceff5 box header under a #94a3c4 rule, #3b5998 links, and the classic .inputsubmit button
+// (#3b5998 with #d9dfea / #0e1f5b bevel borders) next to the grey .inputaux Cancel.
 export default {
   id: 'ob-facebook-poke',
-  credit: 'Facebook (2008) — the "Poke" button: pale blue gradient, Lucida Grande; poke, get poked back, repeat',
+  credit: 'Facebook (2008) — the Pokes box: "Tom poked you." → poke back, confirm, and a moment later he pokes you again',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .fb { width: 280px; max-width: 100%; background: #fff; border: 1px solid #ccc; border-top: 3px solid #3b5998; border-radius: 0 0 12px 12px; font: 11px/1.4 "Lucida Grande", Tahoma, Verdana, Arial, sans-serif; color: #333; overflow: hidden; }
-    .hd { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #f7f7f7; border-bottom: 1px solid #e5e5e5; }
-    .av { width: 32px; height: 32px; background: #d8dfea; border: 1px solid #b7c1d6; display: grid; place-items: center; }
-    .av svg { width: 22px; height: 22px; fill: #fff; }
-    .nm { color: #3b5998; font-weight: 700; font-size: 12px; }
-    .bd { padding: 10px; display: flex; align-items: center; gap: 8px; }
-    .poke { padding: 2px 8px 3px; border: 1px solid; border-color: #d9dfea #0e1f5b #0e1f5b #d9dfea; background: #3b5998; color: #fff; cursor: pointer; font: 700 11px "Lucida Grande", Tahoma, Verdana, Arial, sans-serif; }
-    .poke:hover { background: #4b6bb8; }
-    .poke:active { border-color: #0e1f5b #d9dfea #d9dfea #0e1f5b; }
-    .poke:focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
-    .poke.lite { background: #eceff5; color: #3b5998; border-color: #d8dfea #899bc1 #899bc1 #d8dfea; }
-    .poke.lite:hover { background: #dfe5f0; }
-    .st { color: #666; flex: 1; }
-    .st b { color: #333; }
-    .hand { font-size: 14px; display: inline-block; transition: transform .2s; }
-    .fb.poked .hand { animation: poke .4s ease-out; }
-    @keyframes poke { 0% { transform: translateX(0); } 40% { transform: translateX(10px) rotate(-10deg); } 100% { transform: translateX(0); } }
+    .fb { width: 300px; max-width: 100%; background: #fff; border-radius: 12px; overflow: hidden; font: 11px/1.36 "lucida grande", tahoma, verdana, arial, sans-serif; color: #333; padding-bottom: 10px; }
+    .top { height: 30px; padding: 0 10px; background: #3b5998; color: #fff; font: 700 19px/30px Klavika, "lucida grande", tahoma, sans-serif; letter-spacing: -.6px; }
+    .hd { margin: 10px 10px 0; padding: 3px 6px 4px; background: #eceff5; border-top: 1px solid #94a3c4; font-weight: 700; color: #333; display: flex; justify-content: space-between; }
+    .hd span { font-weight: 400; color: #3b5998; }
+    .bd { display: flex; gap: 8px; margin: 8px 10px 0; min-height: 50px; }
+    .pic { width: 50px; height: 50px; flex: none; background: #e6eaf2; border: 1px solid #ccc; overflow: hidden; }
+    .pic svg { width: 100%; height: 100%; display: block; }
+    .txt { flex: 1; min-width: 0; }
+    .ln { min-height: 30px; }
+    a { color: #3b5998; text-decoration: none; cursor: pointer; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible, button:focus-visible { outline: 1px dotted #333; outline-offset: 1px; }
+    .acts { display: flex; gap: 6px; align-items: center; height: 22px; }
+    .inputsubmit { padding: 2px 15px 3px; border: 1px solid; border-color: #d9dfea #0e1f5b #0e1f5b #d9dfea; background: #3b5998; color: #fff; font: 700 11px "lucida grande", tahoma, verdana, arial, sans-serif; cursor: pointer; }
+    .inputsubmit:active { background: #4f6aa3; border-color: #0e1f5b #d9dfea #d9dfea #0e1f5b; }
+    .inputaux { padding: 2px 10px 3px; border: 1px solid; border-color: #e7e7e7 #666 #666 #e7e7e7; background: #f0f0f0; color: #000; font: 11px "lucida grande", tahoma, verdana, arial, sans-serif; cursor: pointer; }
+    .v { display: none; } .s0 .v0, .s1 .v1, .s2 .v2 { display: flex; } .s0 .t0, .s1 .t1, .s2 .t2 { display: block; }
+    .t0, .t1, .t2 { display: none; }
+    .sep { color: #999; }
   `,
   html: `
-    <div class="fb">
-      <div class="hd"><span class="av" aria-hidden="true"><svg viewBox="0 0 22 22"><circle cx="11" cy="8" r="4.5"/><path d="M2 21c0-5 4-8 9-8s9 3 9 8z"/></svg></span><span class="nm">Tom Anderson</span></div>
-      <div class="bd"><span class="hand" aria-hidden="true">👉</span><button class="poke" type="button">Poke</button><span class="st" aria-live="polite"></span></div>
+    <div class="fb s0">
+      <div class="top" aria-hidden="true">facebook</div>
+      <div class="hd">Pokes<span class="cnt">1</span></div>
+      <div class="bd">
+        <div class="pic" aria-hidden="true"><svg viewBox="0 0 50 50"><rect width="50" height="50" fill="#e6eaf2"/><circle cx="25" cy="20" r="10" fill="#b4bfd6"/><path d="M6 50c0-11 8.5-18 19-18s19 7 19 18z" fill="#b4bfd6"/></svg></div>
+        <div class="txt" aria-live="polite">
+          <div class="ln t0"><a href="#">Tom Anderson</a> poked you.</div>
+          <div class="ln t1">You are about to poke <a href="#">Tom Anderson</a>. Poke?</div>
+          <div class="ln t2">You have poked <a href="#">Tom</a>.</div>
+          <div class="acts v v0"><a href="#" class="pb" role="button">Poke back</a><span class="sep">-</span><a href="#" class="rm" role="button">Remove</a></div>
+          <div class="acts v v1"><button class="inputsubmit" type="button">Poke</button><button class="inputaux" type="button">Cancel</button></div>
+          <div class="acts v v2"><span class="sep">Waiting for Tom…</span></div>
+        </div>
+      </div>
     </div>`,
   init(root) {
-    const fb = root.querySelector('.fb'), poke = root.querySelector('.poke'), st = root.querySelector('.st');
-    let n = 0, t = 0;
-    poke.addEventListener('click', () => {
-      n++; clearTimeout(t);
-      fb.classList.remove('poked'); void fb.offsetWidth; fb.classList.add('poked');
-      poke.textContent = 'Poked'; poke.classList.add('lite');
-      st.innerHTML = `You poked <b>Tom</b>.${n > 1 ? ` (${n})` : ''}`;
-      t = setTimeout(() => { st.innerHTML = '<b>Tom</b> poked you back.'; poke.textContent = 'Poke Back'; poke.classList.remove('lite'); }, 1600);
+    const fb = root.querySelector('.fb'), cnt = root.querySelector('.cnt');
+    let t = 0, n = 0;
+    const set = (s) => { fb.className = 'fb s' + s; };
+    root.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+    root.querySelector('.pb').addEventListener('click', () => { set(1); root.querySelector('.inputsubmit').focus(); });
+    root.querySelector('.rm').addEventListener('click', () => { set(2); cnt.textContent = '0'; clearTimeout(t); t = setTimeout(() => { set(0); cnt.textContent = '1'; }, 2500); });
+    root.querySelector('.inputaux').addEventListener('click', () => { set(0); root.querySelector('.pb').focus(); });
+    root.querySelector('.inputsubmit').addEventListener('click', () => {
+      n++; set(2); cnt.textContent = '0';
+      clearTimeout(t); t = setTimeout(() => { set(0); cnt.textContent = '1'; }, 1800);
     });
     return () => clearTimeout(t);
   },

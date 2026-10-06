@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .stage {
       background: #e5e5e5;
       border-radius: 12px;
@@ -17,7 +18,7 @@ export default {
       overflow: hidden;
       border-radius: 8px;
       isolation: isolate;
-      width: 240px;
+      width: 268px;
       height: 84px;
       background: #fff;
       display: grid;
@@ -39,12 +40,14 @@ export default {
       z-index: 1;
       color: #fff;
       mix-blend-mode: difference;
-      font: 800 38px/1 Syne, 'Space Grotesk', system-ui, sans-serif;
-      letter-spacing: .06em;
+      font: 800 34px/1 Syne, 'Space Grotesk', system-ui, sans-serif;
+      letter-spacing: .01em;
+      padding-left: .01em;
+      white-space: nowrap;
       text-transform: uppercase;
       transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
     }
-    .btn:hover .t { transform: scale(1.06); }
+    .btn:hover .t { transform: scale(1.04); }
     .btn:active .t { transform: scale(.96); }
     .btn:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
     @keyframes slide { to { transform: translateX(41.57px); } }

@@ -1,81 +1,59 @@
+// Persona 5 pause menu: #e60012 field with halftone dots and a black jagged burst, each entry a tilted
+// black shard with ransom-note lettering (per-letter size / tilt jitter). The focused entry flips to a white
+// shard with a red jagged echo behind it and black letters, snapping in with an overshoot.
+const jit = [[-6, 1.12], [4, .92], [-2, 1.04], [7, .96], [-4, 1.1], [3, .9], [-7, 1.06], [5, 1]];
+const word = (w, k) => [...w].map((ch, i) => { const [r, s] = jit[(i + k * 3) % jit.length]; return `<span class="ch${(i + k) % 4 === 1 ? ' inv' : ''}" style="--r:${r}deg;--s:${s}">${ch}</span>`; }).join('');
+const ITEMS = ['Skill', 'Item', 'Equip', 'Persona', 'Stats'];
+const TILT = [-8, -4, -9, -5, -7];
+
 export default {
   id: 'gm-persona-menu',
-  credit: 'Atlus Persona 5 — the slanted red/black pause menu; the hovered entry jumps to white with a jagged black slash behind it',
+  credit: 'Atlus Persona 5 — the pause menu: tilted black shards with ransom-note letters on #e60012; the focused entry snaps to a white shard with a jagged red echo',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: #d40b1e;
-      background-image: repeating-linear-gradient(135deg, rgba(0,0,0,.12) 0 2px, transparent 2px 14px);
-      padding: 20px 34px 22px 26px;
-      border-radius: 12px;
-      overflow: hidden;
-      position: relative; }
-    .stage::before { content: "";
-      position: absolute;
-      left: -30px;
-      top: -20px;
-      width: 140px;
-      height: 200%;
-      background: #000;
-      transform: rotate(14deg);
-      clip-path: polygon(0 0, 100% 0, 78% 100%, 10% 100%); }
+    .stage { position: relative; width: 250px; padding: 16px 0 18px 18px; border-radius: 12px; overflow: hidden; background: #e60012; }
+    .stage::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle, rgba(0,0,0,.28) 1.3px, transparent 1.6px) 0 0 / 7px 7px; pointer-events: none;
+      -webkit-mask: linear-gradient(115deg, #000 10%, transparent 70%); mask: linear-gradient(115deg, #000 10%, transparent 70%); }
+    .burst { position: absolute; right: -60px; top: -40px; width: 230px; height: 300px; background: #000;
+      clip-path: polygon(40% 0, 55% 18%, 78% 4%, 70% 28%, 100% 30%, 76% 46%, 96% 66%, 68% 62%, 74% 92%, 52% 70%, 36% 100%, 34% 70%, 6% 82%, 24% 56%, 0 40%, 28% 34%, 14% 10%, 38% 22%); }
     .menu { position: relative; display: flex; flex-direction: column; gap: 4px; }
-    .mi { position: relative;
-      border: none;
-      background: none;
-      cursor: pointer;
-      padding: 6px 26px 6px 18px;
-      text-align: left;
-      color: #fff;
-      font: 800 italic 20px 'Syne', 'Unbounded', system-ui, sans-serif;
-      letter-spacing: -.5px;
-      text-transform: uppercase;
-      transform: skewX(-12deg) rotate(-4deg);
-      transform-origin: left center;
-      transition: transform .1s, color .1s; }
-    .mi:nth-child(odd) { margin-left: 10px; } .mi:nth-child(3) { margin-left: 22px; }
-    .mi .bg { position: absolute;
-      inset: 0;
-      background: #000;
-      clip-path: polygon(0 20%, 8% 0, 96% 6%, 100% 70%, 92% 100%, 4% 94%);
-      z-index: -1;
-      transform: scaleX(.3);
-      transform-origin: left;
-      opacity: 0;
-      transition: transform .12s cubic-bezier(.2,.9,.3,1.3), opacity .1s; }
-    .mi:hover, .mi:focus-visible, .mi.sel { color: #fff;
-      transform: skewX(-12deg) rotate(-4deg) translateX(10px) scale(1.08);
-      outline: none; }
-    .mi:hover .bg, .mi:focus-visible .bg, .mi.sel .bg { transform: scaleX(1); opacity: 1; }
-    .mi.sel { color: #d40b1e; } .mi.sel .bg { background: #fff; }
-    .mi .lbl { position: relative; z-index: 1; }
-    .mi:not(:hover):not(:focus-visible):not(.sel) { color: #1a0004; text-shadow: 1px 1px 0 rgba(255,255,255,.3); }
-    .star { position: absolute;
-      right: 8px;
-      top: 50%;
-      width: 12px;
-      height: 12px;
-      transform: translateY(-50%) rotate(0);
-      opacity: 0;
-      transition: opacity .1s, transform .3s; }
-    .mi.sel .star { opacity: 1; transform: translateY(-50%) rotate(180deg); }
-    .star svg { fill: #d40b1e; width: 100%; height: 100%; }
+    .mi { position: relative; align-self: flex-start; border: none; background: none; cursor: pointer; padding: 3px 24px 4px 14px; height: 36px;
+      transform: rotate(var(--t)) translateX(var(--o, 0px)); transform-origin: left center; transition: transform 120ms cubic-bezier(.3,1.8,.5,1); }
+    .mi:nth-child(2) { --o: 14px; } .mi:nth-child(3) { --o: 4px; } .mi:nth-child(4) { --o: 20px; } .mi:nth-child(5) { --o: 8px; }
+    .mi .bg, .mi .echo { position: absolute; inset: 0; pointer-events: none; }
+    .mi .bg { background: #000; clip-path: polygon(0 12%, 8% 0, 96% 8%, 100% 64%, 90% 100%, 3% 90%); transition: background 80ms; }
+    .mi .echo { background: #e60012; clip-path: polygon(2% 30%, 12% 2%, 100% 0, 92% 50%, 104% 100%, 0 88%); transform: translate(7px, 5px) scale(1.06); opacity: 0; box-shadow: none; }
+    .mi .echo::after { content: ""; position: absolute; inset: 3px; background: #000; clip-path: inherit; }
+    .lbl { position: relative; display: flex; align-items: center; height: 100%; gap: 0; white-space: nowrap; }
+    .ch { display: inline-block; color: #fff; font: 800 22px/1 'Bricolage Grotesque', 'Unbounded', system-ui, sans-serif; font-variation-settings: 'wdth' 75; text-transform: uppercase;
+      transform: rotate(var(--r)) scale(var(--s)); margin-right: -1px; }
+    .ch.inv { background: #fff; color: #000; padding: 0 2px; margin: 0 1px; }
+    .mi:hover { --o: 22px; }
+    .mi:hover .bg { animation: jit 160ms steps(2) 1; }
+    @keyframes jit { 50% { clip-path: polygon(0 4%, 10% 6%, 98% 0, 96% 70%, 92% 96%, 0 100%); } }
+    .mi.sel { --o: 26px; transform: rotate(var(--t)) translateX(var(--o)) scale(1.12); z-index: 2; }
+    .mi.sel .bg { background: #fff; }
+    .mi.sel .echo { opacity: 1; }
+    .mi.sel .ch { color: #000; }
+    .mi.sel .ch.inv { background: #000; color: #fff; }
+    .mi:focus-visible { outline: none; }
+    .mi:focus-visible .bg { box-shadow: none; background: #fff; }
+    .mi:focus-visible .ch { color: #000; }
   `,
   html: `
     <div class="stage">
+      <div class="burst"></div>
       <div class="menu" role="menu">
-        <button class="mi sel" type="button" role="menuitemradio" aria-checked="true"><span class="bg"></span><span class="lbl">Skill</span><span class="star"><svg viewBox="0 0 10 10"><path d="M5 0l1.4 3.6L10 5 6.4 6.4 5 10 3.6 6.4 0 5l3.6-1.4z"/></svg></span></button>
-        <button class="mi" type="button" role="menuitemradio" aria-checked="false"><span class="bg"></span><span class="lbl">Item</span><span class="star"><svg viewBox="0 0 10 10"><path d="M5 0l1.4 3.6L10 5 6.4 6.4 5 10 3.6 6.4 0 5l3.6-1.4z"/></svg></span></button>
-        <button class="mi" type="button" role="menuitemradio" aria-checked="false"><span class="bg"></span><span class="lbl">Equip</span><span class="star"><svg viewBox="0 0 10 10"><path d="M5 0l1.4 3.6L10 5 6.4 6.4 5 10 3.6 6.4 0 5l3.6-1.4z"/></svg></span></button>
-        <button class="mi" type="button" role="menuitemradio" aria-checked="false"><span class="bg"></span><span class="lbl">Persona</span><span class="star"><svg viewBox="0 0 10 10"><path d="M5 0l1.4 3.6L10 5 6.4 6.4 5 10 3.6 6.4 0 5l3.6-1.4z"/></svg></span></button>
-        <button class="mi" type="button" role="menuitemradio" aria-checked="false"><span class="bg"></span><span class="lbl">System</span><span class="star"><svg viewBox="0 0 10 10"><path d="M5 0l1.4 3.6L10 5 6.4 6.4 5 10 3.6 6.4 0 5l3.6-1.4z"/></svg></span></button>
+        ${ITEMS.map((w, k) => `<button class="mi${k === 0 ? ' sel' : ''}" type="button" role="menuitemradio" aria-checked="${k === 0}" aria-label="${w}" style="--t:${TILT[k]}deg"><span class="echo"></span><span class="bg"></span><span class="lbl" aria-hidden="true">${word(w, k)}</span></button>`).join('')}
       </div>
     </div>`,
   init(root) {
     const items = [...root.querySelectorAll('.mi')];
+    const pick = (m) => items.forEach((o) => { o.classList.toggle('sel', o === m); o.setAttribute('aria-checked', String(o === m)); });
     items.forEach((m, i) => {
-      m.addEventListener('click', () => items.forEach((o) => { o.classList.toggle('sel', o === m); o.setAttribute('aria-checked', String(o === m)); }));
-      m.addEventListener('keydown', (e) => { const d = { ArrowDown: 1, ArrowUp: -1 }[e.key]; if (!d) return; e.preventDefault(); items[(i + d + items.length) % items.length].focus(); });
+      m.addEventListener('click', () => pick(m));
+      m.addEventListener('keydown', (e) => { const d = { ArrowDown: 1, ArrowUp: -1 }[e.key]; if (!d) return; e.preventDefault(); const n = items[(i + d + items.length) % items.length]; pick(n); n.focus(); });
     });
   },
 };

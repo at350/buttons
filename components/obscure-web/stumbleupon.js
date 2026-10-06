@@ -1,6 +1,6 @@
 export default {
   id: 'ob-stumbleupon',
-  credit: 'StumbleUpon toolbar (2007) — the green "Stumble!" button with the swirl logo and thumbs up / down; every stumble lands you on a different-coloured page',
+  credit: 'StumbleUpon toolbar — the green "Stumble!" button with the SU logo and thumbs up / down; every stumble lands you on a different-coloured page',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -12,12 +12,11 @@ export default {
     .st:focus-visible, .th:focus-visible { outline: 2px solid #1a5fb4; outline-offset: 1px; }
     .st svg { width: 16px; height: 16px; }
     .th { width: 24px; height: 24px; border: 1px solid #aaa; border-radius: 3px; background: linear-gradient(#fff, #e6e6e6); cursor: pointer; display: grid; place-items: center; padding: 0; color: #555; }
-    .th svg { width: 14px; height: 14px; fill: currentColor; }
+    .th svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .th:hover { background: #fff; }
     .th.on.up { color: #fff; background: #5fa82d; border-color: #3e7a1e; }
     .th.on.dn { color: #fff; background: #c33; border-color: #911; }
-    .dn svg { transform: rotate(180deg); }
-    .sp { flex: 1; }
+        .sp { flex: 1; }
     .cnt { color: #555; font-size: 10px; }
     .page { height: 96px; display: grid; place-items: center; background: #e8f0fe; transition: background .4s; font: 700 13px Georgia, serif; color: rgba(0,0,0,.55); }
     .page.flash { animation: fl .3s; }
@@ -26,9 +25,9 @@ export default {
   html: `
     <div class="frame">
       <div class="tb">
-        <button class="st" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5" fill="#fff"/><path d="M8 3.5a2.5 2.5 0 0 1 2.5 2.5v.5h-2V6a.5.5 0 0 0-1 0v4a2.5 2.5 0 0 1-5 0V9h2v1a.5.5 0 0 0 1 0V6A2.5 2.5 0 0 1 8 3.5zm2.5 5h2V10a2.5 2.5 0 0 1-2.5 2.5c-.9 0-1.6-.4-2.1-1l1.2-1.4c.2.3.5.4.9.4a.5.5 0 0 0 .5-.5z" fill="#5fa82d"/></svg>Stumble!</button>
-        <button class="th up" type="button" aria-pressed="false" aria-label="I like it"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 6h2l1-4c1 0 2 .7 2 2L8.5 6H12a1 1 0 0 1 1 1l-1 5a1 1 0 0 1-1 1H4zM1 6h2v7H1z"/></svg></button>
-        <button class="th dn" type="button" aria-pressed="false" aria-label="Not for me"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 6h2l1-4c1 0 2 .7 2 2L8.5 6H12a1 1 0 0 1 1 1l-1 5a1 1 0 0 1-1 1H4zM1 6h2v7H1z"/></svg></button>
+        <button class="st" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#fff"/><path fill="#eb4924" d="M12 0C5.37 0 0 5.373 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12c0-6.627-5.37-12-12-12zm-.618 8.907v4.949c0 1.854-1.692 3.251-3.45 3.251-1.644 0-3.18-.776-3.354-2.634V11.37h2.475v2.475c0 .615.436.716.878.716.439 0 .975-.099.975-.717v-4.95c.05-1.843 1.58-3.014 3.29-3.014 1.744 0 2.899 1.319 2.899 3.016v1.05l-1.228.585-1.248-.585V8.289s-.164-.18-.42-.18c-.424 0-.816.18-.817.798zm8.04 4.949c0 1.854-1.59 3.111-3.353 3.111-1.761 0-3.45-1.257-3.45-3.112V11.38h2.476v2.475c0 .618.535.717.975.717.44 0 .879-.099.879-.717V11.38h2.461v2.475l.012.001z"/></svg>Stumble!</button>
+        <button class="th up" type="button" aria-pressed="false" aria-label="I like it"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/><path d="M7 10v12"/></svg></button>
+        <button class="th dn" type="button" aria-pressed="false" aria-label="Not for me"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/><path d="M17 14V2"/></svg></button>
         <span class="sp"></span><span class="cnt"><b class="n">0</b> stumbles</span>
       </div>
       <div class="page" aria-live="polite"><span class="pt">example.com</span></div>

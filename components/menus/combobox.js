@@ -1,49 +1,110 @@
+const L = (inner, cls = '') => `<svg class="${cls}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+const FW = [['next.js', 'Next.js'], ['sveltekit', 'SvelteKit'], ['nuxt.js', 'Nuxt.js'], ['remix', 'Remix'], ['astro', 'Astro']];
+
 export default {
   id: 'mn-combobox',
-  credit: 'Headless UI / Tailwind Listbox — select-style button with spinning chevron and checked option',
+  credit: 'shadcn/ui — Combobox (Popover + cmdk Command): outline trigger, searchable list, check on the chosen value',
   size: 'auto',
   css: `
-    :host { display: inline-block; position: relative; }
+    :host { display: inline-block; }
     :host([data-open]) { z-index: 30; }
-    .wrap { position: relative; width: 220px; max-width: 100%; font: 14px/20px -apple-system, "Inter", system-ui, sans-serif; color: #111827; }
-    .btn { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 40px; padding: 0 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; font: inherit; color: inherit; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.05); text-align: left; }
-    .btn:hover { border-color: #9ca3af; }
-    .btn:focus-visible { outline: 0; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,.25); }
-    .btn svg { color: #6b7280; transition: transform .25s cubic-bezier(.2,.8,.2,1); flex: none; }
-    .btn[aria-expanded="true"] svg { transform: rotate(180deg); }
-    .lst { position: absolute; top: 46px; left: 0; right: 0; padding: 4px; background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1); opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .12s, transform .12s, visibility 0s .12s; }
-    .lst.open { opacity: 1; visibility: visible; transform: none; transition: opacity .12s, transform .12s, visibility 0s; }
-    .o { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border: 0; border-radius: 6px; background: none; font: inherit; color: inherit; cursor: pointer; text-align: left; }
-    .o:hover, .o:focus-visible { background: #eef2ff; color: #4338ca; outline: 0; }
-    .o svg { visibility: hidden; margin-left: auto; color: #4f46e5; flex: none; }
-    .o[aria-selected="true"] { font-weight: 600; }
-    .o[aria-selected="true"] svg { visibility: visible; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+    .wrap { position: relative; width: 200px; font: 400 14px/20px Inter, Geist, system-ui, sans-serif; color: #09090b; -webkit-font-smoothing: antialiased; }
+    .trig { display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; width: 200px; height: 36px; padding: 0 12px; border: 1px solid #e4e4e7; border-radius: 6px; background: #fff; color: #09090b; font: 500 14px/20px Inter, Geist, system-ui, sans-serif; white-space: nowrap; cursor: pointer; outline: none; box-shadow: 0 1px 2px 0 rgba(0,0,0,.05); transition: color 150ms cubic-bezier(.4,0,.2,1), background-color 150ms cubic-bezier(.4,0,.2,1), border-color 150ms cubic-bezier(.4,0,.2,1), box-shadow 150ms cubic-bezier(.4,0,.2,1); }
+    .trig:hover { background: #f4f4f5; }
+    .trig:focus-visible { border-color: #a1a1aa; box-shadow: 0 0 0 3px rgba(161,161,170,.5); }
+    .trig .val { overflow: hidden; text-overflow: ellipsis; }
+    .trig svg { flex: none; opacity: .5; }
+    .pop { position: absolute; top: 40px; left: 0; width: 200px; display: none; flex-direction: column; overflow: hidden; background: #fff; border: 1px solid #e4e4e7; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1); transform-origin: 50% 0; }
+    .pop.open { display: flex; animation: enter 150ms ease; }
+    .pop.closing { display: flex; animation: exit 150ms ease forwards; pointer-events: none; }
+    @keyframes enter { from { opacity: 0; transform: translateY(-8px) scale(.95); } }
+    @keyframes exit { to { opacity: 0; transform: scale(.95); } }
+    .in { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-bottom: 1px solid #e4e4e7; }
+    .in svg { flex: none; opacity: .5; }
+    input { flex: 1; min-width: 0; height: 40px; padding: 12px 0; border: 0; background: transparent; color: #09090b; font: inherit; outline: none; }
+    input::placeholder { color: #71717a; }
+    .list { max-height: 300px; overflow-x: hidden; overflow-y: auto; scroll-padding: 4px 0; }
+    .grp { padding: 4px; }
+    .it { position: relative; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; cursor: default; user-select: none; white-space: nowrap; }
+    .it[data-selected="true"] { background: #f4f4f5; color: #18181b; }
+    .it svg { flex: none; margin-left: auto; color: #71717a; opacity: 0; }
+    .it[aria-checked="true"] svg { opacity: 1; }
+    .it[hidden] { display: none; }
+    .empty { display: none; padding: 24px 0; text-align: center; }
+    .list.none .empty { display: block; }
+    .list.none .grp { display: none; }
   `,
   html: `
     <div class="wrap">
-      <button class="btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="val">Select a status</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></button>
-      <div class="lst" role="listbox">
-        <button class="o" type="button" role="option" aria-selected="false"><span class="dot" style="background:#22c55e"></span>Active<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg></button>
-        <button class="o" type="button" role="option" aria-selected="false"><span class="dot" style="background:#f59e0b"></span>Paused<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg></button>
-        <button class="o" type="button" role="option" aria-selected="false"><span class="dot" style="background:#3b82f6"></span>In review<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg></button>
-        <button class="o" type="button" role="option" aria-selected="false"><span class="dot" style="background:#a855f7"></span>Scheduled<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg></button>
-        <button class="o" type="button" role="option" aria-selected="false"><span class="dot" style="background:#9ca3af"></span>Archived<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg></button>
+      <button class="trig" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="cb-list"><span class="val">Select framework...</span>${L('<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>')}</button>
+      <div class="pop">
+        <div class="in">${L('<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>')}<input type="text" placeholder="Search framework..." aria-label="Search framework" role="combobox" aria-expanded="true" aria-controls="cb-list" aria-autocomplete="list" autocomplete="off" autocorrect="off" spellcheck="false"></div>
+        <div class="list" id="cb-list" role="listbox" aria-label="Frameworks">
+          <div class="empty" role="presentation">No framework found.</div>
+          <div class="grp" role="presentation">
+            ${FW.map(([v, l], i) => `<div class="it" id="cb-${i}" role="option" data-value="${v}" aria-selected="false" aria-checked="false">${l}${L('<path d="M20 6 9 17l-5-5"/>')}</div>`).join('')}
+          </div>
+        </div>
       </div>
     </div>`,
   init(root, host) {
-    const btn = root.querySelector('.btn'), lst = root.querySelector('.lst'), val = root.querySelector('.val');
-    const opts = [...root.querySelectorAll('.o')];
-    const onDoc = (e) => { if (!host.contains(e.target)) set(false); };
-    const set = (v) => { btn.setAttribute('aria-expanded', v); lst.classList.toggle('open', v); host.toggleAttribute('data-open', v); document[v ? 'addEventListener' : 'removeEventListener']('pointerdown', onDoc, true); if (v) (opts.find((o) => o.getAttribute('aria-selected') === 'true') || opts[0]).focus({ preventScroll: true }); };
-    btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
-    btn.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); set(true); } });
-    opts.forEach((o) => o.addEventListener('click', () => { opts.forEach((x) => x.setAttribute('aria-selected', x === o)); val.textContent = o.textContent; set(false); btn.focus({ preventScroll: true }); }));
-    lst.addEventListener('keydown', (e) => {
-      const i = opts.indexOf(root.activeElement);
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); opts[(i + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length].focus({ preventScroll: true }); }
-      else if (e.key === 'Escape' || e.key === 'Tab') { e.preventDefault(); set(false); btn.focus({ preventScroll: true }); }
+    const trig = root.querySelector('.trig'), val = trig.querySelector('.val'), pop = root.querySelector('.pop'), input = root.querySelector('input'), list = root.querySelector('.list');
+    const items = [...root.querySelectorAll('.it')];
+    let open = false, value = '', hl = 0, closeT = 0;
+    const visible = () => items.filter((x) => !x.hidden);
+    const paint = (scroll) => {
+      const v = visible(); hl = Math.max(0, Math.min(hl, v.length - 1));
+      items.forEach((x) => { x.dataset.selected = 'false'; x.setAttribute('aria-selected', 'false'); });
+      const t = v[hl];
+      if (t) { t.dataset.selected = 'true'; t.setAttribute('aria-selected', 'true'); input.setAttribute('aria-activedescendant', t.id); if (scroll) t.scrollIntoView({ block: 'nearest' }); }
+      else input.removeAttribute('aria-activedescendant');
+      list.classList.toggle('none', !v.length);
+    };
+    // cmdk-style fuzzy match: query characters must appear in order
+    const match = (text, q) => { let j = 0; for (const c of text) if (c === q[j]) j++; return j === q.length; };
+    const filter = () => { const q = input.value.trim().toLowerCase(); items.forEach((x) => { x.hidden = !!q && !match(x.textContent.toLowerCase(), q); }); hl = 0; paint(); };
+    const onDoc = (e) => { if (!e.composedPath().includes(host)) set(false); };
+    const set = (v, focusTrig) => {
+      if (v === open) return; open = v;
+      clearTimeout(closeT);
+      trig.setAttribute('aria-expanded', v);
+      document[v ? 'addEventListener' : 'removeEventListener']('pointerdown', onDoc, true);
+      if (v) {
+        host.toggleAttribute('data-open', true);
+        pop.classList.remove('closing'); pop.classList.add('open');
+        input.value = ''; filter();
+        const i = items.findIndex((x) => x.dataset.value === value); hl = i < 0 ? 0 : i; paint(true);
+        input.focus({ preventScroll: true });
+      } else {
+        pop.classList.remove('open'); pop.classList.add('closing');
+        closeT = setTimeout(() => { pop.classList.remove('closing'); host.toggleAttribute('data-open', false); }, 150);
+        if (focusTrig) trig.focus({ preventScroll: true });
+      }
+    };
+    const choose = (it) => {
+      if (!it) return;
+      value = it.dataset.value === value ? '' : it.dataset.value;
+      items.forEach((x) => x.setAttribute('aria-checked', x.dataset.value === value));
+      val.textContent = value ? it.textContent : 'Select framework...';
+      set(false, true);
+    };
+    trig.addEventListener('click', () => set(!open));
+    trig.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); set(true); } });
+    input.addEventListener('input', filter);
+    input.addEventListener('keydown', (e) => {
+      const v = visible();
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (v.length) { hl = (hl + 1) % v.length; paint(true); } }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); if (v.length) { hl = (hl - 1 + v.length) % v.length; paint(true); } }
+      else if (e.key === 'Home') { e.preventDefault(); hl = 0; paint(true); }
+      else if (e.key === 'End') { e.preventDefault(); hl = v.length - 1; paint(true); }
+      else if (e.key === 'Enter') { e.preventDefault(); choose(v[hl]); }
+      else if (e.key === 'Escape' || e.key === 'Tab') { e.preventDefault(); set(false, true); }
     });
-    return () => set(false);
+    items.forEach((it) => {
+      it.addEventListener('pointermove', () => { const i = visible().indexOf(it); if (i !== hl) { hl = i; paint(); } });
+      it.addEventListener('click', () => choose(it));
+    });
+    list.addEventListener('pointerdown', (e) => e.preventDefault());
+    return () => { set(false); clearTimeout(closeT); host.toggleAttribute('data-open', false); };
   },
 };

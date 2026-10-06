@@ -12,6 +12,7 @@ function shade(cv, el, w, h, fs, o = {}) {
   const setup = () => {
     gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
     if (!gl) return false;
+    gl.getExtension('OES_standard_derivatives'); // fwidth() for pixel-exact anti-aliasing
     const sh = (type, src) => {
       const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
       if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) { console.error('[shader]', name(), gl.getShaderInfoLog(x)); return null; }
@@ -74,48 +75,67 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Gooey button: a pill SDF joined to three orbiting satellite drops with a polynomial smooth-min, so they
+// bud off and melt back in. Hover pulls one drop to the pointer on a spring (a neck of goo follows it);
+// press squashes the pill and throws the drops outward. Shaded as glossy candy with a fwidth-AA edge.
+const FS = `#extension GL_OES_standard_derivatives : enable
+precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res,u_b;
+float smin(float a,float b,float k){float h=clamp(.5+.5*(b-a)/k,0.,1.);return mix(b,a,h)-k*h*(1.-h);}
+float sdRR(vec2 p,vec2 b,float r){vec2 q=abs(p)-b+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
+float W;
+float scene(vec2 p){
+ vec2 c=vec2(W*.5,.5);
+ float sq=u_press;
+ float d=sdRR(p-c,vec2(.62+.06*sq,.19-.035*sq),.19-.035*sq);
+ float t=u_time*.55;
+ for(int i=0;i<3;i++){float fi=float(i); float ang=t*(1.+fi*.23)+fi*2.094;
+  vec2 o=vec2(cos(ang)*(.86+.12*sin(t*1.7+fi)),sin(ang)*.36)*(1.+.35*sq);
+  d=smin(d,length(p-c-o)-(.07+.015*fi),.16);}
+ vec2 b=u_b*vec2(W,1.);
+ d=smin(d,length(p-b)-.085*u_hover,.2*u_hover+.001);
+ return d;}
 void main(){
- float W=u_res.x/u_res.y; vec2 p=gl_FragCoord.xy/u_res*vec2(W,1.);
- vec2 a=vec2(W*.5,.5); vec2 b=u_b*vec2(W,1.);
- float ra=.2+.06*u_press+.01*sin(u_time*3.), rb=.09+.03*u_hover;
- float f=ra*ra/dot(p-a,p-a)+rb*rb/dot(p-b,p-b);
- float body=smoothstep(.9,1.05,f); float core=smoothstep(1.05,2.5,f);
- vec3 bg=mix(vec3(.96,.95,1.),vec3(.9,.9,1.),p.y);
- vec3 c1=vec3(.45,.3,1.), c2=vec3(1.,.4,.7);
- vec3 blob=mix(c1,c2,clamp((p.x-a.x)*.8+.5+u_press*.5,0.,1.));
- vec3 col=mix(bg,blob*.92,body); col=mix(col,blob*1.15,core*.6);
- float hl=smoothstep(1.3,2.6,f)*smoothstep(-.05,.25,p.y-.5)*.35; col+=hl;
- col-=smoothstep(1.05,.75,f)*(1.-body)*.12;
- gl_FragColor=vec4(col,1.);}`;
+ W=u_res.x/u_res.y; vec2 p=gl_FragCoord.xy/u_res*vec2(W,1.);
+ float d=scene(p); float w=fwidth(d); float m=clamp(.5-d/max(w,1e-4),0.,1.);
+ float e=.004; vec2 g=vec2(scene(p+vec2(e,0.))-scene(p-vec2(e,0.)),scene(p+vec2(0.,e))-scene(p-vec2(0.,e)))/(2.*e);
+ float hgt=sqrt(clamp(-d/.11,0.,1.));
+ vec3 n=normalize(vec3(g*(1.-hgt)*1.6,hgt+.12));
+ vec3 base=mix(vec3(.48,.24,1.),vec3(1.,.24,.6),clamp((p.x/W)*1.1-.05+(p.y-.5)*.3,0.,1.));
+ float dif=.72+.28*dot(n,normalize(vec3(-.4,.55,.75)));
+ vec3 col=base*dif;
+ col+=pow(max(dot(reflect(vec3(0.,0.,-1.),n),normalize(vec3(-.35,.55,.75))),0.),40.)*.55;
+ col+=smoothstep(.0,-.02,d)*(1.-hgt)*.08;
+ vec3 bg=mix(vec3(.965,.955,1.),vec3(.93,.92,.99),gl_FragCoord.y/u_res.y);
+ float sh=smoothstep(.12,-.02,scene(p+vec2(0.,.035)))*.1;
+ gl_FragColor=vec4(mix(bg*(1.-sh),col,m),1.);}`;
 
 export default {
   id: 'sh-gooey-blob',
-  credit: 'Gooey spring blob — a GLSL metaball anchored at the centre throws a small satellite blob that chases the pointer on a JS spring and snaps back with a stretch of goo',
+  credit: 'Gooey candy button in GLSL — a pill SDF smooth-min-joined to orbiting drops that bud off and melt back in; hover pulls a drop to the pointer on a spring, press squashes the pill and flings the drops',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 120px; max-width: 100%; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #f3f2fb; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(80,60,160,.15); }
+    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 120px; max-width: 100%; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #f3f1ff; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(90,60,200,.12); -webkit-tap-highlight-color: transparent; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: radial-gradient(circle, #6f4dff 0 24px, #f3f2fb 25px); }
-    .l { position: relative; z-index: 1; color: #fff; font: 700 15px/1 'DM Sans', system-ui, sans-serif; letter-spacing: .02em; pointer-events: none; }
-    .btn:focus-visible { outline: 2px solid #6f4dff; outline-offset: 3px; }
+    .cv.nogl { background: radial-gradient(60px 24px at 50% 50%, #9b3dff 98%, transparent), #f3f1ff; }
+    .l { position: relative; z-index: 1; color: #fff; font: 700 17px/1 'DM Sans', system-ui, sans-serif; letter-spacing: .01em; pointer-events: none; text-shadow: 0 1px 1px rgba(80,0,90,.3); transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+    .btn:active .l { transform: scale(1.06, .92); }
+    .btn:focus-visible { outline: 2px solid #7b3dff; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Goo</span></button>`,
+  html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Subscribe</span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
     let loc = null, bx = .5, by = .5, vx = 0, vy = 0;
     const s = shade(cv, btn, 260, 120, FS, {
-      pressDecay: 2.5,
+      idle: true, pressDecay: 2.2,
       after(gl, prog) { loc = gl.getUniformLocation(prog, 'u_b'); },
       uniforms(gl) { gl.uniform2f(loc, bx, by); },
       step(st, dt) {
         const tx = st.hoverT ? st.mx : .5, ty = st.hoverT ? st.my : .5;
-        vx += (tx - bx) * 60 * dt; vy += (ty - by) * 60 * dt; vx *= Math.pow(.02, dt); vy *= Math.pow(.02, dt);
+        vx += ((tx - bx) * 70 - vx * 9) * dt; vy += ((ty - by) * 70 - vy * 9) * dt;
         bx += vx * dt; by += vy * dt;
       },
-      busy: () => Math.abs(vx) + Math.abs(vy) > .01 || Math.abs(bx - .5) + Math.abs(by - .5) > .003,
     });
     return () => s.destroy();
   },

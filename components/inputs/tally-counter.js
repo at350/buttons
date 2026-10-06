@@ -1,9 +1,10 @@
 export default {
   id: 'in-tally-counter',
-  credit: 'Hand tally counter — chrome ring, mechanical display, big press plunger; small reset knob',
+  credit: 'Hand tally counter (clicker) — chrome body, four-wheel counter window, big plunger; the knurled side knob resets to 0000',
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    .o { display: inline-block; padding: 0 10px 0 4px; }
     .tc { position: relative; display: inline-flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 12px 12px; border-radius: 50px 50px 14px 14px; background: linear-gradient(#f4f4f5, #d4d4d8); box-shadow: 0 2px 6px rgba(0,0,0,.25), inset 0 1px 0 #fff; }
     .press {
       width: 72px; height: 72px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent;
@@ -17,16 +18,15 @@ export default {
     .disp span { display: inline-block; min-width: .7em; text-align: center; }
     .disp.bump span:last-child { animation: flip .18s ease-out; }
     @keyframes flip { 0% { transform: translateY(-40%); opacity: .3; } 100% { transform: none; opacity: 1; } }
-    .reset { position: absolute; right: -6px; top: 44px; width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: #3a3a3c; color: #d1d1d6; cursor: pointer; display: grid; place-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.4); transition: transform .3s; }
-    .reset:hover { background: #48484a; } .reset:active { transform: rotate(-120deg); }
+    .reset { position: absolute; right: -8px; top: 40px; width: 18px; height: 24px; border-radius: 4px; border: 0; padding: 0; cursor: pointer; background: repeating-linear-gradient(90deg, #8e8e93 0 2px, #e5e5ea 2px 4px); box-shadow: 0 1px 3px rgba(0,0,0,.4), inset 0 0 0 1px rgba(0,0,0,.2); transition: transform .3s; }
+    .reset:hover { filter: brightness(1.08); } .reset:active { transform: scaleY(.85); }
     .reset:focus-visible { outline: 2px solid #0a84ff; outline-offset: 2px; }
-    .reset svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
   `,
-  html: `<div class="tc">
+  html: `<div class="o"><div class="tc">
     <button class="press" type="button" aria-label="Count"></button>
     <output class="disp" aria-live="polite"><span>0</span><span>0</span><span>0</span><span>0</span></output>
-    <button class="reset" type="button" aria-label="Reset"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg></button>
-  </div>`,
+    <button class="reset" type="button" aria-label="Reset"></button>
+  </div></div>`,
   init(root) {
     const disp = root.querySelector('.disp'), sp = disp.querySelectorAll('span');
     let v = 0;

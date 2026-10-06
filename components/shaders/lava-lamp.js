@@ -12,6 +12,7 @@ function shade(cv, el, w, h, fs, o = {}) {
   const setup = () => {
     gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
     if (!gl) return false;
+    gl.getExtension('OES_standard_derivatives'); // fwidth() for pixel-exact anti-aliasing
     const sh = (type, src) => {
       const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
       if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) { console.error('[shader]', name(), gl.getShaderInfoLog(x)); return null; }
@@ -74,49 +75,83 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Lava lamp (Mathmos Astro silhouette): a brushed-metal base cone, a tapered glass vessel and a cap,
+// all drawn in GLSL with fwidth-anti-aliased edges. Inside, wax is a metaball field: a pool at the bottom
+// plus five blobs on slow rise-and-sink cycles that neck off the pool when warm. Off, the wax sits cold
+// in the pool and the liquid is dim; switched on, the bulb lights the liquid from below and the wax warms.
+const LW = 96, LH = 168;
+const FS = `#extension GL_OES_standard_derivatives : enable
+precision highp float;
 uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res;
+float aa(float d){float w=fwidth(d);return clamp(.5-d/max(w,1e-4),0.,1.);}
+float trap(vec2 p,float y0,float y1,float w0,float w1){ // signed distance-ish to a vertical trapezoid
+ float k=clamp((p.y-y0)/(y1-y0),0.,1.); float hw=mix(w0,w1,k);
+ return max(abs(p.x)-hw,max(y0-p.y,p.y-y1));}
+vec3 metal(vec2 p,float hw,float lit){
+ float u=clamp(p.x/hw,-1.,1.); float n=sqrt(1.-u*u);
+ vec3 c=vec3(.42,.43,.46)*(.35+.75*n)+pow(max(0.,1.-abs(u+.42)*3.),3.)*.55+pow(max(0.,1.-abs(u-.55)*6.),3.)*.18;
+ return c+vec3(1.,.45,.15)*lit;}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; float W=u_res.x/u_res.y; vec2 p=uv*vec2(W,1.);
- float t=u_time*.3; float f=0.;
- for(int i=0;i<5;i++){float fi=float(i); float ph=fi*1.7;
-  float yr=.45+.42*sin(t*(.6+fi*.11)+ph);
-  vec2 c=vec2(W*.5+W*.28*sin(t*.8+ph*2.1),mix(.1,yr,u_value));
-  float r=.12+.04*sin(t*2.+ph)*u_value;
-  f+=r*r/dot(p-c,p-c);}
- vec2 pool=vec2(W*.5,-.05); f+=.085/dot(p-pool,p-pool);
- float m=smoothstep(.9,1.08,f);
- vec3 wax=mix(vec3(.45,.14,.14),vec3(1.,.38,.12),u_value)+u_hover*.08;
- vec3 liquid=mix(vec3(.06,.04,.1),vec3(.42,.1,.34),u_value*(.6+.5*(1.-uv.y)));
- vec3 col=mix(liquid,wax,m);
- col+=smoothstep(1.08,1.7,f)*vec3(.3,.15,.05)*u_value;
- col*=1.-.45*pow(abs(uv.x-.5)*2.,3.);
- col+=pow(max(0.,1.-abs(uv.x-.3)*6.),4.)*.12;
- col+=u_press*.15;
- gl_FragColor=vec4(col,1.);}`;
+ vec2 p=vec2(gl_FragCoord.x/u_res.x*${LW}.-${LW}.*.5, gl_FragCoord.y/u_res.y*${LH}.);
+ float on=u_value; float t=u_time*.32;
+ // parts
+ float dBase=trap(p,1.,46.,40.,21.); dBase=max(dBase,-trap(p,-10.,1.5,60.,60.));
+ float dGlass=trap(p,44.,140.,26.,12.5);
+ float dCap=trap(p,138.,166.,12.5,6.5);
+ vec3 col=vec3(0.); float a=0.;
+ // glass interior
+ float gk=clamp((p.y-44.)/96.,0.,1.); float ghw=mix(26.,12.5,gk);
+ vec2 q=vec2(p.x/ghw, gk); // normalised: x -1..1, y 0..1
+ float f=0.;
+ vec2 pd=vec2(p.x,p.y-43.)/20.; f+=.81/(pd.x*pd.x*.32+pd.y*pd.y*1.5+.001);
+ for(int i=0;i<5;i++){float fi=float(i); float ph=fi*2.39; float sp=.55+fi*.09;
+  float cyc=.5-.5*cos(t*sp+ph);
+  float y=mix(.02,mix(.1,.9,cyc),on);
+  float x=.38*sin(t*.7*sp+ph*1.7)*(.3+.7*on)*(1.-y*.4);
+  float r=mix(.42,.5+.12*sin(t*1.3+ph),on)*(1.-.3*y);
+  vec2 d=vec2((q.x-x)*ghw,(q.y-y)*96.)/20.;
+  f+=r*r/(dot(d,d)+1e-4);}
+ f=min(f,40.);
+ float wax=aa(1.-f);
+ vec3 liq=mix(vec3(.17,.08,.18),vec3(.62,.12,.42),on*(.55+.45*(1.-gk)));
+ liq+=vec3(.9,.35,.2)*on*pow(1.-gk,3.)*.35;
+ vec3 waxc=mix(vec3(.55,.16,.07),mix(vec3(1.,.42,.1),vec3(1.,.72,.25),clamp((f-1.)*.6,0.,1.)),on);
+ waxc*=.75+.35*smoothstep(1.,2.2,f);
+ vec3 gcol=mix(liq,waxc,wax);
+ float gu=q.x; gcol*=1.-.45*pow(abs(gu),3.);
+ gcol+=smoothstep(.16,0.,abs(gu+.55))*.16+smoothstep(.07,0.,abs(gu-.62))*.06;
+ gcol*=1.+.12*u_hover;
+ // assemble with AA
+ float ag=aa(dGlass), ab=aa(dBase), ac=aa(dCap);
+ col=gcol; a=ag;
+ vec3 bc=metal(p,mix(40.,21.,clamp((p.y-1.)/45.,0.,1.)),0.)*(1.-.25*smoothstep(46.,1.,p.y));
+ bc+=vec3(1.,.5,.2)*on*.25*smoothstep(30.,46.,p.y)*(1.-abs(p.x)/30.);
+ col=mix(col,bc,ab*(1.-ag*step(44.,p.y))); a=max(a,ab);
+ vec3 cc=metal(p,mix(12.5,6.5,clamp((p.y-138.)/28.,0.,1.)),0.);
+ col=mix(col,cc,ac*step(139.5,p.y)); a=max(a,ac);
+ col+=u_press*.1*a;
+ gl_FragColor=vec4(col*a,a);}`;
 
 export default {
   id: 'sh-lava-lamp',
-  credit: 'Lava lamp toggle — GLSL metaball wax blobs that sit cold in the base until switched on, then warm to orange and drift up the lamp',
+  credit: 'Lava lamp toggle (Mathmos Astro silhouette) in GLSL — metaball wax pooled cold in the base until switched on, then the bulb lights the liquid and warm blobs neck off the pool, rise and sink',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; }
-    .lamp { position: relative; width: 96px; height: 150px; border-radius: 48px 48px 14px 14px / 70px 70px 14px 14px; overflow: hidden; background: #140a16; isolation: isolate; box-shadow: inset 0 0 0 2px rgba(255,255,255,.08); }
+    .lamp { position: relative; display: block; width: ${LW}px; height: ${LH}px; padding: 0; border: 0; background: transparent; cursor: pointer; isolation: isolate; filter: drop-shadow(0 6px 8px rgba(0,0,0,.22)); transition: filter .6s; -webkit-tap-highlight-color: transparent; }
+    .lamp[aria-checked="true"] { filter: drop-shadow(0 6px 8px rgba(0,0,0,.22)) drop-shadow(0 0 14px rgba(255,110,60,.45)); }
+    .lamp:active { transform: translateY(1px); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(0deg, #ff6020 0 25%, #2a0f2a 25%); }
-    .base { width: 96px; height: 14px; border-radius: 0 0 10px 10px; background: linear-gradient(180deg, #9a9ba3, #4a4b52); display: grid; place-items: center; cursor: pointer; border: 0; padding: 0; margin-top: -2px; }
-    .base i { display: block; width: 8px; height: 8px; border-radius: 50%; background: #333; box-shadow: inset 0 1px 2px #000; transition: background .3s, box-shadow .3s; }
-    .base[aria-pressed="true"] i { background: #ff7a2a; box-shadow: 0 0 8px #ff7a2a; }
-    .base:focus-visible { outline: 2px solid #ff7a2a; outline-offset: 2px; }
+    .cv.nogl { background: linear-gradient(0deg, #77777c 0 27%, #b33a1a 27% 40%, #2a0f2a 40% 83%, #77777c 83%); clip-path: polygon(8% 100%, 92% 100%, 72% 73%, 63% 17%, 56% 1%, 44% 1%, 37% 17%, 28% 73%); }
+    .lamp:focus-visible { outline: 2px solid #ff7a2a; outline-offset: 4px; border-radius: 8px; }
   `,
-  html: `<div class="wrap"><div class="lamp"><canvas class="cv"></canvas></div><button class="base" type="button" aria-pressed="false" aria-label="Lamp power"><i></i></button></div>`,
+  html: `<button class="lamp" type="button" role="switch" aria-checked="false" aria-label="Lava lamp"><canvas class="cv"></canvas></button>`,
   init(root) {
-    const wrap = root.querySelector('.wrap'), cv = root.querySelector('.cv'), sw = root.querySelector('.base');
-    const s = shade(cv, wrap, 96, 150, FS, { idle: true, idleWhen: (st) => st.valueT > 0, valueRate: .9, pressDecay: 2 });
-    sw.addEventListener('click', () => {
-      const on = sw.getAttribute('aria-pressed') !== 'true';
-      sw.setAttribute('aria-pressed', String(on)); s.valueT = on ? 1 : 0; s.kick();
+    const lamp = root.querySelector('.lamp'), cv = root.querySelector('.cv');
+    const s = shade(cv, lamp, LW, LH, FS, { idle: true, idleWhen: (st) => st.valueT > 0, valueRate: .8, pressDecay: 2 });
+    lamp.addEventListener('click', () => {
+      const on = lamp.getAttribute('aria-checked') !== 'true';
+      lamp.setAttribute('aria-checked', String(on)); s.valueT = on ? 1 : 0; s.kick();
     });
     return () => s.destroy();
   },

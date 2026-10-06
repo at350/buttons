@@ -27,7 +27,7 @@ export default {
   `,
   html: `
     <div class="stage"><div class="wrap">
-      <button class="pill" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Float</button>
+      <button class="pill" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>Float</button>
       <span class="sh"></span>
     </div></div>`,
   init(root) {

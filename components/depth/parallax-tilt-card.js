@@ -10,10 +10,10 @@ export default {
       position: relative; width: 230px; height: 140px; max-width: 100%; border: 0; padding: 0; cursor: pointer;
       border-radius: 18px; background: linear-gradient(135deg, #1e1b4b, #312e81 55%, #4c1d95);
       transform-style: preserve-3d; transform: rotateX(var(--rx)) rotateY(var(--ry));
-      box-shadow: 0 20px 50px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .08);
+      box-shadow: 0 16px 30px -8px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(255, 255, 255, .08);
       transition: box-shadow .3s;
     }
-    .card:hover { box-shadow: 0 34px 70px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(255, 255, 255, .16); }
+    .card:hover { box-shadow: 0 24px 34px -10px rgba(0, 0, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .16); }
     .shine {
       position: absolute; inset: 0; border-radius: 18px; pointer-events: none;
       background: radial-gradient(260px 160px at var(--mx) var(--my), rgba(255, 255, 255, .22), transparent 60%);
@@ -44,7 +44,7 @@ export default {
           <path fill="url(#dpptc)" d="M60 8c26 0 52 20 52 48s-18 56-50 56S6 92 6 60 34 8 60 8z"/>
         </svg>
         <span class="layer lbl">Parallax</span>
-        <span class="layer badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+        <span class="layer badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
       </button>
     </div>`,
   init(root) {

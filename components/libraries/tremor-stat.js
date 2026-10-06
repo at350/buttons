@@ -1,14 +1,14 @@
 export default {
   id: 'lb-tremor-stat',
-  credit: 'Tremor — KPI Card with metric, BadgeDelta and a SparkAreaChart; the solid TabGroup swaps the 7d / 30d series',
+  credit: 'Tremor — KPI Card (Sales / $ 34,743, text-3xl semibold) with BadgeDelta (Remix arrow, emerald / red) and a blue SparkAreaChart; the solid TabList swaps the 7d / 30d / 90d series',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .card { width: 280px; max-width: 100%; padding: 24px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1); font: 14px/20px Inter, -apple-system, system-ui, sans-serif; color: #111827; }
+    .card { width: 280px; max-width: 100%; padding: 24px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1); font: 400 14px/20px Inter, ui-sans-serif, system-ui, -apple-system, system-ui, sans-serif; color: #111827; }
     .top { display: flex; justify-content: space-between; align-items: flex-start; }
     .lbl { color: #6b7280; }
-    .num { font-size: 24px; line-height: 32px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 2px; }
-    .dl { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px 0 6px; border-radius: 9999px; font: 500 12px/1 Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums; transition: background .2s, color .2s; }
+    .num { font-size: 30px; line-height: 36px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 2px; }
+    .dl { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px 0 6px; min-width: 72px; justify-content: center; border-radius: 9999px; font: 500 12px/1 Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums; transition: background .2s, color .2s; }
     .dl svg { width: 14px; height: 14px; fill: currentColor; transition: transform .2s; }
     .dl.up { background: #d1fae5; color: #047857; }
     .dl.dn { background: #fee2e2; color: #b91c1c; }
@@ -25,7 +25,7 @@ export default {
   `,
   html: `
     <div class="card">
-      <div class="top"><div><div class="lbl">Sales</div><div class="num">$ 34,743</div></div><span class="dl up"><svg viewBox="0 0 24 24"><path d="M12 5l7 8h-4v6H9v-6H5z"/></svg><span>12.3%</span></span></div>
+      <div class="top"><div><div class="lbl">Sales</div><div class="num">$ 34,743</div></div><span class="dl up"><svg viewBox="0 0 24 24"><path d="M13.0001 7.82843V20H11.0001V7.82843L5.63614 13.1924L4.22192 11.7782L12.0001 4L19.7783 11.7782L18.3641 13.1924L13.0001 7.82843Z"/></svg><span>12.3%</span></span></div>
       <svg class="sp" viewBox="0 0 232 56" preserveAspectRatio="none" aria-hidden="true">
         <defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity=".25"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient></defs>
         <path class="ar"/><path class="ln"/>

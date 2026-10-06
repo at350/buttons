@@ -12,6 +12,7 @@ function shade(cv, el, w, h, fs, o = {}) {
   const setup = () => {
     gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
     if (!gl) return false;
+    gl.getExtension('OES_standard_derivatives'); // fwidth() for pixel-exact anti-aliasing
     const sh = (type, src) => {
       const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
       if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) { console.error('[shader]', name(), gl.getShaderInfoLog(x)); return null; }
@@ -74,35 +75,60 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Outrun sun: gradient disc (#ffd319 -> #ff2975) whose lower half is cut by horizontal gaps that get
+// thicker toward the bottom and scroll down; a ridge line in front; a perspective grid floor. Every
+// edge is anti-aliased with fwidth().
+const FS = `#extension GL_OES_standard_derivatives : enable
+precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float ridge(float x){return .03+.024*sin(x*6.1+1.3)+.016*sin(x*13.7+2.)+.008*sin(x*29.+.5)+.05*smoothstep(.55,1.2,abs(x));}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; vec2 p=(uv-vec2(.5,.42))*vec2(u_res.x/u_res.y,1.);
- float t=u_time*(.5+.9*u_hover+2.*u_press);
- vec3 col=mix(vec3(.06,0.,.16),vec3(.4,.05,.5),uv.y);
- vec2 sp=p-vec2(0.,.17-.12*u_press); float sr=length(sp);
- float stripes=mix(1.,step(.45,fract(sp.y*20.-t*.6)),step(sp.y,.06));
- float sun=smoothstep(.27,.265,sr)*stripes;
- vec3 sunc=mix(vec3(1.,.15,.55),vec3(1.,.85,.25),clamp(sp.y/.27*.5+.5,0.,1.));
- if(p.y>0.){col=mix(col,sunc,sun); col+=smoothstep(.42,.26,sr)*vec3(1.,.25,.6)*.35;}
- else{float z=.25/(-p.y); vec2 g=vec2(p.x*z*1.2,z+t*2.5); vec2 gf=abs(fract(g)-.5);
-  float line=smoothstep(.44,.5,max(gf.x,gf.y))*smoothstep(.0,.08,-p.y);
-  col=mix(vec3(.07,0.,.12),vec3(1.,.2,.8),line*(1.-(-p.y)*1.2)); col+=vec3(.12,0.,.22)*(1.+p.y*2.);}
- col+=exp(-abs(p.y)*28.)*vec3(1.,.4,.9)*.7;
- col*=.9+.1*sin(gl_FragCoord.y*3.14);
+ vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y;
+ vec2 p=vec2((uv.x-.5)*ar,uv.y-.47); float px=1./u_res.y;
+ float t=u_time*(.35+.9*u_hover+2.2*u_press);
+ vec3 col=mix(vec3(.55,.09,.5),vec3(.09,.02,.22),smoothstep(0.,.42,p.y));
+ col=mix(col,vec3(.03,.0,.1),smoothstep(.4,.62,p.y));
+ vec2 sg=floor(gl_FragCoord.xy/2.); float st=hash(sg); col+=step(.996,st)*smoothstep(.12,.4,p.y)*.8;
+ // sun
+ vec2 sc=p-vec2(0.,.2-.06*u_press); float R=.22; float d=length(sc)-R;
+ float yb=clamp((sc.y+R)/(2.*R),0.,1.);
+ float k=yb*9.+t*.35; float fk=fract(k); float w=fwidth(k);
+ float gap=mix(.6,0.,smoothstep(.05,.62,yb));
+ float band=gap<=.001?1.:smoothstep(gap-w,gap+w,fk)*smoothstep(1.,1.-w,fk);
+ float sun=smoothstep(px,-px,d)*band;
+ vec3 sunc=mix(vec3(1.,.16,.46),vec3(1.,.83,.1),smoothstep(.05,.95,yb));
+ col+=exp(-max(d,0.)*10.)*vec3(1.,.25,.55)*.45*step(0.,p.y);
+ col=mix(col,sunc,sun*step(0.,p.y));
+ // ridge in front of the sun
+ float m=ridge(p.x); float mm=smoothstep(px,-px,p.y-m)*step(0.,p.y);
+ vec3 mc=mix(vec3(.07,.0,.16),vec3(.2,.03,.33),clamp(p.y/m,0.,1.));
+ col=mix(col,mc,mm); col+=smoothstep(1.5*px,0.,abs(p.y-m))*vec3(1.,.3,.85)*.55*step(0.,p.y);
+ // grid floor
+ if(p.y<0.){
+  float z=.13/(-p.y+.004); vec2 g=vec2(p.x*z,z+t*1.6); vec2 fw=fwidth(g);
+  vec2 dl=abs(fract(g)-.5); vec2 lp=(.5-dl)/max(fw,1e-4);
+  float line=max(1.-smoothstep(.4,1.4,lp.x),1.-smoothstep(.4,1.4,lp.y));
+  line*=1.-smoothstep(.15,.6,max(fw.x,fw.y));
+  vec3 fl=mix(vec3(.05,.0,.12),vec3(.16,.01,.26),smoothstep(-.4,0.,p.y));
+  col=fl+line*vec3(1.,.17,.78)*(.45+.55*smoothstep(0.,-.35,p.y));
+  col+=exp(p.y*22.)*vec3(.9,.2,.6)*.35;
+ }
+ col+=exp(-abs(p.y)*70.)*vec3(1.,.5,.85)*.55;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-synthwave',
-  credit: 'Synthwave / outrun button — striped retro sun over a perspective grid in GLSL; hover speeds the grid, press drops the sun and floors the throttle',
+  credit: 'Synthwave / outrun button — the striped retro sun (gaps widen toward the bottom and scroll), a neon ridge and a perspective grid in GLSL with fwidth anti-aliasing; hover speeds the grid, press floors it',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 100px; max-width: 100%; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: #1a0530; cursor: pointer; isolation: isolate; box-shadow: 0 0 0 2px #ff2bd6, 0 0 24px -6px #ff2bd6; }
+    .btn { position: relative; display: grid; place-items: center; width: 260px; height: 100px; max-width: 100%; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: #160430; cursor: pointer; isolation: isolate; box-shadow: 0 0 0 1.5px #ff2bd6, 0 0 18px -4px rgba(255,43,214,.75); transition: box-shadow .25s; }
+    .btn:hover { box-shadow: 0 0 0 1.5px #ff6be3, 0 0 26px -2px rgba(255,43,214,.9); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(180deg, #3a0a5a 0 45%, #ff3ea5 46%, #1a0530 47%), #1a0530; }
-    .l { position: relative; z-index: 1; color: #fff; font: 800 italic 26px/1 'Syne', system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; background: linear-gradient(180deg, #fff 40%, #ffd166 50%, #ff2bd6 51%, #6ae0ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 0 #3a0066) drop-shadow(0 0 10px rgba(255,43,214,.7)); pointer-events: none; }
-    .btn:active .l { transform: scale(.96); }
+    .cv.nogl { background: linear-gradient(180deg, #160430 0 30%, #8c1a7f 58%, #ff2975 62%, #160430 63%); }
+    .l { position: relative; z-index: 1; margin-top: 46px; font: italic 800 28px/1 'Syne', system-ui, sans-serif; letter-spacing: .1em; margin-right: -.1em; text-transform: uppercase; color: transparent; background: linear-gradient(180deg, #e8f7ff 0%, #9fdcff 46%, #1b0b3a 50%, #ff9ce6 54%, #fff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-stroke: .6px rgba(255,255,255,.55); filter: drop-shadow(0 2px 0 #2a0058) drop-shadow(0 0 8px rgba(255,43,214,.6)); pointer-events: none; transition: transform .2s cubic-bezier(.2,.8,.2,1); }
+    .btn:active .l { transform: scale(.96) skewX(-4deg); }
     .btn:focus-visible { outline: 2px solid #6ae0ff; outline-offset: 4px; }
   `,
   html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Drive</span></button>`,

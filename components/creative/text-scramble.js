@@ -1,49 +1,50 @@
 export default {
   id: 'cr-text-scramble',
-  credit: 'Text scramble on hover — Justin Windle’s "Text Scramble Effect" (CodePen)',
+  credit: 'Text scramble — Justin Windle’s "Text Scramble Effect" (CodePen): per-letter random start/end frames, flickering glyph soup, rAF only while resolving',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: #0b0b10; padding: 28px 36px; border-radius: 12px; }
+    .stage { background: #0b0b10; padding: 28px 34px; border-radius: 12px; }
     .btn {
-      cursor: pointer; background: transparent; color: #e6e6e6; border: 1px solid #3a3a48; border-radius: 6px;
-      font: 600 15px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .25em;
-      padding: 16px 28px; transition: border-color .25s, color .25s, box-shadow .25s;
+      cursor: pointer; background: transparent; color: #fafafa; border: 1px solid #3a3a48; border-radius: 6px;
+      font: 500 15px/1 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .2em;
+      padding: 16px 22px 16px 26px; transition: border-color .25s ease, box-shadow .25s ease;
     }
-    .btn:hover, .btn:focus-visible { border-color: #7cf; color: #fff; box-shadow: 0 0 0 1px #7cf, 0 0 24px rgba(119, 204, 255, .25); outline: 0; }
+    .btn:hover, .btn:focus-visible { border-color: #7cf; box-shadow: 0 0 0 1px #7cf, 0 0 24px rgba(119, 204, 255, .22); outline: 0; }
     .btn:active { transform: translateY(1px); }
-    .t { display: inline-block; min-width: 7ch; text-align: left; }
-    .t .x { color: #7cf; opacity: .7; }
+    .t { display: inline-block; min-width: 7ch; white-space: pre; text-align: left; }
+    .t .dud { color: #757575; }
   `,
-  html: `<div class="stage"><button class="btn" type="button"><span class="t">ENCRYPT</span></button></div>`,
+  html: `<div class="stage"><button class="btn" type="button" aria-label="Decrypt"><span class="t" aria-hidden="true">ENCRYPT</span></button></div>`,
   init(root) {
     const b = root.querySelector('.btn'), span = root.querySelector('.t');
-    const A = 'ENCRYPT', B = 'DECRYPT', CH = '!<>-_\\/[]{}=+*^?#%&';
-    let timer = null, current = A;
+    const A = 'ENCRYPT', B = 'DECRYPT', CH = '!<>-_\\/[]{}—=+*^?#________';
+    let raf = 0, queue = [], frame = 0, target = A;
     const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    function run(to) {
-      if (to === current && !timer) return;
-      clearInterval(timer);
-      const from = current; current = to;
-      let frame = 0;
-      const start = [...to].map((_, i) => i * 2 + Math.floor(Math.random() * 4));
-      const end = start.map((s) => s + 6 + Math.floor(Math.random() * 8));
-      timer = setInterval(() => {
-        frame++;
-        let out = '', done = true;
-        for (let i = 0; i < to.length; i++) {
-          if (frame >= end[i]) out += esc(to[i]);
-          else if (frame >= start[i]) { done = false; out += '<span class="x">' + esc(CH[Math.floor(Math.random() * CH.length)]) + '</span>'; }
-          else { done = false; out += esc(from[i] || ' '); }
-        }
-        span.innerHTML = out;
-        if (done) { clearInterval(timer); timer = null; }
-      }, 32);
-    }
-    b.addEventListener('mouseenter', () => run(B));
-    b.addEventListener('mouseleave', () => run(A));
-    b.addEventListener('focus', () => run(B));
-    b.addEventListener('blur', () => run(A));
-    return () => clearInterval(timer);
+    const rnd = () => CH[Math.floor(Math.random() * CH.length)];
+    const update = () => {
+      let out = '', done = 0;
+      for (const q of queue) {
+        if (frame >= q.end) { done++; out += esc(q.to); }
+        else if (frame >= q.start) {
+          if (!q.ch || Math.random() < .28) q.ch = rnd();
+          out += '<span class="dud">' + esc(q.ch) + '</span>';
+        } else out += esc(q.from);
+      }
+      span.innerHTML = out;
+      if (done === queue.length) { raf = 0; return; }
+      frame++; raf = requestAnimationFrame(update);
+    };
+    const setText = (to) => {
+      if (to === target) return;
+      const from = span.textContent; target = to;
+      queue = [...to].map((c, i) => { const start = Math.floor(Math.random() * 16); return { from: from[i] || ' ', to: c, start, end: start + 6 + Math.floor(Math.random() * 18) }; });
+      cancelAnimationFrame(raf); frame = 0; update();
+    };
+    b.addEventListener('pointerenter', () => setText(B));
+    b.addEventListener('pointerleave', () => { if (!b.matches(':focus-visible')) setText(A); });
+    b.addEventListener('focus', () => { if (b.matches(':focus-visible')) setText(B); });
+    b.addEventListener('blur', () => setText(A));
+    return () => cancelAnimationFrame(raf);
   },
 };

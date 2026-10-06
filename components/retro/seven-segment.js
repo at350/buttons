@@ -1,12 +1,13 @@
 export default {
   id: 'rt-seven-segment',
-  credit: 'Red seven-segment LED counter with ghosted off-segments and a hardware reset / count button',
+  credit: 'Red seven-segment LED counter (slanted 0.56" digits behind a red filter) with a count button and reset',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .stage { background: #202020; padding: 14px 16px; border-radius: 12px; display: inline-flex; gap: 14px; align-items: center; }
     .disp { background: #0a0000; border: 2px solid #3a3a3a; border-radius: 4px; padding: 6px 8px; display: flex; gap: 4px; box-shadow: inset 0 0 10px #000; }
-    svg { width: 26px; height: 44px; }
+    svg { width: 26px; height: 46px; transform: skewX(-8deg); }
+    .disp { background: linear-gradient(#1a0000, #0a0000); }
     path { fill: #3a0a0a; transition: fill .05s; }
     path.on { fill: #ff2a2a; filter: drop-shadow(0 0 2px #ff2a2a); }
     .btn { width: 40px; height: 40px; border-radius: 50%; border: none; padding: 0; cursor: pointer;
@@ -36,7 +37,7 @@ export default {
     let n = 0;
     const render = () => {
       const str = String(n % 1000).padStart(3, '0');
-      digits.forEach((segs, i) => segs.forEach((p, k) => p.setAttribute('style', MAP[Number(str[i])][k] === '1' ? 'fill:#ff2a2a;filter:drop-shadow(0 0 2px #ff2a2a)' : 'fill:#3a0a0a')));
+      digits.forEach((segs, i) => segs.forEach((p, k) => p.setAttribute('style', MAP[Number(str[i])][k] === '1' ? 'fill:#ff2215;filter:drop-shadow(0 0 2px rgba(255,40,20,.9))' : 'fill:#2e0806')));
       disp.setAttribute('aria-label', String(n));
     };
     render();

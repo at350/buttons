@@ -59,6 +59,12 @@ export default {
       transform: rotateX(90deg);
       background: #0f172a;
     }
+    .w-front {
+      inset: 0; background: transparent; border: 8px solid #475569; border-radius: 3px;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35), 0 0 0 .5px rgba(255, 255, 255, .08);
+    }
+    .w-front::after { content: ''; position: absolute; inset: -8px; border-radius: 3px; pointer-events: none;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .12), transparent 30%); -webkit-mask: linear-gradient(#000 0 0); }
     .drawer {
       position: absolute;
       inset: 8px;
@@ -137,7 +143,7 @@ export default {
   html: `
     <div class="stage">
       <div class="cab">
-        <span class="wall w-back"></span><span class="wall w-left"></span><span class="wall w-right"></span><span class="wall w-top"></span><span class="wall w-bot"></span>
+        <span class="wall w-back"></span><span class="wall w-left"></span><span class="wall w-right"></span><span class="wall w-top"></span><span class="wall w-bot"></span><span class="wall w-front"></span>
         <button class="drawer" type="button" aria-expanded="false" aria-label="Open drawer">
           <span class="d d-back"></span><span class="d d-left"></span><span class="d d-right"></span><span class="d d-bot"></span>
           <span class="d d-front"><span class="tag"></span><span class="handle"></span></span>

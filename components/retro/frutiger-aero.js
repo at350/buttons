@@ -18,14 +18,16 @@ export default {
     .bub:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.08); }
     .bub:active { transform: scale(.97); filter: brightness(.92); }
     .bub.on { background: radial-gradient(ellipse at 50% 120%, #e4ffd0 0%, #7fdc4a 40%, #2f9d1a 100%); }
+    .lb { display: grid; position: relative; z-index: 1; } .lb > span { grid-area: 1 / 1; white-space: nowrap; } .lb .b { visibility: hidden; }
+    .bub.on .lb .a { visibility: hidden; } .bub.on .lb .b { visibility: visible; }
     .bub:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
   `,
   html: `
     <div class="stage">
-      <button class="bub" type="button" aria-pressed="false">Connect</button>
+      <button class="bub" type="button" aria-pressed="false"><span class="lb"><span class="a">Connect</span><span class="b">Connected</span></span></button>
     </div>`,
   init(root) {
     const b = root.querySelector('.bub');
-    b.addEventListener('click', () => { const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Connected' : 'Connect'; });
+    b.addEventListener('click', () => { const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', String(on)); });
   },
 };

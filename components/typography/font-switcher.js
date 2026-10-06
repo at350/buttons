@@ -1,9 +1,10 @@
 export default {
   id: 'ty-font-switcher',
-  credit: 'Typeface cycler — one label, three stacked faces (Inter / Fraunces / JetBrains Mono); each click crossfades to the next with a small-caps tag that re-labels itself (type foundry specimen switcher)',
+  credit: 'Typeface cycler — one label, three stacked faces (Inter / Fraunces / JetBrains Mono); each click crossfades to the next with a tracked-caps tag that re-labels itself; Fraunces shown at its true 34pt optical size with SOFT/WONK on (type foundry specimen switcher)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .btn {
       cursor: pointer;
       background: #fff;
@@ -17,6 +18,7 @@ export default {
       justify-items: start;
       text-align: left;
       transition: box-shadow .2s, transform .15s;
+      margin: 0 6px 6px 0;
       box-shadow: 4px 4px 0 #111;
     }
     .btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 #111; }
@@ -34,20 +36,20 @@ export default {
       transform: translateY(6px) scale(.98);
       transition: opacity .35s, transform .45s cubic-bezier(.2, .8, .2, 1);
     }
-    .lab .f0 { font: 700 34px/1 Inter, system-ui, sans-serif; letter-spacing: -.03em; }
+    .lab .f0 { font: 700 34px/1 Inter, system-ui, sans-serif; letter-spacing: -.025em; font-feature-settings: 'ss01' 0, 'cv11' 1; }
     .lab .f1 {
       font: 500 34px/1 Fraunces, Georgia, serif;
-      font-variation-settings: 'opsz' 48, 'SOFT' 60, 'WONK' 1;
-      font-style: italic;
-      letter-spacing: -.01em;
+      font-variation-settings: 'opsz' 34, 'wght' 500, 'SOFT' 100, 'WONK' 1;
+      letter-spacing: -.015em;
     }
-    .lab .f2 { font: 500 30px/1.13 'JetBrains Mono', ui-monospace, monospace; letter-spacing: -.04em; }
+    .lab .f2 { font: 500 30px/1.13 'JetBrains Mono', ui-monospace, monospace; letter-spacing: -.02em; font-variant-ligatures: none; }
     .btn[data-f="0"] .f0, .btn[data-f="1"] .f1, .btn[data-f="2"] .f2 { opacity: 1; transform: none; }
     .tag {
       display: inline-grid;
       font: 600 10px/1 Inter, system-ui, sans-serif;
-      letter-spacing: .18em;
+      letter-spacing: .16em;
       text-transform: uppercase;
+      font-feature-settings: 'cpsp', 'case';
       color: #737373;
     }
     .tag > span {

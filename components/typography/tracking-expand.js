@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .btn {
       cursor: pointer;
       background: transparent;
@@ -13,6 +14,8 @@ export default {
       padding: 16px 8px;
       font: 500 13px/1 Inter, system-ui, sans-serif;
       text-transform: uppercase;
+      font-feature-settings: 'case', 'cpsp';
+      word-spacing: -.1em;
       display: inline-grid;
       place-items: center;
       transition: background .35s, color .35s;

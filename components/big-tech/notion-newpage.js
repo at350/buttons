@@ -1,33 +1,51 @@
+// Notion database toolbar: gray "Filter" / "Sort" text buttons (they turn Notion blue while a rule is active) and the
+// blue split "New" button. Nothing changes width, so the toolbar never reflows.
+const I = (p) => `<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 export default {
   id: 'bt-notion-newpage',
-  credit: 'Notion — blue "New page" button beside its light-gray hover-block button',
+  credit: 'Notion — database toolbar: Filter / Sort toggles and the blue split "New" button',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: flex; gap: 6px; align-items: center; padding: 14px 16px; border-radius: 12px; background: #fff; border: 1px solid rgba(55,53,47,.09); }
+    .stage { display: flex; gap: 2px; align-items: center; padding: 12px 14px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px rgba(55,53,47,.09); white-space: nowrap;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif; }
     .nb {
-      height: 28px; padding: 0 10px; border-radius: 6px; border: 0; cursor: pointer; white-space: nowrap;
-      font: 500 14px/28px ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+      height: 28px; padding: 0 8px; border-radius: 6px; border: 0; cursor: pointer;
+      font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.2; background: transparent; color: rgba(55,53,47,.65);
       display: inline-flex; align-items: center; gap: 6px; transition: background 20ms ease-in; -webkit-tap-highlight-color: transparent;
     }
-    .blue { background: #2383e2; color: #fff; }
-    .blue:hover { background: #0077d4; }
-    .blue:active { background: #0070c9; }
-    .gray { background: transparent; color: rgba(55,53,47,.65); }
-    .gray:hover { background: rgba(55,53,47,.08); }
-    .gray:active, .gray[aria-pressed="true"] { background: rgba(55,53,47,.16); color: #37352f; }
-    .nb:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(35,131,226,.57); }
-    .nb svg { width: 16px; height: 16px; fill: currentColor; }
-    .blue[aria-pressed="true"] { background: #e8f3ff; color: #2383e2; }
-    .blue .lbl::after { content: 'New page'; }
-    .blue[aria-pressed="true"] .lbl::after { content: 'Untitled'; }
+    .nb:hover { background: rgba(55,53,47,.08); }
+    .nb:active { background: rgba(55,53,47,.16); }
+    .nb[aria-pressed="true"] { color: #2383e2; }
+    .nb:focus-visible, .nw button:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(35,131,226,.57); }
+    svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .nw { display: inline-flex; margin-left: 6px; border-radius: 6px; overflow: hidden; }
+    .nw button {
+      height: 28px; border: 0; background: #2383e2; color: #fff; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500;
+      display: inline-flex; align-items: center; transition: background 20ms ease-in; -webkit-tap-highlight-color: transparent;
+    }
+    .nw button:hover { background: #0077d4; }
+    .nw button:active { background: #0070c9; }
+    .new { padding: 0 8px; }
+    .dd { padding: 0 4px; box-shadow: inset 1px 0 0 rgba(255,255,255,.25); }
+    .dd svg { transition: transform .2s cubic-bezier(.2,0,0,1); }
+    .new.made { animation: blip .3s ease-out; }
+    @keyframes blip { 50% { background: #0070c9; } }
   `,
   html: `
     <div class="stage">
-      <button class="nb gray" type="button" aria-pressed="false"><svg viewBox="0 0 16 16"><path d="M4.5 2A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V6.207a1.5 1.5 0 0 0-.44-1.06l-2.706-2.708A1.5 1.5 0 0 0 8.793 2H4.5Zm.5 4.75c0-.414.336-.75.75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 5 6.75Zm0 3c0-.414.336-.75.75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 5 9.75Z"/></svg>Templates</button>
-      <button class="nb blue" type="button" aria-pressed="false"><svg viewBox="0 0 16 16"><path d="M8 2.25a.75.75 0 0 1 .75.75v4.25H13a.75.75 0 0 1 0 1.5H8.75V13a.75.75 0 0 1-1.5 0V8.75H3a.75.75 0 0 1 0-1.5h4.25V3A.75.75 0 0 1 8 2.25Z"/></svg><span class="lbl"></span></button>
+      <button class="nb" type="button" aria-pressed="false">${I('<path d="M2 5h20"/><path d="M6 12h12"/><path d="M9 19h6"/>')}Filter</button>
+      <button class="nb" type="button" aria-pressed="false">${I('<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>')}Sort</button>
+      <span class="nw">
+        <button class="new" type="button">New</button>
+        <button class="dd" type="button" aria-label="Choose a template">${I('<path d="m6 9 6 6 6-6"/>')}</button>
+      </span>
     </div>`,
   init(root) {
-    root.querySelectorAll('.nb').forEach((b) => b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')));
+    root.querySelectorAll('.nb').forEach((b) => b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'))));
+    const n = root.querySelector('.new');
+    n.addEventListener('click', () => { n.classList.remove('made'); void n.offsetWidth; n.classList.add('made'); });
+    const dd = root.querySelector('.dd');
+    dd.addEventListener('click', () => n.click());
   },
 };

@@ -1,51 +1,58 @@
-const SPRING = 'linear(0, 0.143, 0.453, 0.779, 1.028, 1.168, 1.205, 1.173, 1.109, 1.043, 0.992, 0.965, 0.958, 0.965, 0.978, 0.992, 1.002, 1.007, 1.009, 1.007, 1.004, 1.002, 1)';
+// Emil Kowalski, animations.dev "multi-state button": fixed-width button, AnimatePresence mode="popLayout",
+// each label enters from y: -25 and exits to y: 25 with { type: "spring", duration: 0.3, bounce: 0 },
+// loading is the 12-bar spinner he ships in Sonner. Spring (ζ = 1) → linear().
+const SPRING = 'linear(0, 0.043, 0.13, 0.242, 0.349, 0.458, 0.549, 0.634, 0.701, 0.761, 0.808, 0.848, 0.879, 0.905, 0.925, 0.941, 0.954, 0.964, 0.972, 0.978, 0.983, 0.987, 0.99, 0.992, 0.994, 0.995, 0.996, 0.997, 0.998, 0.998, 0.999, 0.999, 1)';
 
 export default {
   id: 'mo-status-morph',
-  credit: 'Status button — idle → loading → success → error on repeated clicks; icons blur-scale crossfade, the label rolls, the colour morphs (Family / Emil Kowalski "button states")',
+  credit: 'Emil Kowalski (animations.dev) multi-state button — idle → spinner → "Login link sent!", each state slides in from −25px and out to +25px on a bounce-0 spring',
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    .wrap { padding: 4px; }
     .btn {
-      position: relative; display: inline-flex; align-items: center; gap: 10px; height: 44px; width: 150px; padding: 0 16px; border: 0; border-radius: 12px; cursor: pointer; color: #fff;
-      background: var(--bg, #111); font: 600 14px Inter, system-ui, sans-serif; transition: background .4s, transform .2s ${SPRING}, box-shadow .4s; box-shadow: 0 6px 16px -8px var(--bg, #111);
+      position: relative; display: block; width: 184px; height: 36px; padding: 0; border: 0; border-radius: 8px; overflow: hidden; cursor: pointer; color: #fff;
+      font: 500 13.5px Inter, system-ui, sans-serif; background: linear-gradient(180deg, #1994ff 0%, #157cff 100%);
+      box-shadow: inset 0 0 1px 1px rgba(255,255,255,.08), 0 1px 1.5px rgba(0,0,0,.32), 0 0 0 .5px #1a94ff;
+      transition: transform .16s ease-out, filter .2s;
     }
-    .btn:hover { filter: brightness(1.1); } .btn:active { transform: scale(.96); }
-    .btn:focus-visible { outline: 2px solid var(--bg, #111); outline-offset: 3px; }
-    .btn[data-s="loading"] { --bg: #2563eb; } .btn[data-s="success"] { --bg: #16a34a; } .btn[data-s="error"] { --bg: #dc2626; }
-    .ico { position: relative; width: 20px; height: 20px; display: grid; flex: none; }
-    .ico > * { grid-area: 1 / 1; width: 20px; height: 20px; opacity: 0; transform: scale(.5); filter: blur(4px); transition: opacity .25s, transform .5s ${SPRING}, filter .25s; }
-    .ico svg { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-    .btn[data-s="idle"] .i-idle, .btn[data-s="loading"] .i-load, .btn[data-s="success"] .i-ok, .btn[data-s="error"] .i-err { opacity: 1; transform: none; filter: none; }
-    .i-load { border-radius: 50%; border: 2.4px solid rgba(255,255,255,.3); border-top-color: #fff; }
-    .btn[data-s="loading"] .i-load { animation: spin .8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .i-ok path { stroke-dasharray: 24; stroke-dashoffset: 24; } .btn[data-s="success"] .i-ok path { stroke-dashoffset: 0; transition: stroke-dashoffset .4s .1s; }
-    .i-err path { stroke-dasharray: 18; stroke-dashoffset: 18; } .btn[data-s="error"] .i-err path { stroke-dashoffset: 0; transition: stroke-dashoffset .3s .1s; }
-    .btn[data-s="error"] { animation: shake .4s cubic-bezier(.36, .07, .19, .97); }
-    @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-3px); } 40%, 60% { transform: translateX(3px); } }
-    .lbl { position: relative; display: grid; height: 20px; flex: 1; text-align: left; overflow: hidden; }
-    .lbl span { grid-area: 1 / 1; line-height: 20px; transform: translateY(120%); opacity: 0; transition: transform .5s ${SPRING}, opacity .25s; }
-    .lbl span.cur { transform: none; opacity: 1; } .lbl span.old { transform: translateY(-120%); opacity: 0; }
+    .btn:hover { filter: brightness(1.06); } .btn:active { transform: scale(.97); }
+    .btn:focus-visible { outline: 2px solid #157cff; outline-offset: 3px; }
+    .s { position: absolute; inset: 0; display: grid; place-items: center; white-space: nowrap; opacity: 0; transform: translateY(-25px); transition: transform .38s ${SPRING}, opacity .38s ${SPRING}; }
+    .s.on { opacity: 1; transform: none; }
+    .s.out { opacity: 0; transform: translateY(25px); }
+    .sp { position: relative; width: 16px; height: 16px; }
+    .sp i { position: absolute; left: -10%; top: -3.9%; width: 24%; height: 8%; border-radius: 6px; background: #fff; animation: f 1.2s linear infinite; transform: rotate(calc(var(--k) * 30deg)) translate(146%); animation-delay: calc(var(--k) * .1s - 1.2s); }
+    .sp { translate: 50% 50%; }
+    @keyframes f { 0% { opacity: 1; } 100% { opacity: .15; } }
   `,
   html: `
-    <button class="btn" type="button" data-s="idle" aria-live="polite">
-      <span class="ico" aria-hidden="true">
-        <svg class="i-idle" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        <span class="i-load"></span>
-        <svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-        <svg class="i-err" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </span>
-      <span class="lbl"><span class="cur" data-s="idle">Submit</span><span data-s="loading">Sending…</span><span data-s="success">Sent</span><span data-s="error">Try again</span></span>
-    </button>`,
+    <div class="wrap">
+      <button class="btn" type="button" aria-live="polite">
+        <span class="s on" data-s="idle">Send me a login link</span>
+        <span class="s" data-s="loading" aria-label="Sending"><span class="sp">${Array.from({ length: 12 }, (_, k) => `<i style="--k:${k}"></i>`).join('')}</span></span>
+        <span class="s" data-s="success">Login link sent!</span>
+      </button>
+    </div>`,
   init(root) {
-    const b = root.querySelector('.btn'), labels = [...root.querySelectorAll('.lbl span')];
-    const order = ['idle', 'loading', 'success', 'error'];
-    let i = 0;
+    const b = root.querySelector('.btn'), states = [...root.querySelectorAll('.s')];
+    let cur = 'idle', timers = [];
+    const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+    const show = (s) => {
+      states.forEach((el) => {
+        const on = el.dataset.s === s, was = el.dataset.s === cur;
+        el.classList.remove('out');
+        if (was && !on) { el.classList.remove('on'); el.classList.add('out'); later(() => { el.style.transition = 'none'; el.classList.remove('out'); el.offsetWidth; el.style.transition = ''; }, 400); }
+        if (on) el.classList.add('on');
+      });
+      cur = s;
+    };
     b.addEventListener('click', () => {
-      const prev = order[i]; i = (i + 1) % order.length; const s = order[i];
-      b.dataset.s = s;
-      labels.forEach((l) => { l.classList.toggle('cur', l.dataset.s === s); l.classList.toggle('old', l.dataset.s === prev); });
+      if (cur !== 'idle') return;
+      show('loading');
+      later(() => show('success'), 1750);
+      later(() => show('idle'), 3500);
     });
+    return () => timers.forEach(clearTimeout);
   },
 };

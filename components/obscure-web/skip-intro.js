@@ -12,7 +12,7 @@ export default {
     .skip { position: absolute; right: 12px; bottom: 10px; background: none; border: 0; cursor: pointer; color: #789; font: 700 10px Verdana, Arial, sans-serif; letter-spacing: 1px; padding: 4px; }
     .skip:hover { color: #fff; text-decoration: underline; }
     .skip:focus-visible, .enter:focus-visible { outline: 1px dotted #fff; outline-offset: 2px; }
-    .enter { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.7); opacity: 0; pointer-events: none; padding: 12px 28px; border: 1px solid #6cf; border-radius: 2px; background: rgba(0,40,80,.6); color: #fff; cursor: pointer; font: 700 14px Verdana, Arial, sans-serif; letter-spacing: 4px; text-shadow: 0 0 8px #6cf, 0 0 16px #06c; box-shadow: 0 0 12px #06c, inset 0 0 12px rgba(102,204,255,.3); transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s, box-shadow .3s; }
+    .enter { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.7); opacity: 0; pointer-events: none; padding: 12px 28px; border: 1px solid #6cf; border-radius: 2px; background: rgba(0,40,80,.6); color: #fff; cursor: pointer; font: 700 14px Verdana, Arial, sans-serif; letter-spacing: 4px; white-space: nowrap; text-shadow: 0 0 8px #6cf, 0 0 16px #06c; box-shadow: 0 0 12px #06c, inset 0 0 12px rgba(102,204,255,.3); transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s, box-shadow .3s; }
     .enter:hover { box-shadow: 0 0 24px #6cf, inset 0 0 18px rgba(102,204,255,.5); }
     .splash.skipped .enter { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; animation: glow 1.6s ease-in-out infinite alternate; }
     @keyframes glow { to { box-shadow: 0 0 28px #6cf, inset 0 0 20px rgba(102,204,255,.5); } }

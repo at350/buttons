@@ -6,7 +6,7 @@ export default {
     :host { display: block; max-width: 100%; }
     .stage { background: radial-gradient(ellipse at 50% 0%, #1a3a44 0%, #0b1a20 60%, #06100f 100%); border-radius: 12px; padding: 14px 16px 16px; font-family: 'Syne', 'Inter', system-ui, sans-serif; overflow: hidden; }
     .tabs { display: flex; gap: 2px; border-bottom: 1px solid rgba(120,220,230,.35); position: relative; }
-    .tab { flex: 1; min-width: 0; height: 34px; border: none; background: none; cursor: pointer; color: rgba(190,230,235,.6); font: 600 11px 'Syne', 'Inter', system-ui, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s, text-shadow .2s; }
+    .tab { flex: 1; min-width: 0; height: 34px; border: none; background: none; cursor: pointer; color: rgba(190,230,235,.6); font: 600 10px 'Syne', 'Inter', system-ui, sans-serif; letter-spacing: .6px; text-transform: uppercase; position: relative; white-space: nowrap; overflow: hidden; transition: color .2s, text-shadow .2s; }
     .tab:hover { color: #d8f7fb; }
     .tab.sel { color: #e9fdff; text-shadow: 0 0 8px #4fe3ec, 0 0 18px rgba(79,227,236,.6); }
     .tab.sel::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 8px; height: 8px; background: #4fe3ec; transform: translateX(-50%) rotate(45deg); box-shadow: 0 0 8px #4fe3ec; }

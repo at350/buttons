@@ -103,10 +103,10 @@ export default {
     .btn:active { cursor: zoom-out; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
     .cv.nogl { background: radial-gradient(circle at 60% 50%, #000 0 30%, #ff9800 35%, #2a0a5e 60%); }
-    .l { position: relative; z-index: 1; color: #fff; font: 500 11px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .08em; background: rgba(0,0,0,.5); padding: 4px 7px; border-radius: 4px; pointer-events: none; }
+    .l { position: relative; z-index: 1; color: #fff; font: 500 11px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .08em; background: rgba(0,0,0,.5); padding: 4px 7px; border-radius: 4px; pointer-events: none; min-width: 6ch; text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
     .btn:focus-visible { outline: 2px solid #ffb74d; outline-offset: 3px; }
   `,
-  html: `<button class="btn" type="button" aria-label="Hold to zoom"><canvas class="cv"></canvas><span class="l">hold</span></button>`,
+  html: `<button class="btn" type="button" aria-label="Hold to zoom"><canvas class="cv"></canvas><span class="l">1×</span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv'), lab = root.querySelector('.l');
     const s = shade(cv, btn, 220, 140, FS, {
@@ -115,7 +115,7 @@ export default {
         st.valueT = st.down || st.key ? 1 : 0;
         st.value = Math.max(0, Math.min(1, st.value + (st.valueT ? .28 : -.5) * dt));
         if (Math.abs(st.value - st.valueT) < .002) st.value = st.valueT;
-        lab.textContent = st.valueT ? (1 / Math.pow(.0025, st.value * st.value * (3 - 2 * st.value))).toFixed(0) + 'x' : 'hold';
+        lab.textContent = (1 / Math.pow(.0025, st.value * st.value * (3 - 2 * st.value))).toFixed(0) + '×';
       },
     });
     btn.addEventListener('pointerdown', (e) => btn.setPointerCapture(e.pointerId));

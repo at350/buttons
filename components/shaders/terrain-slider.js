@@ -74,58 +74,75 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Terrain heightmap: 5-octave fbm land, hillshaded by a light that follows the pointer, coloured by
+// elevation (beach, grass, rock, snow); the slider raises the sea level and the water is tinted by depth
+// with soft foam only on the shoreline.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res,u_mouse;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; vec2 ar=vec2(u_res.x/u_res.y,1.); vec2 p=uv*ar*1.8+vec2(4.2,1.3);
+ vec2 uv=gl_FragCoord.xy/u_res; vec2 ar=vec2(u_res.x/u_res.y,1.); vec2 p=uv*ar*1.7+vec2(4.2,1.3);
  float h=fbm(p);
- vec2 e=vec2(.012,0.); vec3 n=normalize(vec3(fbm(p-e)-fbm(p+e),fbm(p-e.yx)-fbm(p+e.yx),.06));
- vec3 l=normalize(vec3(mix(vec2(-.5,.5),(u_mouse-.5)*2.,u_hover),.7));
- float sh=max(dot(n,l),0.)*.75+.25;
- float wl=mix(.28,.72,u_value);
- vec3 land=mix(vec3(.22,.48,.22),vec3(.52,.42,.3),smoothstep(wl+.06,wl+.3,h));
- land=mix(land,vec3(.96),smoothstep(.7,.8,h));
- land=mix(vec3(.86,.78,.55),land,smoothstep(wl,wl+.045,h));
- float depth=clamp((wl-h)*5.,0.,1.);
- vec3 water=mix(vec3(.35,.72,.86),vec3(.04,.18,.48),depth);
- float foam=smoothstep(.014,0.,abs(h-wl+.004*sin(u_time*3.+p.x*25.+p.y*10.)));
- float spark=pow(noise(p*14.+u_time*.7),8.)*2.*(1.-depth);
- vec3 col=mix(land*sh,water*(.85+.15*sh)+foam*.6+spark,step(h,wl));
- float dx=abs(uv.x-u_value)*u_res.x; col+=smoothstep(2.,0.,dx)*.5*(1.-step(h,wl)*.5);
- col+=u_press*.12;
+ vec2 e=vec2(.01,0.); vec3 n=normalize(vec3(fbm(p-e)-fbm(p+e),fbm(p-e.yx)-fbm(p+e.yx),.05));
+ vec3 l=normalize(vec3(mix(vec2(-.6,.6),(u_mouse-.5)*2.,u_hover*.7),.75));
+ float sh=max(dot(n,l),0.)*.7+.3;
+ float wl=mix(.3,.7,u_value);
+ vec3 land=mix(vec3(.3,.52,.24),vec3(.2,.4,.18),smoothstep(wl+.04,wl+.16,h));
+ land=mix(land,vec3(.5,.43,.34),smoothstep(wl+.16,wl+.3,h));
+ land=mix(land,vec3(.95,.96,.98),smoothstep(.72,.78,h));
+ land=mix(vec3(.88,.8,.6),land,smoothstep(wl+.004,wl+.035,h));
+ float depth=clamp((wl-h)*4.5,0.,1.);
+ vec3 water=mix(vec3(.32,.74,.82),vec3(.03,.2,.42),pow(depth,.7));
+ water+=.04*(noise(p*9.+u_time*.4)-.5);
+ float foam=smoothstep(.012,.0,wl-h)*(.55+.45*sin(u_time*2.+p.x*30.+p.y*14.));
+ float px=2./u_res.y; float land_m=smoothstep(wl-.002,wl+.002,h);
+ vec3 col=mix(water+foam*.45,land*sh,land_m);
+ col+=u_press*.06;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-terrain-slider',
-  credit: 'Terrain heightmap slider — fbm land with hillshading in GLSL; drag to raise the water level and drown the valleys, beaches and foam follow the shoreline',
+  credit: 'Terrain heightmap slider in GLSL — fbm land hillshaded by a pointer-following sun and coloured by elevation (beach, grass, rock, snow); drag the sea level and depth-tinted water floods the valleys with soft shoreline foam',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .sl { position: relative; width: 300px; height: 100px; max-width: 100%; border-radius: 14px; overflow: hidden; background: #2a4a2a; cursor: ew-resize; touch-action: none; user-select: none; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(0,0,0,.3); }
+    .sl { position: relative; width: 300px; height: 100px; max-width: 100%; border-radius: 14px; overflow: hidden; background: #2a4a2a; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), 0 1px 2px rgba(0,0,0,.25); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
     .cv.nogl { background: linear-gradient(90deg, #2a4a2a 0 50%, #1c5a9a 50%); }
-    .v { position: absolute; left: 10px; top: 8px; z-index: 1; color: #fff; font: 600 11px/1 'JetBrains Mono', ui-monospace, monospace; background: rgba(0,0,0,.35); padding: 3px 6px; border-radius: 4px; pointer-events: none; }
+    .rail { position: absolute; left: 8px; right: 8px; bottom: 8px; height: 22px; z-index: 1; border-radius: 11px; background: rgba(6,24,40,.5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); pointer-events: none; }
+    .track { position: absolute; left: 13px; right: 13px; top: 9px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.22); }
+    .fill { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--v, .5) * 100%); border-radius: 2px; background: #7fd0ff; }
+    .thumb { position: absolute; top: 2px; left: calc(var(--v, .5) * 100%); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 .5px rgba(0,0,0,.25), 0 1px 3px rgba(0,0,0,.45); transition: transform .15s cubic-bezier(.2,.8,.2,1); }
+    .sl:hover .thumb { transform: scale(1.15); }
+    .sl.drag .thumb { transform: scale(1.25); }
+    .chip { position: absolute; top: 8px; left: 8px; z-index: 1; padding: 4px 7px; border-radius: 6px; background: rgba(0,0,0,.5); color: #fff; font: 600 11px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .02em; white-space: nowrap; pointer-events: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
     .sl:focus-visible { outline: 2px solid #7fd0ff; outline-offset: 3px; }
   `,
-  html: `<div class="sl" role="slider" tabindex="0" aria-label="Sea level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><canvas class="cv"></canvas><span class="v">45 m</span></div>`,
+  html: `<div class="sl" role="slider" tabindex="0" aria-label="Sea level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" style="--v:0.45"><canvas class="cv"></canvas><span class="chip"></span><span class="rail"><span class="track"><span class="fill"></span><span class="thumb"></span></span></span></div>`,
   init(root) {
-    const el = root.querySelector('.sl'), cv = root.querySelector('.cv'), out = root.querySelector('.v');
-    const s = shade(cv, el, 300, 100, FS, { pressDecay: 3 });
+    const el = root.querySelector('.sl'), cv = root.querySelector('.cv');
+    const fmt = (v) => { const m = Math.round((v - .5) * 200); return 'Sea ' + (m > 0 ? '+' : m < 0 ? '−' : '') + Math.abs(m) + ' m'; };
+    const s = shade(cv, el, 300, 100, FS, { pressDecay: 3, valueRate: 9 });
+    const track = root.querySelector('.track'), chip = root.querySelector('.chip');
     const set = (v) => {
-      v = Math.max(0, Math.min(1, v)); s.value = s.valueT = v;
-      const n = Math.round(v * 100); el.setAttribute('aria-valuenow', n); out.textContent = n + ' m'; s.kick();
+      v = Math.max(0, Math.min(1, v)); s.valueT = v;
+      el.style.setProperty('--v', v.toFixed(4)); el.setAttribute('aria-valuenow', String(Math.round(v * 100)));
+      const txt = fmt(v); chip.textContent = txt; el.setAttribute('aria-valuetext', txt); s.kick();
     };
-    set(.45);
-    el.addEventListener('pointerdown', (e) => { el.setPointerCapture(e.pointerId); set(s.mx); });
-    el.addEventListener('pointermove', () => { if (s.down) set(s.mx); });
+    const fromX = (x) => { const r = track.getBoundingClientRect(); return r.width ? (x - r.left) / r.width : s.valueT; };
+    let drag = false;
+    el.addEventListener('pointerdown', (e) => { drag = true; el.classList.add('drag'); try { el.setPointerCapture(e.pointerId); } catch (err) {} set(fromX(e.clientX)); });
+    el.addEventListener('pointermove', (e) => { if (drag) set(fromX(e.clientX)); });
+    const end = () => { drag = false; el.classList.remove('drag'); };
+    el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
     el.addEventListener('keydown', (e) => {
-      const k = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? .05 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -.05 : 0;
-      if (k) { e.preventDefault(); set(s.valueT + k); }
+      const k = { ArrowRight: 0.05, ArrowUp: 0.05, ArrowLeft: -0.05, ArrowDown: -0.05, PageUp: .1, PageDown: -.1 }[e.key];
+      if (k) { e.preventDefault(); set(s.valueT + k); } else if (e.key === 'Home') { e.preventDefault(); set(0); } else if (e.key === 'End') { e.preventDefault(); set(1); }
     });
+    set(0.45); s.value = s.valueT;
     return () => s.destroy();
   },
 };

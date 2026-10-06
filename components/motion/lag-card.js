@@ -13,14 +13,14 @@ export default {
       transition: transform .8s ${SPRING}, box-shadow .3s;
     }
     .stage:hover .card { transition: box-shadow .3s; box-shadow: 0 18px 40px -12px rgba(0,0,0,.35); }
-    .card b { font-size: 12px; font-weight: 600; color: #111; }
-    .card i { display: block; height: 6px; width: 60%; border-radius: 3px; background: #e5e5e0; }
-    .card i + i { width: 40%; margin-top: 5px; }
+    .card .th { height: 40px; margin: -4px -4px 0; border-radius: 9px; background: radial-gradient(80% 120% at 20% 0%, #a5b4fc, transparent 60%), radial-gradient(90% 120% at 100% 100%, #f9a8d4, transparent 60%), #c7d2fe; }
+    .card b { white-space: nowrap; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: #111; letter-spacing: -.01em; }
+    .card b span { font-weight: 500; color: #8a8a8a; }
     .dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #111; left: var(--px, 50%); top: var(--py, 50%); opacity: 0; transition: opacity .2s; pointer-events: none; }
     .stage:hover .dot { opacity: 1; }
     .stage:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
   `,
-  html: `<div class="stage" tabindex="0"><div class="card"><b>Drag-free follow</b><span><i></i><i></i></span></div><span class="dot"></span></div>`,
+  html: `<div class="stage" tabindex="0" role="img" aria-label="Project card that follows the cursor"><div class="card" aria-hidden="true"><span class="th"></span><b>Aurora<span>2024</span></b></div><span class="dot"></span></div>`,
   init(root) {
     const stage = root.querySelector('.stage'), card = root.querySelector('.card'), dot = root.querySelector('.dot');
     let raf = 0, tx = 0, ty = 0, x = 0, y = 0, vx = 0, hovering = false;

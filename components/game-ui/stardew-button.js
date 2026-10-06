@@ -8,7 +8,7 @@ export default {
       background-image: radial-gradient(#55984a 2px, transparent 2px), radial-gradient(#3f7a33 2px, transparent 2px);
       background-size: 18px 18px, 18px 18px;
       background-position: 0 0, 9px 9px;
-      padding: 18px 22px;
+      padding: 18px 26px 18px 44px;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
@@ -29,17 +29,17 @@ export default {
     .sd:active, .sd.sel { transform: translateY(3px);
       box-shadow: 0 0 0 3px #8a4b1d, 0 0 0 5px #5c2f0e, inset 0 -1px 0 #b8762f, inset 0 3px 0 #c98c45; }
     .sd:focus-visible { outline: 3px solid #fff; outline-offset: 7px; }
-    .cur { position: absolute; left: -30px; top: 50%; width: 18px; height: 18px; margin-top: -9px; opacity: 0; transition: opacity .1s; }
+    .cur { position: absolute; left: -34px; top: 50%; width: 18px; height: 18px; margin-top: -9px; opacity: 0; transition: opacity .1s; }
     .sd.sel .cur { opacity: 1; animation: bob .6s steps(2) infinite; }
     @keyframes bob { to { transform: translateX(3px); } }
     .cur svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
   `,
   html: `
     <div class="stage">
-      <button class="sd sel" type="button" aria-pressed="true"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#fff" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#000" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/></svg></span>New</button>
-      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#fff" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#000" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/></svg></span>Load</button>
-      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#fff" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#000" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/></svg></span>Co-op</button>
-      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#fff" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#000" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/></svg></span>Exit</button>
+      <button class="sd sel" type="button" aria-pressed="true"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>New</button>
+      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Load</button>
+      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Co-op</button>
+      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Exit</button>
     </div>`,
   init(root) {
     const b = [...root.querySelectorAll('.sd')];

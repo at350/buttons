@@ -31,10 +31,13 @@ export default {
       inset: 0;
       display: grid;
       place-items: center;
-      transform: skewX(14deg);
+      transform: skewX(4deg);
       color: #fff;
-      font: 800 italic 24px 'Unbounded', 'Syne', system-ui, sans-serif;
-      letter-spacing: 2px;
+      white-space: nowrap;
+      font: 800 32px/1 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+      font-variation-settings: 'wdth' 75;
+      letter-spacing: 1px;
+      font-style: normal;
       transition: color .2s; }
     .play:hover .l, .play.sel .l { color: #0d1526; }
     .play:active { transform: skewX(-14deg) scale(.97); }
@@ -55,8 +58,10 @@ export default {
     .hex.on { background: #f99e1a; } .hex.on svg { fill: #0d1526; }
     .hex:focus-visible { outline: none; background: rgba(255,255,255,.5); }
     .sub { color: rgba(255,255,255,.6);
-      font: 600 10px 'Inter', system-ui, sans-serif;
-      letter-spacing: 3px;
+      font: 700 13px 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+      font-variation-settings: 'wdth' 75;
+      letter-spacing: 2px;
+      font-style: italic;
       text-transform: uppercase;
       margin-left: 6px; }
   `,
@@ -64,8 +69,8 @@ export default {
     <div class="stage">
       <button class="play" type="button" aria-pressed="false"><span class="f"></span><span class="w"></span><span class="l">PLAY</span></button>
       <div class="roles" role="group" aria-label="Role queue">
-        <button class="hex on" type="button" aria-label="Tank" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6z"/></svg></button>
-        <button class="hex" type="button" aria-label="Damage" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></button>
+        <button class="hex on" type="button" aria-label="Tank" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v7.5c0 4.5-3 8-7 9.5-4-1.5-7-5-7-9.5zm3 3v4.5c0 2.6 1.5 4.8 4 6.1 2.5-1.3 4-3.5 4-6.1V7z" fill-rule="evenodd"/></svg></button>
+        <button class="hex" type="button" aria-label="Damage" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 9.5C4 7 5 5 6 4c1 1 2 3 2 5.5V20H4zM10 8.5C10 6 11 4 12 3c1 1 2 3 2 5.5V20h-4zM16 9.5C16 7 17 5 18 4c1 1 2 3 2 5.5V20h-4z"/></svg></button>
         <button class="hex" type="button" aria-label="Support" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></button>
       </div>
       <div class="sub">Quick Play</div>

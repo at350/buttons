@@ -1,35 +1,50 @@
 export default {
   id: 'cr-pow-starburst',
-  credit: 'Comic-book POW starburst — clip-path 12-point star with halftone dots and hard offset shadow',
+  credit: 'Comic-book "POW!" starburst — Roy Lichtenstein / Ben-Day dot balloon: inked SVG burst, hard offset shadow, punch on click',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { padding: 16px 20px; }
+    .stage { padding: 10px 14px 12px; }
     .btn {
-      --star: polygon(50% 0, 59.3% 15.2%, 75% 6.7%, 75.5% 24.5%, 93.3% 25%, 84.8% 40.7%, 100% 50%, 84.8% 59.3%, 93.3% 75%, 75.5% 75.5%, 75% 93.3%, 59.3% 84.8%, 50% 100%, 40.7% 84.8%, 25% 93.3%, 24.5% 75.5%, 6.7% 75%, 15.2% 59.3%, 0 50%, 15.2% 40.7%, 6.7% 25%, 24.5% 24.5%, 25% 6.7%, 40.7% 15.2%);
-      position: relative; width: 190px; height: 130px; max-width: 100%; border: 0; padding: 0; cursor: pointer; background: transparent;
-      transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
+      position: relative; display: block; width: 196px; height: 136px; border: 0; padding: 0; cursor: pointer; background: transparent;
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
     }
-    .btn:hover { transform: rotate(-6deg) scale(1.06); }
-    .btn:active { transform: rotate(4deg) scale(.95); }
-    .btn.bang { animation: bang .5s cubic-bezier(.34, 1.56, .64, 1); }
-    .btn:focus-visible { outline: 3px solid #111; outline-offset: 4px; border-radius: 50%; }
-    .sh, .out, .in { position: absolute; inset: 0; clip-path: var(--star); }
-    .sh { background: #111; transform: translate(7px, 7px); }
-    .out { background: #111; }
-    .in {
-      inset: 7px; background:
-        radial-gradient(circle, rgba(220, 38, 38, .55) 1.6px, transparent 1.9px) 0 0 / 8px 8px,
-        #ffd500;
-      display: grid; place-items: center;
-      font: 900 38px/1 Impact, 'Arial Black', 'Helvetica Neue', sans-serif; letter-spacing: .02em; color: #dc2626;
-      text-shadow: 3px 3px 0 #111, -1px -1px 0 #111, 1px -1px 0 #111, -1px 1px 0 #111;
-      transform: rotate(-8deg); transition: background .2s;
+    svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .sh { fill: #111; transform: translate(6px, 6px); }
+    .burst { stroke: #111; stroke-width: 4; stroke-linejoin: miter; stroke-miterlimit: 8; }
+    .fill-y { fill: #ffd500; transition: fill .2s ease; }
+    .dots { transition: opacity .2s ease; }
+    .t {
+      position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%) rotate(-8deg) skewX(-8deg);
+      font: 800 40px/1 'Bricolage Grotesque', Impact, 'Arial Black', sans-serif; font-variation-settings: 'wdth' 75, 'opsz' 96;
+      letter-spacing: .01em; color: #e3262f; -webkit-text-stroke: 2px #111; paint-order: stroke fill;
+      text-shadow: 3px 3px 0 #111;
     }
-    .btn[aria-pressed="true"] .in { background: radial-gradient(circle, rgba(17, 17, 17, .5) 1.6px, transparent 1.9px) 0 0 / 8px 8px, #38bdf8; color: #fff; }
-    @keyframes bang { 0% { transform: scale(.7) rotate(-14deg); } 60% { transform: scale(1.18) rotate(5deg); } 100% { transform: scale(1) rotate(0); } }
+    .btn:hover { transform: rotate(-4deg) scale(1.05); }
+    .btn:active { transform: rotate(3deg) scale(.94); transition-duration: .08s; }
+    .btn.bang { animation: bang .45s cubic-bezier(.34, 1.56, .64, 1); }
+    .btn[aria-pressed="true"] .fill-y { fill: #29b6f6; }
+    .btn[aria-pressed="true"] .t { color: #fff; }
+    .btn:focus-visible { outline: 0; }
+    .btn:focus-visible .burst { stroke: #2563eb; }
+    @keyframes bang { 0% { transform: scale(.82) rotate(-10deg); } 55% { transform: scale(1.08) rotate(3deg); } 100% { transform: scale(1) rotate(0); } }
   `,
-  html: `<div class="stage"><button class="btn" type="button" aria-pressed="false"><span class="sh"></span><span class="out"></span><span class="in">POW!</span></button></div>`,
+  html: `
+    <div class="stage">
+      <button class="btn" type="button" aria-pressed="false">
+        <svg viewBox="0 0 196 136" aria-hidden="true">
+          <defs>
+            <pattern id="bd" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="3.5" cy="3.5" r="1.6" fill="#e3262f" fill-opacity=".55"/></pattern>
+          </defs>
+          <g transform="translate(3 3)">
+            <polygon class="sh" points="95.0,8.2 107.4,28.0 132.1,12.5 129.3,35.6 161.2,29.0 146.5,48.1 174.3,52.7 153.1,65.0 174.2,77.3 146.9,82.0 158.7,99.6 129.4,94.4 131.4,116.6 108.4,105.1 95.0,120.8 82.5,102.3 58.0,117.4 56.8,97.6 28.5,101.1 43.3,82.0 9.4,78.3 40.1,65.0 10.2,51.8 44.0,48.3 30.9,30.2 60.5,35.5 58.9,13.9 81.6,24.9"/>
+            <polygon class="burst fill-y" points="95.0,8.2 107.4,28.0 132.1,12.5 129.3,35.6 161.2,29.0 146.5,48.1 174.3,52.7 153.1,65.0 174.2,77.3 146.9,82.0 158.7,99.6 129.4,94.4 131.4,116.6 108.4,105.1 95.0,120.8 82.5,102.3 58.0,117.4 56.8,97.6 28.5,101.1 43.3,82.0 9.4,78.3 40.1,65.0 10.2,51.8 44.0,48.3 30.9,30.2 60.5,35.5 58.9,13.9 81.6,24.9"/>
+            <polygon class="dots" fill="url(#bd)" points="95.0,8.2 107.4,28.0 132.1,12.5 129.3,35.6 161.2,29.0 146.5,48.1 174.3,52.7 153.1,65.0 174.2,77.3 146.9,82.0 158.7,99.6 129.4,94.4 131.4,116.6 108.4,105.1 95.0,120.8 82.5,102.3 58.0,117.4 56.8,97.6 28.5,101.1 43.3,82.0 9.4,78.3 40.1,65.0 10.2,51.8 44.0,48.3 30.9,30.2 60.5,35.5 58.9,13.9 81.6,24.9"/>
+          </g>
+        </svg>
+        <span class="t">POW!</span>
+      </button>
+    </div>`,
   init(root) {
     const b = root.querySelector('.btn');
     b.addEventListener('click', () => {

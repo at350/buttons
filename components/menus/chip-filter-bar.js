@@ -1,56 +1,59 @@
+const CHECK = '<svg width="18" height="18" viewBox="0 -960 960 960" aria-hidden="true"><path d="M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z"/></svg>';
+const LABELS = ['Vegetarian', 'Vegan', 'Gluten-free', 'Dairy-free', 'Nut-free', 'Halal', 'Kosher', 'Low carb', 'Spicy', 'Organic'];
+const chip = (l, on) => `<button class="chip" type="button" aria-pressed="${on}"><span class="sl"></span><span class="ck">${CHECK}</span><span class="lb">${l}</span></button>`;
+
 export default {
   id: 'mn-chip-filter-bar',
-  credit: 'YouTube topic chip bar — horizontally scrolling pills with edge fades and arrow buttons',
+  credit: 'Google Material 3 — filter chips (check icon slides in on selection, secondary-container fill)',
   size: 'full',
   css: `
     :host { display: block; }
-    .wrap { position: relative; background: #fff; border-radius: 12px; padding: 10px 0; font: 500 14px/1 Roboto, -apple-system, system-ui, sans-serif; color: #0f0f0f; }
-    .row { position: relative; display: flex; gap: 12px; padding: 0 12px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; }
+    .wrap { background: #fef7ff; border-radius: 12px; padding: 16px 0; overflow: hidden; }
+    .row { display: flex; gap: 8px; padding: 0 16px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; overscroll-behavior-x: contain; -webkit-tap-highlight-color: transparent; }
     .row::-webkit-scrollbar { display: none; }
-    .chip { flex: none; height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: rgba(0,0,0,.05); color: inherit; font: inherit; cursor: pointer; transition: background .15s, color .15s; white-space: nowrap; }
-    .chip:hover { background: rgba(0,0,0,.1); }
-    .chip:focus-visible { outline: 2px solid #065fd4; outline-offset: 1px; }
-    .chip[aria-pressed="true"] { background: #0f0f0f; color: #fff; }
-    .fade { position: absolute; top: 0; bottom: 0; width: 72px; display: flex; align-items: center; pointer-events: none; opacity: 0; transition: opacity .2s; }
-    .fade.l { left: 0; background: linear-gradient(90deg, #fff 55%, rgba(255,255,255,0)); justify-content: flex-start; padding-left: 6px; border-radius: 12px 0 0 12px; }
-    .fade.r { right: 0; background: linear-gradient(270deg, #fff 55%, rgba(255,255,255,0)); justify-content: flex-end; padding-right: 6px; border-radius: 0 12px 12px 0; }
-    .fade.show { opacity: 1; pointer-events: auto; }
-    .arr { width: 40px; height: 40px; border-radius: 50%; border: 0; background: none; color: #0f0f0f; cursor: pointer; display: grid; place-items: center; }
-    .arr:hover { background: rgba(0,0,0,.05); }
-    .arr:focus-visible { outline: 2px solid #065fd4; }
+    .chip { position: relative; flex: none; display: flex; align-items: center; justify-content: flex-start; height: 32px; padding: 0; border: 1px solid #79747e; border-radius: 8px; background: transparent; color: #49454f; font: 500 14px/20px 'Roboto Flex', Roboto, system-ui, sans-serif; letter-spacing: .1px; white-space: nowrap; cursor: pointer; outline: none;
+      transition: background-color 150ms cubic-bezier(.2,0,0,1), border-color 150ms cubic-bezier(.2,0,0,1), box-shadow 150ms linear; }
+    .chip[aria-pressed="true"] { background: #e8def8; border-color: transparent; color: #1d192b; }
+    .chip[aria-pressed="true"]:hover { box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15); }
+    .chip:focus-visible { outline: 3px solid #625b71; outline-offset: 2px; }
+    .sl { position: absolute; inset: -1px; border-radius: inherit; overflow: hidden; pointer-events: none; }
+    .sl::before { content: ""; position: absolute; inset: 0; background: currentColor; opacity: 0; transition: opacity 15ms linear; }
+    .chip:hover .sl::before { opacity: .08; }
+    .chip:focus-visible .sl::before { opacity: .12; }
+    .rp { position: absolute; border-radius: 50%; background: currentColor; opacity: .12; transform: scale(0); animation: rp 450ms cubic-bezier(.2,0,0,1) forwards; transition: opacity 375ms linear; pointer-events: none; }
+    @keyframes rp { to { transform: scale(1); } }
+    .ck { position: relative; display: grid; place-items: center start; width: 0; height: 18px; margin: 0 0 0 25px; overflow: hidden; flex: none; transition: width 200ms cubic-bezier(.2,0,0,1), margin 200ms cubic-bezier(.2,0,0,1); }
+    .ck svg { fill: currentColor; flex: none; transform: scale(0); transition: transform 200ms cubic-bezier(.2,0,0,1); }
+    .chip[aria-pressed="true"] .ck { width: 18px; margin: 0 8px; }
+    .chip[aria-pressed="true"] .ck svg { transform: none; }
+    .lb { position: relative; }
   `,
   html: `
     <div class="wrap">
-      <div class="row" role="group" aria-label="Filters">
-        <button class="chip" type="button" aria-pressed="true">All</button>
-        <button class="chip" type="button" aria-pressed="false">Music</button>
-        <button class="chip" type="button" aria-pressed="false">Gaming</button>
-        <button class="chip" type="button" aria-pressed="false">Live</button>
-        <button class="chip" type="button" aria-pressed="false">Mixes</button>
-        <button class="chip" type="button" aria-pressed="false">Podcasts</button>
-        <button class="chip" type="button" aria-pressed="false">Computer programming</button>
-        <button class="chip" type="button" aria-pressed="false">Design</button>
-        <button class="chip" type="button" aria-pressed="false">Typography</button>
-        <button class="chip" type="button" aria-pressed="false">Cooking</button>
-        <button class="chip" type="button" aria-pressed="false">Synthesizers</button>
-        <button class="chip" type="button" aria-pressed="false">Architecture</button>
-        <button class="chip" type="button" aria-pressed="false">Film</button>
-        <button class="chip" type="button" aria-pressed="false">Recently uploaded</button>
-        <button class="chip" type="button" aria-pressed="false">Watched</button>
-        <button class="chip" type="button" aria-pressed="false">New to you</button>
+      <div class="row" role="group" aria-label="Dietary filters">
+        ${LABELS.map((l, i) => chip(l, i === 1 || i === 4)).join('')}
       </div>
-      <div class="fade l"><button class="arr" type="button" aria-label="Scroll left"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M14.96 18.96l-1.42 1.42L5.17 12l8.37-8.38 1.42 1.42L8.01 12z"/></svg></button></div>
-      <div class="fade r"><button class="arr" type="button" aria-label="Scroll right"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M9.04 5.04l1.42-1.42L18.83 12l-8.37 8.38-1.42-1.42L15.99 12z"/></svg></button></div>
     </div>`,
   init(root) {
-    const row = root.querySelector('.row'), l = root.querySelector('.fade.l'), r = root.querySelector('.fade.r');
     const chips = [...root.querySelectorAll('.chip')];
-    const upd = () => { l.classList.toggle('show', row.scrollLeft > 4); r.classList.toggle('show', row.scrollLeft + row.clientWidth < row.scrollWidth - 4); };
-    row.addEventListener('scroll', upd, { passive: true });
-    l.querySelector('.arr').addEventListener('click', () => row.scrollBy({ left: -row.clientWidth * .7 }));
-    r.querySelector('.arr').addEventListener('click', () => row.scrollBy({ left: row.clientWidth * .7 }));
-    chips.forEach((c) => c.addEventListener('click', () => { chips.forEach((x) => x.setAttribute('aria-pressed', x === c)); row.scrollTo({ left: c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2, behavior: 'smooth' }); }));
-    const ro = new ResizeObserver(upd); ro.observe(row);
-    return () => ro.disconnect();
+    const timers = new Set();
+    // Reserve each chip's selected width (1 + 8 + 18 icon + 8 gap + label + 16 + 1) so toggling never shifts the row.
+    let alive = true;
+    const fit = () => { if (alive) chips.forEach((c) => { const lw = c.querySelector('.lb').getBoundingClientRect().width; c.style.minWidth = Math.ceil(lw) + 52 + 'px'; }); };
+    fit(); document.fonts?.ready.then(fit);
+    chips.forEach((c) => {
+      const layer = c.querySelector('.sl');
+      c.addEventListener('pointerdown', (e) => {
+        const r = layer.getBoundingClientRect(); const x = e.clientX - r.left, y = e.clientY - r.top;
+        const d = 2 * Math.hypot(Math.max(x, r.width - x), Math.max(y, r.height - y));
+        const s = document.createElement('span'); s.className = 'rp';
+        s.style.cssText = `width:${d}px;height:${d}px;left:${x - d / 2}px;top:${y - d / 2}px`;
+        layer.append(s);
+        const up = () => { ['pointerup', 'pointerleave', 'pointercancel'].forEach((k) => c.removeEventListener(k, up)); s.style.opacity = '0'; const tm = setTimeout(() => { s.remove(); timers.delete(tm); }, 400); timers.add(tm); };
+        ['pointerup', 'pointerleave', 'pointercancel'].forEach((k) => c.addEventListener(k, up));
+      });
+      c.addEventListener('click', () => c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true'));
+    });
+    return () => { alive = false; timers.forEach(clearTimeout); };
   },
 };

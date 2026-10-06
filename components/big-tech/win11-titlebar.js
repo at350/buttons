@@ -1,25 +1,26 @@
 export default {
   id: 'bt-win11-titlebar',
-  credit: 'Microsoft Windows 11 — caption buttons (minimize, maximize/restore, close)',
+  credit: 'Microsoft Windows 11 — Mica title bar caption buttons (minimize, maximize / restore, red close)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
     .bar {
       display: inline-flex; align-items: center; height: 32px; padding-left: 16px; border-radius: 8px 8px 0 0;
-      background: #f3f3f3; border: 1px solid #e5e5e5; border-bottom: 0; min-width: 240px;
+      background: #f3f3f3; border: 1px solid #e5e5e5; border-bottom: 0; min-width: 300px;
       box-shadow: 0 2px 8px rgba(0,0,0,.08);
     }
     .bar.max { border-radius: 0; }
-    .dot { width: 16px; height: 16px; border-radius: 3px; background: linear-gradient(135deg,#0a84ff,#53c0ff); margin-right: auto; }
+    .app { width: 16px; height: 16px; fill: #0078d4; flex: none; }
+    .ttl { margin: 0 auto 0 12px; font: 400 12px/16px "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif; color: rgba(0,0,0,.894); white-space: nowrap; }
     .cap {
       width: 46px; height: 32px; border: 0; background: transparent; color: #1a1a1a; cursor: default;
-      display: inline-flex; align-items: center; justify-content: center; transition: background .1s, color .1s;
+      display: inline-flex; align-items: center; justify-content: center; transition: background-color .083s linear, color .083s linear;
       -webkit-tap-highlight-color: transparent;
     }
-    .cap:hover { background: rgba(0,0,0,.05); }
-    .cap:active { background: rgba(0,0,0,.03); color: rgba(0,0,0,.6); }
+    .cap:hover { background: rgba(0,0,0,.0373); }
+    .cap:active { background: rgba(0,0,0,.0241); color: rgba(0,0,0,.6063); }
     .cap.close:hover { background: #c42b1c; color: #fff; }
-    .cap.close:active { background: #c42b1c; color: rgba(255,255,255,.7); }
+    .cap.close:active { background: rgba(196,43,28,.9); color: rgba(255,255,255,.7); }
     .cap:focus-visible { outline: 2px solid #000; outline-offset: -2px; }
     .cap svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 1; fill: none; }
     .restore { display: none; }
@@ -31,7 +32,7 @@ export default {
   `,
   html: `
     <div class="bar">
-      <span class="dot"></span>
+      <svg class="app" viewBox="0 0 24 24" aria-hidden="true"><path d="M0,0H11.377V11.372H0ZM12.623,0H24V11.372H12.623ZM0,12.623H11.377V24H0Zm12.623,0H24V24H12.623"/></svg><span class="ttl"></span>
       <button class="cap mini" type="button" aria-label="Minimize"><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></button>
       <button class="cap maxi" type="button" aria-label="Maximize"><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9" rx="1.5"/></svg></button>
       <button class="cap restore" type="button" aria-label="Restore"><svg viewBox="0 0 10 10"><path d="M2.5 2.5V1.5a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-1"/><rect x=".5" y="2.5" width="7" height="7" rx="1"/></svg></button>

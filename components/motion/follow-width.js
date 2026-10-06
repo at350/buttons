@@ -1,47 +1,40 @@
-const SPRING = 'linear(0, 0.143, 0.453, 0.779, 1.028, 1.168, 1.205, 1.173, 1.109, 1.043, 0.992, 0.965, 0.958, 0.965, 0.978, 0.992, 1.002, 1.007, 1.009, 1.007, 1.004, 1.002, 1)';
+// Threads-style Follow → Following. The button's width is animated between the two measured label widths on a
+// spring (stiffness 380, damping 28 → linear()), the labels blur-crossfade and roll, and the black fill gives way to
+// the outlined "Following" state. The outer box reserves the widest state so nothing around it ever shifts.
+const SPRING = 'linear(0, 0.023, 0.085, 0.164, 0.264, 0.36, 0.465, 0.557, 0.649, 0.724, 0.79, 0.852, 0.899, 0.94, 0.97, 0.995, 1.012, 1.024, 1.031, 1.036, 1.037, 1.037, 1.035, 1.032, 1.028, 1.025, 1.021, 1.017, 1.014, 1.011, 1.008, 1.006, 1.004, 1.003, 1.001, 1, 1, 0.999, 0.999, 0.999, 1)';
 
 export default {
   id: 'mo-follow-width',
-  credit: 'Follow → Following — the pill animates its measured width with a spring while the labels crossfade and a check pops in (Threads / Family style)',
+  credit: 'Threads Follow → Following — the button springs to the measured width of its new label while the labels blur-crossfade and the fill flips to outline',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .box { position: relative; width: 150px; height: 44px; display: flex; align-items: center; }
+    .box { width: 128px; height: 40px; display: flex; align-items: center; justify-content: center; }
     .btn {
-      position: relative; height: 40px; width: var(--w, 96px); border-radius: 999px; border: 1.5px solid #111; background: #111; color: #fff;
-      font: 600 14px Inter, system-ui, sans-serif; cursor: pointer; overflow: hidden; white-space: nowrap;
-      transition: width .6s ${SPRING}, background .3s, color .3s, border-color .3s, transform .2s cubic-bezier(.34, 1.56, .64, 1);
+      position: relative; height: 34px; width: var(--w, 76px); padding: 0; border-radius: 10px; border: 1px solid #000; background: #000; color: #fff; cursor: pointer; overflow: hidden;
+      font: 600 15px system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; letter-spacing: -.01em; white-space: nowrap;
+      transition: width .5s ${SPRING}, background .25s, color .25s, border-color .25s, transform .2s ${SPRING};
     }
-    .btn:hover { transform: scale(1.03); } .btn:active { transform: scale(.96); }
-    .btn:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
-    .btn[aria-pressed="true"] { background: #fff; color: #111; border-color: #d4d4d0; }
-    .btn[aria-pressed="true"]:hover { border-color: #ef4444; color: #ef4444; }
-    .l { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 6px; transition: opacity .25s, transform .5s ${SPRING}, filter .25s; }
-    .l2 { opacity: 0; transform: translateY(10px); filter: blur(3px); }
-    .btn[aria-pressed="true"] .l1 { opacity: 0; transform: translateY(-10px); filter: blur(3px); }
-    .btn[aria-pressed="true"] .l2 { opacity: 1; transform: none; filter: none; }
-    .l2 svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transform: scale(0); transition: transform .5s .15s ${SPRING}; }
-    .btn[aria-pressed="true"] .l2 svg { transform: scale(1); }
-    .m { position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; font: 600 14px Inter, system-ui, sans-serif; padding: 0 18px; }
-    .l1 svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; transition: transform .4s ${SPRING}; }
-    .btn:hover .l1 svg { transform: rotate(90deg); }
+    .btn:active { transform: scale(.96); }
+    .btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+    .btn[aria-pressed="true"] { background: #fff; color: #000; border-color: rgba(0,0,0,.15); }
+    .btn[aria-pressed="true"]:hover { background: #f5f5f5; }
+    .btn:not([aria-pressed="true"]):hover { background: #1f1f1f; }
+    .l { position: absolute; left: 50%; top: 50%; padding: 0 16px; translate: -50% -50%; transition: opacity .2s, filter .2s, transform .4s ${SPRING}; }
+    .l2 { opacity: 0; filter: blur(4px); transform: translateY(8px); }
+    .btn[aria-pressed="true"] .l1 { opacity: 0; filter: blur(4px); transform: translateY(-8px); }
+    .btn[aria-pressed="true"] .l2 { opacity: 1; filter: none; transform: none; }
   `,
   html: `
     <div class="box">
-      <button class="btn" type="button" aria-pressed="false">
-        <span class="l l1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Follow</span>
-        <span class="l l2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Following</span>
-      </button>
-      <span class="m m1">+ Follow</span><span class="m m2">✓ Following</span>
+      <button class="btn" type="button" aria-pressed="false"><span class="l l1">Follow</span><span class="l l2">Following</span></button>
     </div>`,
   init(root) {
-    const b = root.querySelector('.btn');
-    const w1 = root.querySelector('.m1').offsetWidth + 4, w2 = root.querySelector('.m2').offsetWidth + 4;
-    b.style.setProperty('--w', w1 + 'px');
-    b.addEventListener('click', () => {
-      const on = b.getAttribute('aria-pressed') !== 'true';
-      b.setAttribute('aria-pressed', String(on));
-      b.style.setProperty('--w', (on ? w2 : w1) + 'px');
-    });
+    const b = root.querySelector('.btn'), l1 = root.querySelector('.l1'), l2 = root.querySelector('.l2');
+    const fit = () => b.style.setProperty('--w', ((b.getAttribute('aria-pressed') === 'true' ? l2 : l1).offsetWidth + 2) + 'px');
+    const ro = new ResizeObserver(() => { const t = b.style.transition; b.style.transition = 'none'; fit(); b.offsetWidth; b.style.transition = t; });
+    ro.observe(l1); ro.observe(l2);
+    b.addEventListener('click', () => { b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); fit(); });
+    return () => ro.disconnect();
   },
 };

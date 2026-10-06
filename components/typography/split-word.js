@@ -4,6 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
+    *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .btn {
       cursor: pointer;
       background: #111;
@@ -14,8 +15,8 @@ export default {
       display: inline-grid;
       overflow: hidden;
       font: 800 40px/1 'Bricolage Grotesque', 'Space Grotesk', system-ui, sans-serif;
-      letter-spacing: -.02em;
-      font-variation-settings: 'opsz' 96, 'wdth' 90;
+      letter-spacing: -.01em;
+      font-variation-settings: 'opsz' 40, 'wdth' 90, 'wght' 800;
       transition: background .3s;
     }
     .btn:hover { background: #1e1e1e; }

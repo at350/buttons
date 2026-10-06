@@ -74,42 +74,59 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Kaleidoscope: an object chamber of jewel-glass chips (Voronoi cells with dark lead lines and bright
+// glints, backlit) seen through a two-mirror system — the angle is folded into one wedge and mirrored, so
+// there are no seams. 60° mirrors give 6-fold symmetry; the toggle swaps to 45° (8-fold) with a crossfade.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press,u_value;uniform vec2 u_res,u_mouse;
-float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
- return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
-float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-vec3 hue(float h){return .5+.5*cos(6.2832*(h+vec3(0.,.33,.67)));}
+vec2 h2(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return fract(sin(p)*43758.5453);}
+float PX;
+vec3 jewel(float h){
+ if(h<.16)return vec3(.85,.06,.22); if(h<.30)return vec3(.05,.3,.88); if(h<.44)return vec3(0.,.62,.4);
+ if(h<.58)return vec3(1.,.64,.04); if(h<.72)return vec3(.52,.16,.86); if(h<.86)return vec3(.08,.78,.9); if(h<.93)return vec3(1.,.36,.08);
+ return vec3(.98,.95,.86);}
+vec3 chamber(vec2 q){
+ vec2 g=q*5.6; vec2 i=floor(g), f=fract(g); float d1=9.,d2=9.; vec2 id=vec2(0.);
+ for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){vec2 o=vec2(float(x),float(y)); vec2 h=h2(i+o);
+  vec2 pt=o+.5+.38*sin(u_time*.35+6.2832*h)-f; float d=dot(pt,pt);
+  if(d<d1){d2=d1;d1=d;id=i+o;}else if(d<d2)d2=d;}
+ d1=sqrt(d1); d2=sqrt(d2); float b=d2-d1; float w=PX*5.6;
+ float hc=h2(id+11.).x; vec3 c=jewel(hc);
+ c*=.62+.5*smoothstep(.75,.0,d1); c+=pow(max(0.,1.-d1*1.7),6.)*.35;
+ float lead=smoothstep(.028-w,.028+w,b);
+ return mix(vec3(.04,.03,.05),c,lead);}
+vec3 view(vec2 uv,float N,float rot){
+ float r=length(uv); float a=atan(uv.y,uv.x); float seg=6.28318/N; a=mod(a,seg); a=abs(a-seg*.5);
+ vec2 p=vec2(cos(a),sin(a))*r*(1.-.18*u_press);
+ float c=cos(rot),s=sin(rot); p=mat2(c,-s,s,c)*p+vec2(.3,.1);
+ return chamber(p);}
 void main(){
- vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y*2.; float r=length(uv);
- float N=mix(6.,10.,u_value);
- float a=atan(uv.y,uv.x)+u_time*.25+(u_mouse.x-.5)*3.*u_hover;
- float seg=6.28318/N; a=abs(mod(a,seg)-seg*.5);
- vec2 p=vec2(cos(a),sin(a))*r*(1.+.3*u_press);
- vec3 col=hue(fbm(p*3.+u_time*.25)*1.6+r*.4+u_mouse.y*.3*u_hover)*(.55+.5*fbm(p*8.-u_time*.35));
- col*=smoothstep(.05,.35,fbm(p*5.+2.))*1.5;
- float facets=smoothstep(.02,.0,abs(fract(a/seg*2.+.5)-.5)-.48)*.5; col+=facets;
- float mask=smoothstep(1.,.97,r);
- col=mix(vec3(.03),col,mask)*(.8+.35*u_hover);
- col+=smoothstep(.97,.93,r)*(1.-smoothstep(.93,.9,r))*.3;
- gl_FragColor=vec4(col,1.);}`;
+ vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y*2.; float r=length(uv); PX=2./u_res.y;
+ float rot=u_time*.12+(u_mouse.x-.5)*2.2*u_hover;
+ vec3 a=view(uv,6.,rot), b=view(uv,8.,rot);
+ vec3 col=mix(a,b,smoothstep(.15,.85,u_value));
+ col*=(.82+.28*u_hover)*(1.-.35*smoothstep(.55,1.,r));
+ float mask=smoothstep(.985+PX,.985-PX,r);
+ col=mix(vec3(.02),col,mask);
+ gl_FragColor=vec4(pow(col,vec3(.95)),1.);}`;
 
 export default {
   id: 'sh-kaleidoscope',
-  credit: 'Kaleidoscope button — polar mirror-fold of fbm colour in GLSL; the pointer rotates the tube, clicking toggles between 6 and 10 mirrors',
+  credit: 'Kaleidoscope eyepiece in GLSL — backlit jewel-glass chips with lead lines tumble in the object chamber behind seamless two-mirror folding; the pointer turns the tube, clicking swaps 60° (6-fold) and 45° (8-fold) mirrors',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: block; width: 150px; height: 150px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; background: #111; cursor: pointer; isolation: isolate; box-shadow: 0 0 0 4px #1d1d22, 0 0 0 6px #3a3a44; }
+    .btn { position: relative; display: block; width: 150px; height: 150px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; background: #111; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 3px #0c0c0e, inset 0 0 14px 4px rgba(0,0,0,.75), 0 0 0 5px #6b4d22, 0 0 0 6px #c9a35a, 0 0 0 7px #4a3416, 0 6px 16px -6px rgba(0,0,0,.6); transition: transform .2s; }
+    .btn:active { transform: scale(.98); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: conic-gradient(#f0f, #0ff, #ff0, #f0f, #0ff, #ff0, #f0f); }
-    .btn:focus-visible { outline: 2px solid #fff; outline-offset: 8px; }
+    .cv.nogl { background: conic-gradient(#d4103a, #0d4de0, #00a06a, #ffa40a, #8a2be0, #d4103a); }
+    .btn::after { content: ''; position: absolute; inset: 0; border-radius: 50%; box-shadow: inset 0 0 0 3px #0c0c0e, inset 0 0 16px 5px rgba(0,0,0,.7); pointer-events: none; }
+    .btn:focus-visible { outline: 2px solid #c9a35a; outline-offset: 10px; }
   `,
-  html: `<button class="btn" type="button" aria-pressed="false" aria-label="Kaleidoscope"><canvas class="cv"></canvas></button>`,
+  html: `<button class="btn" type="button" aria-pressed="false" aria-label="Kaleidoscope: eight mirrors"><canvas class="cv"></canvas></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
-    const s = shade(cv, btn, 150, 150, FS, { valueRate: 4, pressDecay: 2.5 });
+    const s = shade(cv, btn, 150, 150, FS, { valueRate: 3, pressDecay: 2.2 });
     btn.addEventListener('click', () => {
       const on = btn.getAttribute('aria-pressed') !== 'true';
       btn.setAttribute('aria-pressed', String(on)); s.valueT = on ? 1 : 0; s.kick();

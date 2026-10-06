@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage {
-      padding: 40px 54px 36px;
+      padding: 40px 54px 22px;
       perspective: 1200px;
       background: #0b0b12;
       border-radius: 12px;
@@ -15,7 +15,7 @@ export default {
       width: 120px;
       height: 120px;
       transform-style: preserve-3d;
-      transform: rotateX(60deg) rotateZ(-45deg);
+      transform: translateY(26px) rotateX(60deg) rotateZ(-45deg);
     }
     .floor {
       position: absolute;

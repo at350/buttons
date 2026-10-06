@@ -74,32 +74,45 @@ function shade(cv, el, w, h, fs, o = {}) {
   s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
   return s;
 }
-const FS = `precision mediump float;
+// Heat haze: the label is rasterised to a texture and refracted in GLSL by rising, stretched noise —
+// the shimmer you see above asphalt or a flame: strongest near the heat at the bottom, no colour
+// fringing. Round embers drift up on hover; press is a burst of heat.
+const FS = `precision highp float;
 uniform float u_time,u_hover,u_press;uniform vec2 u_res;uniform sampler2D u_tex;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 void main(){
- vec2 uv=gl_FragCoord.xy/u_res; float t=u_time*1.6;
- float amp=.003+.022*u_hover+.05*u_press;
- vec2 d=vec2(noise(uv*vec2(6.,9.)+vec2(0.,-t*2.))-.5,noise(uv*vec2(5.,11.)+vec2(7.,-t*2.6))-.5);
- vec2 q=uv+d*amp*vec2(1.,2.)*(.6+(1.-uv.y));
- vec3 col=vec3(.06,.03,.03)+vec3(.65,.17,.02)*pow(1.-uv.y,2.2)*(.35+.9*u_hover+u_press);
- float r=texture2D(u_tex,q+vec2(amp*.7,0.)).a, g=texture2D(u_tex,q).a, b=texture2D(u_tex,q-vec2(amp*.7,0.)).a;
- col+=vec3(r,g,b)*vec3(1.,.93,.82);
- float em=step(.994,hash(floor((uv+vec2(sin(uv.y*30.+t)*.01,t*.25))*vec2(70.,40.))))*u_hover*smoothstep(.0,.4,1.-uv.y);
- col+=em*vec3(1.,.55,.15);
+ vec2 uv=gl_FragCoord.xy/u_res; float ar=u_res.x/u_res.y; float t=u_time;
+ float heat=.25+.75*u_hover+u_press;
+ float amp=(.002+.011*heat)*(.45+1.1*(1.-uv.y));
+ vec2 nq=uv*vec2(5.,3.)+vec2(0.,-t*1.7);
+ vec2 d=vec2(noise(nq*vec2(1.,2.2))-.5,noise(nq*vec2(1.3,2.6)+vec2(7.,3.))-.5);
+ d+=.5*vec2(noise(nq*vec2(2.5,5.)+3.)-.5,noise(nq*vec2(2.7,5.3)+9.)-.5);
+ vec2 q=uv+d*amp*vec2(1.,1.6);
+ float a=texture2D(u_tex,q).a;
+ vec3 bg=vec3(.055,.025,.02)+vec3(.85,.22,.03)*pow(1.-uv.y,2.4)*(.35+.65*heat);
+ bg+=vec3(.5,.12,.02)*pow(1.-uv.y,6.)*(noise(vec2(uv.x*6.-t*.3,t*.8))*.6+.2)*heat;
+ vec3 hot=mix(vec3(1.,.95,.86),vec3(1.,.78,.5),smoothstep(.75,.2,uv.y));
+ vec3 col=mix(bg,hot,a);
+ // embers: one per cell of a rising grid, round, flickering, fading as they climb
+ vec2 g=vec2(uv.x*ar*7.,uv.y*4.-t*.55); vec2 id=floor(g); vec2 f=fract(g)-.5;
+ float hr=hash(id); vec2 o=vec2(hash(id+3.)-.5,hash(id+7.)-.5)*.6+vec2(.12*sin(t*2.+hr*6.),0.);
+ float e=smoothstep(.07,.0,length((f-o)*vec2(1.,ar*7./4.)))*step(.62,hr);
+ col+=e*vec3(1.,.55,.16)*(.5+.5*sin(t*9.+hr*40.))*smoothstep(.95,.2,uv.y)*u_hover;
  gl_FragColor=vec4(col,1.);}`;
 
 export default {
   id: 'sh-heat-haze',
-  credit: 'Heat-haze refraction — the label is rasterized to a texture and distorted in GLSL by rising noise, with RGB fringing and embers that intensify on hover',
+  credit: 'Heat-haze refraction — the label is rasterised to a texture and bent in GLSL by rising stretched noise (asphalt / flame shimmer, strongest near the heat), with embers that drift up on hover',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .btn { position: relative; display: block; width: 240px; height: 80px; max-width: 100%; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: #0f0808; cursor: pointer; isolation: isolate; }
+    .btn { position: relative; display: block; width: 240px; height: 80px; max-width: 100%; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: #0e0605; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(255,140,60,.14), 0 1px 2px rgba(0,0,0,.3); transition: box-shadow .3s, transform .15s; }
+    .btn:hover { box-shadow: inset 0 0 0 1px rgba(255,140,60,.3), 0 10px 26px -12px rgba(255,90,20,.7); }
+    .btn:active { transform: scale(.98); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: linear-gradient(0deg, #a62d05, #0f0808 70%); }
+    .cv.nogl { background: linear-gradient(0deg, #a62d05, #0e0605 70%); }
     .fb { position: absolute; inset: 0; display: grid; place-items: center; color: #fff3e3; font: 800 34px/1 'Bricolage Grotesque', 'Inter', system-ui, sans-serif; letter-spacing: .12em; opacity: 0; pointer-events: none; }
     .cv.nogl + .fb { opacity: 1; }
     .btn:focus-visible { outline: 2px solid #ff7a2a; outline-offset: 3px; }
@@ -107,20 +120,27 @@ export default {
   html: `<button class="btn" type="button" aria-label="Heat"><canvas class="cv"></canvas><span class="fb" aria-hidden="true">HEAT</span></button>`,
   init(root) {
     const btn = root.querySelector('.btn'), cv = root.querySelector('.cv');
+    let tex = null, glr = null;
+    const paint = () => {
+      if (!glr || !tex) return;
+      const t = document.createElement('canvas'); t.width = 480; t.height = 160;
+      const c = t.getContext('2d'); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.font = '800 70px "Bricolage Grotesque", Inter, system-ui, sans-serif'; try { c.letterSpacing = '14px'; } catch (e) {}
+      c.fillText('HEAT', 247, 86);
+      glr.bindTexture(glr.TEXTURE_2D, tex); glr.pixelStorei(glr.UNPACK_FLIP_Y_WEBGL, 1);
+      glr.texImage2D(glr.TEXTURE_2D, 0, glr.RGBA, glr.RGBA, glr.UNSIGNED_BYTE, t);
+    };
     const s = shade(cv, btn, 240, 80, FS, {
-      pressDecay: 1.4,
+      pressDecay: 1.2,
       after(gl, prog) {
-        const t = document.createElement('canvas'); t.width = 480; t.height = 160;
-        const c = t.getContext('2d'); c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle';
-        c.font = '800 68px "Bricolage Grotesque", Inter, system-ui, sans-serif'; c.fillText('H E A T', 240, 84);
-        const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+        glr = gl; tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, t);
-        gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
+        paint(); gl.uniform1i(gl.getUniformLocation(prog, 'u_tex'), 0);
       },
     });
-    return () => s.destroy();
+    let dead = false;
+    if (globalThis.document && document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!dead) { paint(); s.draw(); } });
+    return () => { dead = true; s.destroy(); };
   },
 };

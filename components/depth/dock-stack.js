@@ -1,55 +1,94 @@
 export default {
   id: 'dp-dock-stack',
-  credit: 'macOS Dock stack — click the folder in the glass dock and four documents fan upward in an arc with translateZ depth',
+  credit: 'macOS Dock — Downloads stack in “Fan” view: click the folder and the files arc up and to the right out of the Dock, each with its name in a dark label, topped by “Open in Finder”',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 240px; height: 210px; border-radius: 12px; background: linear-gradient(180deg, #5b7cfa, #c084fc 60%, #f9a8d4); perspective: 800px; overflow: hidden; }
+    .stage {
+      position: relative; width: 260px; height: 262px; border-radius: 12px; overflow: hidden;
+      background: radial-gradient(90% 70% at 20% 0%, #f9a8d4, transparent 70%), radial-gradient(90% 80% at 100% 30%, #818cf8, transparent 70%), linear-gradient(180deg, #6d5bd0, #c26bb5 70%, #f2a07b);
+      font-family: system-ui, -apple-system, 'Inter', sans-serif;
+    }
     .dock {
-      position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; align-items: flex-end; gap: 10px; padding: 8px 12px; border-radius: 18px;
-      background: rgba(255, 255, 255, .28); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5), 0 10px 30px rgba(0, 0, 0, .25);
+      position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); display: flex; align-items: flex-end; gap: 8px; padding: 6px 8px; border-radius: 18px;
+      background: rgba(255, 255, 255, .26); -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);
+      box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .55), 0 0 0 .5px rgba(0, 0, 0, .15), 0 8px 24px rgba(0, 0, 0, .2);
     }
-    .ic { width: 44px; height: 44px; border-radius: 11px; border: 0; padding: 0; cursor: pointer; display: grid; place-items: center; color: #fff; box-shadow: 0 4px 10px rgba(0, 0, 0, .25); transition: transform .25s cubic-bezier(.3, 1.4, .4, 1); }
-    .ic:hover { transform: translateY(-8px) scale(1.12); }
-    .ic:active { transform: translateY(-4px) scale(1.04); }
-    .ic svg { width: 24px; height: 24px; }
-    .a { background: linear-gradient(160deg, #60a5fa, #2563eb); } .c { background: linear-gradient(160deg, #a3e635, #16a34a); }
-    .stack { background: linear-gradient(160deg, #7dd3fc, #0284c7); position: relative; }
-    .stack[aria-expanded="true"] { transform: translateY(-6px) scale(1.05); }
-    .fan { position: absolute; left: 50%; bottom: 70px; width: 0; height: 0; transform-style: preserve-3d; pointer-events: none; }
-    .doc {
-      --i: 0; position: absolute; left: -24px; bottom: 0; width: 48px; height: 58px; border: 0; border-radius: 6px; cursor: pointer; padding: 0;
-      background: #fff; box-shadow: 0 8px 20px rgba(0, 0, 0, .25), inset 0 0 0 1px rgba(0, 0, 0, .06); display: grid; place-items: center; color: #1e293b;
-      opacity: 0; transform: translateY(40px) translateZ(-40px) scale(.6); transition: transform .45s cubic-bezier(.3, 1.3, .4, 1) calc(var(--i) * 50ms), opacity .25s calc(var(--i) * 50ms);
+    .ic {
+      position: relative; width: 46px; height: 46px; border-radius: 10.5px; border: 0; padding: 0; cursor: pointer; display: grid; place-items: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .2), 0 3px 8px rgba(0, 0, 0, .18); transition: transform .3s cubic-bezier(.32, .72, 0, 1);
+      -webkit-tap-highlight-color: transparent;
     }
-    .doc svg { width: 22px; height: 22px; }
+    .ic:active { filter: brightness(.8); }
+    .ic::after { content: ''; position: absolute; left: 50%; bottom: -5px; width: 3px; height: 3px; margin-left: -1.5px; border-radius: 50%; background: rgba(0, 0, 0, .55); opacity: 0; }
+    .ic.run::after { opacity: 1; }
+    .safari { background: linear-gradient(180deg, #fff, #e8e8ec); }
+    .safari svg { width: 38px; height: 38px; }
+    .settings { background: linear-gradient(180deg, #a6a6ab, #6e6e73); color: #2b2b2e; }
+    .settings svg { width: 34px; height: 34px; }
+    .stack { background: transparent; box-shadow: none; }
+    .fold { position: absolute; left: 1px; right: 1px; top: 6px; bottom: 4px; }
+    .fold::before { content: ''; position: absolute; left: 0; top: -4px; width: 17px; height: 6px; border-radius: 2px 3px 0 0; background: #92ddff; clip-path: polygon(0 0, 78% 0, 100% 100%, 0 100%); }
+    .fold i { position: absolute; inset: 0; border-radius: 2px 4px 4px 4px; background: #92ddff; }
+    .fold b { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; border-radius: 3px 3px 4px 4px; background: linear-gradient(180deg, #8bdafd 0, #67cbf8 8%, #7ad4fb 75%, #6dc5ed); box-shadow: inset 0 .5px 0 rgba(255, 255, 255, .6), 0 1px 2px rgba(0, 0, 0, .12); display: grid; place-items: center; color: #3faae5; }
+    .fold b svg { width: 18px; height: 18px; }
+    .ic:focus-visible, .it:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    /* the fan */
+    .fan { position: absolute; left: 50%; bottom: 66px; width: 0; height: 0; pointer-events: none; }
+    .it {
+      --k: 0; position: absolute; left: -20px; bottom: 0; width: 40px; height: 40px; border: 0; padding: 0; background: none; cursor: pointer;
+      opacity: 0; transform-origin: 50% 100%;
+      transform: translate(0, 30px) scale(.35);
+      transition: transform .28s cubic-bezier(.4, 0, .6, 1) calc((3 - var(--k)) * 25ms), opacity .2s calc((3 - var(--k)) * 25ms);
+    }
     .open .fan { pointer-events: auto; }
-    .open .doc { opacity: 1; transform: translateX(calc((var(--i) - 1.5) * 52px)) translateY(calc(var(--i) * var(--i) * -8px + var(--i) * 24px - 16px)) translateZ(calc(var(--i) * 10px)) rotate(calc((var(--i) - 1.5) * 10deg)); }
-    .doc:hover { transform: translateX(calc((var(--i) - 1.5) * 52px)) translateY(calc(var(--i) * var(--i) * -8px + var(--i) * 24px - 28px)) translateZ(50px) rotate(0deg) !important; }
-    .doc[aria-pressed="true"] { background: #fde68a; }
-    .ic:focus-visible, .doc:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .open .it {
+      opacity: 1;
+      transform: translate(calc(var(--k) * var(--k) * 4px), calc(var(--k) * -44px - 4px)) rotate(calc(var(--k) * 3deg));
+      transition: transform .42s cubic-bezier(.32, 1.25, .5, 1) calc(var(--k) * 35ms), opacity .15s calc(var(--k) * 35ms);
+    }
+    .doc { position: absolute; left: 6px; top: 0; width: 30px; height: 38px; border-radius: 2px; background: #fff; box-shadow: 0 0 0 .5px rgba(0, 0, 0, .2), 0 2px 5px rgba(0, 0, 0, .25);
+      clip-path: polygon(0 0, 72% 0, 100% 22%, 100% 100%, 0 100%); }
+    .doc::after { content: ''; position: absolute; right: 0; top: 0; width: 28%; height: 22%; background: linear-gradient(225deg, transparent 50%, #d9d9de 50%); }
+    .doc .tag { position: absolute; left: 3px; right: 3px; bottom: 5px; height: 9px; border-radius: 1.5px; color: #fff; font: 700 6.5px/9px system-ui, sans-serif; text-align: center; letter-spacing: .02em; }
+    .doc .lines { position: absolute; left: 5px; right: 8px; top: 7px; height: 14px; background: repeating-linear-gradient(180deg, #c7c7cc 0 1px, transparent 1px 4px); }
+    .pdf .tag { background: #e5352b; } .zip .tag { background: #8e8e93; } .m4a .tag { background: #fc3c44; }
+    .pic { position: absolute; left: 1px; top: 4px; width: 38px; height: 30px; border-radius: 2px; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
+      background: linear-gradient(180deg, #7dd3fc 0 52%, #fcd34d 52% 58%, #16a34a 58%); }
+    .finder { position: absolute; left: 6px; top: 4px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+      background: rgba(40, 40, 44, .82); box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .25), 0 2px 6px rgba(0, 0, 0, .3); }
+    .finder svg { width: 16px; height: 16px; }
+    .lbl {
+      position: absolute; right: 44px; top: 50%; transform: translateY(-50%); max-width: 106px; padding: 3px 7px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      background: rgba(30, 30, 32, .78); color: #fff; font: 500 11px/1.25 system-ui, -apple-system, 'Inter', sans-serif; letter-spacing: -.01em;
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background .12s;
+    }
+    .it:hover .lbl, .it[aria-current="true"] .lbl { background: #0a84ff; }
+    .it:active .doc, .it:active .pic { filter: brightness(.85); }
   `,
   html: `
     <div class="stage">
-      <div class="fan">
-        <button class="doc" type="button" style="--i:0" aria-pressed="false" tabindex="-1" aria-label="Document 1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></button>
-        <button class="doc" type="button" style="--i:1" aria-pressed="false" tabindex="-1" aria-label="Image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/></svg></button>
-        <button class="doc" type="button" style="--i:2" aria-pressed="false" tabindex="-1" aria-label="Music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></button>
-        <button class="doc" type="button" style="--i:3" aria-pressed="false" tabindex="-1" aria-label="Archive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9M10 13h4"/></svg></button>
+      <div class="fan" role="menu" aria-label="Downloads">
+        <button class="it" type="button" role="menuitem" style="--k:0" tabindex="-1"><span class="lbl">Report.pdf</span><span class="doc pdf"><span class="lines"></span><span class="tag">PDF</span></span></button>
+        <button class="it" type="button" role="menuitem" style="--k:1" tabindex="-1"><span class="lbl">IMG_2048.heic</span><span class="pic"></span></button>
+        <button class="it" type="button" role="menuitem" style="--k:2" tabindex="-1"><span class="lbl">Assets.zip</span><span class="doc zip"><span class="lines"></span><span class="tag">ZIP</span></span></button>
+        <button class="it" type="button" role="menuitem" style="--k:3" tabindex="-1"><span class="lbl">Open in Finder</span><span class="finder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></button>
       </div>
       <div class="dock">
-        <button class="ic a" type="button" aria-label="Finder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 9v2M15 9v2M8 15c2.5 2 5.5 2 8 0"/></svg></button>
-        <button class="ic stack" type="button" aria-expanded="false" aria-label="Downloads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h6l2 2h10v9H3z"/></svg></button>
-        <button class="ic c" type="button" aria-label="Notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 8h10M7 12h10M7 16h6"/></svg></button>
+        <button class="ic safari run" type="button" aria-label="Safari"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="dpdksaf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1ac8fc"/><stop offset="1" stop-color="#1f6ff2"/></linearGradient></defs><circle cx="12" cy="12" r="11.2" fill="url(#dpdksaf)"/><circle cx="12" cy="12" r="9.6" fill="none" stroke="#fff" stroke-opacity=".9" stroke-width=".6" stroke-dasharray=".35 .9"/><path d="M12 12 18.2 5.8 13.4 13.4z" fill="#ff3b30"/><path d="M12 12 5.8 18.2 10.6 10.6z" fill="#fff"/></svg></button>
+        <button class="ic stack" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="Downloads"><span class="fold"><i></i><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="m8 12 4 4 4-4"/></svg></b></span></button>
+        <button class="ic settings" type="button" aria-label="System Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
     </div>`,
   init(root) {
-    const stage = root.querySelector('.stage'), s = root.querySelector('.stack'), docs = root.querySelectorAll('.doc');
-    s.addEventListener('click', () => {
-      const o = s.getAttribute('aria-expanded') !== 'true';
-      s.setAttribute('aria-expanded', String(o)); stage.classList.toggle('open', o);
-      docs.forEach((d) => { d.tabIndex = o ? 0 : -1; });
-    });
-    docs.forEach((d) => d.addEventListener('click', () => d.setAttribute('aria-pressed', String(d.getAttribute('aria-pressed') !== 'true'))));
+    const stage = root.querySelector('.stage'), s = root.querySelector('.stack'), items = [...root.querySelectorAll('.it')];
+    const set = (o) => {
+      s.setAttribute('aria-expanded', String(o)); stage.classList.toggle('open', o); s.classList.toggle('run', o);
+      items.forEach((d) => { d.tabIndex = o ? 0 : -1; });
+    };
+    s.addEventListener('click', () => set(s.getAttribute('aria-expanded') !== 'true'));
+    items.forEach((d) => d.addEventListener('click', () => { items.forEach((x) => x.removeAttribute('aria-current')); d.setAttribute('aria-current', 'true'); setTimeout(() => set(false), 220); }));
+    stage.addEventListener('click', (e) => { if (!e.target.closest('.it, .ic')) set(false); });
+    stage.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); s.focus(); } });
   },
 };

@@ -1,45 +1,70 @@
+// Square D QO-style plug-on breakers seen through a load-centre dead-front: black bodies, a stubby
+// handle with the amp rating on it, ON toward the outside, and the round Visi-Trip window.
+const SIDE = (amp) => `
+  <div class="bk dummy" aria-hidden="true">
+    <span class="lbl off">OFF</span><span class="vt"></span>
+    <span class="slot"><span class="handle on"><b>${amp}</b></span></span>
+    <span class="lbl on">ON</span>
+  </div>`;
+
 export default {
   id: 'ph-breaker',
-  credit: 'Panel circuit breaker (Square D QO style) — big handle, hard snap, red window when ON',
+  credit: 'Square D QO-style circuit breaker in a load-centre dead-front — handle snaps hard between OFF and ON',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: inline-block; padding: 16px 26px; border-radius: 12px; background: linear-gradient(#9aa0a6, #71777d); }
-    .body {
-      position: relative; width: 60px; height: 128px; border-radius: 4px;
-      background: linear-gradient(90deg, #2c2f33, #3d4045 20%, #3d4045 80%, #26292d); 
-      box-shadow: 0 2px 4px rgba(0,0,0,.6), 0 8px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.1);
+    .stage {
+      display: inline-block; padding: 14px 16px; border-radius: 12px;
+      background: radial-gradient(circle at 20% 0%, #e2e3df, #c4c6c1 70%), #cfd0cc;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1px 0 rgba(0,0,0,.12);
     }
-    .lbl { position: absolute; left: 0; right: 0; text-align: center; font: 800 9px/1 system-ui, sans-serif; letter-spacing: 1px; color: rgba(255,255,255,.55); }
-    .lbl.on { top: 10px; } .lbl.off { bottom: 10px; }
-    .well {
-      position: absolute; left: 50%; top: 50%; width: 30px; height: 84px; margin: -42px 0 0 -15px; border: 0; padding: 0; border-radius: 3px; cursor: pointer;
-      background: #0b0c0d; box-shadow: inset 0 2px 5px rgba(0,0,0,1), inset 0 -1px 0 rgba(255,255,255,.08); -webkit-tap-highlight-color: transparent;
+    .opening {
+      display: grid; gap: 3px; padding: 4px 6px; border-radius: 2px; background: #1a1b1c;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.8);
     }
-    .well:focus-visible { outline: 2px solid #7cc4ff; outline-offset: 3px; }
-    .win { position: absolute; left: 7px; right: 7px; height: 6px; border-radius: 1px; background: #1e8a3a; box-shadow: inset 0 1px 1px rgba(0,0,0,.6); transition: background .05s; }
-    .win.t { top: 5px; } .win.b { bottom: 5px; background: #1e8a3a; }
+    .bk {
+      position: relative; display: flex; align-items: center; gap: 6px; width: 156px; height: 34px; padding: 0 8px;
+      border: 0; border-radius: 2px; font: inherit;
+      background: linear-gradient(#2b2c2e, #1e1f21 55%, #161718);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.6);
+      -webkit-tap-highlight-color: transparent;
+    }
+    button.bk { cursor: pointer; }
+    button.bk:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    .lbl { font: 800 7.5px/1 Inter, Arial, sans-serif; letter-spacing: .6px; color: rgba(255,255,255,.72); }
+    .lbl.on { margin-left: auto; }
+    .vt { width: 7px; height: 7px; border-radius: 50%; background: #0b0b0c; box-shadow: inset 0 1px 1px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.08); }
+    .slot {
+      position: relative; width: 58px; height: 22px; border-radius: 2px; background: #0a0a0b; perspective: 120px;
+      box-shadow: inset 0 2px 3px rgba(0,0,0,1), inset 0 -1px 0 rgba(255,255,255,.06);
+    }
     .handle {
-      position: absolute; left: 2px; width: 26px; height: 46px; top: 36px; border-radius: 3px;
-      background: linear-gradient(90deg, #15161a, #3f4249 35%, #2a2d33 70%, #101114);
-      box-shadow: 0 3px 4px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.2), inset 0 -2px 0 rgba(0,0,0,.6);
-      transition: top .07s cubic-bezier(.9,0,.1,1);
+      position: absolute; top: 1px; left: 13px; width: 32px; height: 20px; border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(90deg, #121314, #3a3c3f 30%, #2a2c2e 70%, #101112);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 3px rgba(0,0,0,.8);
+      transform: translateX(-9px) rotateY(-28deg);
+      transition: transform .085s cubic-bezier(.8,0,.2,1.35), background .085s;
     }
-    .handle::after { content: ''; position: absolute; left: 6px; right: 6px; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 1px; background: rgba(255,255,255,.15); box-shadow: 0 -6px 0 rgba(255,255,255,.15), 0 6px 0 rgba(255,255,255,.15); }
-    .well[aria-pressed="true"] .handle { top: 2px; }
-    .well[aria-pressed="true"] .win.t { background: #e8141c; box-shadow: 0 0 5px rgba(232,20,28,.6); }
-    .well[aria-pressed="true"] .win.b { background: #e8141c; }
+    .handle b { font: 800 10px/1 Inter, Arial, sans-serif; color: #f2f2f0; letter-spacing: -.2px; }
+    .handle.on, button[aria-pressed="true"] .handle { transform: translateX(9px) rotateY(28deg); background: linear-gradient(90deg, #101112, #2a2c2e 30%, #3a3c3f 70%, #121314); }
+    button.bk:active .handle { transform: translateX(0) rotateY(0); transition-duration: .05s; }
+    .dummy { opacity: .9; }
   `,
   html: `
     <div class="stage">
-      <div class="body">
-        <span class="lbl on">ON</span>
-        <button class="well" type="button" aria-pressed="false" aria-label="main breaker"><span class="win t"></span><span class="handle"></span><span class="win b"></span></button>
-        <span class="lbl off">OFF</span>
+      <div class="opening">
+        ${SIDE(15)}
+        <button class="bk" type="button" aria-pressed="true" aria-label="20 amp breaker">
+          <span class="lbl off">OFF</span><span class="vt"></span>
+          <span class="slot"><span class="handle"><b>20</b></span></span>
+          <span class="lbl on">ON</span>
+        </button>
+        ${SIDE(15)}
       </div>
     </div>`,
   init(root) {
-    const b = root.querySelector('.well');
+    const b = root.querySelector('button.bk');
     b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'));
   },
 };
