@@ -7,14 +7,14 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .foot { display: grid; align-items: center; padding: 16px 20px; border-radius: 12px; background: #fff; border-top: 2px solid #e5e5e5; transition: background-color .2s; }
+    .foot { display: grid; align-items: center; padding: 16px clamp(12px, 4vw, 20px); border-radius: 12px; background: #fff; border-top: 2px solid #e5e5e5; transition: background-color .2s; }
     .foot.ok { background: #d7ffb8; border-top-color: #d7ffb8; }
     .side { grid-area: 1 / 1; display: flex; align-items: center; }
     .badge { display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; background: #fff; visibility: hidden; transform: scale(.4); opacity: 0; transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .15s; }
     .badge svg { width: 30px; height: 30px; fill: none; stroke: #58a700; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
     .foot.ok .badge { visibility: visible; transform: none; opacity: 1; }
     .foot.ok .skip { visibility: hidden; }
-    .row { grid-area: 1 / 1; display: flex; gap: 48px; align-items: center; justify-content: space-between; }
+    .row { grid-area: 1 / 1; display: flex; gap: clamp(12px, 6vw, 48px); align-items: center; justify-content: space-between; min-width: 0; }
     .duo {
       position: relative; height: 50px; min-width: 150px; padding: 0 16px 4px; border: 0; border-radius: 16px; cursor: pointer;
       font: 700 15px/1 "din-round", "DIN Round Pro", "DM Sans", sans-serif; letter-spacing: .8px; text-transform: uppercase;
