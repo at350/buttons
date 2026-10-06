@@ -16,6 +16,7 @@ const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? args.splice(i, 
 const jsonOut = flag('--json');
 const onlyIds = flag('--ids');
 const showAll = args.includes('--all'); if (showAll) args.splice(args.indexOf('--all'), 1);
+const restOnly = args.includes('--rest'); if (restOnly) args.splice(args.indexOf('--rest'), 1);
 const BASE = process.env.BASE || 'http://127.0.0.1:4173/';
 const categories = args.length ? args : null;
 
@@ -113,7 +114,12 @@ await evaluate(`(async () => {
         const r = el.getBoundingClientRect();
         if (r.width === 0 || r.height === 0) continue;
         const cs = getComputedStyle(el);
-        if (cs.visibility === 'hidden' || +cs.opacity === 0 || cs.display === 'none') continue;
+        if (cs.display === 'none') continue;
+        if (cs.visibility === 'hidden' || +cs.opacity === 0) {
+          // invisible but still laid out: it widens the page if it extends past the host (page scroll bug)
+          if (!clipped(el, null) && (r.right > hr.right + 3 || r.left < hr.left - 3)) { count++; const amt = Math.round(Math.max(r.right - hr.right, hr.left - r.left)); if (amt > worst.amt) worst = { amt, side: r.right > hr.right + 3 ? 'r' : 'l', el: name(el), of: 'host (hidden content)', pos: cs.position, abs: false, hidden: true }; }
+          continue;
+        }
         // 1. against the host box
         if (!clipped(el, null)) consider(el, r, cs, hr, 'host', false);
         // 2. against the nearest painted container inside the element. Absolutely positioned content gets a
@@ -149,6 +155,16 @@ for (const item of list) {
   const m = await evaluate(`window.__audit.mount(${item.i})`);
   await sleep(500);
   const rest = await evaluate('window.__audit.measure()');
+  if (restOnly) {
+    await evaluate('window.__audit.unmount()');
+    const findings = [];
+    if (rest.worst.amt > 3 && !(rest.open && rest.worst.abs)) findings.push(`rest: ${rest.worst.el} escapes ${rest.worst.of || 'host'} ${rest.worst.side} by ${rest.worst.amt}px${rest.worst.hidden ? ' (hidden content)' : ''}`);
+    if (m.err) findings.unshift('init error: ' + m.err);
+    const rec = { cat: item.cat, id: item.id, size: item.size, box: `${m.w}×${m.h}`, findings };
+    results.push(rec);
+    if (findings.length || showAll) console.log(`${findings.length ? '✗' : '✓'} ${item.cat}/${item.id} [${rec.box}]${findings.length ? '\n    ' + findings.join('\n    ') : ''}`);
+    continue;
+  }
   const c = await evaluate('window.__audit.control()');
   await mouse('mouseMoved', c.x, c.y);
   await sleep(450);
@@ -165,7 +181,7 @@ for (const item of list) {
   const states = { rest, hover, clicked, after };
   const findings = [];
   for (const [s, v] of Object.entries(states)) {
-    if (v.worst.amt > 3 && !(v.open && v.worst.abs)) findings.push(`${s}: ${v.worst.el} escapes ${v.worst.side} by ${v.worst.amt}px${v.worst.abs ? ' (absolute)' : ''}${v.open ? ' [open]' : ''}`);
+    if (v.worst.amt > 3 && !(v.open && v.worst.abs)) findings.push(`${s}: ${v.worst.el} escapes ${v.worst.of && v.worst.of !== 'host' ? v.worst.of + ' ' : ''}${v.worst.side} by ${v.worst.amt}px${v.worst.abs ? ' (absolute)' : ''}${v.worst.hidden ? ' (hidden content)' : ''}${v.open ? ' [open]' : ''}`);
   }
   if (m.err) findings.unshift('init error: ' + m.err);
   if (m.w === 0 || m.h === 0) findings.unshift(`zero-sized at mount (${m.w}×${m.h})`);

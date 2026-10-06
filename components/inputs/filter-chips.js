@@ -13,7 +13,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stack { display: grid; }
-    .row { grid-area: 1 / 1; display: flex; gap: 8px; white-space: nowrap; }
+    .row { grid-area: 1 / 1; display: flex; flex-wrap: wrap; gap: 8px; white-space: nowrap; }
     .ghost { visibility: hidden; pointer-events: none; }
     .chip {
       position: relative; display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border-radius: 8px; border: 0; background: transparent;

@@ -9,7 +9,7 @@ export default {
     .hd { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid #d7dce1; font-weight: 700; font-size: 14px; }
     .hd svg { width: 34px; height: 24px; fill: #ec0016; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 10px 10px 6px; }
-    .t { height: 46px; border: 1px solid #afb4bb; border-radius: 4px; background: #f0f3f5; color: #282d37; font: 700 12px/1.2 'DM Sans', Inter, sans-serif; text-align: left; padding: 5px 9px; cursor: pointer; transition: background .1s, border-color .1s, transform .06s; -webkit-tap-highlight-color: transparent; }
+    .t { min-height: 46px; border: 1px solid #afb4bb; border-radius: 4px; background: #f0f3f5; color: #282d37; font: 700 12px/1.2 'DM Sans', Inter, sans-serif; text-align: left; padding: 5px 9px; cursor: pointer; transition: background .1s, border-color .1s, transform .06s; -webkit-tap-highlight-color: transparent; }
     .t small { display: block; font-weight: 400; font-size: 10.5px; color: #646973; }
     .t:hover { background: #e2e6ea; }
     .t:active { transform: scale(.98); }

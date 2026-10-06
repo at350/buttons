@@ -30,10 +30,12 @@ export default {
     .dd svg { width: 20px; height: 20px; fill: currentColor; }
     .menu {
       position: absolute; top: 40px; left: 8px; z-index: 5; min-width: 112px; padding: 8px 0; margin: 0; list-style: none; border-radius: 4px; background: #fff;
-      box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15); opacity: 0; transform: scaleY(.8); transform-origin: top;
-      visibility: hidden; transition: opacity .12s linear, transform .2s cubic-bezier(.2,0,0,1), visibility 0s .2s;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15); transform-origin: top;
+      /* closed = display:none so the hidden panel never widens the page; enter/exit still animate */
+      display: none; opacity: 0; transform: scaleY(.8);
+      transition: opacity .12s linear, transform .2s cubic-bezier(.2,0,0,1), display .2s allow-discrete;
     }
-    .menu.open { opacity: 1; transform: none; visibility: visible; transition: opacity .12s linear, transform .2s cubic-bezier(.2,0,0,1); }
+    .menu.open { display: block; opacity: 1; transform: none; @starting-style { opacity: 0; transform: scaleY(.8); } }
     .mi { display: block; width: 100%; height: 32px; padding: 0 16px; border: 0; background: none; text-align: left; font: inherit; color: #1f1f1f; cursor: pointer; white-space: nowrap; }
     .mi:hover, .mi:focus-visible { background: rgba(31,31,31,.08); outline: 0; }
   `,
