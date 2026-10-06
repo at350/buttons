@@ -34,6 +34,14 @@ export default {
    **Never fake imagery**: no initials in a circle for an avatar, no gradient square for album art, no
    grey block for a thumbnail. Pick specific files (vary them across elements) and size them with
    `object-fit: cover`. Brand logos stay inline SVG.
+   **Real things get their real artwork.** If an element names a real title or product (a film at a
+   cinema kiosk, an album on a Now Playing card, a game on a console tile, an app, a book, a public
+   person), the picture must be that thing's actual poster / cover / key art / photo, fetched into
+   `assets/real/<slug>.<ext>` with `node scripts/fetch-real.mjs` (iTunes Search for album art, app icons and
+   books; Wikipedia page images for film posters, TV key art, game covers and public people; Steam CDN for Steam capsules;
+   Wikimedia Commons for product photos; or a specific https image url). Check the "matched" line it
+   prints. Stock photos from `square/`, `wide/`, `tall/` are only for anonymous content (a listing, a
+   wallpaper, a demo card). Portraits are for anonymous users; real people use their real photo.
    Icons must be inline SVG. Fonts: system stacks (`system-ui`, `ui-monospace`, `Georgia`…) **or one of the
    web fonts the page already loads** (use the family name directly, always with a fallback):
    `Inter` (wght 100–900), `DM Sans` (opsz 9–40, wght 100–1000), `Space Grotesk` (300–700),

@@ -60,6 +60,11 @@ Pull up the actual product or design-system page (WebFetch / WebSearch) and comp
   video thumbnails, product cards, app-store screenshots, phone wallpapers behind lock screens and
   widgets. Initials-in-a-circle avatars, gradient squares and grey blocks are placeholders and fail the bar.
   Vary the files between elements so the page doesn't repeat the same face or cover.
+- **Named things show their real artwork.** A kiosk selling "Twisters" shows the Twisters poster; a Now
+  Playing card for "Midnight City" shows the M83 cover; a PS5 tile for a game shows that game's key art;
+  MySpace Tom is the real Tom. Fetch with `node scripts/fetch-real.mjs` (see CONTRACT rule 1). A stock
+  photo under a real title is a placeholder and fails the bar. If a real asset truly can't be found,
+  rename the content to something anonymous rather than mislabel a stock photo.
 - **Motion**: the real curves and durations. Material 3: `cubic-bezier(0.2, 0, 0, 1)` emphasized,
   200–500ms; iOS: spring-like `cubic-bezier(0.32, 0.72, 0, 1)` ~350ms; Fluent: `cubic-bezier(0, 0, 0, 1)`
   ~150–250ms; Linear/Vercel: ~150ms ease; GitHub: 80ms. Ripples, state layers (hover 8% / press 12%),
