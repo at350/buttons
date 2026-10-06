@@ -6,6 +6,7 @@
 // Usage: node scripts/audit.mjs [category ...] [--ids id1,id2] [--json out.json] [--all]
 //   default: prints only elements with findings; --all prints every element.
 // Needs the dev server (http://127.0.0.1:4173/) and a Chromium (Playwright cache or CHROME=...).
+// WIDTH=390 runs the pass at phone width (any element wider than the screen then fails).
 import { spawn } from 'node:child_process';
 import { readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -31,7 +32,8 @@ function findChrome() {
   throw new Error('No Chromium found; set CHROME=/path/to/binary');
 }
 
-const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+const WIDTH = +(process.env.WIDTH || 1280); // viewport width; e.g. WIDTH=390 for a phone-width pass
+const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', `--window-size=${WIDTH},900`, '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
 const wsUrl = await new Promise((res, rej) => {
   let buf = '';
   chrome.stderr.on('data', (d) => { buf += d; const m = buf.match(/DevTools listening on (ws:\/\/\S+)/); if (m) res(m[1]); });

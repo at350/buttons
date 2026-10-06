@@ -25,6 +25,11 @@ node scripts/audit.mjs <category> --all    # show clean ones too
   `position: absolute` inside a `position: relative` wrapper, and `init` sets `host.toggleAttribute('data-open', open)`
   on the **second argument of `init`** (the host) while it is open — that raises the element above its
   neighbours. Also close on outside click and Escape. Anything that escapes without `data-open` is a bug.
+- **Closed panels must be `display: none`**, not `visibility: hidden` / `opacity: 0`. Invisible content is still
+  laid out, and when the element lands at the edge of a row it widens the whole page (horizontal scroll).
+  Keep the animations with `transition: … , display .2s allow-discrete` for the exit and `@starting-style`
+  for the enter. `node scripts/audit.mjs --rest` flags hidden content that extends past the element; run it
+  with `WIDTH=390` too so nothing is wider than a phone.
 - Transforms that intentionally leave the box (a plane flying off, confetti) must be `opacity: 0` / removed
   within ~1s and must not be interactive while outside.
 - **Inner containers too.** The audit also checks content against the nearest painted container inside the

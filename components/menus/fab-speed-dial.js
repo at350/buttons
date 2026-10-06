@@ -25,7 +25,7 @@ export default {
     .fab .x { opacity: 0; transform: rotate(-90deg); }
     .fab[aria-expanded="true"] .add { opacity: 0; transform: rotate(90deg); }
     .fab[aria-expanded="true"] .x { opacity: 1; transform: none; }
-    .menu { position: absolute; right: 0; bottom: 64px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; pointer-events: none; visibility: hidden; transition: visibility 0s 260ms; }
+    .menu { position: absolute; right: 0; bottom: 64px; display: none; flex-direction: column; align-items: flex-end; gap: 4px; pointer-events: none; transition: display 260ms allow-discrete; }
     .menu.l { right: auto; left: 0; align-items: flex-start; }
     .menu.down { bottom: auto; top: 64px; flex-direction: column-reverse; }
     .menu.down .it { transform-origin: 100% 0; transform: translateY(-24px) scale(.5); }
@@ -38,7 +38,8 @@ export default {
     .it svg { position: relative; fill: currentColor; flex: none; }
     .it span:last-child { position: relative; }
     .it:focus-visible { outline: 3px solid #625b71; outline-offset: 2px; }
-    .menu.open { pointer-events: auto; visibility: visible; transition: none; }
+    .menu.open { display: flex; pointer-events: auto; transition: none; }
+    @starting-style { .menu.open .it { opacity: 0; transform: translateY(24px) scale(.5); } .menu.open.down .it { transform: translateY(-24px) scale(.5); } }
     .menu.open .it { opacity: 1; transform: none; visibility: visible; transition: transform 500ms cubic-bezier(.38,1.21,.22,1), opacity 150ms cubic-bezier(.31,.94,.34,1), visibility 0s; transition-delay: calc(var(--i) * 30ms); }
   `,
   html: `

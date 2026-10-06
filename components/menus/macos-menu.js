@@ -44,10 +44,10 @@ export default {
     .t.ap { padding: 0 11px 0 10px; }
     .t[aria-expanded="true"] { background: rgba(0,0,0,.1); }
     .t:focus-visible { outline: 2px solid rgba(10,96,255,.7); outline-offset: -2px; }
-    .menu { position: absolute; top: 24px; left: 0; z-index: 2; min-width: 170px; padding: 5px; border-radius: 6px; visibility: hidden; opacity: 0; transition: opacity .2s ease, visibility 0s linear .2s;
+    .menu { position: absolute; top: 24px; left: 0; z-index: 2; min-width: 170px; padding: 5px; border-radius: 6px; display: none; opacity: 0; transition: opacity .2s ease, display .2s allow-discrete;
       background: rgba(238,238,238,.8); -webkit-backdrop-filter: blur(40px) saturate(1.9); backdrop-filter: blur(40px) saturate(1.9);
       box-shadow: 0 0 0 .5px rgba(0,0,0,.22), inset 0 0 0 .5px rgba(255,255,255,.45), 0 10px 32px rgba(0,0,0,.22), 0 2px 6px rgba(0,0,0,.08); }
-    .menu.open { visibility: visible; opacity: 1; transition: none; }
+    .menu.open { display: block; opacity: 1; transition: none; }
     .menu.now { transition: none; }
     .menu.flip { left: auto; right: 0; }
     .sw { position: relative; }

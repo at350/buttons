@@ -28,10 +28,10 @@ export default {
     .ib:focus-visible { outline: 3px solid #625b71; outline-offset: 2px; }
     .rip { position: absolute; left: 0; top: 0; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: #49454f; opacity: 0; pointer-events: none; }
     .menu { position: absolute; top: 46px; right: 4px; min-width: 112px; max-width: 280px; width: max-content; padding: 8px 0; border-radius: 4px; background: #f3edf7;
-      box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 2px 6px 2px rgba(0,0,0,.15); visibility: hidden; clip-path: inset(0 0 100% 0 round 4px); opacity: 0;
-      transition: clip-path .15s cubic-bezier(.3,0,.8,.15), opacity .15s linear, visibility 0s .15s; }
+      box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 2px 6px 2px rgba(0,0,0,.15); display: none; clip-path: inset(0 0 100% 0 round 4px); opacity: 0;
+      transition: clip-path .15s cubic-bezier(.3,0,.8,.15), opacity .15s linear, display .15s allow-discrete; }
     .menu.l { right: auto; left: 4px; }
-    .menu.open { visibility: visible; opacity: 1; clip-path: inset(0 0 0 0 round 4px); transition: clip-path .4s cubic-bezier(.2,0,0,1), opacity 50ms linear, visibility 0s; }
+    .menu.open { display: block; opacity: 1; clip-path: inset(0 0 0 0 round 4px); transition: clip-path .4s cubic-bezier(.2,0,0,1), opacity 50ms linear; @starting-style { opacity: 0; clip-path: inset(0 0 100% 0 round 4px); } }
     .r { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-width: 200px; height: 48px; padding: 0 12px; border: 0; background: none; font: inherit; letter-spacing: inherit; color: #1d1b20; cursor: pointer; text-align: left; outline: 0; white-space: nowrap; }
     .r > * { position: relative; }
     .r::before { content: ""; position: absolute; inset: 0; background: #1d1b20; opacity: 0; transition: opacity 15ms linear; }
