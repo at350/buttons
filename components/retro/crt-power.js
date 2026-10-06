@@ -1,0 +1,38 @@
+export default {
+  id: 'rt-crt-power',
+  credit: 'CRT television — rocker power switch that wakes a scanlined phosphor screen with a static flash',
+  size: 'auto',
+  css: `
+    :host { display: inline-block; }
+    .stage { background: #3b3a37; padding: 14px; border-radius: 12px; display: inline-flex; gap: 14px; align-items: center;
+      background-image: linear-gradient(90deg, rgba(0,0,0,.18) 1px, transparent 1px); background-size: 4px 100%; }
+    .screen { position: relative; width: 150px; height: 112px; border-radius: 12px / 16px; background: #0a0a0a; overflow: hidden;
+      box-shadow: inset 0 0 30px #000, 0 0 0 6px #222, 0 0 0 8px #4a4844; }
+    .pic { position: absolute; inset: 0; opacity: 0; transition: opacity .25s;
+      background: radial-gradient(ellipse at 50% 45%, #a8e0ff 0%, #2b7fd6 45%, #0b2b55 100%); }
+    .pic::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); }
+    .pic::after { content: ""; position: absolute; left: -20%; right: -20%; height: 30%; top: -30%; background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.12), rgba(255,255,255,0)); }
+    .screen.on .pic { opacity: 1; animation: warm .5s steps(4) 1; }
+    .screen.on .pic::after { animation: roll 2.8s linear infinite; }
+    .glare { position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 40%); pointer-events: none; }
+    .pw { width: 30px; height: 54px; border: none; padding: 0; cursor: pointer; border-radius: 4px; position: relative;
+      background: #1c1c1c; box-shadow: inset 0 0 0 2px #0a0a0a, 0 0 0 1px #5a5854; }
+    .pw::after { content: ""; position: absolute; left: 3px; right: 3px; height: 50%; top: 50%; border-radius: 3px;
+      background: linear-gradient(#3a3a3a, #262626); box-shadow: 0 -2px 2px rgba(0,0,0,.6), inset 0 1px 0 #555; transition: top .1s; }
+    .pw[aria-checked="true"]::after { top: 3px; }
+    .pw .led { position: absolute; left: 50%; bottom: -14px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #3a0000; }
+    .pw[aria-checked="true"] .led { background: #ff2a00; box-shadow: 0 0 6px #ff4a00; }
+    .pw:focus-visible { outline: 2px solid #ffb300; outline-offset: 3px; }
+    @keyframes warm { from { filter: brightness(4) contrast(2) saturate(0); transform: scaleY(.02); } to { filter: none; transform: none; } }
+    @keyframes roll { to { top: 130%; } }
+  `,
+  html: `
+    <div class="stage">
+      <div class="screen"><div class="pic"></div><div class="glare"></div></div>
+      <button class="pw" type="button" role="switch" aria-checked="false" aria-label="Power"><span class="led"></span></button>
+    </div>`,
+  init(root) {
+    const pw = root.querySelector('.pw'); const screen = root.querySelector('.screen');
+    pw.addEventListener('click', () => { const on = pw.getAttribute('aria-checked') !== 'true'; pw.setAttribute('aria-checked', String(on)); screen.classList.toggle('on', on); });
+  },
+};

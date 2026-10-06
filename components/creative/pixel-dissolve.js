@@ -1,0 +1,34 @@
+export default {
+  id: 'cr-pixel-dissolve',
+  credit: 'Pixel dissolve hover — a mosaic of cells fades out in random order to reveal the button',
+  size: 'auto',
+  css: `
+    :host { display: inline-block; }
+    .btn {
+      position: relative; overflow: hidden; cursor: pointer; border: 0; border-radius: 8px;
+      width: 192px; height: 56px; background: #052e16; color: #bbf7d0;
+      font: 700 15px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase;
+    }
+    .grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(4, 1fr); pointer-events: none; }
+    .c { background: var(--c); opacity: 1; transform: scale(1); transition: opacity .25s ease, transform .25s ease; transition-delay: var(--d); }
+    .btn:hover .c, .btn:focus-visible .c, .btn[aria-pressed="true"] .c { opacity: 0; transform: scale(.2); }
+    .btn span { position: relative; z-index: 1; }
+    .btn:active { transform: scale(.98); }
+    .btn:focus-visible { outline: 2px solid #22c55e; outline-offset: 3px; }
+  `,
+  html: `<button class="btn" type="button" aria-pressed="false"><span class="grid" aria-hidden="true"></span><span>Reveal</span></button>`,
+  init(root) {
+    const b = root.querySelector('.btn'), g = root.querySelector('.grid');
+    const shades = ['#16a34a', '#22c55e', '#4ade80', '#15803d', '#86efac'];
+    const order = Array.from({ length: 48 }, (_, i) => i);
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    for (let i = 0; i < 48; i++) {
+      const c = document.createElement('span');
+      c.className = 'c';
+      c.style.setProperty('--c', shades[(i * 7 + Math.floor(i / 12)) % shades.length]);
+      c.style.setProperty('--d', (order[i] * 9) + 'ms');
+      g.appendChild(c);
+    }
+    b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')));
+  },
+};
