@@ -48,7 +48,7 @@ export default {
           <g class="body">
             <path d="M8 33h50V22q0-4 4-4h30q3 0 6 2l17 17 26 3q8 1 8 8v12q0 4-4 4H12q-4 0-4-4z"/><path d="M12 38h42" fill="none"/>
             <path class="win" d="M63 23h23v13H63zM90 23h9q2 0 4 2l11 11H90z"/>
-            <rect class="lb" x="160" y="44" width="4" height="7" rx="2"/>
+            <rect class="lb" x="145.5" y="49" width="3.5" height="9" rx="1.75"/>
           </g>
           <circle class="wh" cx="38" cy="70" r="12"/><circle class="hub" cx="38" cy="70" r="4"/>
           <circle class="wh" cx="134" cy="70" r="12"/><circle class="hub" cx="134" cy="70" r="4"/>
