@@ -13,7 +13,7 @@ export default {
   html: `<div class="stage"><button class="tbl" type="button" aria-pressed="false" aria-label="Installation 04"><canvas width="560" height="380"></canvas></button></div>`,
   init(root) {
     const b = root.querySelector('.tbl'), cv = root.querySelector('canvas'), c = cv.getContext('2d');
-    const W = 280, H = 190; c.scale(2, 2);
+    const W = 280, H = 190, dpr = Math.min(2, devicePixelRatio || 1); cv.width = W * dpr; cv.height = H * dpr; c.scale(dpr, dpr);
     let yaw = .6, raf = 0, hov = false, pulse = 0, last = 0, t = 0;
     const draw = () => {
       c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, W, H);

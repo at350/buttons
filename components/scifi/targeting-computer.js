@@ -14,7 +14,7 @@ export default {
   html: `<div class="stage"><div class="hood" role="button" tabindex="0" aria-label="Fire"><canvas width="464" height="264"></canvas></div></div>`,
   init(root) {
     const hood = root.querySelector('.hood'), cv = root.querySelector('canvas'), c = cv.getContext('2d');
-    const W = 232, H = 132; c.scale(2, 2);
+    const W = 232, H = 132, dpr = Math.min(2, devicePixelRatio || 1); cv.width = W * dpr; cv.height = H * dpr; c.scale(dpr, dpr);
     let raf = 0, last = 0, hov = false, z = 0, range = 32000, flash = 0, hit = 0, prev = 0;
     const draw = () => {
       c.fillStyle = '#000'; c.fillRect(0, 0, W, H);

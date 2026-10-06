@@ -7,11 +7,12 @@ function shade(cv, el, w, h, fs, o = {}) {
   const dpr = Math.min(2, globalThis.devicePixelRatio || 1);
   cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
   const s = { t: 0, hover: 0, hoverT: 0, press: 0, value: 0, valueT: 0, mx: .5, my: .5, px: .5, py: .5, down: false };
-  let gl = null, prog = null, U = null, raf = 0, lastT = 0, vis = false, dead = false, io = null;
+  let gl = null, prog = null, U = null, raf = 0, lastT = 0, vis = false, dead = false, io = null, lose = null, parked = null, parkT = 0;
   const name = () => ((cv.getRootNode().host || {}).dataset || {}).id || '';
   const setup = () => {
     gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
     if (!gl) return false;
+    lose = gl.getExtension('WEBGL_lose_context'); // grabbed now: a lost context hands out no extensions
     gl.getExtension('OES_standard_derivatives'); // fwidth() for pixel-exact anti-aliasing
     const sh = (type, src) => {
       const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
@@ -54,25 +55,45 @@ function shade(cv, el, w, h, fs, o = {}) {
     draw();
     if (busy()) raf = requestAnimationFrame(tick);
   };
-  const kick = () => { if (!raf && gl && !dead) { lastT = performance.now(); raf = requestAnimationFrame(tick); } };
+  const kick = () => { if (!raf && gl && !parked && !dead) { lastT = performance.now(); raf = requestAnimationFrame(tick); } };
+  // The context is created on first approach to the viewport and parked (lost on purpose) while far away, so a
+  // page with hundreds of live elements stays under the browser's active-context limit (16 in Chrome) and
+  // mounting into the hidden measuring area costs no GPU work at all.
+  const ensure = () => {
+    if (dead) return;
+    clearTimeout(parkT); parkT = 0;
+    if (parked) { const x = parked; parked = null; x.restoreContext(); } // -> webglcontextrestored re-runs setup()
+    else if (!gl) { if (setup()) { cv.classList.remove('nogl'); draw(); } }
+    else if (gl.isContextLost() && lose) lose.restoreContext(); // evicted by the browser: ask for it back
+  };
+  const park = () => {
+    parkT = 0;
+    if (dead || !gl || parked || !lose || s.hoverT || s.down || gl.isContextLost()) return;
+    parked = lose; cancelAnimationFrame(raf); raf = 0; lose.loseContext();
+  };
   const pos = (e) => { const r = cv.getBoundingClientRect(); if (r.width) { s.mx = (e.clientX - r.left) / r.width; s.my = 1 - (e.clientY - r.top) / r.height; } };
-  el.addEventListener('pointerenter', (e) => { pos(e); s.hoverT = 1; kick(); });
+  el.addEventListener('pointerenter', (e) => { pos(e); s.hoverT = 1; ensure(); kick(); });
   el.addEventListener('pointerleave', () => { s.hoverT = 0; s.down = false; kick(); });
   el.addEventListener('pointermove', (e) => { pos(e); kick(); });
-  el.addEventListener('pointerdown', (e) => { pos(e); s.down = true; s.press = 1; s.px = s.mx; s.py = s.my; kick(); });
+  el.addEventListener('pointerdown', (e) => { pos(e); s.down = true; s.press = 1; s.px = s.mx; s.py = s.my; ensure(); kick(); });
   el.addEventListener('pointerup', () => { s.down = false; kick(); });
-  el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { s.px = .5; s.py = .5; s.press = 1; kick(); } });
-  el.addEventListener('focus', () => { if (el.matches(':focus-visible')) { s.hoverT = 1; kick(); } });
+  el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { s.px = .5; s.py = .5; s.press = 1; ensure(); kick(); } });
+  el.addEventListener('focus', () => { if (el.matches(':focus-visible')) { s.hoverT = 1; ensure(); kick(); } });
   el.addEventListener('blur', () => { if (!el.matches(':hover')) { s.hoverT = 0; kick(); } });
   cv.addEventListener('webglcontextlost', (e) => { e.preventDefault(); cancelAnimationFrame(raf); raf = 0; if (!dead) cv.classList.add('nogl'); });
   cv.addEventListener('webglcontextrestored', () => { if (!dead && setup()) { cv.classList.remove('nogl'); draw(); kick(); } });
-  if (setup()) draw(); else cv.classList.add('nogl');
-  if (o.idle && typeof IntersectionObserver === 'function') {
-    io = new IntersectionObserver((en) => { vis = en.some((x) => x.isIntersecting); if (vis) kick(); });
+  cv.classList.add('nogl'); // CSS poster until the first frame is drawn
+  if (typeof IntersectionObserver === 'function') {
+    // near the viewport: hold a context (and animate, for idle shaders); far away for a while: park it
+    io = new IntersectionObserver((en) => {
+      vis = en.some((x) => x.isIntersecting);
+      clearTimeout(parkT); parkT = 0;
+      if (vis) { ensure(); kick(); } else parkT = setTimeout(park, 1500);
+    }, { rootMargin: '200px' });
     io.observe(cv);
-  }
+  } else ensure();
   s.kick = kick; s.draw = draw;
-  s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
+  s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; clearTimeout(parkT); io && io.disconnect(); if (gl && !parked && lose) lose.loseContext(); gl = null; lose = null; parked = null; };
   return s;
 }
 // Lava lamp (Mathmos Astro silhouette): a brushed-metal base cone, a tapered glass vessel and a cap,

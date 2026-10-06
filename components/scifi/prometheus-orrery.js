@@ -16,7 +16,7 @@ export default {
   html: `<div class="stage"><div class="holo" role="button" tabindex="0" aria-label="Orrery"><canvas width="540" height="360"></canvas><span class="lab">LV-223</span></div></div>`,
   init(root) {
     const h = root.querySelector('.holo'), cv = root.querySelector('canvas'), c = cv.getContext('2d'), lab = root.querySelector('.lab');
-    const W = 270, H = 180; c.scale(2, 2);
+    const W = 270, H = 180, dpr = Math.min(2, devicePixelRatio || 1); cv.width = W * dpr; cv.height = H * dpr; c.scale(dpr, dpr);
     const pts = []; for (let i = 0; i < 360; i++) { const y = 1 - (i / 359) * 2, r = Math.sqrt(1 - y * y), a = i * 2.39996; pts.push([Math.cos(a) * r * 56, y * 56, Math.sin(a) * r * 56]); }
     const orbits = [[70, .5, 0], [88, -.3, 1.6], [104, .9, 3.1], [120, .2, 4.4], [132, -.7, 5.5]];
     let yaw = 0.4, pitch = 0.32, sel = 0, raf = 0, hov = false, drag = false, lx = 0, ly = 0, pulse = 0, last = 0;

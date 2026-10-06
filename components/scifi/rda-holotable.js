@@ -23,7 +23,7 @@ export default {
     <div class="row"><button class="tg f" type="button" aria-pressed="false">FLORA</button><button class="tg t" type="button" aria-pressed="true">TARGET</button></div></div>`,
   init(root) {
     const pit = root.querySelector('.pit'), cv = root.querySelector('canvas'), c = cv.getContext('2d'), fb = root.querySelector('.f'), tb = root.querySelector('.t');
-    const W = 280, H = 160; c.scale(2, 2);
+    const W = 280, H = 160, dpr = Math.min(2, devicePixelRatio || 1); cv.width = W * dpr; cv.height = H * dpr; c.scale(dpr, dpr);
     let yaw = .7, raf = 0, hov = false, drag = false, lx = 0, last = 0, t = 0;
     const MT = [[4, 5, 26, 7], [11, 4, 34, 9], [8, 11, 22, 6]];
     const pr = (x, y, z) => { const u = x - N / 2, v = y - N / 2, ca = Math.cos(yaw), sa = Math.sin(yaw), rx = u * ca - v * sa, ry = u * sa + v * ca; return [W / 2 + rx * 9.5, 112 + ry * 3.6 - z * 1.6]; };

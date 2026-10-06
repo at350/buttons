@@ -40,7 +40,7 @@ export default {
       <div class="pad">${KEYS.map(([n, l]) => `<button class="k" type="button" data-k="${n}"><b>${n}</b><small>${l}</small></button>`).join('')}</div>
     </div></div>`,
   init(root) {
-    const cv = root.querySelector('canvas'), x = cv.getContext('2d');
+    const cv = root.querySelector('canvas'), x = cv.getContext('2d', { willReadFrequently: true });
     const OFF = '#879b6b', LIT = '#a8c96a', INK = [26, 36, 22];
     let lit = false, num = '', menu = 0, t = 0;
     // draw anti-aliased text, then threshold to crisp monochrome pixels like the real 84x48 matrix

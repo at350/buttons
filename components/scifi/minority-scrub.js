@@ -17,7 +17,7 @@ export default {
   html: `<div class="stage"><div class="glass" role="slider" tabindex="0" aria-label="Precog vision" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20"><canvas width="552" height="304"></canvas><i class="tip"></i></div></div>`,
   init(root) {
     const g = root.querySelector('.glass'), cv = root.querySelector('canvas'), c = cv.getContext('2d'), tip = root.querySelector('.tip');
-    const W = 276, H = 152, VH = 118; c.scale(2, 2);
+    const W = 276, H = 152, VH = 118, dpr = Math.min(2, devicePixelRatio || 1); cv.width = W * dpr; cv.height = H * dpr; c.scale(dpr, dpr);
     let t = 0.2, v = 0, raf = 0, drag = false, lx = 0, lt = 0;
     // the precog vision: three shots (photos from the asset pack), each pushed in and panned as the clip plays,
     // pre-toned once to the glass's cold cyan; the precrime ball rolls through them

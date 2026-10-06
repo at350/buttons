@@ -27,7 +27,7 @@ export default {
     const cover = new Float32Array(COLS * ROWS);
     {
       const off = document.createElement('canvas'); off.width = W; off.height = H;
-      const oc = off.getContext('2d');
+      const oc = off.getContext('2d', { willReadFrequently: true });
       if (oc) {
         oc.fillStyle = '#fff'; oc.textAlign = 'center'; oc.textBaseline = 'middle';
         oc.font = '800 62px Inter, system-ui, sans-serif'; try { oc.letterSpacing = '5px'; } catch (e) {} oc.fillText('ENTER', W / 2 + 2, H / 2 + 5);
