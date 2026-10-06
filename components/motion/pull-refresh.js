@@ -17,16 +17,16 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 270px; height: 260px; max-width: 100%; border-radius: 12px; background: #f2f2f7; border: 1px solid #e5e5ea; overflow: hidden; touch-action: none; font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; user-select: none; -webkit-user-select: none; }
+    .stage { position: relative; width: 270px; height: 272px; max-width: 100%; border-radius: 12px; background: #f2f2f7; border: 1px solid #e5e5ea; overflow: hidden; touch-action: none; font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; user-select: none; -webkit-user-select: none; }
     .spin { position: absolute; top: 14px; left: 50%; width: 22px; height: 22px; margin-left: -11px; }
     .spin i { position: absolute; left: 9.75px; top: 0; width: 2.5px; height: 6.5px; border-radius: 2px; background: #8e8e93; transform-origin: 1.25px 11px; transform: rotate(calc(var(--k) * 45deg)); opacity: 0; transition: opacity .12s; }
     .spin i.on { opacity: 1; }
     .stage.busy .spin i { opacity: 1; animation: fade .8s linear infinite; animation-delay: calc(var(--k) * .1s - .8s); }
     @keyframes fade { from { opacity: 1; } to { opacity: .25; } }
-    .scroll { position: absolute; inset: 0; background: #f2f2f7; transform: translateY(var(--y, 0px)); transition: transform .55s ${IOS}; cursor: grab; outline: none; }
+    .scroll { position: absolute; inset: 0; overflow: hidden; background: #f2f2f7; transform: translateY(var(--y, 0px)); transition: transform .55s ${IOS}; cursor: grab; outline: none; }
     .stage.drag .scroll { transition: none; cursor: grabbing; }
     .scroll:focus-visible { box-shadow: inset 0 0 0 2px #007aff; border-radius: 12px; }
-    h1 { margin: 0; padding: 14px 16px 8px; font-size: 26px; font-weight: 700; letter-spacing: .01em; color: #000; }
+    h1 { margin: 0; padding: 12px 16px 6px; line-height: 32px; font-size: 26px; font-weight: 700; letter-spacing: .01em; color: #000; }
     ul { margin: 0; padding: 0; list-style: none; background: #fff; }
     li { position: relative; height: 54px; display: flex; flex-direction: column; justify-content: center; padding: 0 14px 0 28px; overflow: hidden; transition: height .5s ${IOS}, opacity .35s; }
     li + li::before { content: ''; position: absolute; top: 0; left: 28px; right: 0; height: 1px; background: #e5e5ea; }

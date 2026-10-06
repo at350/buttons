@@ -36,10 +36,10 @@ export default {
   `,
   html: `
     <div class="stage">
-      <button class="sd sel" type="button" aria-pressed="true"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>New</button>
-      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Load</button>
-      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Co-op</button>
-      <button class="sd" type="button" aria-pressed="false"><span class="cur"><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Exit</button>
+      <button class="sd sel" type="button" aria-pressed="true"><span class="cur" data-overhang><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>New</button>
+      <button class="sd" type="button" aria-pressed="false"><span class="cur" data-overhang><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Load</button>
+      <button class="sd" type="button" aria-pressed="false"><span class="cur" data-overhang><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Co-op</button>
+      <button class="sd" type="button" aria-pressed="false"><span class="cur" data-overhang><svg viewBox="0 0 9 9"><path fill="#3b1408" d="M1 0h2v1h1v1h1v1h1v1h1v1H6v1H5v1H4v1H3v1H1z"/><path fill="#e4472a" d="M2 1h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z"/><path fill="#ffb08a" d="M2 1h1v1h1v1H3v1H2z"/></svg></span>Exit</button>
     </div>`,
   init(root) {
     const b = [...root.querySelectorAll('.sd')];

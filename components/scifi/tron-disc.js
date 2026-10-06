@@ -10,7 +10,7 @@ export default {
     .floor { position: absolute; left: -50%; right: -50%; bottom: -10px; height: 120px; transform: perspective(160px) rotateX(58deg); transform-origin: 50% 100%;
       background: linear-gradient(transparent 0 92%, color-mix(in srgb, var(--c) 45%, transparent) 92%) 0 0 / 100% 24px, linear-gradient(90deg, transparent 0 94%, color-mix(in srgb, var(--c) 45%, transparent) 94%) 0 0 / 24px 100%;
       mask-image: linear-gradient(transparent, #000 70%); -webkit-mask-image: linear-gradient(transparent, #000 70%); opacity: .55; transition: background .4s; }
-    .disc { position: relative; width: 150px; height: 150px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: radial-gradient(circle, #050505 0 18%, #151718 19% 22%, #050505 23% 60%, #101213 61% 63%, #050505 64%);
+    .disc { position: relative; width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 0; padding: 0; cursor: pointer; background: radial-gradient(circle, #050505 0 18%, #151718 19% 22%, #050505 23% 60%, #101213 61% 63%, #050505 64%);
       box-shadow: 0 0 0 2px #1a1c1d, 0 0 0 4px color-mix(in srgb, var(--c) 30%, #000), 0 0 10px color-mix(in srgb, var(--c) 35%, transparent); transition: box-shadow .3s, transform .5s cubic-bezier(.2,.9,.3,1.2); }
     .ring { position: absolute; inset: 4px; border-radius: 50%; border: 3px solid color-mix(in srgb, var(--c) 30%, #000); transition: border-color .3s, box-shadow .3s; }
     .seg { position: absolute; inset: 22px; border-radius: 50%; background: repeating-conic-gradient(color-mix(in srgb, var(--c) 18%, #000) 0 22deg, transparent 22deg 30deg);

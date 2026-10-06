@@ -44,7 +44,7 @@ export default {
     .tip.on { opacity: 1; }
   `,
   html: `<div class="stage"><div class="dock" role="toolbar" aria-label="Dock">${APPS.map((a) => a === '|' ? '<span class="sep" aria-hidden="true"></span>'
-    : `<button class="app${a[1] ? ' run' : ''}" type="button" aria-label="${a[0]}"${a[3] ? ' data-k="' + a[3] + '"' : ''}><span class="ic"><svg viewBox="0 0 100 100" aria-hidden="true">${a[2]}</svg></span></button>`).join('')}</div><span class="tip" aria-hidden="true"></span></div>`,
+    : `<button class="app${a[1] ? ' run' : ''}" type="button" aria-label="${a[0]}"${a[3] ? ' data-k="' + a[3] + '"' : ''}><span class="ic" data-overhang><svg viewBox="0 0 100 100" aria-hidden="true">${a[2]}</svg></span></button>`).join('')}</div><span class="tip" aria-hidden="true"></span></div>`,
   init(root) {
     const stage = root.querySelector('.stage'), dock = root.querySelector('.dock'), tip = root.querySelector('.tip');
     const kids = [...dock.children], apps = kids.filter((k) => k.classList.contains('app'));

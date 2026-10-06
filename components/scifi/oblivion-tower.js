@@ -8,7 +8,7 @@ export default {
     :host { display: inline-block; }
     .stage { width: 330px; max-width: 100%; height: 200px; border-radius: 12px; overflow: hidden; padding: 14px; background: radial-gradient(120% 120% at 30% 40%, #0d1a22, #020507 70%);
       display: grid; grid-template-columns: 172px 1fr; gap: 12px; font-family: 'Space Grotesk', system-ui, sans-serif; color: #e9f6ff; }
-    .map { position: relative; width: 172px; height: 172px; border-radius: 50%; background: repeating-radial-gradient(circle, transparent 0 21px, rgba(200,235,255,.22) 21px 22px),
+    .map { position: relative; width: 172px; height: 172px; border-radius: 50%; overflow: hidden; background: repeating-radial-gradient(circle, transparent 0 21px, rgba(200,235,255,.22) 21px 22px),
       conic-gradient(from 0deg, rgba(200,235,255,.06) 0 1deg, transparent 1deg 30deg); background-size: auto, auto; box-shadow: inset 0 0 0 1px rgba(200,235,255,.5); }
     .map::before, .map::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(200,235,255,.25); }
     .map::after { transform: rotate(90deg); }

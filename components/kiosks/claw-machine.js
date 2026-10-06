@@ -20,7 +20,7 @@ export default {
     .toy::before, .toy::after { content: ''; position: absolute; top: -4px; width: 9px; height: 9px; border-radius: 50%; background: inherit; }
     .toy::before { left: 1px; } .toy::after { right: 1px; }
     .toy i { position: absolute; left: 7px; top: 9px; width: 12px; height: 6px; border-radius: 0 0 6px 6px; border-bottom: 2px solid rgba(0,0,0,.55); }
-    .ctl { display: flex; align-items: center; gap: 22px; padding: 8px 18px; border-radius: 10px; background: #1b1b1f; box-shadow: inset 0 2px 4px rgba(0,0,0,.6); }
+    .ctl { display: flex; align-items: center; gap: 22px; padding: 10px 18px 14px; border-radius: 10px; background: #1b1b1f; box-shadow: inset 0 2px 4px rgba(0,0,0,.6); }
     .stick { width: 50px; height: 62px; position: relative; border: 0; background: none; padding: 0; cursor: grab; touch-action: none; }
     .stick:focus-visible { outline: 2px solid #ffd500; outline-offset: 2px; border-radius: 8px; }
     .base { position: absolute; left: 50%; bottom: 0; width: 40px; height: 10px; margin-left: -20px; border-radius: 50%; background: radial-gradient(#444, #111 70%); }
@@ -38,7 +38,7 @@ export default {
         <div class="gan"><div class="car"></div><div class="cable"></div><svg class="claw" viewBox="0 0 30 18" aria-hidden="true"><path class="l" d="M15 2 L7 9 L9 16"/><path class="r" d="M15 2 L23 9 L21 16"/></svg></div>
       </div>
       <div class="ctl">
-        <button class="stick" type="button" aria-label="Joystick (left / right)"><span class="base"></span><span class="shaft"><span class="ball"></span></span></button>
+        <button class="stick" type="button" aria-label="Joystick (left / right)"><span class="base"></span><span class="shaft"><span class="ball" data-overhang></span></span></button>
         <div class="wins">WIN<b class="w">00</b></div>
         <button class="drop" type="button">DROP</button>
       </div>

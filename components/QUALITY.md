@@ -27,6 +27,12 @@ node scripts/audit.mjs <category> --all    # show clean ones too
   neighbours. Also close on outside click and Escape. Anything that escapes without `data-open` is a bug.
 - Transforms that intentionally leave the box (a plane flying off, confetti) must be `opacity: 0` / removed
   within ~1s and must not be interactive while outside.
+- **Inner containers too.** The audit also checks content against the nearest painted container inside the
+  element (a card, a panel, a button with a background): a purchase row hanging off the bottom of its card
+  is an overflow even if it stays inside the element. If a protrusion is faithful to the real object (a
+  joystick ball above its base, Dock icons magnifying above the bar, a crank sticking out of a toy), put
+  `data-overhang` on that element (or a wrapper): it is then exempt from the inner check but must still
+  stay inside the element's outer box / stage.
 
 ## 2. It looks like the real thing
 

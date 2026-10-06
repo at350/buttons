@@ -12,7 +12,7 @@ export default {
       box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(255,255,255,.6); }
     .ring { position: absolute; inset: -6px; border-radius: 50%; border: 2px solid #fff; opacity: 0; }
     .ping .ring { animation: ring .9s cubic-bezier(.2,.7,.3,1); }
-    @keyframes ring { from { opacity: .9; transform: scale(.9); } to { opacity: 0; transform: scale(1.5); } }
+    @keyframes ring { from { opacity: .9; transform: scale(.9); } to { opacity: 0; transform: scale(1.3); } }
     .nm { margin-top: 8px; font-size: 12px; font-weight: 500; letter-spacing: .02em; }
     .sc { margin-top: 2px; font: 200 38px/1 'DM Sans', system-ui, sans-serif; font-variant-numeric: tabular-nums; color: #4b4856; letter-spacing: -.01em; }
     .stars { display: flex; justify-content: center; gap: 4px; margin-top: 10px; }
@@ -29,7 +29,7 @@ export default {
     .stars { touch-action: none; }
     .glow .s.lit svg { filter: drop-shadow(0 0 6px #ffe1a0); }
   `,
-  html: `<div class="stage"><div class="card"><div class="av"><span class="ring"></span></div><div class="nm">Lacie Pound</div><div class="sc">4.183</div><span class="dl"></span>
+  html: `<div class="stage"><div class="card"><div class="av"><span class="ring" data-overhang></span></div><div class="nm">Lacie Pound</div><div class="sc">4.183</div><span class="dl"></span>
     <div class="stars" role="radiogroup" aria-label="Rate">${[1, 2, 3, 4, 5].map((n) => `<button class="s" type="button" role="radio" aria-checked="false" aria-label="${n} stars"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg></button>`).join('')}</div></div></div>`,
   init(root) {
     const card = root.querySelector('.card'), sc = root.querySelector('.sc'), ss = [...root.querySelectorAll('.s')];

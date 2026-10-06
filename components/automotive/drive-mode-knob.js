@@ -17,7 +17,7 @@ export default {
     .lab { position: absolute; transform: translate(-50%, -50%); padding: 3px 4px; border: 0; background: transparent; color: #5d636c; font: inherit; letter-spacing: .08em; cursor: pointer; transition: color .3s, text-shadow .3s; }
     .lab[aria-checked="true"] { color: var(--c); text-shadow: 0 0 8px var(--c); }
     .lab:hover { color: #c9cdd3; }
-    .knob { position: absolute; left: 50%; top: 74px; width: 70px; height: 70px; margin: -35px; border-radius: 50%; cursor: grab; touch-action: none; background: radial-gradient(circle at 40% 30%, #3b3e44, #121316 70%); box-shadow: 0 0 0 3px #1a1c20, 0 0 0 4px color-mix(in srgb, var(--c) 70%, #000), 0 0 14px color-mix(in srgb, var(--c) 45%, transparent), 0 6px 10px rgba(0,0,0,.7); transition: box-shadow .5s; }
+    .knob { position: absolute; left: 50%; top: 74px; width: 70px; height: 70px; margin: -35px; border-radius: 50%; overflow: hidden; cursor: grab; touch-action: none; background: radial-gradient(circle at 40% 30%, #3b3e44, #121316 70%); box-shadow: 0 0 0 3px #1a1c20, 0 0 0 4px color-mix(in srgb, var(--c) 70%, #000), 0 0 14px color-mix(in srgb, var(--c) 45%, transparent), 0 6px 10px rgba(0,0,0,.7); transition: box-shadow .5s; }
     .knob i { position: absolute; inset: 0; border-radius: 50%; transition: transform .3s cubic-bezier(.3,1.5,.5,1); }
     .drag .knob i { transition: none; }
     .knob i::after { content: ''; position: absolute; left: 50%; top: 6px; width: 4px; height: 12px; margin-left: -2px; border-radius: 2px; background: var(--c); box-shadow: 0 0 6px var(--c); transition: background .5s; }

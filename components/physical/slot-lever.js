@@ -36,7 +36,7 @@ export default {
       <div class="wrap">
         <div class="cab"></div>
         <div class="boss"></div>
-        <div class="arm" role="slider" tabindex="0" aria-label="Slot machine lever" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="ball"></span></div>
+        <div class="arm" role="slider" tabindex="0" aria-label="Slot machine lever" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="ball" data-overhang></span></div>
         <div class="hub"></div>
       </div>
     </div>`,

@@ -20,8 +20,9 @@ export default {
     .pw::after { content: ""; position: absolute; left: 3px; right: 3px; height: 50%; top: 50%; border-radius: 3px;
       background: linear-gradient(#3a3a3a, #262626); box-shadow: 0 -2px 2px rgba(0,0,0,.6), inset 0 1px 0 #555; transition: top .1s; }
     .pw[aria-checked="true"]::after { top: 3px; }
-    .pw .led { position: absolute; left: 50%; bottom: -14px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #3a0000; }
-    .pw[aria-checked="true"] .led { background: #ff2a00; box-shadow: 0 0 6px #ff4a00; }
+    .ctl { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .led { display: block; width: 6px; height: 6px; border-radius: 50%; background: #3a0000; transition: background .15s, box-shadow .15s; }
+    .pw[aria-checked="true"] + .led { background: #ff2a00; box-shadow: 0 0 6px #ff4a00; }
     .pw:focus-visible { outline: 2px solid #ffb300; outline-offset: 3px; }
     .screen.dying .pic { opacity: 1; animation: crtoff .55s cubic-bezier(.5,0,.75,0) forwards; }
     .screen.dying .pic::after { display: none; }
@@ -32,7 +33,7 @@ export default {
   html: `
     <div class="stage">
       <div class="screen"><div class="pic"></div><div class="glare"></div></div>
-      <button class="pw" type="button" role="switch" aria-checked="false" aria-label="Power"><span class="led"></span></button>
+      <div class="ctl"><button class="pw" type="button" role="switch" aria-checked="false" aria-label="Power"></button><span class="led"></span></div>
     </div>`,
   init(root) {
     const pw = root.querySelector('.pw'); const screen = root.querySelector('.screen');

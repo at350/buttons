@@ -97,19 +97,42 @@ await evaluate(`(async () => {
     measure() {
       const host = this.host, hr = host.getBoundingClientRect();
       let worst = { amt: 0 }; let count = 0;
-      const clipped = (el) => { let p = el.parentElement; while (p) { const cs = getComputedStyle(p); if (cs.overflow !== 'visible' || cs.overflowX !== 'visible' || cs.overflowY !== 'visible' || cs.clipPath !== 'none' || cs.contain.includes('paint')) return true; p = p.parentElement; } return false; };
+      const name = (el) => el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\\s+/)[0] : '');
+      const clipped = (el, stopAt) => { let p = el.parentElement; while (p && p !== stopAt) { const cs = getComputedStyle(p); if (cs.overflow !== 'visible' || cs.overflowX !== 'visible' || cs.overflowY !== 'visible' || cs.clipPath !== 'none' || cs.contain.includes('paint')) return true; p = p.parentElement; } return false; };
+      // a "container" is an ancestor that paints its own box (background, border or shadow): content must stay inside it
+      const isContainer = (cs) => (cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent') || cs.backgroundImage !== 'none' || parseFloat(cs.borderTopWidth) > 0 || cs.boxShadow !== 'none';
+      const consider = (el, r, cs, box, label, inner) => {
+        const over = { l: box.left - r.left, t: box.top - r.top, r: r.right - box.right, b: r.bottom - box.bottom };
+        const amt = Math.max(over.l, over.t, over.r, over.b);
+        if (amt <= (inner ? 4 : 3)) return;
+        count++;
+        if (amt > worst.amt) worst = { amt: Math.round(amt), side: Object.entries(over).sort((a, b) => b[1] - a[1])[0][0], el: name(el), of: label, pos: cs.position, abs: cs.position === 'absolute' || cs.position === 'fixed' };
+      };
       for (const el of this.root.querySelectorAll('*')) {
         if (el.tagName === 'STYLE') continue;
         const r = el.getBoundingClientRect();
         if (r.width === 0 || r.height === 0) continue;
         const cs = getComputedStyle(el);
         if (cs.visibility === 'hidden' || +cs.opacity === 0 || cs.display === 'none') continue;
-        const over = { l: hr.left - r.left, t: hr.top - r.top, r: r.right - hr.right, b: r.bottom - hr.bottom };
-        const amt = Math.max(over.l, over.t, over.r, over.b);
-        if (amt <= 3) continue;
-        if (clipped(el)) continue;
-        count++;
-        if (amt > worst.amt) worst = { amt: Math.round(amt), side: Object.entries(over).sort((a, b) => b[1] - a[1])[0][0], el: el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\\s+/)[0] : ''), pos: cs.position, abs: cs.position === 'absolute' || cs.position === 'fixed' };
+        // 1. against the host box
+        if (!clipped(el, null)) consider(el, r, cs, hr, 'host', false);
+        // 2. against the nearest painted container inside the element. Absolutely positioned content gets a
+        //    looser threshold (badges may overhang a little) and is exempt while the host is flagged open (popovers).
+        const abs = cs.position === 'absolute' || cs.position === 'fixed';
+        if (abs && host.hasAttribute('data-open')) continue;
+        if (el.closest('[data-overhang]')) continue; // declared intentional protrusion (still checked against the host above)
+        let p = el.parentElement;
+        while (p) {
+          const pcs = getComputedStyle(p);
+          if (pcs.overflow !== 'visible' || pcs.overflowX !== 'visible' || pcs.overflowY !== 'visible' || pcs.clipPath !== 'none') break; // clipped: fine
+          if (isContainer(pcs)) {
+            const box = p.getBoundingClientRect();
+            const over = Math.max(box.left - r.left, box.top - r.top, r.right - box.right, r.bottom - box.bottom);
+            if (over > (abs ? 12 : 4)) consider(el, r, cs, box, name(p), true);
+            break;
+          }
+          p = p.parentElement;
+        }
       }
       return { worst, count, open: host.hasAttribute('data-open'), hostW: Math.round(hr.width), hostH: Math.round(hr.height) };
     },

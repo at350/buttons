@@ -69,7 +69,7 @@ export default {
     @keyframes halo { 0%, 100% { transform: scale(.96); opacity: 0; } 45%, 55% { transform: scale(1.14, 1.4); opacity: .9; } }
     @media (prefers-reduced-motion: reduce) { .v, .halo { animation: none; } }
   `,
-  html: `<div class="stage"><button class="btn" type="button" aria-pressed="false"><i class="halo" aria-hidden="true"></i><span class="g" aria-hidden="true">breathe</span><span class="v">breathe</span></button></div>`,
+  html: `<div class="stage"><button class="btn" type="button" aria-pressed="false"><i class="halo" aria-hidden="true" data-overhang></i><span class="g" aria-hidden="true">breathe</span><span class="v">breathe</span></button></div>`,
   init(root) {
     const btn = root.querySelector('.btn');
     btn.addEventListener('click', () => {

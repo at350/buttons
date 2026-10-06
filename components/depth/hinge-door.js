@@ -60,7 +60,7 @@ export default {
     <div class="stage">
       <div class="frame">
         <span class="room"></span>
-        <button class="door" type="button" aria-expanded="false" aria-label="Open door">
+        <button class="door" type="button" aria-expanded="false" aria-label="Open door" data-overhang>
           <span class="face front"></span><span class="face back"></span><span class="edge"></span>
           <span class="knob"></span>
         </button>

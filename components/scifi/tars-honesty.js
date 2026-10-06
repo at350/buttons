@@ -8,14 +8,14 @@ export default {
     :host { display: inline-block; }
     .stage { width: 270px; max-width: 100%; border-radius: 12px; overflow: hidden; padding: 14px 16px; background: linear-gradient(#2a2c2d, #121314); font-family: 'Space Grotesk', system-ui, sans-serif; color: #d9dcdd; }
     .tars { display: flex; justify-content: center; gap: 2px; height: 140px; }
-    .sl { position: relative; width: 30px; border-radius: 1px; background: repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px), linear-gradient(90deg, #7c8183, #b9bec0 30%, #9da2a4 60%, #6f7476);
+    .sl { position: relative; width: 44px; border-radius: 1px; background: repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px), linear-gradient(90deg, #7c8183, #b9bec0 30%, #9da2a4 60%, #6f7476);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.35); transition: transform .3s cubic-bezier(.3,1.4,.5,1); }
     .sl::before, .sl::after { content: ''; position: absolute; left: 0; right: 0; height: 1px; background: rgba(0,0,0,.45); }
     .sl::before { top: 34%; } .sl::after { top: 72%; }
     .shuffle .sl:nth-child(1), .shuffle .sl:nth-child(4) { transform: translateY(-5px); }
     .shuffle .sl:nth-child(2), .shuffle .sl:nth-child(3) { transform: translateY(3px); }
-    .scr { position: absolute; z-index: 1; left: 3px; top: 12px; width: 56px; height: 30px; padding: 3px 4px; background: #050607; box-shadow: inset 0 0 0 1px #000, 0 0 0 1px #5c6163;
-      font: 500 7px/1.15 'JetBrains Mono', ui-monospace, monospace; color: #e8f2f6; letter-spacing: .06em; text-shadow: 0 0 3px rgba(200,230,255,.6); }
+    .scr { position: absolute; z-index: 1; left: 3px; top: 12px; width: 38px; height: 30px; padding: 3px; background: #050607; box-shadow: inset 0 0 0 1px #000, 0 0 0 1px #5c6163;
+      font: 500 7px/1.15 'JetBrains Mono', ui-monospace, monospace; color: #e8f2f6; letter-spacing: .02em; white-space: nowrap; text-shadow: 0 0 3px rgba(200,230,255,.6); }
     .scr b { display: block; font-size: 13px; font-weight: 600; letter-spacing: 0; }
     .bars { display: flex; gap: 1px; height: 4px; margin-top: 2px; }
     .bars i { flex: 1; background: #2a2f31; } .bars i.on { background: #e8f2f6; }

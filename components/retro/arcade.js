@@ -23,7 +23,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <button class="stick" type="button" aria-label="Joystick"><div class="base"></div><div class="shaft"><div class="ball"></div></div></button>
+      <button class="stick" type="button" aria-label="Joystick"><div class="base"></div><div class="shaft"><div class="ball" data-overhang></div></div></button>
       <div class="btns">
         <button class="pb red" type="button" aria-label="Button 1" aria-pressed="false"></button>
         <button class="pb blue" type="button" aria-label="Button 2" aria-pressed="false"></button>

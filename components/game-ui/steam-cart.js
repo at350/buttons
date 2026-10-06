@@ -14,10 +14,10 @@ export default {
     .wl svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
     .wl .st { display: grid; } .wl .st > span { grid-area: 1 / 1; } .wl .st > span[hidden] { display: block; visibility: hidden; }
     .wl:focus-visible { outline: 1px solid #fff; outline-offset: 1px; }
-    .buy { position: relative; width: 330px; padding: 14px 16px 34px; border-radius: 4px; background: linear-gradient(-60deg, rgba(226,244,255,.3) 5%, rgba(84,107,115,.3) 95%); }
+    .buy { position: relative; width: 330px; padding: 14px 16px 62px; border-radius: 4px; background: linear-gradient(-60deg, rgba(226,244,255,.3) 5%, rgba(84,107,115,.3) 95%); }
     .buy h3 { margin: 0; color: #fff; font: 400 18px 'Motiva Sans', 'DM Sans', Arial, sans-serif; white-space: nowrap; }
     .sale { display: inline-block; margin-top: 6px; background: #4c6b22; color: #beee11; font: 400 10px/16px 'Motiva Sans', 'DM Sans', Arial, sans-serif; text-transform: uppercase; padding: 0 6px; border-radius: 2px; }
-    .act { position: absolute; right: 16px; bottom: -16px; display: flex; align-items: stretch; background: #000; padding: 2px 2px 2px 0; border-radius: 2px; }
+    .act { position: absolute; right: 16px; bottom: 14px; display: flex; align-items: stretch; background: #000; padding: 2px 2px 2px 0; border-radius: 2px; }
     .pct { background: #4c6b22; color: #beee11; font: 500 25px/34px 'Motiva Sans', 'DM Sans', Arial, sans-serif; padding: 0 6px; letter-spacing: -.5px; }
     .price { display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding: 0 8px 0 10px; background: #344654; line-height: 1.1; }
     .was { color: #738895; font-size: 11px; text-decoration: line-through; }

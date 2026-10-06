@@ -37,7 +37,7 @@ export default {
       <div class="tray"></div>
       <div class="reg"><span class="slot"></span><span class="win">$0</span>
         <div class="keys"><button class="key" type="button">1</button><button class="key" type="button">2</button><button class="key" type="button">5</button><button class="key" type="button">10</button></div>
-        <span class="crank"></span>
+        <span class="crank" data-overhang></span>
       </div>
       <button class="drawer" type="button" aria-expanded="false" aria-label="cash drawer"></button>
       <div class="coins"><button class="coin" type="button" aria-label="coin">1¢</button><button class="coin" type="button" aria-label="coin">5¢</button><button class="coin" type="button" aria-label="coin">10¢</button></div>

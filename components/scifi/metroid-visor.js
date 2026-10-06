@@ -7,7 +7,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 320px; height: 200px; max-width: 100%; border-radius: 12px; overflow: hidden; background: #000; font-family: 'Space Grotesk', system-ui, sans-serif; --h: #5fd4ff; }
-    .w { position: absolute; inset: 0; transition: filter .3s; background: linear-gradient(#5d8a7a, #9cc0a4 45%, #3c4a33 46%, #1d2618); }
+    .w { position: absolute; inset: 0; overflow: hidden; transition: filter .3s; background: linear-gradient(#5d8a7a, #9cc0a4 45%, #3c4a33 46%, #1d2618); }
     .w i { position: absolute; display: block; }
     .rock { left: -10px; bottom: 30px; width: 130px; height: 90px; border-radius: 50% 60% 0 0; background: linear-gradient(#55604a, #262c21); }
     .rock2 { right: -20px; bottom: 40px; width: 150px; height: 110px; border-radius: 60% 40% 0 0; background: linear-gradient(#4b5642, #20261c); }

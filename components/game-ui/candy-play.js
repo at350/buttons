@@ -13,7 +13,7 @@ export default {
     .play:active, .play.sq { transform: scale(1.08, .9) translateY(5px); box-shadow: 0 1px 0 #8f0a55, 0 4px 8px rgba(120,0,70,.4), inset 0 -4px 6px rgba(0,0,0,.15), inset 0 0 0 3px rgba(255,255,255,.7); }
     .play:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
     .sp { position: absolute; width: 14px; height: 14px; pointer-events: none; opacity: 0; }
-    .sp svg { width: 100%; height: 100%; fill: #fff; filter: drop-shadow(0 0 3px #fff); }
+    .sp svg { display: block; width: 100%; height: 100%; fill: #fff; filter: drop-shadow(0 0 3px #fff); }
     .s1 { left: -4px; top: -6px; }
     .s2 { right: 10px; top: -10px; }
     .s3 { right: -6px; bottom: 6px; }
@@ -28,10 +28,10 @@ export default {
   html: `
     <div class="stage">
       <button class="play" type="button">Play!
-        <span class="sp s1"><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
-        <span class="sp s2"><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
-        <span class="sp s3"><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
-        <span class="sp s4"><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
+        <span class="sp s1" data-overhang><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
+        <span class="sp s2" data-overhang><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
+        <span class="sp s3" data-overhang><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
+        <span class="sp s4" data-overhang><svg viewBox="0 0 10 10"><path d="M5 0 6 4l4 1-4 1-1 4-1-4-4-1 4-1z"/></svg></span>
       </button>
       <span class="lv">Level <span class="n">1</span></span>
     </div>`,
