@@ -10,9 +10,9 @@ const SIZES = new Set(['auto', 'wide', 'full']);
 const BANNED = [
   [/<script\b/i, 'inline <script> tag'],
   [/<link\b/i, '<link> tag'],
-  [/<img\b/i, '<img> tag'],
+  [/<img\b(?![^>]*\bsrc=["']assets\/)/i, '<img> that is not a local assets/ file'],
   [/@import\b/i, 'css @import'],
-  [/url\((?!\s*['"]?(data:|#))/i, 'external url() in css'],
+  [/url\((?!\s*['"]?(data:|#|assets\/))/i, 'url() that is not data:, #id or a local assets/ file'],
   [/position\s*:\s*fixed/i, 'position: fixed'],
   [/\b100vw\b|\b100vh\b/, '100vw / 100vh'],
   [/\bhref\s*=\s*["']https?:/i, 'external href'],

@@ -24,7 +24,16 @@ export default {
 
 ## Hard rules
 
-1. **Vanilla only.** No imports, no external scripts, no external stylesheets, no images.
+1. **Vanilla only.** No imports, no external scripts, no external stylesheets, no remote images.
+   **Imagery comes from the local asset pack** (`assets/`, see `assets/manifest.json`; paths are relative
+   to the page, e.g. `<img src="assets/portraits/women-07.jpg">` or `background-image: url(assets/square/12.webp)`):
+   `assets/portraits/{men,women}-NN.jpg` (128px faces, 40 each) for avatars and profile pictures;
+   `assets/square/NN.webp` (300×300 photos, 72) for album art, playlist covers, product and card images;
+   `assets/wide/NN.webp` (480×270, 36) for video thumbnails and hero cards;
+   `assets/tall/NN.webp` (390×780, 10) for phone wallpapers and lock screens.
+   **Never fake imagery**: no initials in a circle for an avatar, no gradient square for album art, no
+   grey block for a thumbnail. Pick specific files (vary them across elements) and size them with
+   `object-fit: cover`. Brand logos stay inline SVG.
    Icons must be inline SVG. Fonts: system stacks (`system-ui`, `ui-monospace`, `Georgia`…) **or one of the
    web fonts the page already loads** (use the family name directly, always with a fallback):
    `Inter` (wght 100–900), `DM Sans` (opsz 9–40, wght 100–1000), `Space Grotesk` (300–700),

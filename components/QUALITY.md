@@ -55,6 +55,11 @@ Pull up the actual product or design-system page (WebFetch / WebSearch) and comp
 - **Geometry**: real radii, heights (e.g. Material 3 buttons are 40px tall, pill radius; GitHub 32px, 6px
   radius; iOS switch 51×31), paddings, border widths, shadows (elevation tokens).
 - **Labels**: the real words the product uses. No placeholder text like "Hover me", "Button", "Click".
+- **Imagery**: real pictures from the local asset pack (`assets/`, see CONTRACT rule 1) wherever the real
+  product shows a picture: profile avatars and friend lists, album and playlist art, Now Playing cards,
+  video thumbnails, product cards, app-store screenshots, phone wallpapers behind lock screens and
+  widgets. Initials-in-a-circle avatars, gradient squares and grey blocks are placeholders and fail the bar.
+  Vary the files between elements so the page doesn't repeat the same face or cover.
 - **Motion**: the real curves and durations. Material 3: `cubic-bezier(0.2, 0, 0, 1)` emphasized,
   200–500ms; iOS: spring-like `cubic-bezier(0.32, 0.72, 0, 1)` ~350ms; Fluent: `cubic-bezier(0, 0, 0, 1)`
   ~150–250ms; Linear/Vercel: ~150ms ease; GitHub: 80ms. Ripples, state layers (hover 8% / press 12%),
