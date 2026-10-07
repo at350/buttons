@@ -42,8 +42,8 @@ export default {
         <path class="beam" fill="url(#au-adas-beam)" d="M130 84 60 0h180l-70 84z"/>
         <line class="ln" x1="96" y1="104" x2="138" y2="8"/><line class="ln" x1="204" y1="104" x2="162" y2="8"/>
         <rect class="gapb" x="141" y="44" width="18" height="3" rx="1"/><rect class="gapb" x="139" y="52" width="22" height="3" rx="1"/><rect class="gapb" x="137" y="60" width="26" height="3" rx="1"/>
-        <rect class="lead" x="141" y="20" width="18" height="16" rx="4"/>
-        <rect class="own" x="132" y="72" width="36" height="28" rx="8"/>
+        <g class="lead" transform="translate(141 19) scale(.5)"><path d="M4 14q0-10 8-12h12q8 2 8 12l1 10q0 5-5 5H8q-5 0-5-5z"/><path d="M9 5h18l2 7H7z" fill="#1b222c"/><rect x="5" y="16" width="8" height="3" rx="1.5" fill="#ff3b30"/><rect x="23" y="16" width="8" height="3" rx="1.5" fill="#ff3b30"/><rect x="2" y="25" width="6" height="6" rx="1" fill="#0a0c10"/><rect x="28" y="25" width="6" height="6" rx="1" fill="#0a0c10"/></g>
+        <g class="own" transform="translate(132 70)"><path d="M4 14q0-10 8-12h12q8 2 8 12l1 10q0 5-5 5H8q-5 0-5-5z"/><path d="M9 5h18l2 7H7z" fill="#1b222c"/><rect x="5" y="16" width="8" height="3" rx="1.5" fill="#ff3b30"/><rect x="23" y="16" width="8" height="3" rx="1.5" fill="#ff3b30"/><rect x="2" y="25" width="6" height="6" rx="1" fill="#0a0c10"/><rect x="28" y="25" width="6" height="6" rx="1" fill="#0a0c10"/></g>
       </svg></div>
       <div class="row">
         <button class="tt lk" type="button" data-s="1" aria-label="Lane Keeping Assist"><svg viewBox="0 0 24 24">${LKA}</svg></button>

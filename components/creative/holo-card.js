@@ -1,56 +1,44 @@
 export default {
   id: 'cr-holo-card',
-  credit: 'Holographic trading card — Simey’s "pokemon-cards-css": sun-pillar foil + scanlines (color-dodge), pointer glare, spring tilt; click flips',
+  credit: 'Charizard 4/102, Pokémon Base Set (1st Edition) — holographic card effect after Simey’s "pokemon-cards-css": sun-pillar foil + scanlines (color-dodge), pointer glare, spring tilt; click flips',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: #14121f; padding: 22px 34px; border-radius: 12px; perspective: 600px; }
+    .stage { background: #14121f; padding: 44px 52px; border-radius: 12px; perspective: 700px; }
     .card {
       --mx: 50%; --my: 50%; --bx: 50%; --by: 50%; --o: 0;
       --s1: hsl(2, 100%, 73%); --s2: hsl(53, 100%, 69%); --s3: hsl(93, 100%, 69%); --s4: hsl(176, 100%, 76%); --s5: hsl(228, 100%, 74%); --s6: hsl(283, 100%, 73%);
-      position: relative; display: block; width: 136px; height: 190px; border: 0; padding: 0; cursor: pointer; background: none;
-      border-radius: 7px; transform-style: preserve-3d; will-change: transform;
+      position: relative; display: block; width: 220px; height: 307px; border: 0; padding: 0; cursor: pointer; background: none;
+      border-radius: 12px; transform-style: preserve-3d; will-change: transform;
     }
     .face { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; backface-visibility: hidden; }
-    .front {
-      padding: 7px; background: linear-gradient(160deg, #fbe38a, #e8b93a 45%, #f5d76e);
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, .25), 0 12px 28px rgba(0, 0, 0, .5);
-      transition: box-shadow .3s ease;
-    }
-    .card:hover .front { box-shadow: 0 0 0 1px rgba(0, 0, 0, .25), 0 0 14px 2px hsl(54, 87%, 63%), 0 18px 34px rgba(0, 0, 0, .55); }
-    .in { position: relative; height: 100%; border-radius: 3px; background: linear-gradient(#fdf6d3, #f1e2a3); display: flex; flex-direction: column; gap: 4px; padding: 5px 6px; }
-    .top { display: flex; justify-content: space-between; align-items: baseline; font: 800 10px/1 'DM Sans', system-ui, sans-serif; color: #1c1c1c; }
-    .top i { font-style: normal; font-weight: 700; font-size: 8px; color: #c0392b; }
-    .art {
-      position: relative; height: 82px; border: 2px solid #c9a227; border-radius: 1px; overflow: hidden;
-      background: #6f8fb0 url(assets/square/49.webp) center 40% / cover;
-    }
-    .bar { height: 5px; border-radius: 3px; background: rgba(28, 28, 28, .18); }
-    .bar.s { width: 62%; }
-    .bar.m { width: 84%; margin-top: 4px; }
-    .shine, .glare { position: absolute; inset: 0; pointer-events: none; opacity: var(--o); transition: opacity .3s ease; }
+    .front { box-shadow: 0 0 0 1px rgba(0, 0, 0, .25), 0 14px 30px rgba(0, 0, 0, .55); background: #f4d03f; transition: box-shadow .3s ease; }
+    .card:hover .front { box-shadow: 0 0 0 1px rgba(0, 0, 0, .25), 0 0 16px 3px hsl(54, 87%, 63%), 0 20px 38px rgba(0, 0, 0, .6); }
+    .front img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
+    .shine, .glare { position: absolute; inset: 0; pointer-events: none; opacity: var(--o); transition: opacity .3s ease; border-radius: inherit; }
     .shine {
       background-image:
         repeating-linear-gradient(110deg, var(--s6), var(--s5), var(--s4), var(--s3), var(--s2), var(--s1), var(--s6), var(--s5), var(--s4), var(--s3), var(--s2), var(--s1)),
-        repeating-linear-gradient(90deg, #000 0 1px, #666 1px 2px);
+        repeating-linear-gradient(90deg, #000 0 1px, #8a8a8a 1px 3px);
       background-size: 400% 400%, cover;
       background-position: var(--bx) var(--by), center;
       background-blend-mode: overlay;
-      mix-blend-mode: color-dodge; filter: brightness(1.1) contrast(1.1) saturate(1.2);
+      mix-blend-mode: color-dodge; filter: brightness(1.1) contrast(1.1) saturate(1.2); opacity: calc(var(--o) * .3);
     }
     .glare { background: radial-gradient(farthest-corner circle at var(--mx) var(--my), rgba(255, 255, 255, .7) 6%, rgba(255, 255, 255, .25) 24%, rgba(0, 0, 0, .35) 95%); mix-blend-mode: overlay; }
     .back {
-      transform: rotateY(180deg); border: 7px solid #1d4ea8;
-      background: radial-gradient(circle at 50% 50%, #ffcf3a 0 14px, #1d4ea8 15px 19px, #2f6fd6 20px 40px, #1d4ea8 41px 44px, #3a80ec 45px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, .5);
+      transform: rotateY(180deg); border: 11px solid #f2c230;
+      background: radial-gradient(circle at 50% 50%, #fff 0 22px, #1a1a1a 23px 27px, #e63b2e 28px 50px, #1d4ea8 51px 58px, #2f6fd6 59px 90px, #1d4ea8 91px 100px, #3a80ec 101px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .55);
     }
     .card:focus-visible { outline: 2px solid #ffe066; outline-offset: 5px; }
   `,
   html: `
     <div class="stage">
-      <button class="card" type="button" aria-pressed="false" aria-label="Rare holo card, flip">
+      <button class="card" type="button" aria-pressed="false" aria-label="Charizard, Base Set holographic card, flip">
         <span class="face front" aria-hidden="true">
-          <span class="in"><span class="top">Voltix <i>HP 120</i></span><span class="art"><span class="shine"></span></span><span class="bar s"></span><span class="bar"></span><span class="bar m"></span><span class="bar s"></span></span>
+          <img src="assets/real/card-charizard-base-set.jpg" alt="" draggable="false">
+          <span class="shine"></span>
           <span class="glare"></span>
         </span>
         <span class="face back" aria-hidden="true"></span>
