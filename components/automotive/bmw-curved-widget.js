@@ -16,10 +16,8 @@ export default {
     .w svg.i { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
     .w b { display: block; font-weight: 600; font-size: 12px; white-space: nowrap; }
     .w span { color: #9aa4b2; white-space: nowrap; }
-    .map { position: absolute; inset: 0; opacity: .35; transition: opacity .4s; }
-    .w[aria-pressed="true"] .map { opacity: .8; }
-    .map path { fill: none; stroke: #5d6b80; stroke-width: 6; }
-    .map .rt { stroke: #3c8fff; stroke-width: 3; }
+    .w > .map { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 60%; opacity: .7; transition: opacity .4s; -webkit-mask: linear-gradient(#000 40%, rgba(0,0,0,.25)); mask: linear-gradient(#000 40%, rgba(0,0,0,.25)); }
+    .w[aria-pressed="true"] .map { opacity: 1; }
     .w > * { position: relative; }
     .art { display: block; width: 34px; height: 34px; border-radius: 6px; object-fit: cover; background: #2f3846; box-shadow: 0 2px 6px rgba(0,0,0,.5); }
     .prog { height: 3px; border-radius: 2px; background: rgba(255,255,255,.18); overflow: hidden; }
@@ -33,7 +31,7 @@ export default {
         <div class="sb"><span>12:45</span><span>21°C</span></div>
         <div class="row">
           <button class="w" type="button" aria-pressed="true">
-            <svg class="map" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><path d="M-10 90 60 70 120 92 210 60M40 -10 70 130M150 -10 130 130"/><path class="rt" d="M66 120 60 70 126 88 140 20"/></svg>
+            <img class="map" src="assets/real/map-bmw-munich.svg" alt="" width="300" height="180">
             <svg class="i" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
             <div><b>Navigation</b><span>12 min · 6.4 km</span></div>
           </button>

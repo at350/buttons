@@ -21,12 +21,11 @@ export default {
     button:focus-visible { outline: 2px solid #a8c7fa; outline-offset: 1px; }
     .main { position: relative; flex: 1; display: flex; gap: 6px; min-width: 0; }
     .map { position: relative; flex: 1.2; border-radius: 16px; overflow: hidden; background: #2a2d31; }
-    .map > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .map .rd { fill: none; stroke: #3f4348; stroke-width: 8; }
-    .map .rt { fill: none; stroke: #8ab4f8; stroke-width: 5; stroke-linecap: round; }
+    .map > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; }
     .turn { position: absolute; left: 6px; top: 6px; right: 6px; display: flex; gap: 6px; align-items: center; padding: 6px 8px; border-radius: 12px; background: #0b8043; color: #fff; font-weight: 500; }
     .turn svg { width: 16px; height: 16px; flex: none; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transform: rotate(90deg); }
-    .turn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .turn span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.15; }
+    .turn b { display: block; font-size: 13px; font-weight: 600; }
     .col { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
     .card { border-radius: 16px; background: #1e1f22; padding: 8px; min-width: 0; }
     .media { flex: 1.5; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(160deg, #3d3524, #1e1f22 70%); }
@@ -60,7 +59,7 @@ export default {
         <button class="r mic" type="button" aria-pressed="false" aria-label="Google Assistant">${ic('<path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/>')}</button>
       </div>
       <div class="main">
-        <div class="map"><svg viewBox="0 0 140 184" preserveAspectRatio="xMidYMid slice"><path class="rd" d="M-10 130 150 100M30 -10 56 200M120 -10 100 200"/><path class="rt" d="M50 190 46 126 104 108 112 40"/><path d="M50 160l-7 12h14z" fill="#fff"/></svg><div class="turn">${ic('<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>')}<span>200 m · Main St</span></div></div>
+        <div class="map"><img src="assets/real/map-android-auto-palo-alto.svg" alt="" width="210" height="280"><div class="turn">${ic('<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>')}<span><b>150 m</b>University Ave</span></div></div>
         <div class="col">
           <div class="card media"><div class="mh"><img class="art" src="assets/real/track-lose-control-teddy-swims.jpg" alt="" width="36" height="36"><div><b>Lose Control</b><span>Teddy Swims</span></div></div><div class="ctl">
             <button class="m" type="button" aria-label="Previous">${ic('<path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/>')}</button>

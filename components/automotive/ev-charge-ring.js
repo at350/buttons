@@ -9,11 +9,11 @@ export default {
     .stage { width: 250px; padding: 14px; border-radius: 12px; background: radial-gradient(circle at 50% 30%, #13202a, #05080b 75%); color: #fff; font: 500 12px/1 'DM Sans', system-ui, sans-serif; user-select: none; }
     .ring { position: relative; width: 150px; height: 150px; margin: 0 auto; }
     .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-    .trk { fill: none; stroke: #16232d; stroke-width: 10; }
+    .trk { fill: none; stroke: #1f313e; stroke-width: 10; }
     .soc { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray .4s; }
     .chg .soc { animation: br 1.6s ease-in-out infinite; }
     @keyframes br { 50% { opacity: .55; } }
-    .lim { stroke: #fff; stroke-width: 3; stroke-linecap: round; }
+    .lim { stroke: #fff; stroke-width: 2.5; stroke-linecap: round; filter: drop-shadow(0 0 1.5px #000) drop-shadow(0 0 1.5px #000); }
     .mid { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 5px; }
     .pct { font: 300 36px/1 'DM Sans', system-ui, sans-serif; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
     .pct small { font-size: 15px; color: #8aa3b4; }
@@ -39,7 +39,7 @@ export default {
     <div class="stage">
       <div class="ring">
         <svg viewBox="0 0 150 150" aria-hidden="true"><defs><linearGradient id="au-ev-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00e0c6"/><stop offset="1" stop-color="#0094ff"/></linearGradient></defs>
-          <circle class="trk" cx="75" cy="75" r="${R}"/><circle class="soc" stroke="url(#au-ev-g)" cx="75" cy="75" r="${R}" stroke-dasharray="0 ${LEN}"/><line class="lim" x1="${75 + R - 9}" y1="75" x2="${75 + R + 9}" y2="75"/></svg>
+          <circle class="trk" cx="75" cy="75" r="${R}"/><circle class="soc" stroke="url(#au-ev-g)" cx="75" cy="75" r="${R}" stroke-dasharray="0 ${LEN}"/><line class="lim" x1="${75 + R - 7}" y1="75" x2="${75 + R + 7}" y2="75"/></svg>
         <div class="mid"><div class="pct">38<small>%</small></div><div class="st"><svg viewBox="0 0 24 24"><path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/><path d="m2 22 3-3"/><path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/><path d="m18 3-4 4h6l-4 4"/></svg><span>Plugged in</span></div></div>
       </div>
       <div class="lr"><span>Target</span><b class="tv">80%</b></div>

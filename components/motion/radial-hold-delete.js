@@ -5,21 +5,21 @@ export default {
   credit: 'Hold-to-delete (the long-press confirm pattern from iOS / Linear) — an @property-animated conic ring fills while the Lucide bin trembles, completes with a burst; let go early and it rewinds',
   size: 'auto',
   css: `
-    @property --p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+    @property --mo-rhd-p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
     :host { display: inline-block; }
     .wrap { position: relative; width: 120px; height: 120px; display: grid; place-items: center; }
     .btn {
       position: relative; width: 72px; height: 72px; border-radius: 50%; border: 0; cursor: pointer; color: #dc2626; touch-action: none; user-select: none; -webkit-user-select: none;
-      background: conic-gradient(#ef4444 var(--p), #fee2e2 0); --p: 0%; transition: --p .4s cubic-bezier(.4, 0, .2, 1), transform .5s ${SPRING};
+      background: conic-gradient(#ef4444 var(--mo-rhd-p), #fee2e2 0); --mo-rhd-p: 0%; transition: --mo-rhd-p .4s cubic-bezier(.4, 0, .2, 1), transform .5s ${SPRING};
       display: grid; place-items: center;
     }
     .btn::before { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: #fff; transition: background .3s; }
     .btn:hover { transform: scale(1.05); }
     .btn:focus-visible { outline: 2px solid #dc2626; outline-offset: 3px; }
-    .btn.hold { --p: 100%; transition: --p 1.4s linear, transform .5s ${SPRING}; transform: scale(.95); }
+    .btn.hold { --mo-rhd-p: 100%; transition: --mo-rhd-p 1.4s linear, transform .5s ${SPRING}; transform: scale(.95); }
     .btn.hold .bin { animation: wobble .25s ease-in-out infinite alternate; }
     @keyframes wobble { from { transform: rotate(-6deg) translateX(-1px); } to { transform: rotate(6deg) translateX(1px); } }
-    .btn.done { --p: 100%; transform: scale(1.1); color: #fff; } .btn.done::before { background: #ef4444; }
+    .btn.done { --mo-rhd-p: 100%; transform: scale(1.1); color: #fff; } .btn.done::before { background: #ef4444; }
     .bin { position: relative; width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .4s ${SPRING}, color .2s; }
     .lid { transform-origin: 3px 6px; transition: transform .3s ${SPRING}; }
     .btn.done .lid { transform: rotate(-30deg) translate(-3px, -4px); }
@@ -36,7 +36,7 @@ export default {
       </button>
     </div>`,
   init(root) {
-    try { CSS.registerProperty({ name: '--p', syntax: '<percentage>', inherits: false, initialValue: '0%' }); } catch (e) { /* already registered */ }
+    try { CSS.registerProperty({ name: '--mo-rhd-p', syntax: '<percentage>', inherits: false, initialValue: '0%' }); } catch (e) { /* already registered */ }
     const wrap = root.querySelector('.wrap'), btn = root.querySelector('.btn');
     let t = 0, r = 0;
     const start = () => {

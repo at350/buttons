@@ -14,7 +14,7 @@ export default {
     .cart b.on { transform: scale(1); }
     .car { position: relative; display: flex; align-items: center; gap: 4px; padding: 0 4px; }
     .vp { flex: 1; overflow: hidden; }
-    .track { display: flex; gap: 8px; padding: 6px 2px; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+    .track { display: flex; gap: 8px; padding: 8px 4px; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
     .cv { flex: none; width: 70px; height: 104px; border: 0; padding: 6px; border-radius: 3px; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; text-align: left; font: 800 11px/1.05 'Roboto Flex', Inter, sans-serif; font-stretch: 70%; letter-spacing: .01em; hyphens: manual; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); background: #222 center / cover no-repeat; box-shadow: 0 2px 6px rgba(0,0,0,.6); transition: transform .15s, box-shadow .15s; }
     .cv small { font-size: 7.5px; font-weight: 600; opacity: .85; }
     .cv:hover { transform: translateY(-2px); }
@@ -22,6 +22,7 @@ export default {
     .cv[aria-pressed="true"] { box-shadow: 0 0 0 3px #e42222, 0 2px 8px rgba(0,0,0,.6); }
     .ar { width: 22px; height: 48px; flex: none; border: 0; border-radius: 4px; background: rgba(255,255,255,.1); color: #fff; cursor: pointer; display: grid; place-items: center; }
     .ar svg { width: 18px; height: 18px; }
+    .ar.prev { order: -1; }
     .ar:hover { background: rgba(255,255,255,.2); } .ar:disabled { opacity: .25; cursor: default; }
     .ar:focus-visible { outline: 2px solid #fff; }
     .ft { display: flex; align-items: center; gap: 8px; padding: 8px 10px 10px; }
@@ -31,13 +32,13 @@ export default {
     .fmt button:focus-visible { outline: 2px solid #e42222; }
     .rent { flex: 1; height: 34px; border: 0; border-radius: 17px; background: #e42222; color: #fff; font: 800 12px/1 Inter, sans-serif; cursor: pointer; white-space: nowrap; transition: filter .1s, transform .06s; }
     .rent:hover { filter: brightness(1.1); } .rent:active { transform: scale(.97); }
-    .rent:disabled { opacity: .35; cursor: default; }
+    .rent:disabled { background: #2a2a2a; color: #777; cursor: default; filter: none; }
     .rent:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   `,
   html: `
     <div class="stage"><div class="scr">
       <div class="hd"><span class="lg">redbox.</span><span class="cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg>Cart<b>0</b></span></div>
-      <div class="car"><button class="ar prev" type="button" aria-label="Previous" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="vp"><div class="track"></div></div><button class="ar next" type="button" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div>
+      <div class="car"><div class="vp"><div class="track"></div></div><button class="ar prev" type="button" aria-label="Previous" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button class="ar next" type="button" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></div>
       <div class="ft"><div class="fmt"><button type="button" aria-pressed="true" data-p="2.25">DVD</button><button type="button" aria-pressed="false" data-p="2.75">Blu-ray</button></div><button class="rent" type="button" disabled>Rent · $2.25/night</button></div>
     </div></div>`,
   init(root) {

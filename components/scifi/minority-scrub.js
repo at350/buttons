@@ -1,7 +1,7 @@
 // Minority Report (2002) — Anderton's gestural precog-vision scrubber (John Underkoffler / g-speak): drag across the glass to scrub, fling to coast.
 export default {
   id: 'sf-minority-scrub',
-  credit: 'Minority Report (2002) — the precrime gestural interface (John Underkoffler, later Oblong g-speak): drag the precog vision (real footage stills) to scrub through it, let go mid-swipe and it coasts; the red ball rolls',
+  credit: 'Minority Report (2002) — the precrime gestural interface (John Underkoffler, later Oblong g-speak): drag across the glass to scrub the three precogs\' visions together (main feed plus the two side feeds), fling and it coasts; the red ball marks a crime of passion',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -17,11 +17,12 @@ export default {
   html: `<div class="stage"><div class="glass" role="slider" tabindex="0" aria-label="Precog vision" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20"><canvas width="552" height="304"></canvas><i class="tip"></i></div></div>`,
   init(root) {
     const g = root.querySelector('.glass'), cv = root.querySelector('canvas'), c = cv.getContext('2d'), tip = root.querySelector('.tip');
-    const W = 276, H = 152, VH = 118; c.scale(2, 2);
+    const W = 276, H = 152, VH = 112; c.scale(2, 2);
     let t = 0.2, v = 0, raf = 0, drag = false, lx = 0, lt = 0;
-    // the precog vision: three shots (photos from the asset pack), each pushed in and panned as the clip plays,
-    // pre-toned once to the glass's cold cyan; the precrime ball rolls through them
-    const SHOTS = ['assets/wide/24.webp', 'assets/wide/30.webp', 'assets/wide/02.webp'];
+    // the precog vision: anonymous scene fragments (a street house with a bicycle, a fogged avenue, an empty
+    // boardwalk) pre-toned once to the film's washed, cold milky look; the main pane is Agatha's feed and the
+    // two side panes are the twins' feeds, all scrubbed together
+    const SHOTS = ['assets/square/68.webp', 'assets/square/63.webp', 'assets/wide/04.webp'];
     const tone = SHOTS.map(() => null);
     SHOTS.forEach((src, k) => {
       const im = new Image();
@@ -29,37 +30,44 @@ export default {
         const o = document.createElement('canvas'); o.width = im.naturalWidth; o.height = im.naturalHeight;
         const x = o.getContext('2d', { willReadFrequently: true }); x.drawImage(im, 0, 0);
         const px = x.getImageData(0, 0, o.width, o.height), d = px.data;
-        for (let i = 0; i < d.length; i += 4) { const l = .3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2]; d[i] = l * .55 + 4; d[i + 1] = l * .8 + 14; d[i + 2] = l * .98 + 30; }
+        for (let i = 0; i < d.length; i += 4) { const l = .3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2], m = 40 + l * .78; d[i] = m * .86 + d[i] * .1; d[i + 1] = m * .95 + d[i + 1] * .06; d[i + 2] = m * 1.02 + 10; }
         x.putImageData(px, 0, 0); tone[k] = o; draw();
       };
       im.src = src;
     });
-    const shot = (u, a) => {
+    const shot = (u, a, X, Y, w, h, off = 0) => {
+      u = ((u + off) % 1 + 1) % 1;
       const k = Math.min(2, Math.floor(u * 3)), l = u * 3 - k, o = tone[k];
       if (!o) return;
-      const z = 1.06 + l * .22, sw = o.width / z, sh = sw * VH / W;
-      const sx = (o.width - sw) * (k % 2 ? 1 - l : l), sy = (o.height - sh) * .5;
-      c.globalAlpha = a; c.drawImage(o, sx, sy, sw, sh, 0, 0, W, VH); c.globalAlpha = 1;
-    };
-    const ball = (u, a) => {
-      const bx = 18 + ((u * 3) % 1) * 250, by = VH - 10 - Math.abs(Math.sin(u * 9.4)) * 30;
-      c.globalAlpha = a; c.fillStyle = '#ff3b2f'; c.shadowColor = '#ff3b2f'; c.shadowBlur = 8; c.beginPath(); c.arc(bx, by, 6, 0, 7); c.fill(); c.shadowBlur = 0; c.globalAlpha = 1;
+      const z = 1.0 + l * .16, sw = o.width / z, sh = Math.min(o.height, sw * h / w);
+      const sx = (o.width - sw) * (k % 2 ? 1 - l : l), sy = (o.height - sh) * .5 + Math.sin(l * 6) * 2;
+      c.save(); c.beginPath(); c.rect(X, Y, w, h); c.clip();
+      c.globalAlpha = a; c.drawImage(o, sx, sy, sw, sh, X, Y, w, h);
+      // precog footage: a rippling double exposure and a milky edge falloff
+      c.globalAlpha = a * .28; c.drawImage(o, sx + 6 + Math.sin(t * 40) * 3, sy, sw, sh, X, Y, w, h);
+      c.globalAlpha = 1; const vg = c.createRadialGradient(X + w / 2, Y + h / 2, Math.min(w, h) * .3, X + w / 2, Y + h / 2, Math.max(w, h) * .62);
+      vg.addColorStop(0, 'rgba(210,235,255,0)'); vg.addColorStop(1, 'rgba(190,225,250,.55)'); c.fillStyle = vg; c.fillRect(X, Y, w, h);
+      c.restore();
+      c.strokeStyle = 'rgba(235,248,255,.85)'; c.lineWidth = 1; c.strokeRect(X + .5, Y + .5, w - 1, h - 1);
     };
     const draw = () => {
-      const bg = c.createLinearGradient(0, 0, 0, VH); bg.addColorStop(0, '#16314a'); bg.addColorStop(1, '#06111c');
+      c.clearRect(0, 0, W, H);
+      const bg = c.createLinearGradient(0, 0, W, H); bg.addColorStop(0, 'rgba(60,120,170,.18)'); bg.addColorStop(1, 'rgba(10,30,50,.1)');
       c.fillStyle = bg; c.fillRect(0, 0, W, H);
-      shot(t, 1); shot(Math.max(0, t - .012), .22);
-      ball(Math.max(0, t - .06), .18); ball(Math.max(0, t - .03), .32); ball(t, 1);
-      const vg = c.createRadialGradient(W / 2, VH / 2, 40, W / 2, VH / 2, 170); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,4,10,.85)');
-      c.fillStyle = vg; c.fillRect(0, 0, W, VH);
-      c.fillStyle = 'rgba(2,8,14,.9)'; c.fillRect(0, VH, W, H - VH);
-      c.strokeStyle = 'rgba(190,230,255,.6)'; c.beginPath();
-      for (let i = -2; i < 40; i++) { const x = i * 8 - ((t * 800) % 8); const tall = (Math.floor(t * 100) + i) % 5 === 0; c.moveTo(x, VH + 6); c.lineTo(x, VH + (tall ? 16 : 11)); }
+      shot(t, .95, 0, 0, 184, VH);
+      shot(t, .8, 192, 0, 84, 52, .37); shot(t, .8, 192, 60, 84, 52, .71);
+      c.font = '500 6.5px "Space Grotesk", system-ui, sans-serif'; c.fillStyle = 'rgba(10,30,45,.75)';
+      [['AGATHA', 4, 9], ['ARTHUR', 196, 9], ['DASHIELL', 196, 69]].forEach(([s, x, y]) => { c.fillStyle = 'rgba(8,22,34,.6)'; c.fillRect(x - 2, y - 7, c.measureText(s).width + 4, 9); c.fillStyle = '#eaf7ff'; c.fillText(s, x, y); });
+      // timeline: frame ruler, playhead, timecode, and the red ball
+      const ty = VH + 6;
+      c.strokeStyle = 'rgba(200,235,255,.55)'; c.beginPath();
+      for (let i = -2; i < 34; i++) { const x = 22 + i * 8 - ((t * 800) % 8); if (x < 22 || x > 196) continue; const tall = (Math.floor(t * 100) + i) % 5 === 0; c.moveTo(x, ty + 2); c.lineTo(x, ty + (tall ? 14 : 9)); }
       c.stroke();
-      c.strokeStyle = '#ffffff'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(W / 2, VH + 2); c.lineTo(W / 2, H - 2); c.stroke(); c.lineWidth = 1;
-      const f = Math.round(t * 3000), tc = `00:${String(Math.floor(f / 600)).padStart(2, '0')}:${String(Math.floor(f / 24) % 25).padStart(2, '0')}:${String(f % 24).padStart(2, '0')}`;
-      c.fillStyle = '#d9f1ff'; c.font = '500 9px "JetBrains Mono", ui-monospace, monospace'; c.textAlign = 'right'; c.fillText(tc, W - 6, VH + 28);
-      c.textAlign = 'left'; c.fillStyle = '#ff3b2f'; c.fillText('●', 6, VH + 28); c.fillStyle = '#9cc8e8'; c.fillText('PRECOG 2', 16, VH + 28);
+      c.strokeStyle = '#ffffff'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(109, ty); c.lineTo(109, H - 2); c.stroke(); c.lineWidth = 1;
+      const rb = c.createRadialGradient(8, ty + 10, 1, 10, ty + 12, 9); rb.addColorStop(0, '#ff9b8a'); rb.addColorStop(.45, '#d6201a'); rb.addColorStop(1, '#5a0705');
+      c.fillStyle = rb; c.beginPath(); c.arc(10, ty + 12, 8, 0, 7); c.fill();
+      const f = Math.round(t * 3000), tc = `${String(Math.floor(f / 600)).padStart(2, '0')}:${String(Math.floor(f / 24) % 25).padStart(2, '0')}:${String(f % 24).padStart(2, '0')}`;
+      c.fillStyle = '#e4f4ff'; c.font = '500 9px "JetBrains Mono", ui-monospace, monospace'; c.textAlign = 'right'; c.fillText(tc, W - 2, ty + 15); c.textAlign = 'left';
       g.setAttribute('aria-valuenow', String(Math.round(t * 100)));
     };
     const set = (n) => { t = Math.max(0, Math.min(1, n)); };

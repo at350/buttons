@@ -24,10 +24,8 @@ export default {
     .np-full { opacity: 0; transform: scale(.96); pointer-events: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px; background: linear-gradient(160deg, var(--a), #111 80%); }
     .full .np-full { opacity: 1; transform: none; pointer-events: auto; }
     .full .dashv { opacity: 0; transform: scale(1.03); pointer-events: none; }
-    .map { position: relative; flex: 1.15; border-radius: 10px; overflow: hidden; background: #26282b; }
-    .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .map .rd { fill: none; stroke: #3d4045; stroke-width: 7; }
-    .map .rt { fill: none; stroke: #0a84ff; stroke-width: 4; stroke-linecap: round; }
+    .map { position: relative; flex: 1.15; border-radius: 10px; overflow: hidden; background: #1f1f21; }
+    .map img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 70%; }
     .eta { position: absolute; left: 6px; bottom: 6px; right: 6px; padding: 5px 7px; border-radius: 7px; background: rgba(28,28,30,.92); }
     .eta b { color: #30d158; font-size: 12px; }
     .col { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
@@ -62,7 +60,7 @@ export default {
       </div>
       <div class="main">
         <div class="v dashv">
-          <div class="map"><svg viewBox="0 0 140 180" preserveAspectRatio="xMidYMid slice"><path class="rd" d="M-10 120 150 90M40 -10 60 200M110 -10 96 200"/><path class="rt" d="M54 170 50 116 98 102 104 30"/><circle cx="54" cy="150" r="5" fill="#0a84ff" stroke="#fff" stroke-width="2"/></svg><div class="eta"><b>9:58</b> · 17 min</div></div>
+          <div class="map"><img src="assets/real/map-carplay-sf.svg" alt="" width="210" height="290"><div class="eta"><b>9:58</b> · 17 min</div></div>
           <div class="col">
             <div class="np"><div class="row"><img class="art" src="assets/real/track-espresso-sabrina-carpenter.jpg" alt="" width="34" height="34"><span class="t"><b class="tt"></b><span class="ta"></span></span></div><div class="ctls">CTL</div></div>
             <div class="cal"><b>Design Review</b><span>10:30 AM</span></div>

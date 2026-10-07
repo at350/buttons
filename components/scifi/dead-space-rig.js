@@ -6,21 +6,22 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 310px; height: 210px; max-width: 100%; border-radius: 12px; overflow: hidden; background: radial-gradient(ellipse at 30% 60%, #1b1712, #060504 70%); font-family: 'Space Grotesk', system-ui, sans-serif; }
-    .suit { position: absolute; left: 22px; top: 18px; width: 110px; height: 200px; border-radius: 46px 46px 10px 10px; background: linear-gradient(90deg, #2a241d, #4a4034 30%, #3b3329 70%, #231e18);
-      box-shadow: inset 0 0 0 2px #15110d, inset 0 12px 20px rgba(0,0,0,.5); }
-    .suit::before { content: ''; position: absolute; left: 30px; right: 30px; top: -14px; height: 40px; border-radius: 20px 20px 6px 6px; background: linear-gradient(#3b3329, #241f19); box-shadow: inset 0 0 0 2px #15110d; }
-    .spine { position: absolute; left: 49px; top: 38px; width: 14px; height: 150px; border: 0; padding: 3px 2px; background: #0b0b0a; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column-reverse; gap: 2px; box-shadow: 0 0 0 2px #15110d; }
+    .suit { position: absolute; left: 4px; top: 4px; width: 150px; height: 229px; }
+    .suit .m { fill: url(#mt); stroke: #120e0b; stroke-width: 1.2; } .suit .d { fill: url(#dk); stroke: #120e0b; stroke-width: 1.2; }
+    .suit .s { fill: none; stroke: #1a1410; stroke-width: 1; } .suit .h { fill: none; stroke: #9a8670; stroke-width: .8; opacity: .55; }
+    .suit .c { fill: #0c0a08; stroke: #3a3026; }
+    .spine { position: absolute; left: 75px; top: 80px; width: 14px; height: 124px; border: 0; padding: 3px 2px; background: #0b0b0a; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column-reverse; gap: 2px; box-shadow: 0 0 0 2px #15110d; }
     .spine i { flex: 1; border-radius: 1px; background: #11201c; transition: background .15s, box-shadow .15s; }
     .spine i.on { background: #39e6c4; box-shadow: 0 0 6px #39e6c4; }
     .low .spine i.on { background: #ff3b28; box-shadow: 0 0 7px #ff3b28; animation: bl .5s steps(1) infinite; }
     @keyframes bl { 50% { opacity: .35; } }
     .hit .suit { animation: sh .25s; } @keyframes sh { 30% { transform: translateX(-3px); } 60% { transform: translateX(3px); } }
     .spine:focus-visible, .it:focus-visible, .stz:focus-visible { outline: 2px solid #8fe0ff; outline-offset: 2px; }
-    .stz { position: absolute; left: 76px; top: 40px; width: 36px; height: 36px; border: 0; padding: 0; background: none; cursor: pointer; border-radius: 50%; }
+    .stz { position: absolute; left: 95px; top: 78px; width: 36px; height: 36px; border: 0; padding: 0; background: none; cursor: pointer; border-radius: 50%; }
     .stz svg { width: 36px; height: 36px; transform: rotate(-90deg); }
     .stz circle { fill: none; stroke-width: 4; }
     .stz .tr { stroke: #0f1a24; } .stz .v { stroke: #3fa7ff; stroke-dasharray: 44 88; stroke-dashoffset: calc(44 - 44 * var(--s, 1)); transition: stroke-dashoffset .35s; filter: drop-shadow(0 0 3px #3fa7ff); }
-    .holo { position: absolute; left: 146px; top: 22px; width: 148px; padding: 10px; transform: perspective(500px) rotateY(-14deg); transform-origin: 0 50%;
+    .holo { position: absolute; left: 152px; top: 22px; width: 144px; padding: 10px; transform: perspective(500px) rotateY(-14deg); transform-origin: 0 50%;
       border: 1px solid rgba(120,200,255,.6); background: linear-gradient(rgba(70,160,255,.18), rgba(70,160,255,.06)); box-shadow: 0 0 18px rgba(80,170,255,.25), inset 0 0 14px rgba(80,170,255,.15); color: #bfe6ff; }
     .holo::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(150,220,255,.08) 0 1px, transparent 1px 3px); }
     .hd { font-size: 9px; letter-spacing: .28em; margin-bottom: 8px; color: #e6f6ff; }
@@ -30,7 +31,19 @@ export default {
     .it:disabled { opacity: .35; cursor: default; background: none; }
     .it b { font-weight: 600; font-variant-numeric: tabular-nums; }
   `,
-  html: `<div class="stage"><div class="suit"></div>
+  html: `<div class="stage"><svg class="suit" viewBox="0 0 150 229" aria-hidden="true"><defs>
+      <linearGradient id="mt" x1="0" x2="1"><stop offset="0" stop-color="#2a221b"/><stop offset=".35" stop-color="#6a5845"/><stop offset=".55" stop-color="#57483a"/><stop offset="1" stop-color="#1e1915"/></linearGradient>
+      <linearGradient id="dk" x1="0" x2="1"><stop offset="0" stop-color="#1c1712"/><stop offset=".4" stop-color="#3e3328"/><stop offset="1" stop-color="#16120e"/></linearGradient></defs>
+      <path class="d" d="M30 84Q82 70 134 84L140 229H24Z"/>
+      <path class="m" d="M34 96Q82 86 130 96L126 150Q82 140 38 150Z"/><path class="m" d="M38 156Q82 146 126 156L128 229H36Z"/>
+      <path class="s" d="M40 120Q82 112 124 120M42 186Q82 178 122 186M44 206Q82 198 120 206"/>
+      <path class="m" d="M44 72C20 70 4 86 2 112V146L30 142C30 112 38 94 56 82Z"/><path class="s" d="M8 104Q22 92 40 86M4 124Q18 112 32 106"/>
+      <path class="m" d="M120 72C144 70 150 86 150 112V146L134 142C134 112 126 94 108 82Z"/><path class="s" d="M146 104Q138 92 124 86M150 124Q144 112 132 106"/>
+      <path class="d" d="M50 70Q82 60 114 70L116 82Q82 74 48 82Z"/>
+      <path class="m" d="M58 66C52 38 62 10 82 8C102 10 112 38 106 66Q82 72 58 66Z"/>
+      <path class="s" d="M60 24Q82 18 104 24M57 38Q82 32 107 38M57 52Q82 46 107 52M82 9V68"/><path class="h" d="M70 14Q76 10 82 10M62 30Q64 22 70 16"/>
+      <rect class="c" x="70" y="74" width="24" height="134" rx="6"/>
+      <path class="s" d="M66 90h6M66 112h6M66 134h6M66 156h6M66 178h6M92 90h6M92 112h6M92 134h6M92 156h6M92 178h6" stroke="#0c0a08" stroke-width="2"/></svg>
     <button class="spine" type="button" aria-label="RIG health">${'<i class="on"></i>'.repeat(10)}</button>
     <button class="stz" type="button" aria-label="Stasis"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="14" stroke-dasharray="44 88"/><circle class="v" cx="18" cy="18" r="14"/></svg></button>
     <div class="holo"><div class="hd">INVENTORY</div>

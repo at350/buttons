@@ -19,6 +19,6 @@ export default {
   `,
   html: `
     <div class="stage">
-      <button class="pushable" type="button"><span class="shadow"></span><span class="edge"></span><span class="front">Push me</span></button>
+      <button class="pushable" type="button"><span class="shadow"></span><span class="edge"></span><span class="front">Add to cart</span></button>
     </div>`,
 };

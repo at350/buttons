@@ -12,7 +12,9 @@ export default {
     .top { padding: 7px 10px; background: #0b4f9c; color: #fff; font-size: 12px; font-weight: 600; transition: background .2s; white-space: nowrap; }
     .body { flex: 1; display: flex; align-items: center; gap: 12px; padding: 10px 14px; }
     .ic { width: 64px; height: 64px; flex: none; border-radius: 50%; display: grid; place-items: center; background: #e2ebf6; color: #0b4f9c; transition: background .2s, color .2s; }
-    .ic svg { width: 34px; height: 34px; }
+    .ic svg { width: 34px; height: 34px; grid-area: 1 / 1; display: none; }
+    .stage.place .ic .i-bag, .stage.scan .ic .i-scan, .stage.alert .ic .i-alert { display: block; }
+    .stage.scan .ic { background: #dff3e4; color: #1f9137; }
     .msg { font-size: 14px; font-weight: 600; line-height: 1.3; }
     .cnt { margin-top: 6px; font-size: 12px; color: #555; font-weight: 500; }
     .cnt b { color: #0b4f9c; font-variant-numeric: tabular-nums; }
@@ -21,31 +23,36 @@ export default {
     .b:hover { filter: brightness(1.08); } .b:active { transform: translateY(1px) scale(.98); }
     .b:focus-visible { outline: 2px solid #0b4f9c; outline-offset: 2px; }
     .main { background: linear-gradient(#3bb54a, #1f9137); color: #fff; box-shadow: 0 2px 0 #146b27; }
-    .sec { background: #fff; color: #0b4f9c; box-shadow: inset 0 0 0 2px #0b4f9c; }
+    .main { order: 2; }
+    .sec { order: 1; background: #fff; color: #0b4f9c; box-shadow: inset 0 0 0 2px #0b4f9c; }
     .stage.alert .top { background: #d62c1f; }
     .stage.alert .ic { background: #fde7c2; color: #c76a00; animation: pulse .8s ease-in-out infinite; }
     .stage.alert .main { background: linear-gradient(#f5a623, #d98200); box-shadow: 0 2px 0 #9c5d00; }
     @keyframes pulse { 50% { transform: scale(1.08); } }
   `,
   html: `
-    <div class="stage"><div class="lamp"></div><div class="scr">
+    <div class="stage place"><div class="lamp"></div><div class="scr">
       <div class="top">Bagging area</div>
       <div class="body">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></div>
+        <div class="ic"><svg class="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg><svg class="i-scan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></svg><svg class="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
         <div><div class="msg" aria-live="polite">Please place item in the bagging area.</div><div class="cnt">Items in bag: <b>0</b></div></div>
       </div>
-      <div class="bar"><button class="b sec" type="button">Skip bagging</button><button class="b main" type="button">Place item in bag</button></div>
+      <div class="bar"><button class="b main" type="button">Place item in bag</button><button class="b sec" type="button">Skip bagging</button></div>
     </div></div>`,
   init(root) {
     const st = root.querySelector('.stage'), msg = root.querySelector('.msg'), top = root.querySelector('.top'), cnt = root.querySelector('.cnt b');
     const main = root.querySelector('.main'), skip = root.querySelector('.sec');
     let n = 0;
-    const normal = () => { st.classList.remove('alert'); top.textContent = 'Bagging area'; msg.textContent = 'Please place item in the bagging area.'; main.textContent = 'Place item in bag'; };
+    const set = (mode, t, m, b) => { st.className = 'stage ' + mode; top.textContent = t; msg.textContent = m; main.textContent = b; };
+    const place = () => set('place', 'Bagging area', 'Please place item in the bagging area.', 'Place item in bag');
+    const scan = () => set('scan', 'Scan your next item', 'Thank you. Please scan your next item.', 'Scan next item');
     main.addEventListener('click', () => {
-      if (st.classList.contains('alert')) return normal();
-      n++; cnt.textContent = n;
-      if (n % 3 === 0) { st.classList.add('alert'); top.textContent = 'Unexpected item in the bagging area'; msg.textContent = 'Please remove the item before continuing.'; main.textContent = 'Item removed'; }
+      if (st.classList.contains('place')) {
+        n++; cnt.textContent = n;
+        if (n % 3 === 0) set('alert', 'Unexpected item in the bagging area', 'Please remove the item before continuing.', 'Item removed');
+        else scan();
+      } else place();
     });
-    skip.addEventListener('click', normal);
+    skip.addEventListener('click', () => (st.classList.contains('place') ? scan() : place()));
   },
 };

@@ -29,10 +29,12 @@ export default {
     .as svg { width: 26px; height: 26px; }
     .as[aria-disabled="true"] { opacity: .35; cursor: default; }
     .as[aria-pressed="true"] { color: #3e6ae1; background: #0d1530; box-shadow: 0 0 14px rgba(62,106,225,.45); }
-    .road { flex: 1; height: 44px; }
-    .road path { stroke: #3a3a3a; stroke-width: 2.5; transition: stroke .3s; }
-    .on .road path { stroke: #3e6ae1; }
-    .road rect { fill: #d9d9d9; stroke: none; }
+    .road { position: absolute; right: -4px; bottom: -6px; width: 168px; height: 112px; pointer-events: none; }
+    .road .ln { fill: none; stroke: #3a3a3a; stroke-width: 2.2; stroke-linecap: round; transition: stroke .3s; }
+    .road .path { fill: url(#tsPath); opacity: 0; transition: opacity .3s; }
+    .on .road .ln { stroke: #3e6ae1; }
+    .on .road .path { opacity: 1; }
+    .row { width: 44px; }
   `,
   html: `
     <div class="stage">
@@ -40,10 +42,29 @@ export default {
       <div class="main">
         <div class="prnd"><button class="g" type="button" aria-pressed="true">P</button><button class="g" type="button" aria-pressed="false">R</button><button class="g" type="button" aria-pressed="false">N</button><button class="g" type="button" aria-pressed="false">D</button></div>
         <div class="sign">SPEED<br>LIMIT<b>45</b></div>
-        <div class="spd">0</div><div class="unit">MPH</div>
+        <svg class="road" viewBox="0 0 168 112" aria-hidden="true"><defs>
+<linearGradient id="tsPath" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3e6ae1" stop-opacity=".55"/><stop offset="1" stop-color="#3e6ae1" stop-opacity="0"/></linearGradient>
+<linearGradient id="tsBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f5f7"/><stop offset=".55" stop-color="#d6d9de"/><stop offset="1" stop-color="#9da2aa"/></linearGradient>
+<linearGradient id="tsDeck" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e3e6ea"/></linearGradient>
+<linearGradient id="tsGlass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14161a"/><stop offset="1" stop-color="#3a3f48"/></linearGradient>
+<radialGradient id="tsShadow"><stop offset="0" stop-color="#000" stop-opacity=".9"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>
+<path class="path" d="M60 112 79 4h10l19 108Z" stroke="none"/>
+<path class="ln" d="M22 112 74 4M146 112 94 4"/>
+<g transform="translate(49 57) scale(.7)" stroke="none">
+<ellipse cx="50" cy="60" rx="54" ry="8" fill="url(#tsShadow)"/>
+<rect x="7" y="44" width="15" height="19" rx="4" fill="#1a1a1a"/><rect x="78" y="44" width="15" height="19" rx="4" fill="#1a1a1a"/>
+<ellipse cx="16" cy="18" rx="5" ry="3" fill="#c9ccd1"/><ellipse cx="84" cy="18" rx="5" ry="3" fill="#c9ccd1"/>
+<path d="M5 50Q4 39 11 32Q14 30 20 30H80Q86 30 89 32Q96 39 95 50Q95 57 88 58H12Q5 57 5 50Z" fill="url(#tsBody)"/>
+<path d="M13 32Q17 23 26 21H74Q83 23 87 32Q70 34 50 34Q30 34 13 32Z" fill="url(#tsDeck)"/>
+<path d="M24 21Q28 9 37 6H63Q72 9 76 21Q63 22.5 50 22.5Q37 22.5 24 21Z" fill="url(#tsGlass)"/>
+<path d="M37 6Q41 1.5 50 1.5Q59 1.5 63 6Z" fill="#202329"/>
+<path d="M10 36.5Q15 34.4 31 35.2L31.6 38.2Q17 38.6 8.6 40.8Z" fill="#e0262b"/><path d="M90 36.5Q85 34.4 69 35.2L68.4 38.2Q83 38.6 91.4 40.8Z" fill="#e0262b"/>
+<path d="M47.6 37.2h4.8M50 37.2v3" stroke="#8a8f97" stroke-width="1" stroke-linecap="round"/>
+<path d="M14 52Q50 55 86 52" stroke="#8d929a" stroke-width=".8" fill="none"/>
+</g></svg><div class="spd">0</div><div class="unit">MPH</div>
         <div class="row">
           <button class="as" type="button" aria-pressed="false" aria-disabled="true" aria-label="Autosteer"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M12 14l0 7"/><path d="M10 12l-6.75 -2"/><path d="M14 12l6.75 -2"/></svg></button>
-          <svg class="road" viewBox="0 0 160 44" preserveAspectRatio="none"><path d="M54 2 34 44M106 2l20 42"/><rect x="72" y="26" width="16" height="14" rx="4"/></svg>
+          
         </div>
       </div>
     </div>`,

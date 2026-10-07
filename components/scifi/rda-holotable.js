@@ -27,22 +27,46 @@ export default {
     let yaw = .7, raf = 0, hov = false, drag = false, lx = 0, last = 0, t = 0;
     const MT = [[4, 5, 26, 7], [11, 4, 34, 9], [8, 11, 22, 6]];
     const pr = (x, y, z) => { const u = x - N / 2, v = y - N / 2, ca = Math.cos(yaw), sa = Math.sin(yaw), rx = u * ca - v * sa, ry = u * sa + v * ca; return [W / 2 + rx * 9.5, 112 + ry * 3.6 - z * 1.6]; };
+    const nz = (i, s) => { const v = Math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return v - Math.floor(v); };
     const draw = () => {
-      c.clearRect(0, 0, W, H); c.lineWidth = .7; c.strokeStyle = 'rgba(61,224,255,.55)';
+      c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, W, H);
+      // table glow under the projection
+      const tg = c.createRadialGradient(W / 2, 118, 10, W / 2, 118, 130); tg.addColorStop(0, 'rgba(61,224,255,.16)'); tg.addColorStop(1, 'rgba(61,224,255,0)');
+      c.fillStyle = tg; c.fillRect(0, 0, W, H);
+      c.globalCompositeOperation = 'lighter';
+      // terrain: height-shaded facets with the wire mesh over them
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        const q = [[x, y], [x + 1, y], [x + 1, y + 1], [x, y + 1]], hh = q.reduce((s, [u, v]) => s + hgt(u, v), 0) / 4;
+        c.fillStyle = `rgba(${hh > 6 ? '120,240,255' : '40,170,230'},${(.07 + Math.max(0, hh + 10) / 24 * .16).toFixed(3)})`;
+        c.beginPath(); q.forEach(([u, v], k) => { const [sx, sy] = pr(u, v, hgt(u, v)); k ? c.lineTo(sx, sy) : c.moveTo(sx, sy); }); c.closePath(); c.fill();
+      }
+      c.lineWidth = .6; c.strokeStyle = 'rgba(61,224,255,.5)';
       for (let y = 0; y <= N; y++) { c.beginPath(); for (let x = 0; x <= N; x++) { const [sx, sy] = pr(x, y, hgt(x, y)); x ? c.lineTo(sx, sy) : c.moveTo(sx, sy); } c.stroke(); }
       for (let x = 0; x <= N; x++) { c.beginPath(); for (let y = 0; y <= N; y++) { const [sx, sy] = pr(x, y, hgt(x, y)); y ? c.lineTo(sx, sy) : c.moveTo(sx, sy); } c.stroke(); }
-      c.strokeStyle = 'rgba(160,240,255,.85)';
+      // the Hallelujah Mountains: floating rock islands, flat-topped and tapering to a point, trailing vines
       for (const [mx, my, z, r] of MT) {
-        const bob = Math.sin(t * 1.3 + mx) * 1.5;
-        for (let k = 0; k < 4; k++) { c.beginPath(); for (let a = 0; a <= 16; a++) { const an = a / 16 * Math.PI * 2, rr = r * (1 - k * .22) * .14; const [sx, sy] = pr(mx + Math.cos(an) * rr, my + Math.sin(an) * rr, z + bob - k * 3 + (k === 0 ? 2 : 0)); a ? c.lineTo(sx, sy) : c.moveTo(sx, sy); } c.stroke(); }
-        const [ax, ay] = pr(mx, my, z + bob - 12); const [bx, by] = pr(mx, my, z + bob + 3); c.beginPath(); c.moveTo(ax, ay); c.lineTo(bx, by); c.stroke();
+        const bob = Math.sin(t * 1.3 + mx) * 1.5, rr = r * .3, n = 16, rim = [];
+        for (let a = 0; a < n; a++) { const an = a / n * Math.PI * 2, k = rr * (.8 + nz(a + mx, 1) * .4); rim.push(pr(mx + Math.cos(an) * k, my + Math.sin(an) * k, z + bob + nz(a, mx) * 1.5)); }
+        const tip = pr(mx + .4, my - .2, z + bob - r * 1.5);
+        for (let a = 0; a < n; a++) { const p0 = rim[a], p1 = rim[(a + 1) % n]; c.fillStyle = `rgba(80,200,240,${(.05 + nz(a, mx + 3) * .1).toFixed(3)})`; c.beginPath(); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); c.lineTo(tip[0], tip[1]); c.closePath(); c.fill(); }
+        c.fillStyle = 'rgba(140,240,255,.22)'; c.beginPath(); rim.forEach(([sx, sy], k) => (k ? c.lineTo(sx, sy) : c.moveTo(sx, sy))); c.closePath(); c.fill();
+        c.strokeStyle = 'rgba(170,245,255,.85)'; c.lineWidth = .8; c.stroke();
+        c.strokeStyle = 'rgba(120,230,255,.45)'; c.lineWidth = .5; c.beginPath();
+        for (let a = 0; a < n; a += 3) { c.moveTo(rim[a][0], rim[a][1]); c.lineTo(tip[0], tip[1]); }
+        for (let a = 1; a < n; a += 4) { const [sx, sy] = rim[a]; c.moveTo(sx, sy); c.lineTo(sx + Math.sin(t + a) * .6, sy + 6 + nz(a, mx) * 8); }
+        c.stroke();
       }
       if (fb.getAttribute('aria-pressed') === 'true') { c.fillStyle = 'rgba(120,255,160,.85)'; for (let i = 0; i < 46; i++) { const x = (i * 37) % N, y = (i * 53 + 7) % N; const [sx, sy] = pr(x + .3, y + .6, hgt(x, y)); c.fillRect(sx - 1, sy - 1, 2, 2); } }
       if (tb.getAttribute('aria-pressed') === 'true') {
-        const [hx, hy] = pr(10, 10, hgt(10, 10)); const pu = (t * .8) % 1;
-        c.strokeStyle = '#ffb23d'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(hx, hy - 4); c.lineTo(hx - 4, hy - 12); c.lineTo(hx + 4, hy - 12); c.closePath(); c.stroke();
+        // Hometree: trunk and crown in the target colour, bracketed, with the lock pulse
+        const g0 = hgt(10, 10), [hx, hy] = pr(10, 10, g0), [, top] = pr(10, 10, g0 + 16), pu = (t * .8) % 1;
+        c.strokeStyle = '#ffb23d'; c.fillStyle = 'rgba(255,178,61,.35)'; c.lineWidth = 1;
+        c.beginPath(); c.moveTo(hx - 2, hy); c.lineTo(hx - 1, top + 6); c.lineTo(hx + 1, top + 6); c.lineTo(hx + 2, hy); c.closePath(); c.fill(); c.stroke();
+        c.beginPath(); c.ellipse(hx, top + 6, 12, 4, 0, 0, 7); c.fill(); c.stroke(); c.beginPath(); c.ellipse(hx, top + 1, 8, 3, 0, 0, 7); c.fill(); c.stroke();
+        c.beginPath(); c.moveTo(hx - 14, top - 6); c.lineTo(hx - 14, top - 10); c.lineTo(hx - 10, top - 10); c.moveTo(hx + 14, top - 6); c.lineTo(hx + 14, top - 10); c.lineTo(hx + 10, top - 10); c.moveTo(hx - 14, hy + 2); c.lineTo(hx - 14, hy + 6); c.lineTo(hx - 10, hy + 6); c.moveTo(hx + 14, hy + 2); c.lineTo(hx + 14, hy + 6); c.lineTo(hx + 10, hy + 6); c.stroke();
         c.strokeStyle = `rgba(255,178,61,${(1 - pu).toFixed(2)})`; c.beginPath(); c.ellipse(hx, hy, 4 + pu * 16, (4 + pu * 16) * .38, 0, 0, 7); c.stroke();
       }
+      c.globalCompositeOperation = 'source-over';
     };
     const tick = (now) => {
       raf = 0; const dt = Math.min(.1, (now - last) / 1000); if (dt < 1 / 30) { raf = requestAnimationFrame(tick); return; } last = now;

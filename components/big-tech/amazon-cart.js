@@ -6,11 +6,11 @@ export default {
   css: `
     :host { display: inline-block; }
     .col { display: flex; flex-direction: column; gap: 8px; width: 240px; max-width: 100%; font-family: "Amazon Ember", Arial, sans-serif; }
-    .nav { align-self: flex-end; display: inline-flex; align-items: flex-end; gap: 2px; height: 40px; padding: 0 10px 6px 8px; border-radius: 4px; background: #131921; color: #fff; border: 1px solid transparent; }
+    .nav { align-self: flex-end; display: inline-flex; align-items: flex-end; gap: 2px; height: 44px; padding: 0 10px 6px 8px; border-radius: 4px; background: #131921; color: #fff; border: 1px solid transparent; }
     .nav:hover { border-color: #fff; }
-    .cw { position: relative; width: 38px; height: 28px; }
-    .cw svg { position: absolute; left: 2px; bottom: 0; width: 30px; height: 26px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .cnt { position: absolute; left: 14px; top: -3px; width: 18px; text-align: center; font: 700 16px/16px Arial, sans-serif; color: #f08804; }
+    .cw { position: relative; width: 40px; height: 32px; }
+    .cw svg { position: absolute; left: 0; bottom: 0; width: 36px; height: 30px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .cnt { position: absolute; left: 11px; top: 7px; width: 18px; text-align: center; font: 700 14px/14px Arial, sans-serif; color: #f08804; }
     .cnt.bump { animation: bump .3s cubic-bezier(.2,0,0,1); }
     @keyframes bump { 40% { transform: translateY(-4px) scale(1.15); } }
     .nav b { font: 700 14px/15px Arial, sans-serif; }

@@ -6,7 +6,7 @@ export default {
     :host { display: inline-block; }
     .stage { display: inline-block; padding: 12px; border-radius: 12px; background: linear-gradient(#f7f7f5, #dcdcd8); box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(0,0,0,.15); }
     .glass { position: relative; width: 286px; padding: 16px 16px 14px; border-radius: 8px; background: #fff; box-shadow: 0 0 0 6px #111, 0 0 0 7px #3a3a3a; font-family: Inter, system-ui, sans-serif; color: #1a1a1a; overflow: hidden; }
-    .glass::after { content: ''; position: absolute; inset: 0; background: linear-gradient(125deg, rgba(255,255,255,.0) 55%, rgba(255,255,255,.35) 60%, rgba(255,255,255,0) 72%); pointer-events: none; }
+    .glass::after { content: ''; position: absolute; inset: 0; background: linear-gradient(125deg, rgba(255,255,255,.0) 55%, rgba(255,255,255,.12) 60%, rgba(255,255,255,0) 72%); pointer-events: none; }
     .amt { font-size: 13px; color: #6b6b6b; text-align: center; }
     h2 { margin: 2px 0 12px; font-size: 22px; font-weight: 700; text-align: center; letter-spacing: -.01em; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -19,12 +19,13 @@ export default {
     .t[aria-checked="true"] { background: #006aff; border-color: #006aff; color: #fff; }
     .t[aria-checked="true"] small { color: rgba(255,255,255,.85); }
     .no { grid-column: 1 / 3; height: 44px; font-size: 15px; }
-    .step { display: flex; align-items: center; justify-content: center; gap: 14px; height: 34px; margin-top: 8px; visibility: hidden; }
-    .step.on { visibility: visible; }
-    .step button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); background: #fff; cursor: pointer; font: 600 18px/1 Inter, sans-serif; color: #006aff; }
+    .step { display: none; align-items: center; justify-content: space-between; height: 44px; padding: 0 6px; border-radius: 6px; background: #eef4ff; box-shadow: inset 0 0 0 1px #b9d3ff; }
+    .step.on { display: flex; }
+    .grid:has(.step.on) .no { grid-column: auto; }
+    .step button { width: 30px; height: 30px; padding: 0; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); background: #fff; cursor: pointer; font: 600 18px/1 Inter, sans-serif; color: #006aff; }
     .step button:focus-visible { outline: 2px solid #006aff; outline-offset: 2px; }
-    .step span { min-width: 64px; text-align: center; font-weight: 600; font-size: 16px; }
-    .tot { margin-top: 6px; display: flex; justify-content: space-between; font-size: 13px; color: #6b6b6b; border-top: 1px solid #eee; padding-top: 8px; }
+    .step span { min-width: 52px; text-align: center; font-weight: 600; font-size: 16px; }
+    .tot { margin-top: 12px; display: flex; justify-content: space-between; font-size: 13px; color: #6b6b6b; border-top: 1px solid #eee; padding-top: 8px; }
     .tot b { color: #1a1a1a; font-variant-numeric: tabular-nums; }
   `,
   html: `
@@ -37,8 +38,8 @@ export default {
         <button class="t" type="button" role="radio" aria-checked="false" data-v="6.13">25%<small>$6.13</small></button>
         <button class="t" type="button" role="radio" aria-checked="false" data-v="c">Custom<small>Amount</small></button>
         <button class="t no" type="button" role="radio" aria-checked="false" data-v="0">No Tip</button>
+        <div class="step"><button type="button" aria-label="Less" data-d="-1">−</button><span>$5.00</span><button type="button" aria-label="More" data-d="1">+</button></div>
       </div>
-      <div class="step"><button type="button" aria-label="Less" data-d="-1">−</button><span>$5.00</span><button type="button" aria-label="More" data-d="1">+</button></div>
       <div class="tot"><span>Total</span><b>$24.50</b></div>
     </div></div>`,
   init(root) {

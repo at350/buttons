@@ -10,8 +10,10 @@ export default {
     .dark { z-index: 1; background: #0f0f10; color: #f5f5f5; clip-path: circle(0px at var(--cx, 90%) var(--cy, 15%)); transition: clip-path .6s cubic-bezier(.65, 0, .35, 1); }
     .stage.dark-on .dark { clip-path: circle(150% at var(--cx, 90%) var(--cy, 15%)); }
     .layer b { font-size: 16px; font-weight: 600; letter-spacing: -.02em; }
-    .layer i { display: block; height: 8px; width: 70%; border-radius: 4px; background: currentColor; opacity: .12; }
-    .layer i + i { width: 50%; }
+    .ev { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 16px; white-space: nowrap; }
+    .ev::before { content: ""; width: 3px; height: 16px; border-radius: 2px; background: var(--c); flex: none; }
+    .ev small { margin-left: auto; padding-right: 50px; font-size: 12px; opacity: .55; font-variant-numeric: tabular-nums; }
+    .layer b + .ev { margin-top: 2px; }
     .layer .chip { margin-top: auto; align-self: flex-start; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: currentColor; }
     .light .chip { color: #fff; background: #111; } .dark .chip { color: #111; background: #f5f5f5; }
     .tog { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(127,127,127,.3); background: transparent; color: inherit; cursor: pointer; display: grid; place-items: center; z-index: 2; transition: transform .3s cubic-bezier(.23, 1, .32, 1), background .2s; }
@@ -25,8 +27,8 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="layer light"><b>Good morning</b><i></i><i></i><span class="chip">Light</span><button class="tog" type="button" aria-pressed="false" aria-label="Toggle theme"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></button></div>
-      <div class="layer dark" aria-hidden="true"><b>Good evening</b><i></i><i></i><span class="chip">Dark</span><button class="tog" type="button" tabindex="-1" aria-hidden="true"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></button></div>
+      <div class="layer light"><b>Good morning</b><span class="ev" style="--c:#3b82f6">Standup<small>9:30 AM</small></span><span class="ev" style="--c:#f59e0b">Design review<small>2:00 PM</small></span><span class="chip">Light</span><button class="tog" type="button" aria-pressed="false" aria-label="Toggle theme"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></button></div>
+      <div class="layer dark" aria-hidden="true"><b>Good evening</b><span class="ev" style="--c:#a78bfa">Dinner with Sam<small>7:30 PM</small></span><span class="ev" style="--c:#34d399">Wind down<small>10:00 PM</small></span><span class="chip">Dark</span><button class="tog" type="button" tabindex="-1" aria-hidden="true"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></button></div>
     </div>`,
   init(root) {
     const stage = root.querySelector('.stage'), dark = root.querySelector('.dark');

@@ -11,15 +11,16 @@ export default {
     .seat { transition: transform .5s cubic-bezier(.3,1.2,.5,1); }
     .back { transform-origin: 52px 92px; transition: transform .5s cubic-bezier(.3,1.2,.5,1); }
     .live .seat, .live .back { transition: none; }
-    .cush, .bk, .hr { fill: #6b5a4a; stroke: #8d7966; stroke-width: 1.2; }
     .stitch { fill: none; stroke: #3d3229; stroke-width: 1; stroke-dasharray: 2 2; }
-    .post { stroke: #9a9a9a; stroke-width: 2.5; }
+    .post { fill: none; stroke: #b9b9b9; stroke-width: 2; stroke-linecap: round; }
     .panel { position: relative; flex: 1; height: 146px; border-radius: 10px; background: linear-gradient(160deg, #2b2724, #120f0d); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    .sw { position: absolute; cursor: move; touch-action: none; background: linear-gradient(#5a5a5a, #2a2a2a 40%, #1c1c1c); box-shadow: 0 3px 0 #000, 0 4px 6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.2); transition: transform .15s cubic-bezier(.3,1.5,.5,1); }
+    .sw { position: absolute; cursor: move; touch-action: none; background: repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 3px), linear-gradient(#eef0f2, #b6bac0 45%, #8b9097 70%, #c9ccd1); box-shadow: 0 3px 0 #2a2725, 0 5px 8px rgba(0,0,0,.65), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0,0,0,.25); transition: transform .15s cubic-bezier(.3,1.5,.5,1); }
     .sw.hold { transition: none; }
     .sw:focus-visible, .mem:focus-visible { outline: 2px solid #4da3ff; outline-offset: 3px; }
-    .cs { left: 22px; top: 86px; width: 92px; height: 24px; border-radius: 6px 12px 12px 8px; }
-    .bs { left: 20px; top: 14px; width: 22px; height: 64px; border-radius: 8px 8px 6px 6px; transform-origin: 50% 100%; }
+    .cs { left: 22px; top: 88px; width: 68px; height: 22px; border-radius: 8px 14px 12px 10px / 8px 9px 12px 12px; }
+    .bs { left: 16px; top: 26px; width: 22px; height: 58px; border-radius: 9px 10px 7px 8px / 12px 12px 8px 8px; transform-origin: 50% 100%; }
+    .hs { position: absolute; left: 15px; top: 8px; width: 22px; height: 14px; border-radius: 7px 8px 5px 5px; background: linear-gradient(#e6e8eb, #9ba0a6); box-shadow: 0 2px 0 #2a2725, 0 3px 5px rgba(0,0,0,.6), inset 0 1px 0 #fff; }
+    .well { position: absolute; left: 8px; top: 2px; width: 90px; height: 116px; border-radius: 14px; background: linear-gradient(160deg, #1a1715, #0b0908); box-shadow: inset 0 2px 6px rgba(0,0,0,.8), 0 1px 0 rgba(255,255,255,.06); }
     .mems { position: absolute; right: 8px; top: 12px; display: grid; gap: 6px; }
     .mem { width: 28px; height: 22px; border: 0; border-radius: 5px; background: linear-gradient(#3e3e3e, #1b1b1b); box-shadow: 0 2px 0 #000, inset 0 1px 0 rgba(255,255,255,.15); color: #d0d0d0; font: 700 11px/1 Inter, system-ui, sans-serif; cursor: pointer; }
     .mem:active { transform: translateY(2px); box-shadow: 0 0 0 #000; }
@@ -29,16 +30,30 @@ export default {
     <div class="stage">
       <div class="view">
         <svg viewBox="0 0 150 146" aria-hidden="true">
-          <line class="rail" x1="14" y1="128" x2="136" y2="128"/>
+          <defs>
+            <linearGradient id="au-ps-lea" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5b4a3c"/><stop offset=".5" stop-color="#8a735f"/><stop offset="1" stop-color="#5f4d3e"/></linearGradient>
+            <linearGradient id="au-ps-cu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#937c67"/><stop offset="1" stop-color="#5a493b"/></linearGradient>
+            <linearGradient id="au-ps-sh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f2b28"/><stop offset="1" stop-color="#171513"/></linearGradient>
+          </defs>
+          <path class="rail" d="M14 129H136"/><path d="M18 125H132" stroke="#2f2b28" stroke-width="5" stroke-linecap="round"/>
           <g class="seat">
-            <line class="post" x1="50" y1="126" x2="50" y2="104"/><line class="post" x1="104" y1="126" x2="104" y2="104"/>
-            <g class="back"><rect class="bk" x="38" y="22" width="22" height="76" rx="9"/><path class="stitch" d="M44 30v60"/><rect class="hr" x="40" y="4" width="20" height="16" rx="6"/><line class="post" x1="46" y1="20" x2="46" y2="24"/></g>
-            <rect class="cush" x="44" y="88" width="76" height="18" rx="8"/><path class="stitch" d="M54 93h58"/>
+            <path d="M56 106 61 125H101L107 106Z" fill="#26231f" stroke="#3b3632" stroke-width="1"/>
+            <g class="back">
+              <path class="post" d="M45 21.5 46 25M53 21 53.6 25"/>
+              <path d="M40.4 94C36 80 34 60 35.6 41C36.4 31 39.6 24.6 47.6 23.4C56 22.2 60.4 26.6 60.4 34.8C60.4 52 58.4 70 60.2 89.6C60.6 95.6 56.6 98.4 50.4 98.4C44.6 98.4 41.4 97.2 40.4 94Z" fill="url(#au-ps-lea)" stroke="#a48c76" stroke-width="1"/>
+              <path class="stitch" d="M47.6 31C46 48 45.8 70 47.4 92"/>
+              <path d="M39.6 64C42 66 44 66.6 46.4 66.6" fill="none" stroke="#3d3229" stroke-width="1"/>
+              <path d="M41.2 20.6C38.8 12.6 42 4.6 49.8 3.4C57 2.4 60.6 7.6 59.6 14.8C59 19 55.6 20.4 50.4 21Z" fill="url(#au-ps-lea)" stroke="#a48c76" stroke-width="1"/>
+            </g>
+            <path d="M43.6 92.6C43.6 86.4 49.4 84.2 60 84.2L107.6 86C116 86.6 121.2 88.2 122.2 93.2C123.2 99.4 119.2 104.2 112 104.2L52.4 106C46.4 106 43.6 100.6 43.6 92.6Z" fill="url(#au-ps-cu)" stroke="#a48c76" stroke-width="1"/>
+            <path class="stitch" d="M52 90.6C70 89.8 96 90.2 116 91.6"/>
+            <path d="M50 99.6 116.4 100.6C117 107.6 113 111.4 105 111.4L56.6 111.6C51.6 111.6 49.6 107 50 99.6Z" fill="url(#au-ps-sh)" stroke="#3b3632" stroke-width=".8"/>
+            <path d="M62 105.4H86M90 105.4H96" stroke="#57514b" stroke-width="2.4" stroke-linecap="round"/>
           </g>
         </svg>
       </div>
       <div class="panel">
-        <div class="sw bs" tabindex="0" role="slider" aria-label="Backrest recline" aria-valuemin="-10" aria-valuemax="30" aria-valuenow="8"></div>
+        <div class="well"></div><div class="hs"></div><div class="sw bs" tabindex="0" role="slider" aria-label="Backrest recline" aria-valuemin="-10" aria-valuemax="30" aria-valuenow="8"></div>
         <div class="sw cs" tabindex="0" role="slider" aria-label="Seat position" aria-valuemin="-14" aria-valuemax="18" aria-valuenow="0"></div>
         <div class="mems"><button class="mem" type="button" aria-pressed="false">M</button><button class="mem" type="button">1</button><button class="mem" type="button">2</button></div>
       </div>

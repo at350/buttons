@@ -19,13 +19,19 @@ export default {
     .k:focus-visible { outline: 2px solid #cc0000; outline-offset: 1px; }
     .k.ok { background: #cc0000; color: #fff; box-shadow: none; font-size: 12px; }
     .k svg { width: 16px; height: 16px; vertical-align: middle; }
-    .lk { display: grid; grid-template-columns: repeat(2, 40px); grid-auto-rows: 44px; gap: 4px; padding: 6px; border-radius: 6px; background: #8d939a; box-shadow: inset 0 2px 4px rgba(0,0,0,.3); perspective: 300px; align-content: start; }
-    .d { position: relative; border-radius: 3px; background: #22252a; }
-    .d span { position: absolute; inset: 0; border-radius: 3px; background: linear-gradient(135deg, #f5f6f7, #c9ced4); box-shadow: inset 0 0 0 1px #9aa1a8; transform-origin: 0 50%; transition: transform .5s cubic-bezier(.3,1.3,.5,1); display: flex; align-items: flex-start; justify-content: center; padding-top: 4px; font: 700 9px/1 Inter, sans-serif; color: #555; }
-    .d span::after { content: ''; position: absolute; right: 5px; top: 50%; width: 3px; height: 10px; margin-top: -5px; border-radius: 2px; background: #555; }
-    .d.open span { transform: rotateY(-70deg); }
-    .d.open { box-shadow: inset 0 0 0 2px #2bd94b, 0 0 8px rgba(43,217,75,.6); }
-    .d i { position: absolute; left: 7px; right: 7px; bottom: 6px; height: 16px; border-radius: 2px; background: #fff; border-top: 4px solid #cc0000; }
+    .lk { display: grid; grid-template-columns: repeat(2, 54px); grid-template-rows: 2fr 2fr 3fr 3.4fr; gap: 4px; padding: 5px; border-radius: 6px; background: linear-gradient(#6d737a, #555b62); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 1px 2px rgba(0,0,0,.25); perspective: 320px; }
+    .d { position: relative; border-radius: 2px; background: radial-gradient(ellipse at 50% 0%, #4a5058, #15171a 75%); box-shadow: inset 0 2px 4px #000; }
+    .d .door { position: absolute; inset: 0; border-radius: 2px; transform-origin: 0 50%; transition: transform .55s cubic-bezier(.3,1.25,.5,1); z-index: 1;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px), linear-gradient(90deg, #c9ced3, #eef0f2 32%, #d3d7db 68%, #bfc4c9); box-shadow: inset 0 0 0 1px #8e959c, inset 1px 1px 0 rgba(255,255,255,.7); }
+    .d .no { position: absolute; left: 4px; top: 4px; padding: 2px 4px; border-radius: 2px; background: #2b2f34; color: #fff; font: 700 8px/1 Inter, sans-serif; }
+    .d .latch { position: absolute; right: 5px; top: 50%; width: 4px; height: 16px; margin-top: -8px; border-radius: 2px; background: linear-gradient(90deg, #3b4046, #8a9097); box-shadow: inset 0 1px 1px rgba(0,0,0,.5); }
+    .d .led { position: absolute; right: 4px; top: 5px; width: 5px; height: 5px; border-radius: 50%; background: #5d2a2a; box-shadow: inset 0 0 0 1px rgba(0,0,0,.4); }
+    .d .hinge { position: absolute; left: 0; width: 2px; height: 7px; background: #7d848b; }
+    .d .hinge.t { top: 5px; } .d .hinge.b { bottom: 5px; }
+    .d.open .door { transform: rotateY(-72deg); background: linear-gradient(90deg, #8f959b, #c3c8cd); }
+    .d.open .door > * { visibility: hidden; }
+        .d.open { box-shadow: inset 0 2px 4px #000, 0 0 0 2px #2bd94b, 0 0 10px rgba(43,217,75,.55); }
+    .d svg { position: absolute; right: 3px; bottom: 3px; width: 34px; height: 38px; }
   `,
   html: `
     <div class="stage">
@@ -39,7 +45,8 @@ export default {
     </div>`,
   init(root) {
     const pad = root.querySelector('.pad'), p = root.querySelector('.p'), dots = root.querySelector('.dots'), di = [...dots.children], lk = root.querySelector('.lk');
-    const doors = [11, 12, 13, 14, 15, 16].map((n) => { const d = document.createElement('div'); d.className = 'd'; d.innerHTML = `<i></i><span>${n}</span>`; lk.appendChild(d); return d; });
+    const bag = '<svg viewBox="0 0 36 40" aria-hidden="true"><path d="M5 11h26l-1.6 28H6.6z" fill="#fbfaf6"/><path d="M5 11h5l-1 28H6.6z" fill="#000" opacity=".07"/><path d="M4 6h28v6.5H4z" fill="#cc0000"/><path d="M4 12.5h28" stroke="#9e0000" stroke-width=".8"/><rect x="16.5" y="8.4" width="4" height="1.1" fill="#d9d9d9"/><rect x="9" y="17" width="18" height="13" rx="1" fill="#fff" stroke="#d6d6d6" stroke-width=".6"/><text x="11" y="21.6" font-family="Inter, sans-serif" font-size="4.2" font-weight="800" fill="#cc0000">Rx</text><path d="M18 20.3h7M11 24h14M11 27h9" stroke="#9aa3ab" stroke-width="1"/></svg>';
+    const doors = [11, 12, 13, 14, 15, 16, 17, 18].map((n) => { const d = document.createElement('div'); d.className = 'd'; d.dataset.n = n; d.innerHTML = `${bag}<span class="door"><i class="hinge t"></i><i class="hinge b"></i><b class="no">${n}</b><i class="led"></i><i class="latch"></i></span>`; lk.appendChild(d); return d; });
     let v = '', opened = null, tries = 0;
     const draw = () => di.forEach((d, i) => d.classList.toggle('on', i < v.length));
     const press = (k) => {
@@ -47,8 +54,8 @@ export default {
       if (k === 'del') v = v.slice(0, -1);
       else if (k === 'ok') {
         if (v.length < 6) { dots.classList.remove('bad'); void dots.offsetWidth; dots.classList.add('bad'); p.textContent = 'Code is 6 digits'; return; }
-        tries++; opened = doors[(+v[5] + tries) % 6]; opened.classList.add('open');
-        p.textContent = 'Locker ' + opened.textContent + ' is open'; v = '';
+        tries++; opened = doors[(+v[5] + tries) % doors.length]; opened.classList.add('open');
+        p.textContent = 'Locker ' + opened.dataset.n + ' is open'; v = '';
       } else if (v.length < 6) v += k;
       draw();
     };

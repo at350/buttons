@@ -19,19 +19,19 @@ export default {
     .def[aria-pressed="true"]::after { border-color: #1868db; }
     .ak svg, .trig svg, .it svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
     .wrap { position: relative; }
-    .trig { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 2px 4px; border-radius: 4px; border: 1px solid var(--bd); background: var(--bg); color: var(--fg); cursor: pointer; font: 400 12px/16px "Atlassian Sans", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; white-space: nowrap; transition: background-color .15s cubic-bezier(.4,1,.6,1), border-color .15s; -webkit-tap-highlight-color: transparent; }
+    .trig { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 6px 8px 6px 12px; border-radius: 6px; border: 1px solid var(--bd); background: var(--bg); color: var(--fg); cursor: pointer; font: 500 14px/20px "Atlassian Sans", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; white-space: nowrap; transition: background-color .15s cubic-bezier(.4,1,.6,1), border-color .15s; -webkit-tap-highlight-color: transparent; }
     .trig:hover { background: var(--bgh); }
     .trig:active { background: var(--bgp); }
-    .trig svg { width: 12px; height: 12px; transition: transform .2s cubic-bezier(.4,0,0,1); }
+    .trig svg { width: 16px; height: 16px; transition: transform .2s cubic-bezier(.4,0,0,1); }
     .trig[aria-expanded="true"] svg { transform: rotate(180deg); }
     .stack { display: grid; }
-    .stack > span { grid-area: 1 / 1; visibility: hidden; text-align: left; }
+    .stack > span { grid-area: 1 / 1; visibility: hidden; text-align: center; }
     .stack > span.on { visibility: visible; }
     [data-s="todo"] { --bg: #0515240f; --bgh: #0b120e24; --bgp: #080f214a; --fg: #292a2e; --bd: #0b120e24; }
     [data-s="prog"] { --bg: #cfe1fd; --bgh: #adcbfb; --bgp: #8fb8f6; --fg: #123263; --bd: #8fb8f6; }
     [data-s="done"] { --bg: #d3f1a7; --bgh: #bde97c; --bgp: #b3df72; --fg: #37471f; --bd: #b3df72; }
     .lz { display: inline-flex; align-items: center; height: 20px; padding: 2px 4px; border-radius: 4px; border: 1px solid var(--bd); background: var(--bg); color: var(--fg); font: 400 12px/16px "Atlassian Sans", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; white-space: nowrap; }
-    .menu { position: absolute; top: 28px; left: 0; min-width: 180px; padding: 6px 0; background: #fff; border-radius: 8px; box-shadow: 0 8px 12px #1e1f2126, 0 0 1px #1e1f214f; display: none; }
+    .menu { position: absolute; top: 36px; left: 0; min-width: 180px; padding: 6px 0; background: #fff; border-radius: 8px; box-shadow: 0 8px 12px #1e1f2126, 0 0 1px #1e1f214f; display: none; }
     .menu.r { left: auto; right: 0; }
     .menu.open { display: block; animation: in .15s cubic-bezier(.4,1,.6,1); }
     @keyframes in { from { opacity: 0; transform: translateY(-4px); } }

@@ -7,7 +7,7 @@ export default {
     :host { display: inline-block; }
     .stage { display: grid; gap: 10px; padding: 18px 24px 24px; border-radius: 12px; background: linear-gradient(90deg, #141414 8%, rgba(20,20,20,.55) 48%, rgba(20,20,20,0) 80%), linear-gradient(0deg, rgba(20,20,20,.6), rgba(20,20,20,0) 50%), #141414 url(assets/real/bt-stranger-things-s4.jpg) right -6px top -24px / 292px auto no-repeat; }
     .ttl { display: grid; gap: 3px; color: #fff; }
-    .ttl b { font: 800 19px/1 "Netflix Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #e50914; text-shadow: 0 1px 8px rgba(0,0,0,.7); }
+    .ttl img { display: block; width: 132px; height: auto; filter: drop-shadow(0 1px 6px rgba(0,0,0,.6)); }
     .ttl span { font: 500 12px/1 "Netflix Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #d2d2d2; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
     .row { display: flex; gap: 12px; }
     .nf {
@@ -30,7 +30,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="ttl"><b>Stranger Things</b><span>Season 4 &nbsp;·&nbsp; TV-14</span></div>
+      <div class="ttl"><img src="assets/real/bt-stranger-things-logo.png" alt="Stranger Things" width="132" height="48" draggable="false"><span>Season 4 &nbsp;·&nbsp; TV-14</span></div>
       <div class="row">
       <button class="nf play" type="button" aria-pressed="false">
         <span class="stk" aria-hidden="true">

@@ -9,10 +9,10 @@ export default {
     .leds { display: flex; justify-content: center; gap: 10px; margin-bottom: 8px; }
     .leds i { width: 18px; height: 5px; border-radius: 3px; background: #23352a; }
     .scr { position: relative; height: 66px; border-radius: 6px; background: #f6f7f8; display: grid; place-items: center; text-align: center; font-family: Inter, system-ui, sans-serif; color: #111; overflow: hidden; }
-    .scr > div { grid-area: 1 / 1; transition: opacity .2s, transform .2s; }
+    .scr > div { grid-area: 1 / 1; }
     .a b { display: block; font-size: 22px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
     .a span { font-size: 11px; color: #555; }
-    .ok { opacity: 0; transform: scale(.9); color: #0d8a3a; font-weight: 700; font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .ok { visibility: hidden; color: #0d8a3a; font-weight: 700; font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
     .ok svg { width: 26px; height: 26px; }
     .zone { position: relative; display: grid; place-items: center; width: 100%; height: 112px; margin-top: 12px; border: 0; padding: 0; border-radius: 12px; overflow: hidden; cursor: pointer;
       background: radial-gradient(circle at 50% 50%, #26282c, #1a1b1e 70%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.07); -webkit-tap-highlight-color: transparent; }
@@ -27,8 +27,10 @@ export default {
     .stage.tap .leds i { animation: led .01s forwards; }
     .stage.tap .leds i:nth-child(2) { animation-delay: .25s; } .stage.tap .leds i:nth-child(3) { animation-delay: .5s; } .stage.tap .leds i:nth-child(4) { animation-delay: .75s; }
     @keyframes led { to { background: #3cff6a; box-shadow: 0 0 8px rgba(60,255,106,.8); } }
-    .stage.done .a { opacity: 0; transform: scale(.9); }
-    .stage.done .ok { opacity: 1; transform: none; }
+    .stage.done .a { visibility: hidden; }
+    .stage.done .ok { visibility: visible; animation: pop .28s cubic-bezier(.3,1.5,.5,1); }
+    @keyframes pop { from { transform: scale(.8); } }
+    .stage.tap:not(.done) .a span { color: #0d8a3a; }
     .stage.done svg.c { fill: #4cd07d; }
   `,
   html: `
@@ -44,12 +46,12 @@ export default {
       </button>
     </div></div>`,
   init(root) {
-    const st = root.querySelector('.stage'), z = root.querySelector('.zone');
+    const st = root.querySelector('.stage'), z = root.querySelector('.zone'), msg = root.querySelector('.a span');
     let t;
     z.addEventListener('click', () => {
       clearTimeout(t);
-      if (st.classList.contains('done')) { st.classList.remove('done', 'tap'); z.setAttribute('aria-pressed', 'false'); return; }
-      st.classList.remove('tap'); void st.offsetWidth; st.classList.add('tap');
+      if (st.classList.contains('done')) { st.classList.remove('done', 'tap'); z.setAttribute('aria-pressed', 'false'); msg.textContent = 'Tap, insert or swipe'; return; }
+      st.classList.remove('tap'); void st.offsetWidth; st.classList.add('tap'); msg.textContent = 'Processing…';
       t = setTimeout(() => { st.classList.add('done'); z.setAttribute('aria-pressed', 'true'); }, 1000);
     });
     return () => clearTimeout(t);

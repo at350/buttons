@@ -8,7 +8,7 @@ export default {
   size: 'wide',
   css: `
     :host { display: block; }
-    .w { width: 320px; max-width: 100%; margin: 0 auto; font-family: Inter, system-ui, sans-serif; }
+    .w { width: 360px; max-width: 100%; margin: 0 auto; padding: 20px 20px 18px; border-radius: 12px; background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,.06), 0 0 0 1px #eaecf0; font-family: Inter, system-ui, sans-serif; }
     .lbl { display: block; margin-bottom: 6px; font-size: 14px; line-height: 20px; font-weight: 500; color: #344054; }
     .f {
       position: relative; display: flex; align-items: center; height: 44px; border: 1px solid #d0d5dd; border-radius: 8px; background: #fff;
@@ -36,10 +36,10 @@ export default {
     .w[data-s="1"] .s1, .w[data-s="2"] .s2, .w[data-s="3"] .s3, .w[data-s="4"] .s4 { opacity: 1; }
     .s1 { color: #d92d20; } .s2 { color: #dc6803; } .s3 { color: #b54708; } .s4 { color: #079455; }
   `,
-  html: `<div class="w" data-s="0">
+  html: `<div class="w" data-s="2">
     <label class="lbl" for="pw">Password</label>
     <div class="f">
-      <input id="pw" type="password" placeholder="Create a password" autocomplete="new-password" spellcheck="false">
+      <input id="pw" type="password" placeholder="Create a password" value="sunset2024" autocomplete="new-password" spellcheck="false">
       <button class="eye" type="button" aria-pressed="false" aria-label="Show password">
         <svg class="on" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
         <svg class="off" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>

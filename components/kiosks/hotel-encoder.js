@@ -8,12 +8,14 @@ export default {
     .enc { position: relative; width: 170px; height: 178px; border: 0; padding: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .enc:focus-visible { outline: 2px solid #ffcf6b; outline-offset: 3px; border-radius: 10px; }
     .well { position: absolute; left: 0; right: 0; top: 0; height: 92px; overflow: hidden; }
-    .card { position: absolute; left: 32px; top: 6px; width: 106px; height: 130px; border-radius: 6px; background: linear-gradient(150deg, #fdfcf8, #ece6d6); box-shadow: 0 0 0 1px #d6ceb8;
+    .card { position: absolute; left: 53px; top: 4px; width: 64px; height: 101px; border-radius: 4px; overflow: hidden;
+      background: radial-gradient(ellipse at 30% 0%, rgba(255,255,255,.14), transparent 60%), linear-gradient(160deg, #1f3157, #121d36); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 1px 2px rgba(0,0,0,.4);
       display: flex; flex-direction: column; align-items: center; padding-top: 12px; transition: transform .45s cubic-bezier(.45,.05,.3,1); }
-    .card svg { width: 26px; height: 26px; color: #9a7b3c; }
-    .card b { margin-top: 5px; font: 600 11px/1 'Playfair Display', Georgia, serif; letter-spacing: .14em; color: #6b5427; }
-    .card i { margin-top: 3px; font: 500 7px/1 Inter, sans-serif; letter-spacing: .2em; color: #a89466; font-style: normal; }
-    .stage.in .card { transform: translateY(48px); }
+    .card svg { width: 30px; height: 30px; }
+    .card b { margin-top: 6px; font: 600 8.5px/1.15 'Playfair Display', Georgia, serif; letter-spacing: .16em; color: #e2c784; text-align: center; }
+    .card i { margin-top: 4px; width: 26px; height: 1px; background: #b8995a; }
+    .card s { position: absolute; left: 0; right: 0; bottom: 14px; text-decoration: none; text-align: center; font: 600 4.5px/1 Inter, sans-serif; letter-spacing: .3em; color: #8d93a6; }
+    .stage.in .card { transform: translateY(46px); }
     .box { position: absolute; left: 0; right: 0; bottom: 0; height: 92px; border-radius: 10px 10px 14px 14px; background: linear-gradient(#34373c, #18191c); box-shadow: 0 6px 12px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.18); }
     .box::before { content: ''; position: absolute; left: 24px; right: 24px; top: 0; height: 8px; border-radius: 0 0 4px 4px; background: #050505; box-shadow: inset 0 3px 3px #000; }
     .lcd { position: absolute; left: 16px; right: 16px; top: 22px; height: 34px; border-radius: 3px; padding: 4px 6px; background: linear-gradient(#a9c3d6, #8aa9c0); box-shadow: inset 0 2px 3px rgba(0,0,0,.4);
@@ -32,7 +34,7 @@ export default {
   html: `
     <div class="stage idle">
       <button class="enc" type="button" aria-label="Encode key card">
-        <span class="well"><span class="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg><b>THE ASTOR</b><i>KEY CARD</i></span></span>
+        <span class="well"><span class="card"><svg viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="13.5" fill="none" stroke="#e2c784" stroke-width=".8"/><circle cx="15" cy="15" r="11.5" fill="none" stroke="#e2c784" stroke-width=".4"/><text x="15" y="20.2" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="15" font-weight="600" fill="#e2c784">A</text></svg><b>THE<br>ASTOR</b><i></i><s>NEW YORK</s></span></span>
         <span class="box"><span class="lcd"><span class="l1">RM 1214  NEW KEY</span><br><span class="l2">INSERT CARD</span></span><span class="leds"><i class="r"></i><i class="a"></i><i class="g"></i></span></span>
       </button>
     </div>`,

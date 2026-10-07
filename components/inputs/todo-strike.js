@@ -25,7 +25,7 @@ export default {
     .todo:active .ring { transform: scale(.92); }
     .todo[aria-checked="true"] .ring { border-color: #007aff; }
     .todo[aria-checked="true"] .ring::after { transform: scale(1); transition: transform .45s cubic-bezier(.34,1.56,.64,1); }
-    .txt { flex: 1; padding-bottom: 11px; border-bottom: .5px solid #c6c6c8; white-space: nowrap; transition: color .25s ease; }
+    .txt { flex: 1; padding-bottom: 11px; white-space: nowrap; transition: color .25s ease; }
     .todo[aria-checked="true"] .txt { color: rgba(60,60,67,.6); }
   `,
   html: `<div class="cell"><button class="todo" type="button" role="checkbox" aria-checked="false">

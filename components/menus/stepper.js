@@ -1,5 +1,6 @@
 // MUI <Stepper alternativeLabel> + HorizontalLinearStepper controls. Completed icon = MUI's internal CheckCircle.
 const STEPS = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+const DESC = ['Pick a goal, a daily budget and where your ads run.', 'Group ads that share keywords and a bid.', 'Write the headline and text people will see.'];
 const icon = (n) => `<svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle class="num" cx="12" cy="12" r="12"/><text class="tx" x="12" y="12" text-anchor="middle" dominant-baseline="central">${n}</text><path class="chk" d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm-2 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/></svg>`;
 const step = (l, i) => `<li class="step">${i ? '<span class="con"><span></span></span>' : ''}<span class="lab">${icon(i + 1)}<span class="txt"><span class="a">${l}</span><span class="b" aria-hidden="true">${l}</span></span>${i === 1 ? '<span class="opt">Optional</span>' : '<span class="opt" aria-hidden="true">&nbsp;</span>'}</span></li>`;
 
@@ -50,7 +51,7 @@ export default {
     <div class="sizer"></div>
     <div class="card">
       <ol aria-label="Progress">${STEPS.map(step).join('')}</ol>
-      <div class="body" aria-live="polite">Step 1</div>
+      <div class="body" aria-live="polite">${DESC[0]}</div>
       <div class="acts">
         <button class="btn back" type="button" disabled>Back</button>
         <span class="sp"></span>
@@ -66,7 +67,7 @@ export default {
     const render = () => {
       const done = at >= steps.length;
       steps.forEach((s, i) => { s.classList.toggle('active', i === at); s.classList.toggle('done', (i < at && !skipped.has(i))); if (i === at) s.setAttribute('aria-current', 'step'); else s.removeAttribute('aria-current'); });
-      body.textContent = done ? 'All steps completed - you’re finished' : `Step ${at + 1}`;
+      body.textContent = done ? 'All steps completed - you’re finished' : DESC[at];
       back.disabled = at === 0; back.hidden = done;
       skip.hidden = at !== 1;
       cur.textContent = done ? 'Reset' : at === steps.length - 1 ? 'Finish' : 'Next';

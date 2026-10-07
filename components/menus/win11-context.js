@@ -20,10 +20,9 @@ export default {
     :host { display: block; }
     :host([data-open]) { z-index: 30; }
     .stage { position: relative; width: 600px; max-width: 100%; height: 336px; border-radius: 12px; overflow: hidden; cursor: default; user-select: none; outline: 0;
-      background: radial-gradient(60% 55% at 50% 58%, rgba(255,255,255,.55), rgba(255,255,255,0) 70%), linear-gradient(180deg, #e3eefb 0%, #b9d3f2 55%, #93b8e8 100%);
+      background: #a9c4e4 url(assets/real/wall-windows11-bloom-light.jpg) center 40% / cover no-repeat;
       font: 400 14px/20px "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif; color: rgba(0,0,0,.896); }
     .stage:focus-visible { box-shadow: inset 0 0 0 2px #000, inset 0 0 0 3px #fff; }
-    .bloom { position: absolute; left: 50%; top: 56%; width: 300px; height: 300px; margin: -150px 0 0 -150px; pointer-events: none; }
     .cm, .sm { position: absolute; left: 0; top: 0; z-index: 2; min-width: 236px; padding: 4px 0; border-radius: 8px; display: none;
       background: rgba(249,249,249,.85); -webkit-backdrop-filter: blur(30px) saturate(1.25); backdrop-filter: blur(30px) saturate(1.25);
       box-shadow: 0 0 0 1px rgba(0,0,0,.0578), 0 8px 16px rgba(0,0,0,.14); }
@@ -49,11 +48,7 @@ export default {
   `,
   html: `
     <div class="stage" tabindex="0" role="application" aria-label="Desktop" aria-haspopup="menu">
-      <svg class="bloom" viewBox="-100 -100 200 200" aria-hidden="true"><defs>
-        <linearGradient id="w11a" x1="0" y1="-1" x2="0" y2="1"><stop offset="0" stop-color="#7fb4ff"/><stop offset=".55" stop-color="#1a5fe0"/><stop offset="1" stop-color="#0a2f9c"/></linearGradient>
-        <linearGradient id="w11b" x1="0" y1="-1" x2="0" y2="1"><stop offset="0" stop-color="#c8ddff"/><stop offset="1" stop-color="#3b7cf0"/></linearGradient></defs>
-        ${[-64, -32, 0, 32, 64].map((a, i) => `<path d="M0 46 C-34 18 -30 -40 0 -78 C30 -40 34 18 0 46Z" fill="url(#${i % 2 ? 'w11b' : 'w11a'})" opacity="${i % 2 ? .7 : .92}" transform="rotate(${a})"/>`).join('')}
-      </svg>
+      
       <div class="cm" role="menu" aria-label="Context menu">
         <div class="bar" role="group">
           <button class="ib" type="button" tabindex="-1" aria-label="Cut">${ic('cut')}</button>

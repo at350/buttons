@@ -30,16 +30,16 @@ export default {
     @keyframes bump { 50% { transform: translateY(-2px) scale(1.15); } }
   `,
   html: `<div class="q" role="group" aria-label="Quantity">
-    <button class="b dec del" type="button" aria-label="Delete">
+    <button class="b dec" type="button" aria-label="Decrease quantity">
       <svg class="minus" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
       <svg class="trash" viewBox="0 0 24 24"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
     </button>
-    <output class="n" aria-live="polite"><span>1</span></output>
+    <output class="n" aria-live="polite"><span>2</span></output>
     <button class="b inc" type="button" aria-label="Increase quantity"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
   </div>`,
   init(root) {
     const q = root.querySelector('.q'), dec = root.querySelector('.dec'), inc = root.querySelector('.inc'), n = root.querySelector('.n'), s = n.firstElementChild;
-    let v = 1;
+    let v = 2;
     const set = (x) => {
       v = Math.max(0, Math.min(10, x)); s.textContent = v;
       dec.classList.toggle('del', v <= 1); dec.setAttribute('aria-label', v <= 1 ? 'Delete' : 'Decrease quantity');

@@ -17,6 +17,8 @@ export default {
     .u.busy .ring circle { animation: fill 1.6s cubic-bezier(.4,.1,.3,1) forwards; }
     @keyframes fill { to { stroke-dashoffset: 0; } }
     .u.busy .track { opacity: .3; }
+    .stop { opacity: 0; transform: scale(.5); width: 16px !important; height: 16px !important; fill: currentColor !important; stroke: none !important; }
+    .u.busy .stop { opacity: 1; transform: none; transition-delay: .1s; }
     .ck { opacity: 0; transform: scale(.4); }
     .ck path { stroke-dasharray: 23; stroke-dashoffset: 23; }
     .u.done .ck { opacity: 1; transform: scale(1); }
@@ -27,6 +29,7 @@ export default {
     <svg class="ring track" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26"/></svg>
     <svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26"/></svg>
     <svg class="arrow" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+    <svg class="stop" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2.5"/></svg>
     <svg class="ck" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
   </button>`,
   init(root) {

@@ -23,7 +23,7 @@ export default {
   css: `
     :host { display: block; }
     .stage { position: relative; width: 560px; max-width: 100%; height: 196px; border-radius: 12px; overflow: hidden; isolation: isolate; container-type: inline-size;
-      background: radial-gradient(120% 70% at 20% 110%, #f2a36b 0%, rgba(242,163,107,0) 60%), radial-gradient(90% 80% at 85% 100%, #c45a86 0%, rgba(196,90,134,0) 65%), linear-gradient(180deg, #16244a 0%, #31396f 45%, #7a4f86 75%, #c87a7e 100%);
+      background: #4f7d3a url(assets/real/wall-macos-sonoma.jpg) center 35% / cover no-repeat;
       font: 400 13px/16px -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; user-select: none; }
     .dock { --b: 46px; position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); display: flex; align-items: flex-end; gap: 4px; height: calc(var(--b) + 12px); padding: 6px 6px; border-radius: 18px;
       background: rgba(56,56,64,.32); -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);

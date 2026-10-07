@@ -29,7 +29,7 @@ export default {
     <div class="stage">
       <button class="sh" type="button">
         <span class="spark"><span class="slide"><span class="cone"></span></span></span>
-        <span class="lbl">Shimmer Button</span>
+        <span class="lbl">Upgrade to Pro</span>
         <span class="hl"></span>
         <span class="backdrop"></span>
       </button>

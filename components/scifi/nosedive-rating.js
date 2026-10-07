@@ -10,7 +10,7 @@ export default {
       background: rgba(255,255,255,.62); box-shadow: 0 10px 30px rgba(190,130,140,.35), inset 0 1px 0 #fff; }
     .av { position: relative; width: 74px; height: 74px; margin: 0 auto; border-radius: 50%; background: #f6e4dc;
       box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(255,255,255,.6); }
-    .av img { display: block; width: 74px; height: 74px; border-radius: 50%; object-fit: cover; filter: saturate(.85) brightness(1.04); }
+    .av .ph { display: block; width: 74px; height: 74px; border-radius: 50%; background: url(assets/real/scifi-nosedive-lacie.png) -42px 0 / 148px auto no-repeat; filter: saturate(.92) brightness(1.04); }
     .ring { position: absolute; inset: -6px; border-radius: 50%; border: 2px solid #fff; opacity: 0; }
     .ping .ring { animation: ring .9s cubic-bezier(.2,.7,.3,1); }
     @keyframes ring { from { opacity: .9; transform: scale(.9); } to { opacity: 0; transform: scale(1.3); } }
@@ -30,7 +30,7 @@ export default {
     .stars { touch-action: none; }
     .glow .s.lit svg { filter: drop-shadow(0 0 6px #ffe1a0); }
   `,
-  html: `<div class="stage"><div class="card"><div class="av"><img src="assets/portraits/women-03.jpg" alt="" width="74" height="74" draggable="false"><span class="ring" data-overhang></span></div><div class="nm">Lacie Pound</div><div class="sc">4.183</div><span class="dl"></span>
+  html: `<div class="stage"><div class="card"><div class="av"><span class="ph" role="img" aria-label="Lacie Pound"></span><span class="ring" data-overhang></span></div><div class="nm">Lacie Pound</div><div class="sc">4.183</div><span class="dl"></span>
     <div class="stars" role="radiogroup" aria-label="Rate">${[1, 2, 3, 4, 5].map((n) => `<button class="s" type="button" role="radio" aria-checked="false" aria-label="${n} stars"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg></button>`).join('')}</div></div></div>`,
   init(root) {
     const card = root.querySelector('.card'), sc = root.querySelector('.sc'), ss = [...root.querySelectorAll('.s')];

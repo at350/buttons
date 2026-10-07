@@ -30,7 +30,7 @@ export default {
     kbd span { min-width: 18px; height: 18px; padding: 0 4px; border-radius: 4px; background: #28282c; color: #8a8f98; font: 500 11px/18px Inter, sans-serif; text-align: center; }
     .menu {
       position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; width: 300px; display: none; overflow: hidden;
-      background: rgba(28,28,31,.98); border: 1px solid #2e3035; border-radius: 12px;
+      background: #1c1c1f; border: 1px solid #2e3035; border-radius: 12px; isolation: isolate;
       box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 0 .5px rgba(0,0,0,.6); color: #d0d6e0;
       transform-origin: top left; animation: pop .14s cubic-bezier(.16,1,.3,1);
     }

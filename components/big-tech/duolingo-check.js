@@ -14,6 +14,8 @@ export default {
     .badge svg { width: 30px; height: 30px; fill: none; stroke: #58a700; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
     .foot.ok .badge { visibility: visible; transform: none; opacity: 1; }
     .foot.ok .skip { visibility: hidden; }
+    .msg { margin-left: 16px; font: 800 24px/1 "din-round", "DIN Round Pro", "DM Sans", sans-serif; color: #58a700; white-space: nowrap; visibility: hidden; opacity: 0; transition: opacity .2s .1s; }
+    .foot.ok .msg { visibility: visible; opacity: 1; }
     .row { grid-area: 1 / 1; display: flex; gap: clamp(12px, 6vw, 48px); align-items: center; justify-content: space-between; min-width: 0; }
     .duo {
       position: relative; height: 50px; min-width: 150px; padding: 0 16px 4px; border: 0; border-radius: 16px; cursor: pointer;
@@ -29,7 +31,7 @@ export default {
     .check { --top: #58cc02; background: #58a700; color: #fff; }
     .skip { --top: #fff; background: #e5e5e5; color: #afafaf; }
     .skip::before { box-shadow: inset 0 0 0 2px #e5e5e5; }
-    .stk { display: grid; }
+    .duo .stk { display: grid; justify-items: center; }
     .stk > i { grid-area: 1 / 1; font-style: normal; }
     .stk .b { visibility: hidden; }
     .foot.ok .stk .a { visibility: hidden; }
@@ -43,7 +45,7 @@ export default {
         </span>
         <button class="duo check" type="button" aria-pressed="false"><span class="stk"><i class="a">Check</i><i class="b">Continue</i></span></button>
       </div>
-      <span class="side badge-wrap" style="pointer-events:none"><span class="badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+      <span class="side badge-wrap" style="pointer-events:none"><span class="badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="msg">Nice!</span></span>
     </div>`,
   init(root) {
     const foot = root.querySelector('.foot');

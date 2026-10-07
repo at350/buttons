@@ -15,7 +15,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <button class="gl" type="button" aria-pressed="false">HOVER ME, THEN CLICK ME!</button>
+      <button class="gl" type="button" aria-pressed="false">GET EARLY ACCESS</button>
     </div>`,
   init(root) {
     const b = root.querySelector('.gl');

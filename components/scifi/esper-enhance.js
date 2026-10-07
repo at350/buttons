@@ -24,12 +24,13 @@ export default {
     const cv = root.querySelector('canvas'), c = cv.getContext('2d'), rd = root.querySelector('.rd'), crt = root.querySelector('.crt');
     const W = 276, H = 160, P = document.createElement('canvas'); P.width = 828; P.height = 480;
     const p = P.getContext('2d', { willReadFrequently: true });
-    // the print: a photo from the asset pack, cover-cropped onto an 828×480 plate, toned to the Esper's cold
+    // the print: an anonymous interior (a room seen through to a doorway with figures at the back, like Leon's
+    // hotel-room photo) from the asset pack, cover-cropped onto an 828×480 plate, toned to the Esper's cold
     // blue-grey monochrome with film grain
     const photo = new Image();
     photo.onload = () => {
       const iw = photo.naturalWidth, ih = photo.naturalHeight, k = Math.max(828 / iw, 480 / ih);
-      p.drawImage(photo, (iw - 828 / k) / 2, (ih - 480 / k) / 2, 828 / k, 480 / k, 0, 0, 828, 480);
+      p.drawImage(photo, (iw - 828 / k) / 2, (ih - 480 / k) * .3, 828 / k, 480 / k, 0, 0, 828, 480);
       const im = p.getImageData(0, 0, 828, 480), d = im.data;
       for (let i = 0; i < d.length; i += 4) {
         const l = (.3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2]) * .92 + (Math.random() - .5) * 22;
@@ -37,8 +38,8 @@ export default {
       }
       p.putImageData(im, 0, 0); draw();
     };
-    photo.src = 'assets/wide/07.webp';
-    let z = 1, zt = 1, cx = W / 2, cy = H / 2, tx = 138, ty = 60, raf = 0;
+    photo.src = 'assets/square/38.webp';
+    let z = 1, zt = 1, cx = W / 2, cy = H / 2, tx = 204, ty = 54, raf = 0;
     const draw = () => {
       c.setTransform(2, 0, 0, 2, 0, 0);
       const sw = W / z, sh = H / z, sx = Math.max(0, Math.min(W - sw, cx - sw / 2)), sy = Math.max(0, Math.min(H - sh, cy - sh / 2));

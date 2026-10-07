@@ -7,7 +7,7 @@ export default {
     .stage { position: relative; width: 280px; max-width: 100%; height: 60px; padding: 0 12px; border-radius: 12px; background: #fff; border: 1px solid #e5e7eb;
       display: flex; align-items: center; justify-content: space-between; font: 500 13px/1.3 Inter, -apple-system, system-ui, sans-serif; color: #212126; }
     .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; letter-spacing: -.01em; }
-    .brand i { width: 22px; height: 22px; border-radius: 6px; background: #131316; }
+    .brand img { display: block; width: 22px; height: 22px; border-radius: 6px; object-fit: cover; box-shadow: 0 0 0 1px rgba(0,0,0,.07); }
     .wrap { position: relative; }
     .av { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 4px 0 10px; border-radius: 8px; border: 0; background: transparent; cursor: pointer; font: inherit; color: inherit;
       -webkit-tap-highlight-color: transparent; transition: background .15s; }
@@ -33,7 +33,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <span class="brand"><i></i>Acme</span>
+      <span class="brand"><img src="assets/square/51.webp" alt="" width="22" height="22" draggable="false">Acme</span>
       <div class="wrap">
         <button class="av" type="button" aria-expanded="false" aria-haspopup="menu" aria-label="Open user button">Sam Rivera<img class="face" src="assets/portraits/men-27.jpg" alt="" width="28" height="28"></button>
         <div class="pop" role="menu" aria-label="Account">

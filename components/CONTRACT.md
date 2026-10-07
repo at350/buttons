@@ -74,12 +74,16 @@ export default {
    locks its box to that size, so nothing may grow lazily (no "appears after a timeout" layouts).
    Anything that expands later (open menus, growing labels) overlays its neighbours instead of
    pushing them — design for that.
-8. **No layout leakage.** Don't use `position: fixed`. Dropdowns / menus may use `position: absolute`
+8. **Registered custom properties are page-global.** `@property` and `CSS.registerProperty` are not scoped by
+   the shadow root: registering `--p` as a `<percentage>` in one element breaks every other element that uses
+   `--p` for a colour. If you register a property, name it with your id prefix (`--mo-rhd-progress`, never
+   `--p`, `--angle`, `--x`).
+9. **No layout leakage.** Don't use `position: fixed`. Dropdowns / menus may use `position: absolute`
    inside a `position: relative` wrapper; keep them from being clipped (`overflow: visible`) and
    **drop upward or reserve space** if they'd be large. Nothing may use `100vw`/`100vh`.
-9. **Accessible basics.** Keyboard reachable (`button`, `input`, or `tabindex="0"` + key handling),
+10. **Accessible basics.** Keyboard reachable (`button`, `input`, or `tabindex="0"` + key handling),
    `aria-pressed` / `aria-expanded` / `aria-checked` where relevant, visible `:focus-visible` ring.
-10. **Fidelity.** Reproduce the *recognizable* look of the source: exact-ish colors, radii, shadows,
+11. **Fidelity.** Reproduce the *recognizable* look of the source: exact-ish colors, radii, shadows,
     font weights, hover/press behaviour. Obscure / creative ones should be genuinely surprising.
 
 ## Category index

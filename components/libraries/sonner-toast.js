@@ -4,7 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 420px; max-width: 100%; height: 260px; border-radius: 12px; background: #fff; border: 1px solid #e5e5e5; overflow: hidden; font: 400 13px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: hsl(0, 0%, 9%); }
+    .stage { position: relative; width: 420px; max-width: 100%; height: 236px; border-radius: 12px; background: #fff; border: 1px solid #e5e5e5; overflow: hidden; font: 400 13px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: hsl(0, 0%, 9%); }
     .trig { position: absolute; top: 16px; left: 16px; display: inline-flex; align-items: center; height: 36px; padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e5e5; background: #fff; font: 500 14px/20px Inter, system-ui, sans-serif; color: #0a0a0a; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.05); transition: all .15s cubic-bezier(.4,0,.2,1); }
     .trig:hover { background: #f5f5f5; color: #171717; }
     .trig:focus-visible { outline: 0; border-color: #a1a1a1; box-shadow: 0 0 0 3px rgba(161,161,161,.5); }
@@ -65,22 +65,24 @@ export default {
       later(() => { x.el.remove(); toasts.splice(toasts.indexOf(x), 1); }, 400);
       layout();
     };
-    const arm = (x, ms) => { x.start = Date.now(); x.left = ms; x.timer = later(() => remove(x), ms); };
-    const add = () => {
+    const arm = (x, ms) => { if (x.sticky) return; x.start = Date.now(); x.left = ms; x.timer = later(() => remove(x), ms); };
+    const add = (sticky) => {
+      toasts.forEach((y) => { if (y.sticky && !y.removed) { y.sticky = false; arm(y, 4000); } });
       const m = msgs[n++ % msgs.length];
       const el = document.createElement('li'); el.className = 'toast'; el.setAttribute('role', 'status');
       el.innerHTML = `${m.icon ? `<span class="ico">${m.icon}</span>` : ''}<div class="ct"><div class="t">${m.t}</div>${m.d ? `<div class="d">${m.d}</div>` : ''}</div>${m.a ? `<button class="btn" type="button">${m.a}</button>` : ''}`;
       box.appendChild(el);
-      const x = { el, h: el.offsetHeight, mounted: false, removed: false };
+      const x = { el, h: el.offsetHeight, mounted: false, removed: false, sticky: sticky === true };
       el.querySelector('.btn')?.addEventListener('click', () => remove(x));
       toasts.unshift(x);
       toasts.filter((y) => !y.removed).slice(VISIBLE + 1).forEach(remove);
       layout();
-      requestAnimationFrame(() => requestAnimationFrame(() => { x.mounted = true; el.classList.add('mounted'); layout(); }));
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (!x.h) x.h = el.offsetHeight; x.mounted = true; el.classList.add('mounted'); layout(); }));
       arm(x, 4000);
       if (expanded) { clearTimeout(x.timer); x.left = 4000; }
     };
-    trig.addEventListener('click', add);
+    trig.addEventListener('click', () => add());
+    add(true); // the stage opens with the last toast still on screen (it stays until the next one arrives)
     box.addEventListener('pointerenter', () => { expanded = true; toasts.forEach((x) => { clearTimeout(x.timer); x.left = Math.max(0, x.left - (Date.now() - x.start)); }); layout(); });
     box.addEventListener('pointerleave', () => { expanded = false; toasts.filter((x) => !x.removed).forEach((x) => arm(x, Math.max(x.left, 800))); layout(); });
     return () => timers.forEach(clearTimeout);

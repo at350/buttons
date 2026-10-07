@@ -5,7 +5,8 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 340px; max-width: 100%; border-radius: 12px; overflow: hidden; background: #000; color: #fff; font: 500 15px/1 Inter, -apple-system, system-ui, sans-serif; }
-    .screen { position: relative; height: 54px; background: linear-gradient(#1c1d1f, #121314); }
+    .screen { position: relative; height: 54px; overflow: hidden; background: #1a1b1d; }
+    .screen > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .toast { position: absolute; right: 10px; top: 12px; width: 150px; height: 30px; border-radius: 15px; background: rgba(48,49,52,.92); display: flex; align-items: center; gap: 8px; padding: 0 12px; opacity: 0; transform: translateY(6px); transition: opacity .2s, transform .25s cubic-bezier(.2,0,0,1); pointer-events: none; }
     .toast.show { opacity: 1; transform: none; }
     .toast svg { width: 16px; height: 16px; flex: none; }
@@ -37,7 +38,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="screen"><div class="toast"><svg class="o" viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg><svg class="x" viewBox="0 0 24 24"><path d="M11 4.702a.7.7 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.7.7 0 0 0 11 19.298z"/><path d="m16.5 14.5 5-5"/><path d="m16.5 9.5 5 5"/></svg><div class="lvl"><i></i></div></div></div>
+      <div class="screen"><img src="assets/real/map-tesla-sf.svg" alt="" width="680" height="108"><div class="toast"><svg class="o" viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg><svg class="x" viewBox="0 0 24 24"><path d="M11 4.702a.7.7 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.7.7 0 0 0 11 19.298z"/><path d="m16.5 14.5 5-5"/><path d="m16.5 9.5 5 5"/></svg><div class="lvl"><i></i></div></div></div>
       <div class="bar">
         <button class="ic car" type="button" aria-pressed="false" aria-label="Controls"><svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></button>
         <div class="grp">

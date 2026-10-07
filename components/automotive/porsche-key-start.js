@@ -27,7 +27,8 @@ export default {
     .hub { fill: #222; stroke: #444; }
     .sw { position: relative; width: 100px; height: 100px; flex: none; border-radius: 50%; background: radial-gradient(circle, #1b1b1b 56%, #3c3c3c 58%, #0f0f0f 62%, #222 100%); box-shadow: inset 0 2px 3px rgba(255,255,255,.08), 0 4px 10px rgba(0,0,0,.7); }
     .pos { position: absolute; inset: 0; }
-    .pos text { fill: #7a7a7a; font: 600 6px/1 Inter, system-ui, sans-serif; text-anchor: middle; letter-spacing: .05em; }
+    .pos text { fill: #8a8a8a; font: 600 6px/1 Inter, system-ui, sans-serif; text-anchor: middle; letter-spacing: .05em; }
+    .pos .s { font-size: 5.2px; letter-spacing: 0; }
     .key { position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px; border-radius: 50%; cursor: grab; touch-action: none; background: radial-gradient(circle at 40% 35%, #3a3a3a, #121212 70%); box-shadow: 0 3px 6px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.12); transition: transform .45s cubic-bezier(.3,1.5,.5,1); }
     .key.drag { transition: none; cursor: grabbing; }
     .key::before { content: ''; position: absolute; left: 50%; top: 4px; bottom: 4px; width: 16px; margin-left: -8px; border-radius: 8px; background: linear-gradient(90deg, #0d0d0d, #4a4a4a 45%, #2a2a2a 55%, #0d0d0d); box-shadow: 0 0 0 1px #000; }
@@ -39,10 +40,10 @@ export default {
     <div class="stage">
       <div class="tach"><svg viewBox="0 0 140 140" aria-hidden="true">${TICKS}
         <path class="red" d="M${(70 + 50 * Math.sin(1.7671)).toFixed(1)} ${(70 - 50 * Math.cos(1.7671)).toFixed(1)}A50 50 0 0 1 ${(70 + 50 * Math.sin(2.3562)).toFixed(1)} ${(70 - 50 * Math.cos(2.3562)).toFixed(1)}"/>
-        <text class="lbl" x="70" y="104">1/min x1000</text>
+        <text class="lbl" x="70" y="119">1/min x1000</text>
         <g class="ndl"><path d="M68.6 72 70 18l1.4 54z"/></g><circle class="hub" cx="70" cy="70" r="7"/></svg></div>
       <div class="sw">
-        <svg class="pos" viewBox="0 0 100 100" aria-hidden="true"><text x="50" y="12">OFF</text><text x="79" y="25">ON</text><text x="80" y="47">START</text></svg>
+        <svg class="pos" viewBox="0 0 100 100" aria-hidden="true"><text x="50" y="13">OFF</text><text x="79.5" y="24">ON</text><text class="s" x="89.5" y="52">START</text></svg>
         <div class="key" tabindex="0" role="switch" aria-checked="false" aria-label="Ignition"></div>
       </div>
     </div>`,

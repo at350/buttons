@@ -19,8 +19,9 @@ export default {
     .slotb { position: relative; width: 120px; height: 92px; border: 0; padding: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .slotb:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 6px; }
     .feed { position: absolute; left: 0; right: 0; top: 0; height: 64px; overflow: hidden; }
-    .tk { position: absolute; left: 22px; top: 6px; width: 76px; height: 64px; border-radius: 3px 3px 0 0; padding: 6px; background: #fdfcf6; text-align: left; font: 700 8px/1.3 'IBM Plex Mono', monospace; color: #333; transition: transform .7s cubic-bezier(.45,.05,.3,1); }
-    .tk::after { content: ''; display: block; margin-top: 4px; height: 6px; background: #1a1a1a; }
+    .tk { position: absolute; left: 22px; top: 6px; width: 76px; height: 64px; border-radius: 3px 3px 0 0; padding: 6px; background: #fdfcf6; text-align: left; font: 700 7.5px/1.3 'IBM Plex Mono', monospace; color: #333; white-space: nowrap; transition: transform .7s cubic-bezier(.45,.05,.3,1); }
+    .tk .bc { display: block; margin: 1px 0 3px; height: 12px; width: 64px; }
+    .tk .hd { display: block; margin: -2px -6px 4px; padding: 2px 6px; background: #1d5fbf; color: #fff; font: 700 6.5px/1.2 Inter, sans-serif; letter-spacing: .12em; }
     .tk .stamp { position: absolute; right: 4px; bottom: 6px; padding: 1px 4px; border: 1.5px solid #d0021b; color: #d0021b; font-size: 9px; transform: rotate(-12deg); opacity: 0; }
     .stage.in .tk { transform: translateY(66px); }
     .stage.paid .tk .stamp { opacity: 1; }
@@ -34,7 +35,7 @@ export default {
     <div class="stage">
       <div class="col">
         <div class="scr" aria-live="polite"><span class="a">Insert ticket</span><b class="b">$0.00</b><small class="c">Card · Cash · Tap</small></div>
-        <button class="slotb" type="button" aria-label="Insert ticket"><span class="feed"><span class="tk">P2 · 08:42<br>05 OCT 26<br>#0047193<span class="stamp">PAID</span></span></span><span class="face"></span></button>
+        <button class="slotb" type="button" aria-label="Insert ticket"><span class="feed"><span class="tk"><span class="hd">ENTRY · P2</span><span class="bc"></span>08:42 05.10.26<br>#0047193<span class="stamp">PAID</span></span></span><span class="face"></span></button>
       </div>
       <button class="pay" type="button" disabled>PAY</button>
     </div>`,
@@ -42,6 +43,7 @@ export default {
     const st = root.querySelector('.stage'), pay = root.querySelector('.pay'), slot = root.querySelector('.slotb');
     const [a, b, c] = ['.a', '.b', '.c'].map((s) => root.querySelector(s));
     let t;
+    { let x = 0, g = [], seed = 7; while (x < 64) { seed = (seed * 9301 + 49297) % 233280; const w = 1 + (seed % 3), gap = 1 + ((seed >> 3) % 2); g.push(`#111 ${x}px ${x + w}px`, `transparent ${x + w}px ${x + w + gap}px`); x += w + gap; } root.querySelector('.bc').style.background = `linear-gradient(90deg, ${g.join(', ')})`; }
     const show = (x, y, z) => { a.textContent = x; b.textContent = y; c.textContent = z; };
     slot.addEventListener('click', () => {
       clearTimeout(t);

@@ -13,12 +13,13 @@ export default {
     .tick { width: 6px; height: 6px; border-radius: 50%; background: #1d2228; }
     .L .tick, .R .tick { animation: tk .35s steps(1) infinite; }
     @keyframes tk { 0% { background: #8a8f96; } 50% { background: #1d2228; } }
+    .wheel { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
     .col { position: absolute; left: -24px; top: 92px; width: 70px; height: 56px; border-radius: 0 26px 26px 0; background: linear-gradient(#34353a, #17181b 60%, #0b0b0c); box-shadow: 0 4px 10px rgba(0,0,0,.6); }
     .stalk { position: absolute; left: 34px; top: 110px; width: 210px; height: 20px; transform-origin: 8px 10px; transition: transform .25s cubic-bezier(.3,1.6,.5,1); cursor: ns-resize; touch-action: none; }
     .drag .stalk { transition: none; }
     .rod { position: absolute; left: 0; top: 4px; width: 160px; height: 12px; border-radius: 6px; background: linear-gradient(#4a4b50, #1d1e21 55%, #2c2d31); clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%); }
     .end { position: absolute; left: 150px; top: 0; width: 60px; height: 20px; border-radius: 6px 10px 10px 6px; background: linear-gradient(#3e3f44, #141517 60%, #222327); box-shadow: 0 3px 6px rgba(0,0,0,.6); }
-    .end::before { content: ''; position: absolute; left: 10px; top: 6px; width: 34px; height: 8px; border-radius: 4px; background: repeating-linear-gradient(90deg, #2a2b2f 0 2px, #1a1b1e 2px 4px); }
+    .end::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 26px; background: repeating-linear-gradient(90deg, #303136 0 1.5px, #141517 1.5px 3.5px); box-shadow: inset 0 1px 0 rgba(255,255,255,.12); }
     .stalk:focus-visible { outline: 2px solid #2bff6a; outline-offset: 4px; border-radius: 10px; }
     .ar { position: absolute; right: 14px; width: 14px; height: 14px; fill: none; stroke: #3a3d43; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
     .ar.u { top: 74px; } .ar.d { top: 140px; }
@@ -27,6 +28,10 @@ export default {
     <div class="stage">
       <div class="cl"><svg class="tt l" viewBox="0 0 30 26"><path d="M0 13 13 0v7h17v12H13v7z"/></svg><span class="tick"></span><svg class="tt r" viewBox="0 0 30 26"><path d="M0 13 13 0v7h17v12H13v7z"/></svg></div>
       <svg class="ar u" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg><svg class="ar d" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      <svg class="wheel" viewBox="0 0 280 170" aria-hidden="true"><defs><linearGradient id="au-ts-rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3b40"/><stop offset=".4" stop-color="#1b1c1f"/><stop offset="1" stop-color="#08080a"/></linearGradient></defs>
+        <path d="M-40 230C-10 132 70 118 140 118S290 132 320 230L282 230C258 160 204 150 140 150S22 160 -2 230Z" fill="url(#au-ts-rim)"/>
+        <path d="M-22 228C4 146 76 133 140 133S276 146 302 228" fill="none" stroke="#55585f" stroke-width="1" stroke-dasharray="3 3" opacity=".6"/>
+      </svg>
       <div class="col"></div>
       <div class="stalk" tabindex="0" role="slider" aria-label="Turn signal" aria-valuemin="-1" aria-valuemax="1" aria-valuenow="0" aria-valuetext="off"><span class="rod"></span><span class="end"></span></div>
     </div>`,

@@ -14,18 +14,27 @@ export default {
     .ind span.on { color: #000; text-shadow: 0 0 1px #fff7; }
     .ndl { position: absolute; bottom: 3px; left: 0; width: 12px; height: 4px; margin-left: -6px; border-radius: 2px; background: #e0201a; box-shadow: 0 0 4px #ff4a3a; transition: transform .18s cubic-bezier(.3,1.4,.5,1); }
     .drag .ndl { transition: none; }
+    .wheel { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
     .col { position: absolute; left: -30px; top: 47px; width: 86px; height: 46px; border-radius: 0 22px 22px 0; background: linear-gradient(#3b332d, #1c1714 60%, #0d0a08); box-shadow: 0 4px 10px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.1); }
     .lever { position: absolute; left: 44px; top: 63px; width: 150px; height: 14px; transform-origin: 6px 7px; transform: rotate(-4deg); transition: transform .2s cubic-bezier(.3,1.5,.5,1); cursor: grab; touch-action: none; }
     .drag .lever { transition: none; cursor: grabbing; }
     .rod { position: absolute; left: 0; top: 3px; width: 110px; height: 8px; border-radius: 4px; background: linear-gradient(#f4f4f4, #9aa0a6 45%, #e8e8e8 60%, #6c7177); clip-path: polygon(0 0, 100% 25%, 100% 75%, 0 100%); }
-    .knob { position: absolute; left: 100px; top: -6px; width: 50px; height: 26px; border-radius: 6px 13px 13px 6px; background: linear-gradient(#3a3a3a, #0e0e0e 60%, #1f1f1f); box-shadow: 0 3px 6px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.15); }
-    .knob::after { content: ''; position: absolute; right: 8px; top: 7px; width: 14px; height: 12px; border-radius: 3px; background: linear-gradient(#bdbdbd, #6b6b6b); }
+    .knob { position: absolute; left: 98px; top: -4px; width: 52px; height: 22px; border-radius: 4px 11px 11px 4px / 4px 11px 11px 4px; background: linear-gradient(#444, #151515 45%, #050505 70%, #262626); box-shadow: 0 3px 6px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.18); clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 82%); }
+    .knob::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: linear-gradient(#f4f4f4, #8d9298 50%, #e2e2e2); }
+    .knob::after { content: ''; position: absolute; left: 14px; right: 12px; top: 50%; height: 1px; background: rgba(255,255,255,.08); box-shadow: 0 -4px 0 rgba(255,255,255,.05), 0 4px 0 rgba(0,0,0,.4); }
     .pivot { position: absolute; left: 39px; top: 59px; width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #e9e9e9, #7a7f85 60%, #3b3f44); box-shadow: 0 2px 4px rgba(0,0,0,.7); pointer-events: none; }
     .lever:focus-visible { outline: 2px solid #ffcc6b; outline-offset: 4px; border-radius: 8px; }
   `,
   html: `
     <div class="stage">
       <div class="ind"><div class="win">${G.map((g, i) => `<span class="${i ? '' : 'on'}">${g}</span>`).join('')}</div><span class="ndl"></span></div>
+      <svg class="wheel" viewBox="0 0 300 190" aria-hidden="true"><defs><linearGradient id="au-cs-rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a332e"/><stop offset=".35" stop-color="#1d1916"/><stop offset="1" stop-color="#0a0807"/></linearGradient><linearGradient id="au-cs-hub" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2420"/><stop offset="1" stop-color="#0d0a08"/></linearGradient></defs>
+        <path d="M-40 230C-10 120 80 96 150 96S310 120 340 230L300 230C276 150 214 132 150 132S24 150 0 230Z" fill="url(#au-cs-rim)"/>
+        <path d="M-22 228C6 136 82 112 150 112S294 136 322 228" fill="none" stroke="#5a4c42" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>
+        <path d="M-40 230C-10 120 80 96 150 96S310 120 340 230" fill="none" stroke="#5e5249" stroke-width="1.2" opacity=".6"/>
+        <path d="M96 190C100 168 122 154 150 154S200 168 204 190Z" fill="url(#au-cs-hub)"/>
+        <path d="M30 190 70 150Q96 140 112 152L126 168 112 190ZM270 190 230 150Q204 140 188 152L174 168 188 190Z" fill="#17130f"/>
+      </svg>
       <div class="col"></div>
       <div class="lever" tabindex="0" role="slider" aria-label="Gear selector" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-valuetext="P"><span class="rod"></span><span class="knob"></span></div>
       <span class="pivot"></span>

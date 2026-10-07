@@ -8,12 +8,16 @@ export default {
     .pict { display: flex; align-items: center; gap: 6px; color: #2d2d2d; font: 700 10px/1 Inter, system-ui, sans-serif; letter-spacing: .08em; }
     .pict svg { width: 22px; height: 22px; }
     .well { position: relative; width: 150px; height: 74px; overflow: hidden; }
-    .card { position: absolute; left: 22px; bottom: -18px; width: 106px; height: 82px; border-radius: 6px 6px 0 0; padding: 10px 10px 0;
-      background: linear-gradient(135deg, #1f3a93, #2f6fd6 55%, #1a2f7a); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+    .card { position: absolute; left: 22px; bottom: -14px; width: 106px; height: 67px; border-radius: 5px; padding: 9px 9px 0;
+      background: radial-gradient(circle at 85% 120%, rgba(120,170,255,.45), transparent 55%), linear-gradient(135deg, #14286e, #2457c5 55%, #142a6b); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
       transition: transform .9s cubic-bezier(.45,.05,.3,1); }
-    .chip { width: 20px; height: 15px; border-radius: 3px; background: linear-gradient(135deg, #f3d98b, #b8913b); box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
-    .stripe { margin-top: 10px; height: 4px; width: 60px; border-radius: 2px; background: rgba(255,255,255,.35); }
-    .logo { position: absolute; right: 9px; top: 9px; width: 30px; height: 13px; fill: #fff; }
+    .row1 { display: flex; align-items: center; gap: 5px; }
+    .chip { width: 17px; height: 13px; border-radius: 2.5px; background: linear-gradient(135deg, #f6e1a0, #c49a45 60%, #e8c877); }
+    .chip svg { display: block; width: 17px; height: 13px; }
+    .cl { width: 9px; height: 11px; color: rgba(255,255,255,.85); }
+    .num { margin-top: 7px; font: 600 7.4px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; color: #e9eefc; text-shadow: 0 1px 0 rgba(0,0,0,.4); white-space: nowrap; }
+    .nm { margin-top: 5px; font: 600 5.6px/1 Inter, sans-serif; letter-spacing: .12em; color: rgba(233,238,252,.85); }
+    .logo { position: absolute; right: 8px; top: 8px; width: 30px; height: 13px; fill: #fff; }
     .slot { position: relative; display: block; width: 190px; height: 46px; border: 0; padding: 0; cursor: pointer; border-radius: 8px;
       background: linear-gradient(#5b5d61, #2a2b2e 60%, #1a1b1d); box-shadow: 0 4px 0 #6f6c64, 0 6px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25); -webkit-tap-highlight-color: transparent; }
     .slot:focus-visible { outline: 2px solid #2f6fd6; outline-offset: 3px; }
@@ -31,7 +35,7 @@ export default {
   html: `
     <div class="stage">
       <div class="pict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/><path d="M6 14h2"/></svg>INSERT CARD</div>
-      <div class="well"><div class="card"><div class="chip"></div><div class="stripe"></div>
+      <div class="well"><div class="card"><div class="row1"><div class="chip"><svg viewBox="0 0 17 13" fill="none" stroke="#8a6a26" stroke-width=".6" aria-hidden="true"><path d="M0 4.5h5.5M0 8.5h5.5M11.5 4.5H17M11.5 8.5H17M5.5 0v13M11.5 0v13M5.5 6.5h6"/></svg></div><svg class="cl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"/><path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"/><path d="M12.91 4.1a15.91 15.91 0 0 1 .01 15.8"/><path d="M16.37 2a20.16 20.16 0 0 1 0 20"/></svg></div><div class="num">4921 •••• •••• 0457</div><div class="nm">A. MORGAN</div>
         <svg class="logo" viewBox="0 0 24 10" aria-hidden="true"><path transform="translate(0 -7)" d="M9.112 8.262L5.97 15.758H3.92L2.374 9.775c-.094-.368-.175-.503-.461-.658C1.447 8.864.677 8.627 0 8.479l.046-.217h3.3a.904.904 0 01.894.764l.817 4.338 2.018-5.102zm8.033 5.049c.008-1.979-2.736-2.088-2.717-2.972.006-.269.262-.555.822-.628a3.660 3.660 0 011.913.336l.34-1.59a5.207 5.207 0 00-1.814-.333c-1.917 0-3.266 1.02-3.278 2.479-.012 1.079.963 1.68 1.698 2.04.756.367 1.01.603 1.006.931-.005.504-.602.725-1.16.734-.975.015-1.54-.263-1.992-.473l-.351 1.642c.453.208 1.289.39 2.156.398 2.037 0 3.37-1.006 3.377-2.564m5.061 2.447H24l-1.565-7.496h-1.656a.883.883 0 00-.826.55l-2.909 6.946h2.036l.405-1.12h2.488zm-2.163-2.656l1.020-2.815.588 2.815zm-8.16-4.84l-1.603 7.496H8.34l1.605-7.496z"/></svg>
       </div></div>
       <button class="slot" type="button" aria-label="Insert card" aria-pressed="false"><span class="mouth"></span><span class="led"></span></button>

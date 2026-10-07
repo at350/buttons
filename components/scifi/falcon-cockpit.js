@@ -6,9 +6,12 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { width: 310px; max-width: 100%; border-radius: 12px; overflow: hidden; padding: 12px; background: linear-gradient(#cfc8b6, #a9a291); box-shadow: inset 0 1px 0 #ece6d6; }
-    .view { position: relative; height: 44px; border-radius: 22px 22px 4px 4px; overflow: hidden; background: radial-gradient(ellipse at 50% 120%, #0d1a2e, #000 70%); box-shadow: inset 0 0 0 3px #4a4639, inset 0 0 0 5px #24221c; margin-bottom: 10px; }
-    .view i { position: absolute; width: 2px; height: 2px; border-radius: 1px; background: #fff; transform-origin: var(--ox) 50%; transition: transform .5s cubic-bezier(.7,0,.3,1), opacity .5s; }
-    .jump .view i { transform: scaleX(40); opacity: .8; }
+    .view { position: relative; height: 74px; border-radius: 8px 8px 4px 4px; overflow: hidden; background: radial-gradient(ellipse at 50% 50%, #0b1424, #000 70%); box-shadow: inset 0 0 0 2px #24221c; margin-bottom: 10px; }
+    .view i { position: absolute; width: 2px; height: 2px; margin-top: -1px; border-radius: 1px; background: #fff; transform-origin: 0 50%; transform: rotate(var(--a)) scaleX(1); transition: transform .5s cubic-bezier(.7,0,.3,1), opacity .5s; }
+    .jump .view i { transform: rotate(var(--a)) scaleX(var(--l)); opacity: .85; }
+    .jump .view { background: radial-gradient(ellipse at 50% 50%, #2a4a80, #04070f 70%); }
+    .cf { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .cf .st { fill: #4a463b; stroke: #1c1a15; stroke-width: 1; } .cf .rim { fill: none; stroke: #3a372e; stroke-width: 5; } .cf .hl { fill: none; stroke: #8a8473; stroke-width: .8; }
     .fail .view { animation: shake .25s 3; }
     @keyframes shake { 50% { transform: translateX(2px); } }
     .row { display: flex; gap: 10px; }
@@ -33,11 +36,17 @@ export default {
     .jump .hy u { background: #4ac8ff; box-shadow: 0 0 8px #4ac8ff; }
     @keyframes bl { 50% { background: #4a0d0a; box-shadow: none; } }
   `,
-  html: `<div class="stage"><div class="view">${Array.from({ length: 34 }, (_, i) => {
+  html: `<div class="stage"><div class="view">${Array.from({ length: 46 }, (_, i) => {
     const r = (k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v); };
-    const x = Math.round(r(1) * 284), y = Math.round(r(2) * 38);
-    return `<i style="left:${x}px;top:${y + 2}px;--ox:${143 - x}px;opacity:${(0.35 + r(3) * 0.65).toFixed(2)}"></i>`;
-  }).join('')}</div>
+    const x = Math.round(r(1) * 284), y = Math.round(r(2) * 72), dx = x - 143, dy = y - 37, d = Math.hypot(dx, dy);
+    return `<i style="left:${x}px;top:${y}px;--a:${Math.atan2(dy, dx).toFixed(3)}rad;--l:${Math.round(6 + d * .45)};opacity:${(0.35 + r(3) * 0.65).toFixed(2)}"></i>`;
+  }).join('')}<svg class="cf" viewBox="0 0 286 74" preserveAspectRatio="none" aria-hidden="true">
+      <path class="st" d="M143 37L0 6V-2L143 31L286 -2V6ZM143 37L0 68V76L143 43L286 76V68Z"/>
+      <path class="st" d="M140 37L0 30V44ZM146 37L286 30V44Z"/>
+      <path class="st" d="M139 35L60 -2H76L143 33L210 -2H226L147 35ZM139 39L60 76H76L143 41L210 76H226L147 39Z"/>
+      <ellipse class="rim" cx="143" cy="37" rx="34" ry="17"/><ellipse class="hl" cx="143" cy="37" rx="31.5" ry="14.8"/>
+      <ellipse class="rim" cx="143" cy="37" rx="96" ry="44"/><ellipse class="hl" cx="143" cy="37" rx="93.5" ry="41.8"/>
+      <rect class="rim" x="-2" y="-2" width="290" height="78" rx="10"/></svg></div>
     <div class="row"><div class="bank">${Array.from({ length: 10 }, (_, i) => `<button class="tg" type="button" aria-label="Breaker ${i + 1}" aria-pressed="${[0, 2, 3, 7].includes(i)}"><span class="lamp"></span><span class="nut"><span class="bat"></span></span></button>`).join('')}</div>
     <button class="hy" type="button" aria-label="Hyperdrive" aria-pressed="false"><b style="--d:0"></b><b style="--d:1"></b><b style="--d:2"></b><u></u></button></div>
   </div>`,

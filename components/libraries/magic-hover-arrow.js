@@ -1,6 +1,6 @@
 export default {
   id: 'lb-magic-hover-arrow',
-  credit: 'Magic UI — Interactive Hover Button: the 8px primary dot scales ×100.8 to flood the pill while "Hover Me" slides out right and the copy + Lucide arrow slides in (300ms)',
+  credit: 'Magic UI — Interactive Hover Button: the 8px primary dot scales ×100.8 to flood the pill while "Get Started" slides out right and the copy + Lucide arrow slides in (300ms)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -19,8 +19,8 @@ export default {
   html: `
     <div class="stage">
       <button class="ih" type="button">
-        <span class="row"><span class="dot"></span><span class="t1">Hover Me</span></span>
-        <span class="t2"><span>Hover Me</span><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+        <span class="row"><span class="dot"></span><span class="t1">Get Started</span></span>
+        <span class="t2"><span>Get Started</span><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
       </button>
     </div>`,
 };

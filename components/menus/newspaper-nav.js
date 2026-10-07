@@ -26,7 +26,7 @@ export default {
     .wrap { position: relative; container-type: inline-size; background: #fff; border-radius: 12px; padding: 0 20px; color: #121212; font: 500 14px/1 "nyt-franklin", "Helvetica Neue", Helvetica, Arial, sans-serif; }
     .top { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 12px; align-items: center; height: 64px; }
     .date { font-size: 12px; font-weight: 700; line-height: 1.35; }
-    .date span { display: block; font-weight: 500; }
+    .date span { display: block; font-weight: 500; } .date b { font-weight: 700; white-space: nowrap; }
     .logo { width: 40px; height: 40px; padding: 0; border: 0; background: none; color: #000; cursor: pointer; border-radius: 4px; }
     .logo svg { display: block; width: 40px; height: 40px; fill: currentColor; }
     .acts { justify-self: end; display: flex; gap: 8px; }
@@ -55,7 +55,7 @@ export default {
   html: `
     <div class="wrap">
       <div class="top">
-        <div class="date">Sunday, October 5, 2026<span>Today’s Paper</span></div>
+        <div class="date"><b class="today">Tuesday, October 6, 2026</b><span>Today’s Paper</span></div>
         <button class="logo" type="button" aria-label="New York Times homepage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${T_LOGO}"/></svg></button>
         <div class="acts"><button class="sub" type="button">Subscribe<span class="xtra"> for €1/week</span></button><button class="sub ghost" type="button">Log in</button></div>
       </div>
@@ -65,6 +65,7 @@ export default {
       <div class="panel" role="menu"></div>
     </div>`,
   init(root, host) {
+    const td = root.querySelector('.today'); if (td) td.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const its = [...root.querySelectorAll('.it')], panel = root.querySelector('.panel'), wrap = root.querySelector('.wrap');
     let cur = null, tOpen = 0, tClose = 0, byHover = 0;
     const onDoc = (e) => { if (!host.contains(e.target)) close(); };
