@@ -74,7 +74,14 @@ Pull up the actual product or design-system page (WebFetch / WebSearch) and comp
 - **States**: hover, pressed, focus-visible, disabled where relevant, and the persistent toggled state, each
   matching the real product.
 
-## 3. Verify before reporting
+## 3. Look at it
+
+`node scripts/sheet.mjs <category>` screenshots every element at rest and after its first click and composes
+contact sheets in `.sheets/<category>/`. Open them and judge each element against the real thing: a car drawn
+as a box, an invented card, a placeholder bar, a crude icon, clipped text, an empty state after the click or a
+flat "3D" object all fail, even when every automated check passes.
+
+## 4. Verify before reporting
 
 ```
 node scripts/validate.mjs <category>    # 0 errors

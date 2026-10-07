@@ -8,6 +8,7 @@ npm run dev        # http://127.0.0.1:4173
 npm run validate   # checks every component against components/CONTRACT.md
 npm run smoke      # headless Chromium: mounts every element, checks packing + infinite feed (needs the dev server)
 npm run audit -- menus   # hover/click/leave every element in a category and report anything that escapes its box
+node scripts/sheet.mjs menus   # visual review: screenshots every element at rest + clicked into .sheets/ with contact sheets
 ```
 
 Quality rules for elements (real icons, real colors, real motion, nothing escapes its box) are in
