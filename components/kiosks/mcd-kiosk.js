@@ -34,10 +34,10 @@ export default {
     <div class="stage"><div class="scr">
       <div class="hd"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.243 3.006c2.066 0 3.742 8.714 3.742 19.478H24c0-11.588-3.042-20.968-6.766-20.968-2.127 0-4.007 2.81-5.248 7.227-1.241-4.416-3.121-7.227-5.231-7.227C3.031 1.516 0 10.888 0 22.476h3.014c0-10.763 1.658-19.470 3.724-19.470 2.066 0 3.741 8.050 3.741 17.980h2.997c0-9.930 1.684-17.980 3.750-17.980Z"/></svg>McCafé®</div>
       <div class="grid">
-        <button class="t" type="button" aria-pressed="false" data-p="1.79"><img src="assets/square/57.webp" alt="" width="122" height="50" style="object-position:50% 45%"><b>Premium Roast</b><span>$1.79 · 0 Cal.</span></button>
-        <button class="t" type="button" aria-pressed="false" data-p="3.29"><img src="assets/square/38.webp" alt="" width="122" height="50" style="object-position:68% 64%"><b>Cappuccino</b><span>$3.29 · 120 Cal.</span></button>
-        <button class="t" type="button" aria-pressed="false" data-p="2.89"><img src="assets/square/28.webp" alt="" width="122" height="50" style="object-position:40% 50%"><b>Hot Chocolate</b><span>$2.89 · 370 Cal.</span></button>
-        <button class="t" type="button" aria-pressed="false" data-p="3.49"><img src="assets/wide/16.webp" alt="" width="122" height="50" style="object-position:50% 58%"><b>Berry Smoothie</b><span>$3.49 · 190 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="1.79"><img src="assets/real/mcd-coffee.jpg" alt="" width="122" height="50" style="object-position:50% 22%"><b>Premium Roast</b><span>$1.79 · 0 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="3.29"><img src="assets/real/mcd-cappuccino.jpg" alt="" width="122" height="50" style="object-position:50% 45%"><b>Cappuccino</b><span>$3.29 · 120 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="2.89"><img src="assets/real/mcd-hot-chocolate.jpg" alt="" width="122" height="50" style="object-position:50% 35%"><b>Hot Chocolate</b><span>$2.89 · 370 Cal.</span></button>
+        <button class="t" type="button" aria-pressed="false" data-p="3.49"><img src="assets/real/mcd-smoothie.jpg" alt="" width="122" height="50" style="object-position:50% 50%"><b>Berry Smoothie</b><span>$3.49 · 190 Cal.</span></button>
       </div>
       <div class="ft">
         <div class="bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg><span class="badge">0</span></div>

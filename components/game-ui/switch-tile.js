@@ -2,11 +2,11 @@
 // frame with a gap, the title in #0AB9E6 above the selected tile, the round shortcut buttons (News in #E60012,
 // Joy-Con in #E60012 / #0AB9E6) and the Ⓐ Start footer.
 const GAMES = [
-  ['Animal Crossing: New Horizons', '16'],
-  ['Mario Kart 8 Deluxe', '41'],
-  ['The Legend of Zelda: Tears of the Kingdom', '26'],
-  ['Splatoon 3', '51'],
-  ['Super Mario Odyssey', '45'],
+  ['Animal Crossing: New Horizons', 'game-acnh-cover.jpg'],
+  ['Super Smash Bros. Ultimate', 'game-smash-ultimate-cover.jpg'],
+  ['The Legend of Zelda: Tears of the Kingdom', 'game-zelda-totk-cover.jpg'],
+  ['Splatoon 3', 'game-splatoon-3-cover.jpg'],
+  ['Super Mario Odyssey', 'game-mario-odyssey-cover.jpg'],
 ];
 const ICONS = [
   ['News', '#e60012', '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>'],
@@ -54,7 +54,7 @@ export default {
       <div class="top"><img class="user" src="assets/portraits/women-16.jpg" alt="" width="20" height="20"><span class="stat">12:34<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 0 0-6 0zm-4-4l2 2a7.074 7.074 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" transform="rotate(90 12 12)"/></svg></span></div>
       <div class="title"><span>${GAMES[0][0]}</span></div>
       <div class="row" role="listbox" aria-label="Software">
-        ${GAMES.map(([n, art], i) => `<button class="tile${i === 0 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 0}" aria-label="${n}" style="--art:url(assets/square/${art}.webp)"></button>`).join('')}
+        ${GAMES.map(([n, art], i) => `<button class="tile${i === 0 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 0}" aria-label="${n}" style="--art:url(assets/real/${art})"></button>`).join('')}
       </div>
       <div class="icons">${ICONS.map(([n, c, p]) => `<button class="ic" type="button" aria-label="${n}"><svg viewBox="0 0 24 24" fill="${c}" aria-hidden="true">${p}</svg></button>`).join('')}</div>
       <div class="foot"><button class="fb opt" type="button"><span class="key">+</span>Options</button><button class="fb start" type="button" aria-pressed="false"><span class="key">A</span>Start</button></div>

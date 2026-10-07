@@ -41,12 +41,12 @@ export default {
     </div>`,
   init(root) {
     const ul = root.querySelector('ul'), n = root.querySelector('.n'), pad = root.querySelector('.pad'), rc = root.querySelector('.rc');
-    const books = [['Moby-Dick', '16'], ['Pride and Prejudice', '23'], ['Frankenstein', '47'], ['The Great Gatsby', '51'], ['Middlemarch', '17'], ['Dracula', '70']];
+    const books = [['Moby-Dick', 'book-moby-dick'], ['Pride and Prejudice', 'book-pride-and-prejudice'], ['Frankenstein', 'book-frankenstein'], ['The Great Gatsby', 'book-great-gatsby'], ['Middlemarch', 'book-middlemarch'], ['Dracula', 'book-dracula']];
     let i = 0, c = 0;
     const tick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
     pad.addEventListener('click', () => {
       if (!c) ul.innerHTML = '';
-      const li = document.createElement('li'); const [t, img] = books[i++ % books.length]; li.innerHTML = `<img src="assets/square/${img}.webp" alt="" width="17" height="24"><b>${t}</b><span>Due 10/26/2026</span>${tick}`;
+      const li = document.createElement('li'); const [t, img] = books[i++ % books.length]; li.innerHTML = `<img src="assets/real/${img}.jpg" alt="" width="17" height="24"><b>${t}</b><span>Due 10/26/2026</span>${tick}`;
       ul.prepend(li); while (ul.children.length > 3) ul.lastElementChild.remove();
       n.textContent = ++c; pad.classList.remove('read'); void pad.offsetWidth; pad.classList.add('read');
     });

@@ -23,7 +23,7 @@ export default {
     .col { display: flex; flex-direction: column; gap: 12px; }
     .sm { width: 50px; height: 50px; display: grid; place-items: center; }
     .store { background: #2d2d2d; } .store svg { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .halo { background: #1d262c url(assets/square/27.webp) center / cover; }
+    .halo { background: #1d262c url(assets/real/game-halo-infinite-cover.png) center / cover; }
     .pin { position: absolute; right: 6px; top: 6px; z-index: 2; width: 22px; height: 22px; border-radius: 50%; border: none; padding: 0; cursor: pointer; display: grid; place-items: center;
       background: rgba(0,0,0,.35); transition: background 120ms; }
     .pin svg { width: 13px; height: 13px; fill: #fff; transform: rotate(45deg); transition: transform 167ms cubic-bezier(0,0,0,1); }

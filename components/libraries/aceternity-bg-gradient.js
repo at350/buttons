@@ -12,6 +12,7 @@ export default {
     .bg:hover .g.blur, .bg:focus-visible .g.blur { opacity: 1; }
     @keyframes drift { 0%, 100% { background-position: 0 50%; } 50% { background-position: 100% 50%; } }
     .card { position: relative; z-index: 10; display: flex; flex-direction: column; border-radius: 22px; background: #18181b; padding: 16px; color: #e5e5e5; font: 400 16px/24px Inter, -apple-system, system-ui, sans-serif; }
+    .ph { display: block; width: 196px; height: 160px; margin: 0 0 12px; border-radius: 10px; object-fit: cover; object-position: 50% 55%; background: #e8e5de; }
     .t { margin: 0 0 8px; }
     .pill { align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; padding: 4px 4px 4px 16px; border-radius: 9999px; background: #27272a; color: #fff; font-size: 12px; line-height: 16px; font-weight: 700; white-space: nowrap; transition: background .2s; }
     .pill .p { display: grid; background: #3f3f46; border-radius: 9999px; font-size: .6rem; line-height: 16px; padding: 0 8px; }
@@ -28,6 +29,7 @@ export default {
       <button class="bg" type="button" aria-pressed="false">
         <span class="g blur"></span><span class="g"></span>
         <span class="card">
+          <img class="ph" src="assets/real/aj4-sneaker.jpg" alt="" width="196" height="160" draggable="false">
           <span class="t">Air Jordan 4 Retro Reimagined</span>
           <span class="pill"><span class="lb"><span class="off">Buy now</span><span class="on">In cart</span></span><span class="p">$100</span></span>
         </span>

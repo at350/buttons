@@ -62,7 +62,7 @@ export default {
       <div class="main">
         <div class="map"><svg viewBox="0 0 140 184" preserveAspectRatio="xMidYMid slice"><path class="rd" d="M-10 130 150 100M30 -10 56 200M120 -10 100 200"/><path class="rt" d="M50 190 46 126 104 108 112 40"/><path d="M50 160l-7 12h14z" fill="#fff"/></svg><div class="turn">${ic('<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>')}<span>200 m · Main St</span></div></div>
         <div class="col">
-          <div class="card media"><div class="mh"><img class="art" src="assets/square/62.webp" alt="" width="36" height="36"><div><b>Lose Control</b><span>Teddy Swims</span></div></div><div class="ctl">
+          <div class="card media"><div class="mh"><img class="art" src="assets/real/track-lose-control-teddy-swims.jpg" alt="" width="36" height="36"><div><b>Lose Control</b><span>Teddy Swims</span></div></div><div class="ctl">
             <button class="m" type="button" aria-label="Previous">${ic('<path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/>')}</button>
             <button class="m pp" type="button" aria-pressed="false" aria-label="Play / pause"><svg class="pl" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg><svg class="pa" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg></button>
             <button class="m" type="button" aria-label="Next">${ic('<path d="M21 4v16"/><path d="M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/>')}</button></div></div>

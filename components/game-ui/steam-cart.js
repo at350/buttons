@@ -9,10 +9,7 @@ export default {
     :host { display: inline-block; }
     .stage { background: #1b2838; border-radius: 12px; padding: 16px 18px 32px; font-family: 'Motiva Sans', 'DM Sans', Arial, sans-serif; }
     .capsule { position: relative; width: 330px; max-width: 100%; height: 154px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 0 6px rgba(0,0,0,.5); }
-    .capsule img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(1.25) contrast(1.05); }
-    .capsule::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(60,0,0,.15), rgba(40,0,0,.55)); }
-    .logo { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 1; text-align: center; font: 900 34px/1 'Playfair Display', Georgia, serif; letter-spacing: 8px; padding-left: 8px;
-      color: #f6d27a; text-shadow: 0 0 2px #5a1a00, 0 2px 0 #7a2a00, 0 0 18px rgba(255,90,20,.75); }
+    .capsule img { display: block; width: 100%; height: 100%; object-fit: cover; }
     .wl { border: none; cursor: pointer; border-radius: 2px; height: 30px; padding: 0 12px; display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px;
       background: rgba(103,193,245,.2); color: #67c1f5; font: 400 13px/30px 'Motiva Sans', 'DM Sans', Arial, sans-serif; white-space: nowrap; }
     .wl:hover { background: linear-gradient(-60deg, #417a9b 5%, #67c1f5 95%); color: #fff; }
@@ -38,7 +35,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="capsule"><img src="assets/wide/30.webp" alt="" width="330" height="154"><span class="logo" aria-hidden="true">HADES</span></div>
+      <div class="capsule"><img src="assets/real/game-hades-header.jpg" alt="" width="330" height="154"></div>
       <button class="wl" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="ic" d="M5 12h14M12 5v14"/></svg><span class="st"><span class="a">Add to your wishlist</span><span class="b" hidden>On Wishlist</span></span></button>
       <div class="buy">
         <h3>Buy Hades</h3>

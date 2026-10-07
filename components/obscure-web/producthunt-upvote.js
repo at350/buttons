@@ -33,11 +33,11 @@ export default {
   `,
   html: `
     <div class="row">
-      <img class="thumb" src="assets/square/32.webp" alt="" width="48" height="48">
+      <img class="thumb" src="assets/real/ph-linear-app-icon.jpg" alt="" width="48" height="48">
       <div class="txt">
-        <div class="nm">1. Buttons</div>
-        <div class="tg">Every button on the web</div>
-        <div class="tags"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m12.25 6.417-4.43-4.43c-.303-.303-.454-.454-.63-.562a1.8 1.8 0 0 0-.506-.21c-.202-.048-.416-.048-.844-.048H3.5M1.75 5.075v1.152c0 .285 0 .428.032.562q.044.18.14.337c.072.118.173.219.375.42l4.55 4.55c.462.463.693.694.96.78.233.077.486.077.72 0 .267-.086.498-.317.96-.78l1.44-1.44c.462-.462.693-.693.78-.96a1.17 1.17 0 0 0 0-.72c-.087-.267-.318-.498-.78-.96L6.2 3.535c-.202-.202-.303-.303-.42-.375a1.2 1.2 0 0 0-.338-.14c-.134-.032-.277-.032-.562-.032H3.733c-.693 0-1.04 0-1.304.135a1.25 1.25 0 0 0-.545.545c-.134.264-.134.61-.134 1.304zM4.67 5.25h.006"/></svg>Design Tools<i></i>Developer Tools</div>
+        <div class="nm">1. Linear</div>
+        <div class="tg">Issue tracking you'll enjoy</div>
+        <div class="tags"><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m12.25 6.417-4.43-4.43c-.303-.303-.454-.454-.63-.562a1.8 1.8 0 0 0-.506-.21c-.202-.048-.416-.048-.844-.048H3.5M1.75 5.075v1.152c0 .285 0 .428.032.562q.044.18.14.337c.072.118.173.219.375.42l4.55 4.55c.462.463.693.694.96.78.233.077.486.077.72 0 .267-.086.498-.317.96-.78l1.44-1.44c.462-.462.693-.693.78-.96a1.17 1.17 0 0 0 0-.72c-.087-.267-.318-.498-.78-.96L6.2 3.535c-.202-.202-.303-.303-.42-.375a1.2 1.2 0 0 0-.338-.14c-.134-.032-.277-.032-.562-.032H3.733c-.693 0-1.04 0-1.304.135a1.25 1.25 0 0 0-.545.545c-.134.264-.134.61-.134 1.304zM4.67 5.25h.006"/></svg>Productivity<i></i>Developer Tools</div>
       </div>
       <div class="acts">
         <button class="acc cm" type="button" aria-label="Comments"><span class="box"><svg viewBox="0 0 14 14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12.25 6.708a4.958 4.958 0 0 1-6.74 4.629 2 2 0 0 0-.192-.068.5.5 0 0 0-.11-.014 1.4 1.4 0 0 0-.176.012l-2.987.309c-.285.03-.427.044-.511-.007a.3.3 0 0 1-.137-.204c-.015-.097.053-.223.19-.475l.953-1.766c.079-.146.118-.218.136-.288a.5.5 0 0 0 .016-.19c-.006-.072-.037-.166-.1-.353a4.958 4.958 0 1 1 9.658-1.585"/></svg><p class="c">48</p></span></button>

@@ -5,8 +5,8 @@ export default {
   css: `
     :host { display: inline-block; }
     /* Music "Home" shelf of album covers scrolled under the floating bar; .refr repaints the same layers inside the lens. */
-    .stage { --bg: url(assets/square/59.webp) 12px 12px / 104px 104px no-repeat, url(assets/square/51.webp) 126px 12px / 104px 104px no-repeat,
-        url(assets/square/49.webp) 240px 12px / 104px 104px no-repeat, #fff;
+    .stage { --bg: url(assets/real/mb-midnights-cover.jpg) 12px 12px / 104px 104px no-repeat, url(assets/real/mb-gnx-cover.jpg) 126px 12px / 104px 104px no-repeat,
+        url(assets/real/mb-hit-me-hard-and-soft-cover.jpg) 240px 12px / 104px 104px no-repeat, #fff;
       position: relative; width: 356px; max-width: 100%; height: 132px; border-radius: 12px; overflow: hidden; background: var(--bg);
       font: 600 10px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
     .glass { position: absolute; bottom: 14px; height: 62px; border-radius: 31px; isolation: isolate;

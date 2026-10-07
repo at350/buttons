@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 260px; height: 150px; border-radius: 12px; overflow: hidden; background: radial-gradient(ellipse at 20% 0%, #1f3a5a, #0f1823 60%, #0b1118); font-family: 'Motiva Sans', 'DM Sans', Arial, sans-serif; }
-    .hero { position: absolute; left: 16px; top: 18px; width: 120px; height: 68px; border-radius: 4px; background: #2a1a10 url(assets/wide/31.webp) center / cover; box-shadow: 0 4px 12px rgba(0,0,0,.5); }
+    .hero { position: absolute; left: 16px; top: 18px; width: 120px; height: 68px; border-radius: 4px; background: #2a1a10 url(assets/real/game-hollow-knight-hero.jpg) center / cover; box-shadow: 0 4px 12px rgba(0,0,0,.5); }
     .hero::after { content: "Play"; position: absolute; left: 8px; bottom: 8px; background: #59bf40; color: #fff; font: 700 10px 'Inter', system-ui, sans-serif; padding: 3px 9px; border-radius: 2px; }
     .dots { position: absolute; left: 16px; bottom: 14px; width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b4a5c; background: #141c26; color: #8fa3b8; cursor: pointer;
       display: grid; place-items: center; font: 700 14px/1 'Inter', system-ui, sans-serif; letter-spacing: 1px; padding: 0 0 4px; transition: background .15s, color .15s; }

@@ -33,20 +33,20 @@ export default {
     <div class="stage"><div class="scr">
       <div class="top"><span>SEARCH</span><span>CREDITS <b>12</b></span></div>
       <div class="field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span class="q ph">Artists, songs</span><span class="caret"></span></div>
-      <div class="res" aria-live="polite"><img class="ra" src="assets/square/35.webp" alt="" width="28" height="28"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></i><span class="rt">Most played tonight · </span><b class="rb">Journey</b></div>
+      <div class="res" aria-live="polite"><img class="ra" src="assets/real/album-journey-escape.jpg" alt="" width="28" height="28"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/></svg></i><span class="rt">Most played tonight · </span><b class="rb">Journey</b></div>
       <div class="kb"></div>
     </div></div>`,
   init(root) {
     const kb = root.querySelector('.kb'), q = root.querySelector('.q'), rt = root.querySelector('.rt'), rb = root.querySelector('.rb'), res = root.querySelector('.res'), ra = root.querySelector('.ra');
-    const ART = ['30', '47', '52', '53', '55', '61', '63', '64', '68', '35', '45', '46', '56', '43', '69', '13'];
+    const ART = ['album-acdc-back-in-black.jpg', 'album-bon-jovi-slippery-when-wet.jpg', 'album-chris-stapleton-traveller.jpg', 'album-dolly-parton-jolene.jpg', 'album-eagles-hotel-california.jpg', 'album-fleetwood-mac-rumours.jpg', 'album-guns-n-roses-appetite.jpg', 'album-hootie-cracked-rear-view.jpg', 'album-johnny-cash-folsom-prison.jpg', 'album-journey-escape.jpg', 'album-kenny-chesney-no-shoes.jpg', 'album-lynyrd-skynyrd-pronounced.jpg', 'album-morgan-wallen-dangerous.jpg', 'album-neil-diamond-hot-august-night.jpg', 'album-outkast-speakerboxxx.jpg', 'album-prince-purple-rain.jpg', 'album-queen-night-at-the-opera.jpg', 'album-rhcp-californication.jpg', 'album-shania-twain-come-on-over.jpg', 'album-taylor-swift-1989.png', 'album-the-killers-hot-fuss.jpg', 'album-usher-confessions.jpg', 'album-van-halen-1984.jpg', 'album-whitney-houston-debut.jpg', 'album-zac-brown-band-you-get-what-you-give.jpg'];
     const artists = ['AC/DC', 'Bon Jovi', 'Chris Stapleton', 'Dolly Parton', 'Eagles', 'Fleetwood Mac', 'Guns N’ Roses', 'Hootie & the Blowfish', 'Johnny Cash', 'Journey', 'Kenny Chesney', 'Lynyrd Skynyrd', 'Morgan Wallen', 'Neil Diamond', 'Outkast', 'Prince', 'Queen', 'Red Hot Chili Peppers', 'Shania Twain', 'Taylor Swift', 'The Killers', 'Usher', 'Van Halen', 'Whitney Houston', 'Zac Brown Band'];
     let v = '';
     const render = () => {
       q.textContent = v || 'Artists, songs'; q.classList.toggle('ph', !v);
-      if (!v) { rt.textContent = 'Most played tonight · '; rb.textContent = 'Journey'; res.classList.remove('none'); ra.src = 'assets/square/35.webp'; return; }
+      if (!v) { rt.textContent = 'Most played tonight · '; rb.textContent = 'Journey'; res.classList.remove('none'); ra.src = 'assets/real/' + ART[artists.indexOf('Journey')]; return; }
       const m = artists.find((a) => a.toUpperCase().startsWith(v)) || artists.find((a) => a.toUpperCase().includes(v));
       rt.textContent = m ? 'Top result · ' : 'No results for '; rb.textContent = m || '“' + v + '”';
-      res.classList.toggle('none', !m); if (m) ra.src = 'assets/square/' + ART[artists.indexOf(m) % ART.length] + '.webp';
+      res.classList.toggle('none', !m); if (m) ra.src = 'assets/real/' + ART[artists.indexOf(m)];
     };
     const back = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="m12 9 6 6"/><path d="m18 9-6 6"/></svg>';
     [['QWERTYUIOP'], ['ASDFGHJKL'], ['ZXCVBNM', 'del'], ['123', 'sp', 'clr']].forEach(([keys, extra, extra2]) => {

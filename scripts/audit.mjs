@@ -144,6 +144,19 @@ await evaluate(`(async () => {
       }
       return { worst, count, open: host.hasAttribute('data-open'), hostW: Math.round(hr.width), hostH: Math.round(hr.height) };
     },
+    async images() {
+      // every <img> must load, and every background-image url must resolve (local assets/ only)
+      const bad = [];
+      const imgs = [...this.root.querySelectorAll('img')];
+      await Promise.all(imgs.map((im) => (im.complete ? Promise.resolve() : new Promise((r) => { im.addEventListener('load', r, { once: true }); im.addEventListener('error', r, { once: true }); setTimeout(r, 4000); }))));
+      for (const im of imgs) if (!im.naturalWidth) bad.push('img ' + (im.getAttribute('src') || '').slice(0, 80));
+      const urls = new Set();
+      for (const el of this.root.querySelectorAll('*')) { const bg = getComputedStyle(el).backgroundImage; for (const m of bg.matchAll(/url\(["']?([^"')]+)["']?\)/g)) if (!/^data:/.test(m[1])) urls.add(m[1]); }
+      for (const el of this.root.querySelectorAll('[style*="assets/"]')) for (const m of (el.getAttribute('style') || '').matchAll(/url\(["']?([^"')]+)["']?\)/g)) urls.add(m[1]);
+      window.__urlCache = window.__urlCache || new Map();
+      for (const u of urls) { if (!window.__urlCache.has(u)) window.__urlCache.set(u, fetch(u, { method: 'HEAD' }).then((r) => r.ok).catch(() => false)); if (!(await window.__urlCache.get(u))) bad.push('background ' + u.slice(0, 80)); }
+      return bad;
+    },
     unmount() { try { this.host._cleanup && this.host._cleanup(); } catch (e) {} this.host.remove(); }
   };
 })()`);
@@ -157,10 +170,12 @@ for (const item of list) {
   const m = await evaluate(`window.__audit.mount(${item.i})`);
   await sleep(500);
   const rest = await evaluate('window.__audit.measure()');
+  const badImages = await evaluate('window.__audit.images()');
   if (restOnly) {
     await evaluate('window.__audit.unmount()');
     const findings = [];
     if (rest.worst.amt > 3 && !(rest.open && rest.worst.abs)) findings.push(`rest: ${rest.worst.el} escapes ${rest.worst.of || 'host'} ${rest.worst.side} by ${rest.worst.amt}px${rest.worst.hidden ? ' (hidden content)' : ''}`);
+    for (const b of badImages) findings.push('broken image: ' + b);
     if (m.err) findings.unshift('init error: ' + m.err);
     const rec = { cat: item.cat, id: item.id, size: item.size, box: `${m.w}×${m.h}`, findings };
     results.push(rec);
@@ -185,6 +200,7 @@ for (const item of list) {
   for (const [s, v] of Object.entries(states)) {
     if (v.worst.amt > 3 && !(v.open && v.worst.abs)) findings.push(`${s}: ${v.worst.el} escapes ${v.worst.of && v.worst.of !== 'host' ? v.worst.of + ' ' : ''}${v.worst.side} by ${v.worst.amt}px${v.worst.abs ? ' (absolute)' : ''}${v.worst.hidden ? ' (hidden content)' : ''}${v.open ? ' [open]' : ''}`);
   }
+  for (const b of badImages) findings.push('broken image: ' + b);
   if (m.err) findings.unshift('init error: ' + m.err);
   if (m.w === 0 || m.h === 0) findings.unshift(`zero-sized at mount (${m.w}×${m.h})`);
   const rec = { cat: item.cat, id: item.id, size: item.size, box: `${m.w}×${m.h}`, control: c.tag, findings };

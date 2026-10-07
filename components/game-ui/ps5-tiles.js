@@ -16,7 +16,9 @@ export default {
     .stage { position: relative; border-radius: 12px; padding: 14px 0 16px 18px; overflow: hidden; color: #fff; font-family: 'Inter', 'SST', system-ui, sans-serif;
       background: radial-gradient(ellipse 80% 70% at 85% 0%, rgba(40,90,190,.55), transparent 70%), linear-gradient(180deg, #0b2150 0%, #06143a 55%, #020a20 100%); }
     .bg { position: absolute; inset: 0; pointer-events: none; }
-    .bg i { position: absolute; top: 0; right: 0; bottom: 0; left: 30%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%); mask-image: linear-gradient(90deg, transparent, #000 35%); background-size: cover; background-position: center 40%; opacity: 0; transition: opacity 400ms ease; }
+    .bg i { position: absolute; top: 0; right: 0; bottom: 0; left: 30%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%); mask-image: linear-gradient(90deg, transparent, #000 35%); overflow: hidden; opacity: 0; transition: opacity 400ms ease; }
+    .bg i::before { content: ""; position: absolute; background: inherit; background-repeat: no-repeat; }
+    .bg i::before { inset: -30px; background-size: cover; background-position: center 30%; filter: blur(14px) saturate(1.2) brightness(.9); }
     .bg i.on { opacity: 1; }
     .bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(2,10,32,.6) 0%, rgba(2,10,32,.35) 55%, rgba(2,10,32,.1) 100%), linear-gradient(180deg, transparent 45%, rgba(2,10,32,.75)); }
     .top, .row, .acts { position: relative; }
@@ -37,11 +39,11 @@ export default {
     .nm { flex: none; font: 500 14px 'Inter', system-ui, sans-serif; margin: 0 6px 0 2px; color: #fff; }
     .store { background: linear-gradient(160deg, #1a8cff, #0070cc 55%, #00439c); }
     .lib { background: #24324f; }
-    .a { background: #10203c url(assets/wide/11.webp) center / cover; }
-    .b { background: #10203c url(assets/wide/02.webp) center / cover; }
-    .c { background: #10203c url(assets/wide/24.webp) center / cover; }
-    .d { background: #10203c url(assets/wide/25.webp) center / cover; }
-    .e { background: #10203c url(assets/wide/33.webp) center / cover; }
+    .a { background: #10203c url(assets/real/game-astro-bot-cover.jpg) center / cover; }
+    .b { background: #10203c url(assets/real/game-spider-man-2-cover.jpg) center / cover; }
+    .c { background: #10203c url(assets/real/game-gran-turismo-7-cover.jpg) center / cover; }
+    .d { background: #10203c url(assets/real/game-ghost-of-tsushima-cover.jpg) center / cover; }
+    .e { background: #10203c url(assets/real/game-returnal-cover.jpg) center / cover; }
     .acts { display: flex; gap: 10px; margin-top: 6px; }
     .play { width: 132px; height: 34px; border: none; border-radius: 6px; background: #fff; color: #000; cursor: pointer; font: 600 13px 'Inter', system-ui, sans-serif; transition: transform 150ms, background 150ms; }
     .play:hover { background: #e9eef8; }
@@ -55,7 +57,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="bg" aria-hidden="true"><i data-k="a" style="background-image:url(assets/wide/11.webp)" class="on"></i><i data-k="b" style="background-image:url(assets/wide/02.webp)"></i><i data-k="c" style="background-image:url(assets/wide/24.webp)"></i><i data-k="d" style="background-image:url(assets/wide/25.webp)"></i><i data-k="e" style="background-image:url(assets/wide/33.webp)"></i></div>
+      <div class="bg" aria-hidden="true"><i data-k="a" style="background-image:url(assets/real/game-astro-bot-cover.jpg)" class="on"></i><i data-k="b" style="background-image:url(assets/real/game-spider-man-2-cover.jpg)"></i><i data-k="c" style="background-image:url(assets/real/game-gran-turismo-7-cover.jpg)"></i><i data-k="d" style="background-image:url(assets/real/game-ghost-of-tsushima-cover.jpg)"></i><i data-k="e" style="background-image:url(assets/real/game-returnal-cover.jpg)"></i></div>
       <div class="top">
         <button class="seg on" type="button" aria-pressed="true">Games</button><button class="seg" type="button" aria-pressed="false">Media</button>
         <span class="clock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><img class="av" src="assets/portraits/men-37.jpg" alt="" width="18" height="18">10:42</span>

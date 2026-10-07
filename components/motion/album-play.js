@@ -38,7 +38,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <img class="art" src="assets/square/51.webp" alt="" width="96" height="96">
+      <img class="art" src="assets/real/album-m83-hurry-up-were-dreaming.jpg" alt="" width="96" height="96">
       <div class="meta">
         <b>Midnight City</b><span class="ar">M83</span>
         <span class="bar" aria-hidden="true"><i></i></span>

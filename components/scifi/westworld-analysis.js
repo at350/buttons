@@ -36,7 +36,7 @@ export default {
     .web.hot { stroke: #9a3b22; stroke-width: 1; }
     .frozen .tab, .tab.frozen { box-shadow: inset 0 0 0 1px #fff8ea, 0 0 0 5px #1a1816, 0 0 0 6px #9a3b22, 0 8px 22px #000; }
   `,
-  html: `<div class="stage"><div class="tab"><div class="hd"><span class="who"><img class="ph" src="assets/portraits/women-30.jpg" alt="" width="30" height="30" draggable="false"><span class="nm">Maeve Millay</span></span><button class="an" type="button" aria-pressed="false">ANALYSIS</button></div>
+  html: `<div class="stage"><div class="tab"><div class="hd"><span class="who"><img class="ph" src="assets/real/westworld-maeve.jpg" alt="" width="30" height="30" draggable="false"><span class="nm">Maeve Millay</span></span><button class="an" type="button" aria-pressed="false">ANALYSIS</button></div>
     <div class="bd"><svg viewBox="0 0 140 140">${[20, 15, 10, 5].map((v) => `<polygon class="web" points="${ATTR.map((_, i) => pt(i, v).join(',')).join(' ')}"/>`).join('')}
       ${ATTR.map((_, i) => `<line class="web" x1="70" y1="70" x2="${pt(i, 20)[0]}" y2="${pt(i, 20)[1]}"/>`).join('')}<path class="poly"/>${ATTR.map((a, i) => `<circle class="vx" r="2.2" cx="${pt(i, a[1])[0]}" cy="${pt(i, a[1])[1]}"/>`).join('')}</svg>
     <div class="list">${ATTR.map(([n, v], i) => `<button class="ax" type="button" data-i="${i}" aria-disabled="true">${n}<b>${v}</b></button>`).join('')}</div></div></div></div>`,

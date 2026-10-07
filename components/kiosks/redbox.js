@@ -42,11 +42,11 @@ export default {
     </div></div>`,
   init(root) {
     const track = root.querySelector('.track'), prev = root.querySelector('.prev'), next = root.querySelector('.next'), rent = root.querySelector('.rent'), badge = root.querySelector('.cart b');
-    const films = [['DUNE: PART TWO', 'PG-13', '42'], ['WONKA', 'PG', '51'], ['OPPEN&shy;HEIMER', 'R', '34'], ['BARBIE', 'PG-13', '21'], ['TOP GUN: MAVERICK', 'PG-13', '49'], ['WICKED', 'PG', '71'], ['INSIDE OUT 2', 'PG', '58']];
+    const films = [['Dune: Part Two', 'PG-13', 'poster-dune-part-two.jpg'], ['Wonka', 'PG', 'poster-wonka.jpg'], ['Oppenheimer', 'R', 'poster-oppenheimer.jpg'], ['Barbie', 'PG-13', 'poster-barbie.jpg'], ['Top Gun: Maverick', 'PG-13', 'poster-top-gun-maverick.jpg'], ['Wicked', 'PG', 'poster-wicked.png'], ['Inside Out 2', 'PG', 'poster-inside-out-2.jpg']];
     let pos = 0, sel = null, price = 2.25, n = 0;
     const covers = films.map(([t, r, img]) => {
       const c = document.createElement('button'); c.type = 'button'; c.className = 'cv'; c.setAttribute('aria-pressed', 'false');
-      c.style.backgroundImage = `linear-gradient(transparent 42%, rgba(0,0,0,.82)), url(assets/square/${img}.webp)`; c.innerHTML = `${t}<small>${r} · NEW</small>`;
+      c.style.backgroundImage = `linear-gradient(transparent 78%, rgba(0,0,0,.85)), url(assets/real/${img})`; c.setAttribute('aria-label', `${t}, rated ${r}`); c.innerHTML = `<small>${r} · NEW</small>`;
       c.addEventListener('click', () => { sel = sel === c ? null : c; covers.forEach((x) => x.setAttribute('aria-pressed', String(x === sel))); rent.disabled = !sel; });
       track.appendChild(c); return c;
     });

@@ -44,7 +44,7 @@ export default {
       </div>
       <div class="txt">
         <a class="ttl" href="#">An Endless Page of Buttons</a>
-        <div class="meta"><img src="assets/portraits/men-29.jpg" alt="" width="16" height="16"><a href="#">kevinrose</a> submitted, made popular <b>4 minutes ago</b></div>
+        <div class="meta"><img src="assets/real/person-kevin-rose.jpg" alt="" width="16" height="16"><a href="#">kevinrose</a> submitted, made popular <b>4 minutes ago</b></div>
         <div class="foot"><svg viewBox="0 0 14 12" aria-hidden="true"><path d="M1.5 1.5h11v7h-6l-3 2.5v-2.5h-2z" fill="#fff" stroke="#578cca"/><path d="M4 4h6M4 6h4" stroke="#578cca"/></svg><a href="#">23 comments</a> | <a href="#">Blog It</a> | <button class="bury" type="button" aria-pressed="false"><span class="x">Bury</span><span class="y">Buried</span></button></div>
       </div>
     </div>`,

@@ -9,7 +9,7 @@ export default {
     :host { display: inline-block; }
     .pr .tn { font: 700 16px/1 Verdana, Arial, sans-serif; margin: 0 0 6px; }
     .pr .pb { display: flex; gap: 10px; margin-bottom: 10px; }
-    .pr .ph { width: 84px; height: 84px; flex: none; object-fit: cover; display: block; }
+    .pr .ph { width: 84px; height: 84px; flex: none; object-fit: cover; object-position: center 18%; display: block; }
     .pr .inf { font: 10px/1.35 Verdana, Arial, sans-serif; color: #000; }
     .pr .inf q { display: block; margin-bottom: 8px; font-style: italic; }
     .pg { width: 320px; max-width: 100%; padding: 10px; background: #fff; border-radius: 12px; font: 10px/1.3 Verdana, Arial, Helvetica, sans-serif; color: #000; }
@@ -36,7 +36,7 @@ export default {
     <div class="pg">
       <div class="pr">
         <div class="tn">Tom</div>
-        <div class="pb"><img class="ph" src="assets/portraits/men-14.jpg" alt="" width="84" height="84"><div class="inf"><q>Thanks for joining MySpace!</q>Male<br>31 years old<br>Santa Monica, CALIFORNIA<br>United States</div></div>
+        <div class="pb"><img class="ph" src="assets/real/person-tom-anderson-myspace.jpg" alt="" width="84" height="84"><div class="inf"><q>Thanks for joining MySpace!</q>Male<br>31 years old<br>Santa Monica, CALIFORNIA<br>United States</div></div>
       </div>
       <div class="box">
         <div class="hd">Contacting Tom</div>

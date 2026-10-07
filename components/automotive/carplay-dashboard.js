@@ -1,4 +1,4 @@
-const TRACKS = [['Espresso', 'Sabrina Carpenter', '#6b5a2e', 'square/50'], ['Flowers', 'Miley Cyrus', '#8a4a5c', 'square/23'], ['As It Was', 'Harry Styles', '#8a5a26', 'square/59']];
+const TRACKS = [['Espresso', 'Sabrina Carpenter', '#6b5a2e', 'track-espresso-sabrina-carpenter.jpg'], ['Flowers', 'Miley Cyrus', '#8a4a5c', 'track-flowers-miley-cyrus.jpg'], ['As It Was', 'Harry Styles', '#8a5a26', 'track-as-it-was-harry-styles.jpg']];
 const APP = (cls, bg, ic, label) => `<button class="app ${cls}" type="button" aria-label="${label}" style="background:${bg}"><svg viewBox="0 0 24 24">${ic}</svg></button>`;
 
 export default {
@@ -64,11 +64,11 @@ export default {
         <div class="v dashv">
           <div class="map"><svg viewBox="0 0 140 180" preserveAspectRatio="xMidYMid slice"><path class="rd" d="M-10 120 150 90M40 -10 60 200M110 -10 96 200"/><path class="rt" d="M54 170 50 116 98 102 104 30"/><circle cx="54" cy="150" r="5" fill="#0a84ff" stroke="#fff" stroke-width="2"/></svg><div class="eta"><b>9:58</b> · 17 min</div></div>
           <div class="col">
-            <div class="np"><div class="row"><img class="art" src="assets/square/50.webp" alt="" width="34" height="34"><span class="t"><b class="tt"></b><span class="ta"></span></span></div><div class="ctls">CTL</div></div>
+            <div class="np"><div class="row"><img class="art" src="assets/real/track-espresso-sabrina-carpenter.jpg" alt="" width="34" height="34"><span class="t"><b class="tt"></b><span class="ta"></span></span></div><div class="ctls">CTL</div></div>
             <div class="cal"><b>Design Review</b><span>10:30 AM</span></div>
           </div>
         </div>
-        <div class="v np-full"><img class="big" src="assets/square/50.webp" alt="" width="64" height="64"><span class="t"><b class="tt"></b><span class="ta"></span></span><span class="bar"><i></i></span><div class="ctls">CTL</div></div>
+        <div class="v np-full"><img class="big" src="assets/real/track-espresso-sabrina-carpenter.jpg" alt="" width="64" height="64"><span class="t"><b class="tt"></b><span class="ta"></span></span><span class="bar"><i></i></span><div class="ctls">CTL</div></div>
       </div>
     </div>`,
   init(root) {
@@ -80,7 +80,7 @@ export default {
       const [t, a, c1, img] = TRACKS[i];
       root.querySelectorAll('.tt').forEach((e) => (e.textContent = t));
       root.querySelectorAll('.ta').forEach((e) => (e.textContent = a));
-      root.querySelectorAll('.art, .big').forEach((e) => (e.src = 'assets/' + img + '.webp'));
+      root.querySelectorAll('.art, .big').forEach((e) => (e.src = 'assets/real/' + img));
       stage.style.setProperty('--a', c1);
     };
     root.querySelectorAll('.pp').forEach((b) => b.addEventListener('click', () => { const on = stage.classList.toggle('playing'); root.querySelectorAll('.pp').forEach((p) => p.setAttribute('aria-pressed', String(on))); }));

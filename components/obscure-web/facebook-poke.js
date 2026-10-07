@@ -12,7 +12,7 @@ export default {
     .hd { margin: 10px 10px 0; padding: 3px 6px 4px; background: #eceff5; border-top: 1px solid #94a3c4; font-weight: 700; color: #333; display: flex; justify-content: space-between; }
     .hd span { font-weight: 400; color: #3b5998; }
     .bd { display: flex; gap: 8px; margin: 8px 10px 0; min-height: 50px; }
-    .pic { width: 50px; height: 50px; flex: none; display: block; object-fit: cover; background: #e6eaf2; border: 1px solid #ccc; }
+    .pic { width: 50px; height: 50px; flex: none; display: block; object-fit: cover; object-position: center 18%; background: #e6eaf2; border: 1px solid #ccc; }
     .txt { flex: 1; min-width: 0; }
     .ln { min-height: 30px; }
     a { color: #3b5998; text-decoration: none; cursor: pointer; }
@@ -31,7 +31,7 @@ export default {
       <div class="top" aria-hidden="true">facebook</div>
       <div class="hd">Pokes<span class="cnt">1</span></div>
       <div class="bd">
-        <img class="pic" src="assets/portraits/men-20.jpg" alt="" width="50" height="50">
+        <img class="pic" src="assets/real/person-tom-anderson-myspace.jpg" alt="" width="50" height="50">
         <div class="txt" aria-live="polite">
           <div class="ln t0"><a href="#">Tom Anderson</a> poked you.</div>
           <div class="ln t1">You are about to poke <a href="#">Tom Anderson</a>. Poke?</div>

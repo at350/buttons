@@ -38,7 +38,7 @@ export default {
             <div><b>Navigation</b><span>12 min · 6.4 km</span></div>
           </button>
           <button class="w" type="button" aria-pressed="false">
-            <img class="art" src="assets/square/31.webp" alt="" width="34" height="34">
+            <img class="art" src="assets/real/track-bad-habits-ed-sheeran.jpg" alt="" width="34" height="34">
             <div><b>Bad Habits</b><span>Ed Sheeran</span><div class="prog"><i></i></div></div>
           </button>
           <button class="w" type="button" aria-pressed="false">

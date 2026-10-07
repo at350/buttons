@@ -27,8 +27,8 @@ export default {
     .photo { object-fit: cover; display: block; transform: translate(calc(var(--px) * -10px), calc(var(--py) * -6px)) scale(1.02); }
     .scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, .55)); }
     .ttl {
-      position: absolute; left: 16px; bottom: 12px; color: #fff; font: 800 21px/1 'Syne', system-ui, sans-serif; letter-spacing: .01em;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, .6); pointer-events: none; white-space: nowrap;
+      position: absolute; left: 16px; bottom: 12px; color: #fff; font: 800 21px/1.04 'Syne', system-ui, sans-serif; letter-spacing: .01em;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, .6); pointer-events: none; white-space: nowrap; text-align: left;
       transform: translate(calc(var(--px) * 7px), calc(var(--py) * 5px));
     }
     .glare {
@@ -41,12 +41,12 @@ export default {
   `,
   html: `
     <div class="stage">
-      <button class="tile" type="button" aria-label="Horizon">
+      <button class="tile" type="button" aria-label="Horizon Zero Dawn">
         <span class="shadow"></span>
         <span class="art">
-          <img class="l photo" src="assets/wide/29.webp" alt="" width="264" height="149" draggable="false">
+          <img class="l photo" src="assets/real/game-horizon-zero-dawn-key-art.jpg" alt="" width="264" height="149" draggable="false">
           <span class="scrim"></span>
-          <span class="ttl">Horizon</span>
+          <span class="ttl">Horizon<br>Zero Dawn</span>
           <span class="glare"></span>
           <span class="sheen"></span>
         </span>

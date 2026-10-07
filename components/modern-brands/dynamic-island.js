@@ -20,7 +20,7 @@ export default {
     .stage.open .isl { width: 284px; margin-left: -142px; height: 166px; border-radius: 44px; }
     .mini { position: absolute; left: 7px; right: 10px; top: 0; height: 37px; display: flex; align-items: center; justify-content: space-between; transition: opacity .18s, filter .25s; }
     .stage.open .mini { opacity: 0; filter: blur(4px); }
-    .art { display: block; border-radius: 6px; background: #b8231c url(assets/square/57.webp) center / cover no-repeat; flex: none; }
+    .art { display: block; border-radius: 6px; background: #b8231c url(assets/real/mb-short-n-sweet-cover.jpg) center / cover no-repeat; flex: none; }
     .mini .art { width: 23px; height: 23px; }
     .wave { display: flex; gap: 2px; align-items: center; height: 14px; }
     .wave i { width: 2.5px; height: 30%; border-radius: 2px; background: #ff6b5e; animation: eq .9s ease-in-out infinite alternate; animation-play-state: paused; }

@@ -32,7 +32,7 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="show"><img src="assets/square/60.webp" alt="" width="30" height="44"><div><b>Twisters</b><span>Today · 7:30 PM · Auditorium 4</span></div></div>
+      <div class="show"><img src="assets/real/poster-twisters.jpg" alt="" width="30" height="44"><div><b>Twisters</b><span>Today · 7:30 PM · Auditorium 4</span></div></div>
       <div class="screen"></div><div class="scap">SCREEN</div>
       <div class="map"></div>
       <div class="key"><span class="a">Available</span><span class="s">Selected</span><span class="x">Sold</span></div>

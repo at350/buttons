@@ -11,7 +11,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { background: #3a6ea5 url(assets/square/49.webp) center 78% / cover; padding: 12px; border-radius: 12px; width: 288px; height: 112px; position: relative; overflow: hidden; }
+    .stage { background: #3a6ea5 url(assets/real/retro-xp-bliss-wallpaper.png) center 62% / cover; padding: 12px; border-radius: 12px; width: 288px; height: 112px; position: relative; overflow: hidden; }
     .win { position: absolute; left: 12px; top: 12px; right: 12px; bottom: 12px; display: flex; flex-direction: column; border-radius: 8px 8px 0 0;
       background: #0831d9; padding: 0 3px 3px; transition: opacity .15s; }
     .win.max { left: 0; top: 0; right: 0; bottom: 0; border-radius: 0; }
