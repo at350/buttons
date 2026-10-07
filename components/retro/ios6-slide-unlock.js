@@ -4,7 +4,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; max-width: 100%; }
-    .stage { width: 320px; max-width: 100%; border-radius: 12px; overflow: hidden; background: #0b1a24 url(assets/tall/00.webp) center 30% / cover; }
+    .stage { width: 320px; max-width: 100%; border-radius: 12px; overflow: hidden; background: #2f5f86 url(assets/real/wall-ios6-default.jpg) center 30% / cover; }
     .clk { height: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #fff; text-shadow: 0 -1px 0 rgba(0,0,0,.6);
       background: linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.42)); border-bottom: 1px solid rgba(255,255,255,.14); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
     .clk b { font: 200 46px/1 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: -.5px; }

@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { padding: 24px 26px; border-radius: 12px; display: flex;
-      background: #2a2f3d url(assets/wide/01.webp) 50% 60% / cover no-repeat; }
+      background: #2a2f3d url(assets/real/env-visionos-mount-hood.jpg) 50% 60% / cover no-repeat; }
     .orn { display: flex; gap: 8px; padding: 8px; border-radius: 40px; position: relative; isolation: isolate;
       background: rgba(128,128,128,.3); backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
       box-shadow: inset 0 0 0 .5px rgba(255,255,255,.12), 0 18px 40px rgba(0,0,0,.28); }

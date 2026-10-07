@@ -6,11 +6,7 @@ export default {
     :host { display: inline-block; }
     .stage {
       position: relative; padding: 34px 38px; border-radius: 12px; overflow: hidden; isolation: isolate;
-      background:
-        radial-gradient(120px 110px at 14% 18%, #8f7bff, transparent 70%),
-        radial-gradient(140px 120px at 92% 96%, #ff8a5c, transparent 70%),
-        radial-gradient(120px 90px at 60% 0%, #4cc3ff, transparent 70%),
-        linear-gradient(160deg, #2a2d48, #191b2b);
+      background: #0e1f22 url(assets/real/env-visionos-aurora.jpg) 50% 40% / cover no-repeat;
     }
     .bar { position: relative; display: flex; gap: 4px; padding: 6px; border-radius: 999px; }
     /* the glass: frosted, slightly luminous, with a specular rim brighter at the top-left */

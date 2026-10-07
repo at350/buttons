@@ -6,10 +6,7 @@ export default {
     :host { display: inline-block; }
     .stage {
       position: relative; padding: 24px 34px 18px; border-radius: 12px; overflow: hidden; perspective: 900px; isolation: isolate;
-      background:
-        radial-gradient(130px 110px at 18% 20%, #f9a8d4, transparent 70%),
-        radial-gradient(150px 120px at 88% 78%, #7dd3fc, transparent 70%),
-        linear-gradient(160deg, #4338ca, #312e81 60%, #1e1b4b);
+      background: #3b4a55 url(assets/real/env-visionos-mount-hood.jpg) 38% 50% / cover no-repeat;
     }
     .win { --rx: 0deg; --ry: 0deg; position: relative; width: 240px; height: 128px; max-width: 100%; transform-style: preserve-3d; transform: rotateX(var(--rx)) rotateY(var(--ry)); }
     .glass { position: absolute; inset: 0; border-radius: 26px; pointer-events: none;

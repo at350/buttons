@@ -16,7 +16,7 @@ export default {
     }
     .in { display: flex; flex-direction: column; align-items: center; transition: transform .5s cubic-bezier(.32,.72,0,1), opacity .4s; }
     .pad.open .in { transform: translateY(-40px); opacity: 0; }
-    .pad::before { content: ''; position: absolute; inset: -30px; z-index: -1; background: url(assets/tall/05.webp) center / cover; filter: blur(16px) brightness(.6) saturate(1.2); }
+    .pad::before { content: ''; position: absolute; inset: -30px; z-index: -1; background: url(assets/real/wall-ios18-purple-light.jpg) 50% 30% / cover; filter: blur(16px) brightness(.6) saturate(1.2); }
     .ttl { font-size: 17px; line-height: 22px; font-weight: 400; letter-spacing: -.2px; }
     .dots { display: flex; gap: 17px; margin: 14px 0 26px; }
     .dot { width: 11px; height: 11px; border-radius: 50%; border: 1.2px solid #fff; background: transparent; transition: background-color .1s; }

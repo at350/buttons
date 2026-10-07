@@ -10,7 +10,7 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 300px; height: 124px; max-width: 100%; border-radius: 12px; overflow: hidden; font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; background: #dcdcdc url(assets/tall/07.webp) center 44% / 100% auto no-repeat; }
+    .stage { position: relative; width: 300px; height: 124px; max-width: 100%; border-radius: 12px; overflow: hidden; font-family: system-ui, -apple-system, 'SF Pro Text', Inter, sans-serif; background: #e9a0a0 url(assets/real/wall-ios17-light.jpg) center 44% / 100% auto no-repeat; }
     .sb { position: absolute; top: 15px; left: 26px; right: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; color: #000; letter-spacing: -.01em; }
     .sb svg { height: 11px; fill: #000; }
     .isl {

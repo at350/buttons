@@ -6,7 +6,7 @@ export default {
     :host { display: inline-block; }
     .stage {
       width: 260px; height: 176px; max-width: 100%; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-      background: #4a4030 url(assets/wide/23.webp) center / cover; font-family: system-ui, -apple-system, sans-serif;
+      background: #3a2a4a url(assets/real/wall-macos-sequoia-dark.jpg) center / cover; font-family: system-ui, -apple-system, sans-serif;
     }
     .av { display: block; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: rgba(255, 255, 255, .25); box-shadow: 0 2px 10px rgba(0, 0, 0, .25); }
     .nm { margin-bottom: 2px; font-size: 13px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .35); }

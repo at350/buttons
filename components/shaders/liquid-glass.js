@@ -122,7 +122,7 @@ export default {
     :host { display: inline-block; }
     .btn { position: relative; display: grid; place-items: center; width: 280px; height: 110px; max-width: 100%; padding: 0; border: 0; border-radius: 20px; overflow: hidden; background: #13202c; cursor: pointer; isolation: isolate; -webkit-tap-highlight-color: transparent; }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-    .cv.nogl { background: url(assets/wide/35.webp) center / cover; }
+    .cv.nogl { background: url(assets/real/wall-macos-tahoe-dark.jpg) center / cover; }
     .l { position: relative; z-index: 1; color: #fff; font: 600 17px/1 system-ui, -apple-system, 'Inter', sans-serif; letter-spacing: -.022em; pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,.18), 0 0 12px rgba(0,0,0,.12); transition: transform .35s cubic-bezier(.32,.72,0,1); }
     .btn:active .l { transform: scale(1.06); }
     .btn:focus-visible { outline: 2px solid #0a84ff; outline-offset: 3px; }
@@ -154,7 +154,7 @@ export default {
       uniforms: (gl) => gl.uniform2f(uCrop, crop[0], crop[1]),
     });
     photo.onload = () => { upload(); s.draw(); };
-    photo.src = 'assets/wide/35.webp';
+    photo.src = 'assets/real/wall-macos-tahoe-dark.jpg';
     return () => { photo.onload = null; s.destroy(); };
   },
 };

@@ -5,11 +5,11 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage {
-      /* wallpaper drawn at --IW × --IH (the photo's 16:9, covering the 280 × 140 stage), centred */
-      --W: 280px; --H: 140px; --IW: 280px; --IH: 157.5px; --pw: 150px; --ph: 52px;
-      --wall: url(assets/wide/19.webp) no-repeat;
+      /* wallpaper drawn at --IW × --IH (the photo's 16:10, covering the 280 × 140 stage), centred */
+      --W: 280px; --H: 140px; --IW: 280px; --IH: 175px; --pw: 150px; --ph: 52px;
+      --wall: url(assets/real/wall-macos-tahoe.jpg) no-repeat;
       position: relative; width: var(--W); height: var(--H); border-radius: 12px; overflow: hidden; display: grid; place-items: center;
-      background: var(--wall); background-color: #6fa3d8; background-size: var(--IW) var(--IH); background-position: center;
+      background: var(--wall); background-color: #4f7fd0; background-size: var(--IW) var(--IH); background-position: center;
     }
     .pill {
       --m: 1.2; --r: .82; --x: 30%; --y: 20%;

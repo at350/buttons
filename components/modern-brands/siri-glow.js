@@ -6,7 +6,7 @@ export default {
     :host { display: inline-block; }
     .stage { padding: 10px; border-radius: 12px; background: #111; }
     .scr { position: relative; width: 240px; max-width: 100%; height: 170px; border-radius: 30px; overflow: hidden; isolation: isolate;
-      background: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.12)), #1d4a4f url(assets/tall/01.webp) 50% 40% / cover no-repeat;
+      background: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.12)), #2a1646 url(assets/real/wall-ios18-purple-dark.jpg) 50% 40% / cover no-repeat;
       font: 400 15px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
     .apps { position: absolute; left: 22px; right: 22px; top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 18px; transition: filter .5s cubic-bezier(.32,.72,0,1), opacity .5s; }
     .apps i { aspect-ratio: 1; border-radius: 11px; display: grid; place-items: center; background: rgba(255,255,255,.16); backdrop-filter: blur(8px) saturate(150%); -webkit-backdrop-filter: blur(8px) saturate(150%); box-shadow: inset 0 .5px 0 rgba(255,255,255,.45), inset 0 0 0 .5px rgba(255,255,255,.18); }

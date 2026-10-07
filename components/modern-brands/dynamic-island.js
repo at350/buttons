@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 300px; max-width: 100%; height: 194px; border-radius: 12px; overflow: hidden;
-      background: #c9d3dc url(assets/tall/05.webp) 50% 22% / cover no-repeat;
+      background: #7fb0d8 url(assets/real/wall-ios26-sky.jpg) 50% 22% / cover no-repeat;
       font: 600 15px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #000; -webkit-font-smoothing: antialiased; }
     .sb { position: absolute; top: 19px; left: 30px; right: 22px; display: flex; justify-content: space-between; align-items: center; transition: opacity .25s cubic-bezier(.32,.72,0,1); }
     .sb .ico { display: flex; gap: 4px; align-items: center; }
