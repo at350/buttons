@@ -8,8 +8,8 @@ export default {
     .nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px 26px;
-      padding: 14px 18px;
+      gap: 4px 30px;
+      padding: 14px 20px 14px 34px;
       background: #fff;
       border: 1px solid #111;
       border-radius: 12px;

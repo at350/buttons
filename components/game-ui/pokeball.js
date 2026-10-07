@@ -1,14 +1,16 @@
 export default {
   id: 'gm-pokeball',
-  credit: 'Niantic Pokémon GO — hold the Poké Ball to charge the shrinking catch ring, release to throw; it flies, wobbles, and clicks shut (or breaks free)',
+  credit: 'Niantic Pokémon GO — a wild Pikachu: hold the Poké Ball to charge the shrinking catch ring, release to throw; it flies, wobbles, and clicks shut (or breaks free)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { position: relative; width: 200px; height: 190px; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #8fd3f4 0%, #c9efd5 55%, #6cbf5a 55%, #4e9f44 100%); user-select: none; -webkit-user-select: none; }
-    .target { position: absolute; left: 50%; top: 56px; width: 44px; height: 44px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffe680, #f0a500 70%); box-shadow: 0 4px 8px rgba(0,0,0,.2); transition: transform .3s, opacity .3s; }
-    .target::before, .target::after { content: ""; position: absolute; top: 15px; width: 6px; height: 8px; border-radius: 50%; background: #222; }
-    .target::before { left: 13px; } .target::after { right: 13px; }
-    .ring, .outer { position: absolute; left: 50%; top: 56px; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; opacity: 0; pointer-events: none; }
+    .stage { position: relative; width: 200px; height: 200px; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #8fd3f4 0%, #c9efd5 46%, #7fcd63 46%, #4e9f44 100%); user-select: none; -webkit-user-select: none; }
+    .target { position: absolute; left: 50%; top: 58px; width: 78px; height: 78px; transform: translate(-50%, -50%); transition: transform .3s, opacity .3s; }
+    .target img { position: relative; display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 2px rgba(0,0,0,.18)); animation: idle 1.6s ease-in-out infinite; animation-play-state: paused; -webkit-user-drag: none; }
+    .stage:hover .target img { animation-play-state: running; }
+    @keyframes idle { 50% { transform: translateY(-3px) scaleY(1.02); } }
+    .target::before { content: ""; position: absolute; left: 14px; right: 14px; bottom: -2px; height: 10px; border-radius: 50%; background: rgba(20,60,20,.35); filter: blur(2px); }
+    .ring, .outer { position: absolute; left: 50%; top: 60px; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%; opacity: 0; pointer-events: none; }
     .outer { border: 2px solid rgba(255,255,255,.95); }
     .ring { border: 4px solid #6fe04a; transform: scale(1); }
     .hold .outer { opacity: 1; }
@@ -34,7 +36,7 @@ export default {
     <div class="stage">
       <div class="msg">Gotcha!</div>
       <div class="outer"></div><div class="ring"></div>
-      <div class="target"></div>
+      <div class="target"><img src="assets/real/gm-pikachu-artwork.png" width="78" height="78" alt="Wild Pikachu"></div>
       <button class="ball" type="button" aria-label="Hold and release to throw"></button>
     </div>`,
   init(root) {

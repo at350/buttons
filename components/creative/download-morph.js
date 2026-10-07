@@ -4,7 +4,10 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .wrap { width: 232px; height: 72px; max-width: 100%; display: grid; place-items: center; }
+    .wrap { position: relative; width: 232px; height: 72px; max-width: 100%; display: grid; place-items: center; }
+    .pct { position: absolute; left: 6px; right: 6px; top: 12px; display: flex; justify-content: space-between; font: 600 12px/1 Inter, system-ui, sans-serif; color: #111; font-variant-numeric: tabular-nums; opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+    .pct span:first-child { color: #6b7280; font-weight: 500; }
+    .wrap.loading .pct { opacity: 1; transition-delay: .35s; }
     .btn {
       position: relative; width: 168px; height: 48px; border: 0; border-radius: 24px; background: #111; color: #fff; cursor: pointer; padding: 0;
       font: 600 15px/1 Inter, system-ui, sans-serif; letter-spacing: -.01em; overflow: hidden;
@@ -29,6 +32,7 @@ export default {
   `,
   html: `
     <div class="wrap">
+      <div class="pct" aria-hidden="true"><span>Assets.zip</span><span class="n">0%</span></div>
       <button class="btn" type="button" aria-label="Download">
         <span class="fill"></span>
         <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download</span>
@@ -36,15 +40,21 @@ export default {
       </button>
     </div>`,
   init(root) {
-    const b = root.querySelector('.btn');
+    const b = root.querySelector('.btn'), wrap = root.querySelector('.wrap'), n = root.querySelector('.n');
     const timers = [];
+    let raf = 0;
     const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+    // percentage follows the fill's easing (1.6s after a .45s delay); runs only while loading
+    const ease = (t) => { const c = [.45, .05, .25, 1]; let lo = 0, hi = 1, x = 0; for (let i = 0; i < 20; i++) { x = (lo + hi) / 2; const bx = 3 * c[0] * x * (1 - x) ** 2 + 3 * c[2] * x * x * (1 - x) + x ** 3; if (bx < t) lo = x; else hi = x; } return 3 * c[1] * x * (1 - x) ** 2 + 3 * c[3] * x * x * (1 - x) + x ** 3; };
     b.addEventListener('click', () => {
       if (b.classList.contains('loading') || b.classList.contains('done')) return;
-      b.classList.add('loading'); b.setAttribute('aria-label', 'Downloading');
-      later(() => { b.classList.remove('loading'); b.classList.add('done'); b.setAttribute('aria-label', 'Downloaded'); }, 2200);
+      b.classList.add('loading'); wrap.classList.add('loading'); b.setAttribute('aria-label', 'Downloading');
+      const t0 = performance.now();
+      const tick = (now) => { const t = Math.min(1, Math.max(0, (now - t0 - 450) / 1600)); n.textContent = Math.round(ease(t) * 100) + '%'; raf = t < 1 ? requestAnimationFrame(tick) : 0; };
+      n.textContent = '0%'; raf = requestAnimationFrame(tick);
+      later(() => { b.classList.remove('loading'); wrap.classList.remove('loading'); b.classList.add('done'); b.setAttribute('aria-label', 'Downloaded'); }, 2200);
       later(() => { b.classList.remove('done'); b.setAttribute('aria-label', 'Download'); }, 4400);
     });
-    return () => timers.forEach(clearTimeout);
+    return () => { timers.forEach(clearTimeout); cancelAnimationFrame(raf); };
   },
 };

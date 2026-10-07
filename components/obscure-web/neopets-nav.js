@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; max-width: 100%; }
     .bar { display: flex; flex-wrap: wrap; gap: 3px; padding: 6px; background: #ffcc00; border: 2px solid #cc9900; border-radius: 12px; box-shadow: inset 0 2px 0 #ffe680, inset 0 -2px 0 #e6b800; max-width: 100%; }
-    .tab { flex: 1 1 auto; min-width: 64px; padding: 6px 10px; border: 1px solid #b38600; border-radius: 10px; background: linear-gradient(#fff3b3, #ffd633); color: #663300; cursor: pointer; font: 700 11px/1 Verdana, Arial, sans-serif; text-shadow: 0 1px 0 #fff6cc; white-space: nowrap; transition: transform .1s, background .15s; }
+    .tab { flex: 1 1 0; min-width: 64px; padding: 6px 10px; border: 1px solid #b38600; border-radius: 10px; background: linear-gradient(#fff3b3, #ffd633); color: #663300; cursor: pointer; font: 700 11px/1 Verdana, Arial, sans-serif; text-shadow: 0 1px 0 #fff6cc; white-space: nowrap; transition: transform .1s, background .15s; }
     .tab:hover { background: linear-gradient(#fff, #fff3b3); }
     .tab:active { transform: translateY(1px); }
     .tab:focus-visible { outline: 2px dotted #663300; outline-offset: 1px; }

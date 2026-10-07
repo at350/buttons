@@ -9,10 +9,10 @@ export default {
     .term:focus-visible { outline: 1px solid #00ff41; outline-offset: 2px; }
     .ln { display: block; min-height: 22px; white-space: pre-wrap; word-break: break-word; }
     .cur { display: inline-block; width: 9px; height: 17px; background: #00ff41; vertical-align: -3px; margin-left: 1px; animation: blink 1s steps(1) infinite; box-shadow: 0 0 6px #00ff41; }
-    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes blink { 0%, 74% { opacity: 1; } 75%, 100% { opacity: 0; } }
     .term.typing .cur { animation: none; }
   `,
-  html: `<button class="term" type="button" aria-label="Terminal"><span class="ln l1"></span><span class="ln l2"></span><span class="cur" aria-hidden="true"></span></button>`,
+  html: `<button class="term" type="button" aria-label="Terminal"><span class="ln l1"><span class="cur" aria-hidden="true"></span></span><span class="ln l2"></span></button>`,
   init(root) {
     const term = root.querySelector('.term'), l1 = root.querySelector('.l1'), l2 = root.querySelector('.l2'), cur = root.querySelector('.cur');
     const lines = ['Wake up, Neo...', 'The Matrix has you...', 'Follow the white rabbit.', 'Knock, knock, Neo.'];
@@ -23,7 +23,7 @@ export default {
       iv = setInterval(() => { if (i < text.length) { cur.before(text[i++]); } else { stop(); done && done(); } }, 55 + Math.random() * 40);
     };
     const show = () => {
-      if (step === 0) { l1.textContent = ''; l2.textContent = ''; l2.appendChild(cur); return; }
+      if (step === 0) { l1.textContent = ''; l2.textContent = ''; l1.appendChild(cur); return; }
       if (step === 1) { type(l1, lines[0]); }
       if (step === 2) { l1.textContent = lines[0]; type(l2, lines[1]); }
       if (step === 3) { l1.textContent = lines[1]; type(l2, lines[2]); }

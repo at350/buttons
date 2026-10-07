@@ -3,7 +3,7 @@
 // two-line text, the ▶ menu cursor and the blinking ▼ "more" arrow; DMG d-pad and magenta A / B buttons.
 export default {
   id: 'gm-pokemon-textbox',
-  credit: 'Game Freak Pokémon Red / Blue (Game Boy) — Gen 1 double-ruled text box and ▶ choice menu on the DMG screen; ▲▼ move, A picks, B backs out',
+  credit: 'Game Freak Pokémon Red / Blue (Game Boy) — Prof. Oak\'s starter question in the Gen 1 double-ruled text box with the YES / NO menu; ▲▼ move, A picks, B says no',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -14,7 +14,7 @@ export default {
     .frame { position: absolute; background: #9bbc0f; border-radius: 5px;
       box-shadow: inset 0 0 0 4px #0f380f, inset 0 0 0 6px #9bbc0f, inset 0 0 0 8px #306230; }
     .msg { left: 0; right: 0; bottom: 0; height: 64px; padding: 11px 14px 0 16px; white-space: pre; }
-    .menu { right: 0; top: 0; width: 140px; height: 86px; padding: 9px 8px 0 26px; visibility: hidden; }
+    .menu { right: 0; bottom: 60px; width: 76px; height: 64px; padding: 10px 8px 0 26px; visibility: hidden; }
     .menu.open { visibility: visible; }
     .mi { position: relative; display: block; width: 100%; height: 22px; border: none; background: none; text-align: left; padding: 0; cursor: pointer; color: inherit; font: inherit; text-transform: inherit; white-space: nowrap; }
     .mi.sel::before { content: "▶"; position: absolute; left: -15px; top: 0; font-size: 11px; }
@@ -41,9 +41,9 @@ export default {
   html: `
     <div class="stage">
       <div class="bezel"><div class="scr">
-        <div class="frame menu open" role="menu"><button class="mi sel" type="button" role="menuitem">Bulbasaur</button><button class="mi" type="button" role="menuitem">Charmander</button><button class="mi" type="button" role="menuitem">Squirtle</button></div>
-        <div class="frame msg" aria-live="polite"><span class="t">Which POKéMON
-will you choose?</span><span class="arrow">▼</span></div>
+        <div class="frame menu open" role="menu"><button class="mi sel" type="button" role="menuitem">Yes</button><button class="mi" type="button" role="menuitem">No</button></div>
+        <div class="frame msg" aria-live="polite"><span class="t">So! You want the
+plant POKéMON?</span><span class="arrow">▼</span></div>
       </div></div>
       <div class="pad">
         <div class="dpad"><button class="dp u" type="button" data-k="up" aria-label="Up">▲</button><button class="dp d" type="button" data-k="down" aria-label="Down">▼</button></div>
@@ -52,14 +52,18 @@ will you choose?</span><span class="arrow">▼</span></div>
     </div>`,
   init(root) {
     const t = root.querySelector('.t'), menu = root.querySelector('.menu'), items = [...root.querySelectorAll('.mi')];
-    const intro = 'Which POKéMON\nwill you choose?'; let i = 0;
+    const mons = [['plant', 'BULBASAUR'], ['fiery', 'CHARMANDER'], ['water', 'SQUIRTLE']]; let m = 0, i = 0, step = 0;
+    const ask = () => 'So! You want the\n' + mons[m][0] + ' POKéMON?';
     const show = (s, open) => { t.textContent = s; menu.classList.toggle('open', open); menu.classList.remove('blink'); };
-    const sel = (n) => { i = (n + items.length) % items.length; items.forEach((m, j) => m.classList.toggle('sel', i === j)); };
+    const sel = (n) => { i = (n + items.length) % items.length; items.forEach((it, j) => it.classList.toggle('sel', i === j)); };
     const act = (k) => {
       const open = menu.classList.contains('open');
-      if (k === 'up' && open) sel(i - 1); else if (k === 'down' && open) sel(i + 1);
-      else if (k === 'a') { if (open) show('So! You want\n' + items[i].textContent.toUpperCase() + '?', false); else show(intro, true); }
-      else if (k === 'b') show(open ? 'Take your time.\n' : intro, !open);
+      if ((k === 'up' || k === 'down') && open) { sel(i + 1); return; }
+      if (k === 'a' && open && i === 0) { step = 1; show('This POKéMON is\nreally energetic!', false); return; }
+      if (k === 'a' && !open && step === 1) { step = 2; show('RED received\na ' + mons[m][1] + '!', false); return; }
+      if ((k === 'a' && open && i === 1) || (k === 'b' && open)) { m = (m + 1) % mons.length; }
+      else if (!open && step === 2) { m = (m + 1) % mons.length; }
+      step = 0; sel(0); show(ask(), true);
     };
     root.querySelectorAll('.pad button').forEach((b) => b.addEventListener('click', () => act(b.dataset.k)));
     items.forEach((m, j) => { m.addEventListener('click', () => { sel(j); act('a'); }); m.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown') { e.preventDefault(); sel(i + 1); items[i].focus(); } if (e.key === 'ArrowUp') { e.preventDefault(); sel(i - 1); items[i].focus(); } }); });

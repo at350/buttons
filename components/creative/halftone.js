@@ -14,7 +14,7 @@ export default {
       position: absolute; inset: -2px; z-index: 0; pointer-events: none;
       background:
         radial-gradient(closest-side, #8c8c8c, #fff) 0 0 / 9px 9px,
-        linear-gradient(105deg, #fff 0 34%, #000 66% 100%) 0 0 / 300% 100% no-repeat;
+        linear-gradient(105deg, #fff 0 34%, #000 66% 100%) 22% 0 / 300% 100% no-repeat;
       background-blend-mode: multiply;
       filter: contrast(24);
       transition: background-position .9s cubic-bezier(.45, 0, .25, 1);

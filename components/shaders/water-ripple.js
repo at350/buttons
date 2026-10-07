@@ -119,7 +119,7 @@ export default {
     .btn { position: relative; display: grid; place-items: center; width: 260px; height: 84px; max-width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #1e8fbf; cursor: pointer; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45), inset 0 2px 8px rgba(0,40,70,.25), 0 1px 2px rgba(0,0,0,.2); }
     .cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
     .cv.nogl { background: repeating-linear-gradient(90deg, #2aa4d6 0 28px, #e6f7ff 28px 30px), #2aa4d6; }
-    .l { position: relative; z-index: 1; color: #fff; font: 700 20px/1 'Fraunces', Georgia, serif; font-variation-settings: 'SOFT' 100; letter-spacing: .02em; text-shadow: 0 2px 10px rgba(0,60,100,.6); pointer-events: none; }
+    .l { position: relative; z-index: 1; color: #fff; font: 700 20px/1 'Fraunces', Georgia, serif; font-variation-settings: 'SOFT' 100; letter-spacing: .02em; text-shadow: 0 1px 1px rgba(0,45,85,.7), 0 0 2px rgba(0,45,85,.5), 0 2px 14px rgba(0,40,80,.85); pointer-events: none; }
     .btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
   `,
   html: `<button class="btn" type="button"><canvas class="cv"></canvas><span class="l">Dive in</span></button>`,

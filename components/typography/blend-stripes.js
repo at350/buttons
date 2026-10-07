@@ -28,19 +28,19 @@ export default {
       position: absolute;
       inset: -40px -200px;
       z-index: 0;
-      background: repeating-linear-gradient(-30deg, #fff 0 18px, #000 18px 36px);
+      background: repeating-linear-gradient(-30deg, #fff 0 24px, #000 24px 32px);
       transform: translateX(0);
       animation: slide 1.4s linear infinite;
       animation-play-state: paused;
     }
     .btn:hover .stripes, .btn:focus-visible .stripes, .btn.on .stripes { animation-play-state: running; }
-    .btn.on .stripes { background: repeating-linear-gradient(-30deg, #fde047 0 18px, #000 18px 36px); animation-duration: .8s; }
+    .btn.on .stripes { background: repeating-linear-gradient(-30deg, #fde047 0 24px, #000 24px 32px); animation-duration: .8s; }
     .t {
       position: relative;
       z-index: 1;
       color: #fff;
       mix-blend-mode: difference;
-      font: 800 34px/1 Syne, 'Space Grotesk', system-ui, sans-serif;
+      font: 800 36px/1 Syne, 'Space Grotesk', system-ui, sans-serif;
       letter-spacing: .01em;
       padding-left: .01em;
       white-space: nowrap;
@@ -50,7 +50,7 @@ export default {
     .btn:hover .t { transform: scale(1.04); }
     .btn:active .t { transform: scale(.96); }
     .btn:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
-    @keyframes slide { to { transform: translateX(41.57px); } }
+    @keyframes slide { to { transform: translateX(36.95px); } }
     @media (prefers-reduced-motion: reduce) { .stripes { animation: none !important; } }
   `,
   html: `<div class="stage"><button class="btn" type="button" aria-pressed="false"><i class="stripes" aria-hidden="true"></i><span class="t">Invert</span></button></div>`,

@@ -1,6 +1,6 @@
 export default {
   id: 'dp-tvos-tile',
-  credit: 'Apple tvOS — focused parallax poster: the poster photo and its title shift at different rates, the tile scales up, tilts with the pointer, carries a moving specular glare and a deep soft shadow',
+  credit: 'Apple tvOS — focused parallax poster: the key art and the game’s logo (Horizon Zero Dawn, Steam library art) shift at different rates, the tile scales up, tilts with the pointer, carries a moving specular glare and a deep soft shadow',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -25,10 +25,10 @@ export default {
     .art { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; background: #0b1220; transform: translateZ(0); }
     .l { position: absolute; inset: -10%; width: 120%; height: 120%; pointer-events: none; }
     .photo { object-fit: cover; display: block; transform: translate(calc(var(--px) * -10px), calc(var(--py) * -6px)) scale(1.02); }
-    .scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, .55)); }
+    .scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, .6)); }
     .ttl {
-      position: absolute; left: 16px; bottom: 12px; color: #fff; font: 800 21px/1.04 'Syne', system-ui, sans-serif; letter-spacing: .01em;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, .6); pointer-events: none; white-space: nowrap; text-align: left;
+      position: absolute; left: 10px; bottom: 8px; width: 112px; height: auto; pointer-events: none;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .65));
       transform: translate(calc(var(--px) * 7px), calc(var(--py) * 5px));
     }
     .glare {
@@ -44,9 +44,9 @@ export default {
       <button class="tile" type="button" aria-label="Horizon Zero Dawn">
         <span class="shadow"></span>
         <span class="art">
-          <img class="l photo" src="assets/real/game-horizon-zero-dawn-key-art.jpg" alt="" width="264" height="149" draggable="false">
+          <img class="l photo" src="assets/real/game-horizon-zero-dawn-hero.jpg" alt="" width="264" height="149" draggable="false">
           <span class="scrim"></span>
-          <span class="ttl">Horizon<br>Zero Dawn</span>
+          <img class="ttl" src="assets/real/game-horizon-zero-dawn-logo.png" alt="" width="112" height="49" draggable="false">
           <span class="glare"></span>
           <span class="sheen"></span>
         </span>

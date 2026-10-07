@@ -1,16 +1,16 @@
 export default {
   id: 'rt-mac-traffic-lights',
-  credit: 'macOS (Big Sur and later) — window traffic lights: close / minimize / zoom with hover glyphs and gray inactive state',
+  credit: 'macOS (Big Sur and later) — a TextEdit window on the Sonoma wallpaper, its traffic lights: close / minimize / zoom with hover glyphs and gray inactive state',
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { width: 220px; height: 120px; border-radius: 12px; position: relative; overflow: hidden;
-      background: linear-gradient(160deg, #5d8bd8, #a879d6 55%, #f0a5b8); }
-    .win { position: absolute; left: 22px; top: 18px; width: 176px; height: 84px; border-radius: 10px; background: #fff;
+    .stage { width: 252px; height: 128px; border-radius: 12px; position: relative; overflow: hidden;
+      background: #3b4f8f url(assets/real/wall-macos-sonoma.jpg) center / cover; }
+    .win { position: absolute; left: 24px; top: 18px; width: 204px; height: 92px; border-radius: 10px; background: #fff;
       box-shadow: 0 0 0 .5px rgba(0,0,0,.25), 0 8px 24px rgba(0,0,0,.28); transform-origin: 50% 100%;
       transition: transform .35s cubic-bezier(.32,.72,0,1), opacity .25s, left .3s cubic-bezier(.32,.72,0,1), top .3s cubic-bezier(.32,.72,0,1), width .3s cubic-bezier(.32,.72,0,1), height .3s cubic-bezier(.32,.72,0,1), border-radius .3s; }
-    .bar { height: 28px; display: flex; align-items: center; gap: 8px; padding-left: 10px; border-radius: 10px 10px 0 0; background: #ececec; border-bottom: 1px solid #d8d8d8; }
-    .win.zoomed { left: 0; top: 0; width: 220px; height: 120px; border-radius: 0; }
+    .bar { position: relative; height: 28px; display: flex; align-items: center; gap: 8px; padding-left: 10px; border-radius: 10px 10px 0 0; background: #ececec; border-bottom: 1px solid #d8d8d8; }
+    .win.zoomed { left: 0; top: 0; width: 252px; height: 128px; border-radius: 0; }
     .win.zoomed .bar { border-radius: 0; }
     .win.closed { opacity: 0; transform: scale(.94); pointer-events: none; }
     .win.mini { transform: translateY(60px) scale(.15, .05); opacity: 0; pointer-events: none; transition: transform .45s cubic-bezier(.5,0,.75,0), opacity .45s ease-in; }
@@ -25,7 +25,12 @@ export default {
     .lights { display: flex; gap: 8px; }
     .win.inactive .l { background: #dcdcdc; box-shadow: inset 0 0 0 .5px #c8c8c8; }
     .win.inactive .lights:not(:hover) svg { opacity: 0; }
-    .ttl { font: 600 13px -apple-system, system-ui, "Helvetica Neue", sans-serif; color: #4d4d4d; margin-left: 10px; }
+    .ttl { position: absolute; left: 70px; right: 70px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; font: 600 13px -apple-system, system-ui, "Helvetica Neue", sans-serif; color: #4d4d4d; }
+    .lights { position: relative; z-index: 1; }
+    .doc { padding: 8px 12px; font: 13px/16px -apple-system, system-ui, "Helvetica Neue", sans-serif; }
+    .caret { display: inline-block; width: 1px; height: 15px; background: #000; vertical-align: -3px; animation: cb 1s steps(1) infinite; }
+    .win.inactive .caret { visibility: hidden; }
+    @keyframes cb { 50% { opacity: 0; } }
     .win.inactive .ttl { color: #b3b3b3; }
   `,
   html: `
@@ -39,6 +44,7 @@ export default {
           </div>
           <span class="ttl">Untitled</span>
         </div>
+        <div class="doc" aria-hidden="true"><i class="caret"></i></div>
       </div>
     </div>`,
   init(root) {

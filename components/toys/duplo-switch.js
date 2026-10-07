@@ -27,11 +27,8 @@ export default {
     .lever[aria-checked="true"] .knob { transform: translateX(26px); }
     .lever:hover .knob { filter: brightness(1.1); }
     .lever:focus-visible { outline: 3px solid #f8c400; outline-offset: 2px; }
-    .engine { position: absolute; left: 0; top: 0; width: 34px; height: 22px; offset-path: path('${STRAIGHT}'); offset-distance: 4%; offset-rotate: auto; pointer-events: none; }
-    .engine::before { content: ''; position: absolute; inset: 0; border-radius: 5px; background: linear-gradient(#ff4a43, #d01012 70%, #9c0a0c); box-shadow: 0 3px 4px rgba(0,0,0,.4); }
-    .engine::after { content: ''; position: absolute; left: 4px; top: 4px; width: 14px; height: 14px; border-radius: 3px;
-      background: radial-gradient(circle at 50% 50%, #1b1b1b 0 3px, transparent 4px) 22px 0 / 10px 14px no-repeat, linear-gradient(#ffe25a, #f8c400);
-      box-shadow: 18px 3px 0 -3px #1b1b1b; }
+    .engine { position: absolute; left: 0; top: 0; width: 40px; height: 24px; offset-path: path('${STRAIGHT}'); offset-distance: 4%; offset-rotate: auto; pointer-events: none; }
+    .engine svg { display: block; width: 40px; height: 24px; filter: drop-shadow(0 3px 2px rgba(0,0,0,.4)); }
   `,
   html: `
     <div class="stage"><div class="yard">
@@ -43,7 +40,7 @@ export default {
         <path class="groove" d="M84 105 C140 105 144 35 232 35 M84 119 C150 119 156 49 232 49"/>
         <g class="points"><rect x="84" y="108" width="40" height="8" rx="3" fill="#f8c400"/></g>
       </svg>
-      <div class="engine"></div>
+      <div class="engine"><svg viewBox="0 0 40 24" aria-hidden="true"><rect x="5" y="0" width="7" height="3" rx="1" fill="#1b1b1b"/><rect x="5" y="21" width="7" height="3" rx="1" fill="#1b1b1b"/><rect x="24" y="0" width="7" height="3" rx="1" fill="#1b1b1b"/><rect x="24" y="21" width="7" height="3" rx="1" fill="#1b1b1b"/><rect x="1" y="2" width="37" height="20" rx="3" fill="#2a2b2f"/><rect x="36" y="5" width="4" height="14" rx="1.5" fill="#f8c400"/><rect x="18" y="4" width="18" height="16" rx="3" fill="#d01012"/><rect x="18" y="4" width="18" height="3" rx="1.5" fill="#ff5a52" opacity=".6"/><circle cx="23" cy="12" r="3.3" fill="#d01012"/><circle cx="23" cy="12" r="3.3" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".7"/><circle cx="22.1" cy="11.1" r="1.3" fill="#ff8a85" opacity=".7"/><circle cx="31.5" cy="12" r="3.6" fill="#1b1b1b"/><circle cx="31.5" cy="12" r="2" fill="#000"/><circle cx="30.6" cy="11.1" r=".9" fill="#555"/><rect x="2" y="2.5" width="15" height="19" rx="3" fill="#0055bf"/><rect x="2" y="2.5" width="15" height="3" rx="1.5" fill="#4a8ae0" opacity=".6"/><circle cx="6.3" cy="7.7" r="3.3" fill="#0055bf"/><circle cx="6.3" cy="7.7" r="3.3" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".7"/><circle cx="5.3999999999999995" cy="6.8" r="1.3" fill="#7fb0ef" opacity=".7"/><circle cx="12.7" cy="7.7" r="3.3" fill="#0055bf"/><circle cx="12.7" cy="7.7" r="3.3" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".7"/><circle cx="11.799999999999999" cy="6.8" r="1.3" fill="#7fb0ef" opacity=".7"/><circle cx="6.3" cy="16.3" r="3.3" fill="#0055bf"/><circle cx="6.3" cy="16.3" r="3.3" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".7"/><circle cx="5.3999999999999995" cy="15.4" r="1.3" fill="#7fb0ef" opacity=".7"/><circle cx="12.7" cy="16.3" r="3.3" fill="#0055bf"/><circle cx="12.7" cy="16.3" r="3.3" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".7"/><circle cx="11.799999999999999" cy="15.4" r="1.3" fill="#7fb0ef" opacity=".7"/></svg></div>
       <button class="lever" type="button" role="switch" aria-checked="false" aria-label="track switch"><span class="knob"></span></button>
     </div></div>`,
   init(root) {

@@ -8,11 +8,12 @@ export default {
     .box { width: 96px; border: 2px solid rgba(255,255,255,.25); border-radius: 4px; background: rgba(0,0,0,.45); cursor: pointer; padding: 0; color: #fff; position: relative; display: flex; flex-direction: column; align-items: center; transition: border-color .15s, box-shadow .15s; }
     .box:hover, .box:focus-visible { border-color: rgba(255,255,255,.7); box-shadow: 0 0 14px rgba(120,160,255,.35); outline: none; }
     .box h5 { margin: 0; font: 700 10px 'Unbounded', 'Syne', system-ui, sans-serif; letter-spacing: 2px; padding: 6px 0 4px; color: rgba(255,255,255,.75); }
-    .grid { display: grid; grid-template-columns: repeat(4, 14px); grid-template-rows: repeat(4, 14px); gap: 1px; margin: 4px 0 10px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 14px); grid-template-rows: repeat(4, 14px); gap: 1px; margin: 4px 0 10px; translate: calc(var(--ox, 0) * 15px) calc(var(--oy, 0) * 15px); }
     .grid i { display: block; width: 14px; height: 14px; border-radius: 1px; background: var(--c, transparent); }
     .grid i.f { box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), inset 2px 2px 0 rgba(255,255,255,.35), inset -2px -2px 0 rgba(0,0,0,.35), 0 0 8px var(--c); }
-    .q { display: grid; grid-template-columns: repeat(4, 7px); grid-template-rows: repeat(4, 7px); gap: 1px; margin-bottom: 8px; opacity: .55; }
-    .q i { display: block; width: 7px; height: 7px; background: var(--c, transparent); }
+    .q { display: grid; grid-template-columns: repeat(4, 10px); grid-template-rows: repeat(4, 10px); gap: 1px; margin-bottom: 6px; translate: calc(var(--ox, 0) * 11px) calc(var(--oy, 0) * 11px); }
+    .q i { display: block; width: 10px; height: 10px; border-radius: 1px; background: var(--c, transparent); }
+    .q i.f { box-shadow: inset 0 0 0 1px rgba(255,255,255,.3), inset 1px 1px 0 rgba(255,255,255,.35), inset -1px -1px 0 rgba(0,0,0,.35); }
     .hold.used { opacity: .5; }
     .grid.pop { animation: pop .18s ease-out; }
     @keyframes pop { 50% { transform: scale(1.12); } }
@@ -32,7 +33,7 @@ export default {
     const rnd = () => keys[Math.floor(Math.random() * keys.length)];
     const cells = (el) => { if (!el.children.length) for (let i = 0; i < 16; i++) el.appendChild(document.createElement('i')); return [...el.children]; };
     const rotate = (pts, r) => { let p = pts; for (let k = 0; k < r; k++) p = p.map(([x, y]) => [3 - y, x]); const mx = Math.min(...p.map((a) => a[0])), my = Math.min(...p.map((a) => a[1])); return p.map(([x, y]) => [x - mx, y - my]); };
-    const draw = (el, name, r = 0) => { const c = cells(el); c.forEach((i) => { i.style.setProperty('--c', 'transparent'); i.classList.remove('f'); }); if (!name) return; const [col, pts] = P[name]; rotate(pts, r).forEach(([x, y]) => { const i = c[Math.min(15, y * 4 + x)]; i.style.setProperty('--c', col); i.classList.add('f'); }); };
+    const draw = (el, name, r = 0) => { const c = cells(el); c.forEach((i) => { i.style.setProperty('--c', 'transparent'); i.classList.remove('f'); }); if (!name) return; const [col, pts] = P[name]; const rp = rotate(pts, r); el.style.setProperty('--ox', (3 - Math.max(...rp.map((a) => a[0]))) / 2); el.style.setProperty('--oy', (3 - Math.max(...rp.map((a) => a[1]))) / 2); rp.forEach(([x, y]) => { const i = c[Math.min(15, y * 4 + x)]; i.style.setProperty('--c', col); i.classList.add('f'); }); };
     const g1 = root.querySelector('.g1'), g2 = root.querySelector('.g2'), q1 = root.querySelector('.q1'), q2 = root.querySelector('.q2'), hb = root.querySelector('.hold'), nb = root.querySelector('.next');
     let t;
     const render = () => { draw(g1, hold); draw(g2, queue[0], rot); draw(q1, queue[1]); draw(q2, queue[2]); g2.classList.remove('pop'); void g2.offsetWidth; g2.classList.add('pop'); };

@@ -12,13 +12,13 @@ export default {
     .m { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px; border-radius: 50%;
       background: radial-gradient(circle at 35% 30%, #fff, #e8e8e8 50%, #9a9a9a); box-shadow: 0 2px 2px rgba(0,0,0,.35); transition: transform .35s cubic-bezier(.3,1.4,.5,1), opacity .2s; }
     .m.gone { opacity: 0; transform: translate(0, 60px) scale(.4) !important; }
-    .hippo { position: absolute; left: 75px; top: 118px; width: 80px; height: 98px; pointer-events: none; }
+    .hippo { position: absolute; left: 55px; top: 108px; width: 120px; height: 112px; pointer-events: none; overflow: visible; }
     .neck { transform-box: fill-box; transform-origin: 50% 100%; transition: transform .12s cubic-bezier(.2,1.4,.4,1); }
-    .lunge .neck { transform: translateY(-34px); }
+    .lunge .neck { transform: translateY(-30px); }
     .jaw { transform-box: fill-box; transform-origin: 50% 100%; transition: transform .1s; }
-    .lunge .jaw { transform: translateY(-8px); }
-    .mouth { transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(0); transition: transform .1s; }
-    .lunge .mouth { transform: scaleY(1.3); }
+    .lunge .jaw { transform: translateY(-13px) scaleY(.82); }
+    .mouth { transform-box: fill-box; transform-origin: 50% 100%; transform: scaleY(.4); transition: transform .1s; }
+    .lunge .mouth { transform: scaleY(1.15); }
     .lever { position: absolute; left: 92px; top: 218px; width: 46px; height: 20px; border: 0; padding: 0; border-radius: 6px 6px 10px 10px; cursor: pointer;
       background: linear-gradient(#c084fc, #8e44c8 60%, #5c2589); box-shadow: 0 5px 0 #3b155c, 0 6px 6px rgba(0,0,0,.3); transform: translateY(-4px); transition: transform .05s, box-shadow .05s; }
     .lever:active, .lever.down { transform: translateY(1px); box-shadow: 0 0 0 #3b155c; }
@@ -29,17 +29,37 @@ export default {
   html: `
     <div class="stage">
       <div class="arena">${SPOTS.map(() => '<span class="m"></span>').join('')}</div>
-      <svg class="hippo" viewBox="0 0 80 98" aria-hidden="true">
-        <ellipse cx="40" cy="86" rx="38" ry="18" fill="#7b3fb0"/>
-        <rect x="27" y="34" width="26" height="56" rx="8" fill="#7b3fb0"/>
+      <svg class="hippo" viewBox="0 0 120 112" aria-hidden="true">
+        <defs>
+          <radialGradient id="hb" cx=".45" cy=".3" r=".8"><stop offset="0" stop-color="#b57ae8"/><stop offset=".55" stop-color="#8640c4"/><stop offset="1" stop-color="#4f1d80"/></radialGradient>
+          <radialGradient id="hs" cx=".5" cy=".25" r=".85"><stop offset="0" stop-color="#c590f0"/><stop offset=".6" stop-color="#9450d0"/><stop offset="1" stop-color="#5a2490"/></radialGradient>
+          <radialGradient id="hm" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#7a1838"/><stop offset=".7" stop-color="#d9416f"/><stop offset="1" stop-color="#f27ca0"/></radialGradient>
+        </defs>
+        <!-- body and shoulders behind the head -->
+        <ellipse cx="60" cy="96" rx="54" ry="20" fill="url(#hb)"/>
+        <path d="M14 92c6 10 22 16 46 16s40-6 46-16" fill="none" stroke="#3d1466" stroke-width="2" opacity=".5"/>
         <g class="neck">
-          <rect x="22" y="40" width="36" height="50" rx="10" fill="#8e44c8"/>
-          <g class="jaw"><path d="M18 22 Q40 4 62 22 L60 32 Q40 24 20 32 Z" fill="#a565dd"/><path d="M24 26 Q40 16 56 26" fill="none" stroke="#5c2589" stroke-width="2"/></g>
-          <path d="M16 30 Q40 22 64 30 L60 50 Q40 58 20 50 Z" fill="#9b55d4"/>
-          <path class="mouth" d="M22 34 Q40 28 58 34 L56 44 Q40 48 24 44 Z" fill="#e85a8a"/>
-          <ellipse cx="33" cy="16" rx="3" ry="2" fill="#5c2589"/><ellipse cx="47" cy="16" rx="3" ry="2" fill="#5c2589"/>
-          <circle cx="24" cy="52" r="6" fill="#fff"/><circle cx="56" cy="52" r="6" fill="#fff"/><circle cx="24" cy="53" r="3" fill="#1b1b1b"/><circle cx="56" cy="53" r="3" fill="#1b1b1b"/>
-          <path d="M28 64 Q24 54 16 56 M52 64 Q56 54 64 56" fill="none" stroke="#f9a8d4" stroke-width="3" stroke-linecap="round"/>
+          <!-- lower jaw with the open mouth and tusks -->
+          <path d="M24 40c0-14 16-22 36-22s36 8 36 22c0 9-14 16-36 16S24 49 24 40z" fill="#6a2ea4"/>
+          <path class="mouth" d="M30 38c0-9 13-14 30-14s30 5 30 14c0 6-12 10-30 10s-30-4-30-10z" fill="url(#hm)"/>
+          <path d="M38 44l3 6 3-5M76 45l3 5 3-6" fill="#fff" stroke="#e6dccf" stroke-width=".6"/>
+          <!-- head and brow -->
+          <ellipse cx="60" cy="66" rx="40" ry="26" fill="url(#hb)"/>
+          <!-- ears -->
+          <ellipse cx="25" cy="72" rx="8" ry="6" fill="#7b3fb0" transform="rotate(-25 25 72)"/><ellipse cx="25" cy="72" rx="4.5" ry="3" fill="#f49ac1" transform="rotate(-25 25 72)"/>
+          <ellipse cx="95" cy="72" rx="8" ry="6" fill="#7b3fb0" transform="rotate(25 95 72)"/><ellipse cx="95" cy="72" rx="4.5" ry="3" fill="#f49ac1" transform="rotate(25 95 72)"/>
+          <!-- upper jaw / snout that lifts -->
+          <g class="jaw">
+            <path d="M22 44c0-18 17-28 38-28s38 10 38 28c0 10-17 16-38 16S22 54 22 44z" fill="url(#hs)"/>
+            <ellipse cx="47" cy="28" rx="5" ry="3.2" fill="#3d1466"/><ellipse cx="73" cy="28" rx="5" ry="3.2" fill="#3d1466"/>
+            <ellipse cx="50" cy="22" rx="14" ry="3.5" fill="#fff" opacity=".22"/>
+          </g>
+          <!-- bulging eyes on top of the head -->
+          <g><ellipse cx="44" cy="58" rx="10" ry="9" fill="#8a46c6"/><ellipse cx="44" cy="57" rx="7.5" ry="7" fill="#fff"/><circle cx="45" cy="54.5" r="3.6" fill="#1b1b1b"/><circle cx="46.2" cy="53.3" r="1.2" fill="#fff"/>
+            <path d="M34 55c3-6 17-6 20 0" fill="#7b3fb0"/></g>
+          <g><ellipse cx="76" cy="58" rx="10" ry="9" fill="#8a46c6"/><ellipse cx="76" cy="57" rx="7.5" ry="7" fill="#fff"/><circle cx="75" cy="54.5" r="3.6" fill="#1b1b1b"/><circle cx="76.2" cy="53.3" r="1.2" fill="#fff"/>
+            <path d="M66 55c3-6 17-6 20 0" fill="#7b3fb0"/></g>
+          <path d="M44 80c5 4 27 4 32 0" fill="none" stroke="#3d1466" stroke-width="1.6" opacity=".45" stroke-linecap="round"/>
         </g>
       </svg>
       <button class="lever" type="button" aria-label="hippo lever"></button>

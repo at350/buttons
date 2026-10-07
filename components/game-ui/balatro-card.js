@@ -1,23 +1,6 @@
-// Balatro: a 23x31-texel Joker card drawn at an integer 3x scale (crisp pixel edges), Balatro's hover tilt +
+// Balatro: the game's real Joker card sprite (71x95 texels, assets/real/gm-balatro-joker.png, shown 1:1 crisp), Balatro's hover tilt +
 // foil sheen, select lifts the card; the HUD uses the game's Chips blue #009dff and Mult red #fe5f55 boxes and
 // the blue "Play Hand" button; playing triggers the Joker's "+4 Mult" pop.
-const px = (rows, pal, ox = 0, oy = 0) => {
-  const d = {};
-  rows.forEach((r, y) => { let x = 0; while (x < r.length) { const c = r[x]; let n = 1; while (r[x + n] === c) n++; if (pal[c]) (d[c] = d[c] || []).push(`M${x + ox} ${y + oy}h${n}v1h-${n}z`); x += n; } });
-  return Object.entries(d).map(([c, p]) => `<path fill="${pal[c]}" d="${p.join('')}"/>`).join('');
-};
-const FRAME = px([
-  '..OOOOOOOOOOOOOOOOOOO..', '.OCCCCCCCCCCCCCCCCCCCO.', ...Array.from({ length: 27 }, () => 'OCCCCCCCCCCCCCCCCCCCCCO'), '.OCCCCCCCCCCCCCCCCCCCO.', '..OOOOOOOOOOOOOOOOOOO..',
-], { O: '#b9ad98', C: '#fbf5e9' });
-const JOKER = px([
-  '...................', '.YY.....YYY.....YY.', '.YYK...KYYYK...KYY.', '..KRK..KBBBK..KBK..', '..KRRK.KBBBK.KBBK..',
-  '...KRRKKBBBKKBBK...', '...KRRRKBBBKBBBK...', '....KRRRBBBBBBK....', '...KKKKKKKKKKKKK...', '...KYYYYYYYYYYYK...',
-  '...KKKKKKKKKKKKK...', '....KSSSSSSSSSK....', '...KSSSSSSSSSSSK...', '...KSSKKSSSKKSSK...', '...KSSKKSSSKKSSK...',
-  '...KSSSSSSSSSSSK...', '...KSSSSSRRSSSSK...', '...KSSSSSRRSSSSK...', '...KSKSSSSSSSKSK...', '...KSSKKKKKKKSSK...',
-  '....KSSSRRRSSSK....', '.....KSSSSSSSK.....', '......KKKKKKK......', '.....RRK...KBB.....', '....RRRRK.KBBBB....',
-  '...RRRRRRKBBBBBB...', '...................',
-], { Y: '#fda200', K: '#3a3046', R: '#fe5f55', B: '#009dff', S: '#ffffff' }, 2, 2);
-
 export default {
   id: 'gm-balatro-card',
   credit: 'LocalThunk Balatro — the pixel Joker card (tilts toward the cursor with a foil sheen, click to select) and the Chips × Mult HUD; "Play Hand" triggers +4 Mult',
@@ -28,14 +11,14 @@ export default {
       background: radial-gradient(ellipse at 30% 20%, #3f7d68, #2a5446 55%, #1d3b33); font-family: 'JetBrains Mono', ui-monospace, monospace; }
     .stage::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.07) 0 1px, transparent 1px 3px); pointer-events: none; }
     .slot { perspective: 420px; }
-    .card { position: relative; display: block; width: 69px; height: 93px; border: none; padding: 0; cursor: pointer; background: none; image-rendering: pixelated;
+    .card { position: relative; display: block; width: 71px; height: 95px; border: none; padding: 0; cursor: pointer; background: none; image-rendering: pixelated;
       transform-style: preserve-3d; transition: transform 140ms cubic-bezier(.3,1.6,.6,1), filter 140ms; filter: drop-shadow(3px 4px 0 rgba(0,0,0,.35)); }
-    .card svg { display: block; width: 69px; height: 93px; }
+    .card img { display: block; width: 71px; height: 95px; image-rendering: pixelated; -webkit-user-drag: none; pointer-events: none; }
     .card:hover { transform: scale(1.06) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
     .card.sel { transform: translateY(-18px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); filter: drop-shadow(5px 10px 0 rgba(0,0,0,.3)); }
     .card.juice { animation: juice 260ms cubic-bezier(.3,1.8,.6,1); }
     @keyframes juice { 0% { scale: 1; rotate: 0deg; } 40% { scale: 1.14; rotate: -4deg; } 100% { scale: 1; rotate: 0deg; } }
-    .sheen { position: absolute; inset: 3px; border-radius: 3px; pointer-events: none; opacity: 0; mix-blend-mode: screen; transition: opacity 150ms;
+    .sheen { position: absolute; inset: 2px; border-radius: 5px; pointer-events: none; opacity: 0; mix-blend-mode: screen; transition: opacity 150ms;
       background: linear-gradient(115deg, transparent 25%, rgba(255,120,200,.45) 40%, rgba(120,255,230,.45) 50%, rgba(255,240,120,.4) 60%, transparent 75%); background-size: 250% 250%; background-position: var(--sx, 50%) 50%; }
     .card:hover .sheen, .card.sel .sheen { opacity: 1; }
     .card:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
@@ -61,7 +44,7 @@ export default {
   html: `
     <div class="stage">
       <div class="slot">
-        <button class="card" type="button" aria-pressed="false" aria-label="Joker card"><svg viewBox="0 0 23 31" shape-rendering="crispEdges" aria-hidden="true">${FRAME}${JOKER}</svg><span class="sheen"></span></button>
+        <button class="card" type="button" aria-pressed="false" aria-label="Joker card"><img src="assets/real/gm-balatro-joker.png" width="71" height="95" alt=""><span class="sheen"></span></button>
       </div>
       <span class="pop">+4 Mult</span>
       <div class="hud">

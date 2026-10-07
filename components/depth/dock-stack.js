@@ -54,7 +54,7 @@ export default {
     .doc .lines { position: absolute; left: 5px; right: 8px; top: 7px; height: 14px; background: repeating-linear-gradient(180deg, #c7c7cc 0 1px, transparent 1px 4px); }
     .pdf .tag { background: #e5352b; } .zip .tag { background: #8e8e93; } .m4a .tag { background: #fc3c44; }
     .pic { position: absolute; left: 1px; top: 4px; width: 38px; height: 30px; border-radius: 2px; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
-      background: linear-gradient(180deg, #7dd3fc 0 52%, #fcd34d 52% 58%, #16a34a 58%); }
+      background: #9ca3af url(assets/wide/09.webp) 40% 50% / cover no-repeat; }
     .finder { position: absolute; left: 6px; top: 4px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #fff;
       background: rgba(40, 40, 44, .82); box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .25), 0 2px 6px rgba(0, 0, 0, .3); }
     .finder svg { width: 16px; height: 16px; }

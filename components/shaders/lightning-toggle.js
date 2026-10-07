@@ -111,6 +111,8 @@ void main(){
  float ch=u_hover*(1.-u_value)*(.6+.4*sin(u_time*14.));
  col+=(exp(-max(ea-.12,0.)*30.)+exp(-max(eb-.12,0.)*30.))*vec3(.35,.45,1.)*.35*ch;
  col+=(exp(-max(ea-.11,0.)*14.)+exp(-max(eb-.11,0.)*14.))*vec3(.35,.45,1.)*.45*u_value;
+ // standby: a faint static charge halo so the off state reads as live hardware
+ col+=(exp(-max(ea-.11,0.)*22.)+exp(-max(eb-.11,0.)*22.))*vec3(.3,.4,1.)*.16*(1.-u_value);
  float ma,mb; vec3 ba=ball(uv,vec2(X0,.5),.115,ma), bb=ball(uv,vec2(X1,.5),.115,mb);
  col=mix(col,ba,ma); col=mix(col,bb,mb);
  gl_FragColor=vec4(col,1.);}`;

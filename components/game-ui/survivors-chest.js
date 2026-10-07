@@ -1,6 +1,6 @@
 export default {
   id: 'gm-survivors-chest',
-  credit: 'poncle Vampire Survivors — the pixel treasure chest: click to open, the lid flips, light beams out and an item pops up; click again to close',
+  credit: 'poncle Vampire Survivors — the game\'s treasure chest sprite: click to open, it hops, light beams out and the Whip rises with a gold payout; click again to close',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -8,30 +8,26 @@ export default {
     .beam { position: absolute; left: 50%; bottom: 52px; width: 0; height: 0; border-left: 60px solid transparent; border-right: 60px solid transparent; border-bottom: 150px solid rgba(255,230,120,.22); transform: translateX(-50%) rotate(180deg); transform-origin: 50% 0; opacity: 0; transition: opacity .3s; pointer-events: none; }
     .open .beam { opacity: 1; animation: sway 1.6s ease-in-out infinite alternate; }
     @keyframes sway { from { transform: translateX(-50%) rotate(176deg) scaleX(.9); } to { transform: translateX(-50%) rotate(184deg) scaleX(1.1); } }
-    .chest { position: relative; width: 72px; height: 56px; border: none; padding: 0; background: none; cursor: pointer; image-rendering: pixelated; }
-    .chest svg { width: 100%; height: 100%; shape-rendering: crispEdges; overflow: visible; }
+    .chest { position: relative; width: 80px; height: 75px; border: none; padding: 0; background: none; cursor: pointer; }
+    .chest img { display: block; width: 80px; height: 75px; image-rendering: pixelated; pointer-events: none; -webkit-user-drag: none; }
+    .open .chest { animation: hop .45s cubic-bezier(.3,1.6,.5,1); }
+    @keyframes hop { 30% { transform: translateY(-10px) scale(1.06, .94); } 60% { transform: translateY(0) scale(.96, 1.04); } }
     .chest:focus-visible { outline: 3px solid #ffe678; outline-offset: 4px; }
-    .lid { transform-box: fill-box; transform-origin: 50% 0%; transition: transform .35s cubic-bezier(.3,1.4,.5,1); }
-    .open .lid { transform: scaleY(-.6); }
-    .stage:not(.open) .chest:hover { animation: wig .4s ease-in-out infinite; }
+        .stage:not(.open) .chest:hover { animation: wig .4s ease-in-out infinite; }
     @keyframes wig { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
-    .item { position: absolute; left: 50%; top: 28px; transform: translate(-50%, 10px) scale(0); width: 28px; height: 28px; opacity: 0; transition: transform .4s cubic-bezier(.3,1.6,.5,1), opacity .2s; pointer-events: none; }
+    .item { position: absolute; left: 50%; top: 30px; z-index: 2; transform: translate(-50%, 10px) scale(0); width: 32px; height: 32px; opacity: 0; transition: transform .4s cubic-bezier(.3,1.6,.5,1), opacity .2s; pointer-events: none; }
     .open .item { transform: translate(-50%, -24px) scale(1); opacity: 1; }
-    .item svg { width: 100%; height: 100%; shape-rendering: crispEdges; filter: drop-shadow(0 0 6px #ffe678); }
-    .gold { color: #ffe678; font: 700 12px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 1px; text-shadow: 2px 2px 0 #000; }
+    .item img { display: block; width: 32px; height: 32px; image-rendering: pixelated; filter: drop-shadow(0 0 6px #ffe678); }
+    .gold { display: flex; align-items: center; gap: 6px; color: #ffe678; font: 700 12px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 1px; text-shadow: 2px 2px 0 #000; }
+    .gold img { width: 16px; height: 16px; image-rendering: pixelated; }
     .cnt { color: #fff; }
   `,
   html: `
     <div class="stage">
       <div class="beam"></div>
-      <div class="item"><svg viewBox="0 0 14 14"><path fill="#f7f7f7" d="M6 1h2v2h2v2h2v2h-2v2h-2v2H6v-2H4V7H2V5h2V3h2z"/><path fill="#c9e3ff" d="M6 3h2v2h2v2H8v2H6V7H4V5h2z"/></svg></div>
-      <button class="chest" type="button" aria-pressed="false" aria-label="Treasure chest">
-        <svg viewBox="0 0 36 28">
-          <g class="base"><rect x="2" y="12" width="32" height="14" fill="#8b4a1e"/><rect x="2" y="12" width="32" height="2" fill="#5a2d10"/><rect x="2" y="24" width="32" height="2" fill="#5a2d10"/><rect x="6" y="12" width="2" height="14" fill="#d6a53a"/><rect x="28" y="12" width="2" height="14" fill="#d6a53a"/><rect x="15" y="12" width="6" height="6" fill="#d6a53a"/><rect x="17" y="14" width="2" height="3" fill="#2b1a0a"/></g>
-          <g class="lid"><rect x="2" y="4" width="32" height="8" fill="#a3581f"/><rect x="4" y="2" width="28" height="2" fill="#a3581f"/><rect x="2" y="4" width="32" height="2" fill="#c87a2e"/><rect x="6" y="2" width="2" height="10" fill="#d6a53a"/><rect x="28" y="2" width="2" height="10" fill="#d6a53a"/><rect x="15" y="8" width="6" height="4" fill="#d6a53a"/></g>
-        </svg>
-      </button>
-      <div class="gold">GOLD <span class="cnt">0</span></div>
+      <div class="item"><img src="assets/real/gm-vs-whip.png" width="32" height="32" alt=""></div>
+      <button class="chest" type="button" aria-pressed="false" aria-label="Treasure chest"><img src="assets/real/gm-vs-treasure-chest.png" width="80" height="75" alt=""></button>
+      <div class="gold"><img src="assets/real/gm-vs-gold-coin.png" width="16" height="16" alt="">GOLD <span class="cnt">0</span></div>
     </div>`,
   init(root) {
     const stage = root.querySelector('.stage'), chest = root.querySelector('.chest'), cnt = root.querySelector('.cnt'); let gold = 0;

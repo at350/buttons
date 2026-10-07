@@ -9,7 +9,7 @@ export default {
       font: 400 28px/1 'Instrument Serif', Georgia, serif; color: #1c1917; letter-spacing: -.01em; white-space: nowrap; }
     .lnk:focus-visible { outline: 2px solid #1c1917; outline-offset: 2px; border-radius: 4px; }
     .lnk.on { color: #ea580c; }
-    svg { position: absolute; left: 20px; right: 20px; bottom: 14px; width: calc(100% - 40px); height: 80px; overflow: visible; pointer-events: none; }
+    svg { position: absolute; left: 20px; right: 20px; bottom: 10px; width: calc(100% - 40px); height: 80px; overflow: visible; pointer-events: none; }
     path { fill: none; stroke: #1c1917; stroke-width: 3; stroke-linecap: round; }
     .lnk.on + svg path { stroke: #ea580c; }
   `,
@@ -23,11 +23,11 @@ export default {
       const r = svg.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width * 200, py = (e.clientY - r.top) / r.height * 80;
       cx = Math.max(10, Math.min(190, px));
-      cy = Math.max(Y - 14, Math.min(112, 2 * py - Y));
+      cy = Math.max(Y - 6, Math.min(112, 2 * py - Y)); // the string never rises into the label
       draw();
     });
     const spring = () => {
-      vy += (Y - cy) * .14; vy *= .8; cy += vy;
+      vy += (Y - cy) * .14; vy *= .8; cy = Math.max(Y - 6, cy + vy);
       cx += (100 - cx) * .15;
       draw();
       if (Math.abs(vy) > .05 || Math.abs(cy - Y) > .05) raf = requestAnimationFrame(spring);

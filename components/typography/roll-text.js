@@ -19,10 +19,11 @@ export default {
     .ch > span { display: block; height: 1em; line-height: 1; }
     .btn:hover .ch, .btn:focus-visible .ch { transform: translateY(-1em); }
     .btn.on .ch { transform: translateY(-1em); }
-    .btn.on .ch > span:last-child { color: #bfdbfe; }
+    .btn.on { background: #2563eb; }
+    .btn.on:hover { background: #1d4ed8; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; flex: none; transition: transform .4s cubic-bezier(.34, 1.56, .64, 1), background .25s; }
     .btn:hover .dot { transform: scale(1.4); }
-    .btn.on .dot { background: #bfdbfe; transform: scale(1.4); }
+    .btn.on .dot { background: #fff; transform: scale(1.4); box-shadow: 0 0 0 3px rgba(255, 255, 255, .25); }
   `,
   html: `<button class="btn" type="button" aria-pressed="false" aria-label="Get started"><span class="w" data-label="Get started" aria-hidden="true"></span><i class="dot" aria-hidden="true"></i></button>`,
   init(root) {

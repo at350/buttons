@@ -1,6 +1,6 @@
 export default {
   id: 'ty-swiss-grid',
-  credit: 'Swiss / International Style button — tight-tracked Inter on a hairline grid with a single red dot that steps diagonally one module on hover (Müller-Brockmann poster grammar)',
+  credit: 'Swiss / International Style button — tight-tracked Inter on a hairline grid with a single red dot that drops one module down the grid on hover (Müller-Brockmann poster grammar)',
   size: 'auto',
   css: `
     :host { display: inline-block; }
@@ -72,9 +72,9 @@ export default {
       top: 14px;
       transition: transform .5s cubic-bezier(.76, 0, .24, 1);
     }
-    .btn:hover .dot, .btn:focus-visible .dot { transform: translate(-55px, 55px); }
-    .btn.on .dot { transform: translate(-55px, 55px) scale(1.4); }
-    .btn:active .dot { transform: translate(-55px, 55px) scale(.7); transition-duration: .15s; }
+    .btn:hover .dot, .btn:focus-visible .dot { transform: translate(0, 55px); }
+    .btn.on .dot { transform: translate(0, 55px) scale(1.4); }
+    .btn:active .dot { transform: translate(0, 55px) scale(.7); transition-duration: .15s; }
     .btn:focus-visible { outline: 2px solid #e3241b; outline-offset: 3px; }
   `,
   html: `<button class="btn" type="button" aria-pressed="false"><span class="t">Grid<br>System</span><span class="s"><span class="a">Zürich 1961</span><span class="b" aria-hidden="true">Basel 1963</span></span><i class="dot" aria-hidden="true"></i></button>`,

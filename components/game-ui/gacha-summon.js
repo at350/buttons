@@ -14,10 +14,11 @@ export default {
     .sum.pull .gem { transform: rotateY(720deg) scale(1.3); }
     .cost { font-size: 15px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; padding-left: 8px; border-left: 1px solid rgba(74,42,0,.35); }
     .bal { color: #e9d8ff; font: 600 11px 'Inter', system-ui, sans-serif; display: inline-flex; align-items: center; gap: 5px; background: rgba(0,0,0,.35); padding: 3px 10px; border-radius: 10px; }
+    .rib { text-shadow: 0 2px 0 rgba(0,0,0,.35); }
     .bal svg { width: 12px; height: 12px; } .cg { width: 13px; height: 13px; }
     .sum.poor { filter: grayscale(.8) brightness(.7); cursor: not-allowed; }
-    .rib { position: absolute; left: -10%; right: -10%; top: 50%; transform: translateY(-50%) scaleX(0); padding: 6px 0; text-align: center; color: #fff; font: 800 18px 'Unbounded', 'Syne', system-ui, sans-serif; letter-spacing: 3px; pointer-events: none; opacity: 0; }
-    .rib.r3 { background: linear-gradient(90deg, transparent, #3b82f6, transparent); } .rib.r4 { background: linear-gradient(90deg, transparent, #a855f7, transparent); } .rib.r5 { background: linear-gradient(90deg, transparent, #f59e0b, transparent); text-shadow: 0 0 12px #ffd700; }
+    .rib { position: absolute; z-index: 2; left: 0; right: 0; top: 50%; transform: translateY(-50%) scaleX(0); height: 72px; display: grid; place-items: center; color: #fff; font: 800 26px 'Unbounded', 'Syne', system-ui, sans-serif; letter-spacing: 3px; pointer-events: none; opacity: 0; }
+    .rib.r3 { background: linear-gradient(90deg, #0b1a3d, #1d4ed8 18%, #3b82f6 50%, #1d4ed8 82%, #0b1a3d); box-shadow: 0 0 24px #3b82f6; } .rib.r4 { background: linear-gradient(90deg, #1e0b3d, #7e22ce 18%, #a855f7 50%, #7e22ce 82%, #1e0b3d); box-shadow: 0 0 24px #a855f7; } .rib.r5 { background: linear-gradient(90deg, #3d2a0b, #d97706 18%, #f59e0b 50%, #d97706 82%, #3d2a0b); box-shadow: 0 0 28px #ffd700; text-shadow: 0 0 12px #ffd700; }
     .rib.show { animation: rib 1.4s ease-out forwards; }
     @keyframes rib { 0% { transform: translateY(-50%) scaleX(0); opacity: 0; } 15% { transform: translateY(-50%) scaleX(1); opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-50%) scaleX(1); } }
   `,

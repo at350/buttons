@@ -1,6 +1,8 @@
 // Fluke 87V true-RMS multimeter: yellow holster, charcoal case, segment LCD and the big rotary
 // function switch with its detented positions (OFF, V~, V⎓, mV, Ω, diode, mA/A, µA). Drag the
-// knob, click it to step, click a legend, or use the arrow keys; HOLD freezes the reading.
+// knob, click it to step, click a legend, or use the arrow keys; HOLD freezes the reading, RANGE leaves
+// auto-ranging, the yellow shift key swaps DC/AC on the mV and current ranges, REL zeroes the reading,
+// MIN MAX records the peak. Below the dial: the four fused input jacks (A · mA µA · COM · VΩ).
 const SEG = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', '-': 'g', ' ': '', O: 'abcdef', L: 'def' };
 const hs = (y) => `1,${y} 2.2,${y - 1.2} 9.8,${y - 1.2} 11,${y} 9.8,${y + 1.2} 2.2,${y + 1.2}`;
 const vs = (x, a, b) => `${x},${a + 1} ${x + 1.2},${a + 2.2} ${x + 1.2},${b - 2.2} ${x},${b - 1} ${x - 1.2},${b - 2.2} ${x - 1.2},${a + 2.2}`;
@@ -33,20 +35,32 @@ export default {
     .stage { display: inline-block; padding: 9px; border-radius: 18px; overflow: hidden; background: linear-gradient(160deg, #ffd23a, #f2b600 60%, #d99e00);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 0 rgba(0,0,0,.15); }
     .body { width: 176px; padding: 10px 8px 6px; border-radius: 11px; background: linear-gradient(170deg, #4a4f53, #2f3336); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 1px 3px rgba(0,0,0,.4); }
-    .lcd { position: relative; height: 46px; border-radius: 4px; background: linear-gradient(#bfc6b0, #a9b29a); box-shadow: inset 0 2px 4px rgba(0,0,0,.45), 0 0 0 2px #1d1f21; }
+    .lcd { position: relative; height: 54px; border-radius: 4px; background: linear-gradient(#bfc6b0, #a9b29a); box-shadow: inset 0 2px 4px rgba(0,0,0,.45), 0 0 0 2px #1d1f21; }
     .lcd.off > * { visibility: hidden; }
-    .rd { position: absolute; left: 22px; top: 9px; width: 104px; height: 30px; }
+    .rd { position: absolute; left: 22px; top: 7px; width: 100px; height: 29px; }
     .rd .dg > * { fill: rgba(30,34,24,.06); } .rd .dg > .on { fill: #1d2216; }
     .an { position: absolute; font: 700 7px/1 "DM Sans", Inter, Arial, sans-serif; color: #1d2216; letter-spacing: .4px; }
-    .an.auto { left: 6px; top: 6px; } .an.h { left: 6px; bottom: 6px; } .an.m { right: 8px; top: 6px; }
-    .an.u { right: 8px; bottom: 6px; font: 600 13px/1 "DM Sans", Inter, Arial, sans-serif; }
-    .btns { display: flex; gap: 5px; margin: 8px 2px 0; }
-    .b { flex: 1; height: 17px; border: 0; padding: 0; border-radius: 9px; cursor: pointer; font: 700 6.5px/1 "DM Sans", Inter, Arial, sans-serif; letter-spacing: .4px; color: #e9ebec;
+    .an.auto { left: 5px; top: 5px; font-size: 6px; } .an.h { left: 5px; top: 26px; font-size: 6px; } .an.sh { left: 5px; top: 15px; font-size: 6px; } .an.m { right: 8px; top: 6px; }
+    .an.u { right: 8px; top: 20px; font: 600 12px/1 "DM Sans", Inter, Arial, sans-serif; }
+    .an.h { color: #1d2216; }
+    .bar { position: absolute; left: 22px; right: 10px; bottom: 5px; height: 5px; display: flex; gap: 1px; }
+    .bar i { flex: 1; background: rgba(30,34,24,.07); } .bar i.on { background: #1d2216; }
+    .model { display: flex; align-items: baseline; justify-content: space-between; margin: 0 3px 6px; font: 700 6px/1 "DM Sans", Inter, Arial, sans-serif; letter-spacing: .5px; color: #d3d6d8; }
+    .model b { font: 800 11px/1 "DM Sans", Inter, Arial, sans-serif; letter-spacing: -.2px; color: #fff; }
+    .model b span { color: #ffd23a; font-size: 9px; margin-left: 1px; }
+    .jacks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin: 0 2px; padding: 6px 2px 4px; border-radius: 6px; background: #26292c; box-shadow: inset 0 1px 2px rgba(0,0,0,.6); }
+    .jk { display: grid; justify-items: center; gap: 3px; font: 700 6.5px/1 "DM Sans", Inter, Arial, sans-serif; color: #f0f1f2; white-space: nowrap; }
+    .jk i { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle, #050505 0 3.2px, #8d9297 3.6px 4.6px, #111 5px 6px, var(--c) 6.4px 9px, rgba(0,0,0,.6) 9.6px);
+      box-shadow: 0 1px 0 rgba(255,255,255,.12); }
+    .jk small { font-size: 5px; color: #9ea3a7; letter-spacing: .2px; }
+    .cat { margin: 4px 0 0; text-align: center; font: 700 5px/1 "DM Sans", Inter, Arial, sans-serif; color: #9ea3a7; letter-spacing: .5px; }
+    .btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 5px; margin: 8px 2px 0; }
+    .b { height: 16px; border: 0; padding: 0; border-radius: 9px; cursor: pointer; font: 700 6.5px/1 "DM Sans", Inter, Arial, sans-serif; letter-spacing: .4px; color: #e9ebec;
       background: linear-gradient(#6f757a, #50555a); box-shadow: 0 2px 0 #1b1d1f, inset 0 1px 0 rgba(255,255,255,.2); }
     .b.y { background: linear-gradient(#ffd23a, #e3a900); color: #1d1f21; box-shadow: 0 2px 0 #7a5a00, inset 0 1px 0 rgba(255,255,255,.5); }
     .b:active, .b[aria-pressed="true"] { transform: translateY(1px); box-shadow: 0 1px 0 #1b1d1f, inset 0 1px 2px rgba(0,0,0,.35); }
     .b:focus-visible, .knob:focus-visible { outline: 2px solid #ffd23a; outline-offset: 2px; }
-    .dial { position: relative; width: 160px; height: 136px; margin-top: 2px; }
+    .dial { position: relative; width: 160px; height: 132px; margin-top: 0; }
     .dial svg { position: absolute; inset: 0; width: 160px; height: 136px; }
     .lg { cursor: pointer; } .lg text { font: 700 9px "DM Sans", Inter, Arial, sans-serif; fill: #f0f1f2; text-anchor: middle; }
     .lg .hit { fill: transparent; } .lg:hover text { fill: #ffd23a; } .lg:hover .sym { stroke: #ffd23a; }
@@ -55,33 +69,53 @@ export default {
     .lg.sel .sym { fill: none; }
     .knob { position: absolute; left: 44px; top: 34px; width: 72px; height: 72px; border-radius: 50%; border: 0; padding: 0; cursor: grab; touch-action: none;
       background: radial-gradient(circle at 45% 35%, #5b6065, #2a2d30 70%); box-shadow: 0 4px 6px rgba(0,0,0,.55), inset 0 1px 1px rgba(255,255,255,.2), 0 0 0 3px #222527; }
-    .rot { position: absolute; inset: 0; border-radius: 50%; transform: rotate(-105deg); transition: transform .14s cubic-bezier(.3,1.7,.5,1); }
+    .rot { position: absolute; inset: 0; border-radius: 50%; --a: -105deg; }
+    .rot::before, .rot::after { transform: rotate(var(--a)); transition: transform .14s cubic-bezier(.3,1.7,.5,1); }
     .rot::before { content: ''; position: absolute; left: 50%; top: 4px; bottom: 4px; width: 20px; margin-left: -10px; border-radius: 10px;
       background: linear-gradient(90deg, #1b1d1f, #4e5357 35%, #33373a 65%, #151719); box-shadow: 0 2px 4px rgba(0,0,0,.6); }
-    .rot::after { content: ''; position: absolute; left: 50%; top: 6px; width: 4px; height: 14px; margin-left: -2px; border-radius: 2px; background: #ffd23a; }
+    .rot::after { content: ''; position: absolute; left: 50%; top: 6px; width: 4px; height: 14px; margin-left: -2px; border-radius: 2px; background: #ffd23a; transform-origin: 2px 30px; }
     .ring { position: absolute; left: 34px; top: 24px; width: 92px; height: 92px; border-radius: 50%; background: radial-gradient(circle, #24272a 58%, #3d4246 60%, #2a2d30 100%); }
   `,
   html: `
     <div class="stage"><div class="body">
-      <div class="lcd off" aria-live="polite"><span class="an auto">AUTO</span><span class="an h"></span><span class="an m"></span><span class="an u"></span>
-        <svg class="rd" viewBox="0 0 77 22">${digits(5)}</svg></div>
-      <div class="btns"><button class="b y" type="button" aria-label="Shift">&#8203;</button><button class="b" type="button">RANGE</button><button class="b hold" type="button" aria-pressed="false">HOLD</button></div>
+      <div class="model"><b>FLUKE<span>87 V</span></b><span>TRUE RMS MULTIMETER</span></div>
+      <div class="lcd off" aria-live="polite"><span class="an auto">AUTO</span><span class="an sh"></span><span class="an h"></span><span class="an m"></span><span class="an u"></span>
+        <svg class="rd" viewBox="0 0 77 22">${digits(5)}</svg><span class="bar">${'<i></i>'.repeat(30)}</span></div>
+      <div class="btns"><button class="b mm" type="button" aria-pressed="false">MIN MAX</button><button class="b rg" type="button">RANGE</button><button class="b hold" type="button" aria-pressed="false">HOLD</button>
+        <button class="b y" type="button" aria-label="Shift" aria-pressed="false"></button><button class="b rel" type="button" aria-pressed="false">REL &#916;</button><button class="b hz" type="button" aria-pressed="false">Hz %</button></div>
       <div class="dial"><div class="ring"></div><svg viewBox="0 0 160 136">${LEG}</svg>
         <button class="knob" type="button" role="slider" aria-label="Function" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0" aria-valuetext="OFF"><span class="rot"></span></button></div>
+      <div class="jacks" aria-hidden="true">
+        <span class="jk" style="--c:#c8102e"><i></i>A<small>10A MAX</small></span><span class="jk" style="--c:#c8102e"><i></i>mA µA<small>400mA MAX</small></span>
+        <span class="jk" style="--c:#1a1a1a"><i></i>COM<small>&#8203;</small></span><span class="jk" style="--c:#c8102e"><i></i>V &#937; &#9654;|<small>1000V MAX</small></span></div>
+      <div class="cat">CAT III 1000V · CAT IV 600V</div>
     </div></div>`,
   init(root) {
     const lcd = root.querySelector('.lcd'), rd = root.querySelector('.rd'), rot = root.querySelector('.rot'), knob = root.querySelector('.knob');
     const an = { h: root.querySelector('.an.h'), m: root.querySelector('.an.m'), u: root.querySelector('.an.u'), auto: root.querySelector('.an.auto') };
-    const legs = [...root.querySelectorAll('.lg')], hold = root.querySelector('.hold'), range = root.querySelectorAll('.b')[1];
+    const legs = [...root.querySelectorAll('.lg')], hold = root.querySelector('.hold'), range = root.querySelector('.rg');
+    const shiftB = root.querySelector('.y'), relB = root.querySelector('.rel'), mmB = root.querySelector('.mm'), hzB = root.querySelector('.hz');
+    const bars = [...root.querySelectorAll('.bar i')]; an.sh = root.querySelector('.an.sh');
+    const FULL = [0, 1000, 60, 600, 6, 3, 10, 6000];
     const NAMES = ['OFF', 'V AC', 'V DC', 'mV DC', 'Ohms', 'Diode', 'mA/A', 'µA'];
-    let i = 0, held = false, auto = true, drag = null;
+    let i = 0, held = false, auto = true, drag = null, shift = false, rel = false, mm = false, hz = false;
+    const fmt = (v, like) => { const d = (like.split('.')[1] || '').length, w = like.replace('-', '').length; let s = Math.abs(v).toFixed(d); while (s.length < w) s = '0' + s; return (v < 0 ? '-' : '') + s; };
     const set = (n) => {
-      i = Math.max(0, Math.min(7, n)); const p = POS[i];
-      rot.style.transform = `rotate(${p.a}deg)`; legs.forEach((l, k) => l.classList.toggle('sel', k === i));
+      const prev = i; i = Math.max(0, Math.min(7, n)); if (i !== prev) { shift = rel = mm = hz = false; }
+      const base = POS[i], p = { ...base };
+      if (shift && /^(3|6|7)$/.test(String(i))) p.m = 'AC';
+      if (hz && (i === 1 || i === 2)) { p.r = '60.00'; p.u = 'Hz'; p.m = ''; }
+      if (rel && i) { p.r = fmt(0, p.r); }
+      if (mm && i && !rel) { const v = parseFloat(p.r) * 1.012; p.r = fmt(v, p.r); }
+      rot.style.setProperty('--a', `${p.a}deg`); legs.forEach((l, k) => l.classList.toggle('sel', k === i));
       knob.setAttribute('aria-valuenow', i); knob.setAttribute('aria-valuetext', NAMES[i]);
       lcd.classList.toggle('off', i === 0); if (i === 0) { held = false; hold.setAttribute('aria-pressed', 'false'); }
-      if (!held) { paint(rd, p.r); an.m.textContent = p.m; an.u.textContent = p.u; }
-      an.h.textContent = held ? 'HOLD' : i === 5 ? '▶|' : ''; an.auto.textContent = auto ? 'AUTO' : 'MANUAL';
+      if (!held) {
+        paint(rd, p.r); an.m.textContent = p.m; an.u.textContent = p.u;
+        const f = FULL[i] ? Math.min(1, Math.abs(parseFloat(p.r)) / FULL[i]) : 0; bars.forEach((b, k) => b.classList.toggle('on', i > 0 && k < Math.round(f * bars.length)));
+      }
+      an.h.textContent = held ? 'HOLD' : mm ? 'MAX' : rel ? 'Δ' : ''; an.auto.textContent = auto ? 'AUTO' : 'MANUAL'; an.sh.textContent = i === 5 ? '▶|' : '';
+      shiftB.setAttribute('aria-pressed', shift); relB.setAttribute('aria-pressed', rel); mmB.setAttribute('aria-pressed', mm); hzB.setAttribute('aria-pressed', hz);
     };
     const ang = (e) => { const r = knob.getBoundingClientRect(); return Math.atan2(e.clientX - (r.left + r.width / 2), -(e.clientY - (r.top + r.height / 2))) * 180 / Math.PI; };
     knob.addEventListener('pointerdown', (e) => { drag = { moved: false, x: e.clientX, y: e.clientY }; knob.setPointerCapture(e.pointerId); });
@@ -99,6 +133,10 @@ export default {
     legs.forEach((l, k) => l.addEventListener('click', () => set(k)));
     hold.addEventListener('click', () => { if (!i) return; held = !held; hold.setAttribute('aria-pressed', held); set(i); });
     range.addEventListener('click', () => { if (!i) return; auto = !auto; set(i); });
-    set(0);
+    shiftB.addEventListener('click', () => { if (!i) return; shift = !shift; set(i); });
+    relB.addEventListener('click', () => { if (!i) return; rel = !rel; set(i); });
+    mmB.addEventListener('click', () => { if (!i) return; mm = !mm; set(i); });
+    hzB.addEventListener('click', () => { if (!i) return; hz = !hz; set(i); });
+    set(2); // on, reading DC volts
   },
 };

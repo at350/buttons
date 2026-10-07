@@ -12,9 +12,10 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: inline-flex; align-items: center; gap: 18px; padding: 12px 18px; border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none;
+    .stage { display: inline-flex; align-items: center; gap: 18px; padding: 10px 18px 0; border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none;
       background: linear-gradient(170deg, #e9e8e3, #cfcdc6); box-shadow: inset 0 1px 0 #fff; }
-    .hs { position: relative; width: 50px; height: 150px; }
+    .hs { position: relative; width: 50px; height: 176px; }
+    .hs > svg { position: absolute; left: 0; top: 0; width: 50px; height: 176px; overflow: visible; }
     .grip { position: absolute; left: 6px; top: 22px; width: 38px; height: 120px; border-radius: 16px 16px 12px 12px;
       background: linear-gradient(90deg, #a7aaa9, #f4f4f1 35%, #dcdcd7 65%, #9d9f9e); box-shadow: 0 3px 5px rgba(0,0,0,.3), inset 0 0 0 1px rgba(0,0,0,.12); }
     .grip::after { content: ''; position: absolute; left: 14px; bottom: -14px; width: 10px; height: 16px; border-radius: 0 0 4px 4px; background: linear-gradient(90deg, #444, #888, #444); }
@@ -42,7 +43,13 @@ export default {
   `,
   html: `
     <div class="stage">
-      <div class="hs"><div class="grip"></div><div class="well"></div><div class="ticks"><i></i><i></i><i></i></div>
+      <div class="hs"><svg viewBox="0 0 50 176" aria-hidden="true"><defs><linearGradient id="hg" x1="0" x2="1"><stop offset="0" stop-color="#9d9f9e"/><stop offset=".3" stop-color="#f4f4f1"/><stop offset=".6" stop-color="#dcdcd7"/><stop offset="1" stop-color="#8f9190"/></linearGradient></defs>
+          <path d="M18.0 150.0c0 2.6 14 2.6 14 0" fill="none" stroke="#2f3133" stroke-width="2.2"/><path d="M18.0 150.0c0-2.2 14-2.2 14 0" fill="none" stroke="#55585b" stroke-width="1.6"/><path d="M19.6 154.4c0 2.6 14 2.6 14 0" fill="none" stroke="#2f3133" stroke-width="2.2"/><path d="M19.6 154.4c0-2.2 14-2.2 14 0" fill="none" stroke="#55585b" stroke-width="1.6"/><path d="M21.2 158.8c0 2.6 14 2.6 14 0" fill="none" stroke="#2f3133" stroke-width="2.2"/><path d="M21.2 158.8c0-2.2 14-2.2 14 0" fill="none" stroke="#55585b" stroke-width="1.6"/><path d="M22.8 163.2c0 2.6 14 2.6 14 0" fill="none" stroke="#2f3133" stroke-width="2.2"/><path d="M22.8 163.2c0-2.2 14-2.2 14 0" fill="none" stroke="#55585b" stroke-width="1.6"/><path d="M24.4 167.6c0 2.6 14 2.6 14 0" fill="none" stroke="#2f3133" stroke-width="2.2"/><path d="M24.4 167.6c0-2.2 14-2.2 14 0" fill="none" stroke="#55585b" stroke-width="1.6"/><path d="M26.0 172.0c0 2.6 14 2.6 14 0" fill="none" stroke="#2f3133" stroke-width="2.2"/><path d="M26.0 172.0c0-2.2 14-2.2 14 0" fill="none" stroke="#55585b" stroke-width="1.6"/><path d="M27.6 176.4c0 2.6 14 2.6 14 0" fill="none" stroke="#2f3133" stroke-width="2.2"/><path d="M27.6 176.4c0-2.2 14-2.2 14 0" fill="none" stroke="#55585b" stroke-width="1.6"/>
+          <rect x="19.5" y="136" width="11" height="16" rx="2" fill="#3a3c3e"/><path d="M19.5 140h11M19.5 144h11M19.5 148h11" stroke="#555" stroke-width="1"/>
+          <path d="M7 40C7 28 13 21 25 21S43 28 43 40V56c-4 3-4 8 0 11-4 3-4 8 0 11-4 3-4 8 0 11-4 3-4 8 0 11L41 128c0 7-7 11-16 11S9 135 9 128Z" fill="url(#hg)" stroke="rgba(0,0,0,.18)"/>
+          <path d="M11 44c0-10 5-16 12-17" fill="none" stroke="#fff" stroke-width="1.5" opacity=".8" stroke-linecap="round"/>
+          <ellipse cx="25" cy="118" rx="9" ry="3.5" fill="none" stroke="#b8bab8" stroke-width="1"/>
+        </svg><div class="well"></div><div class="ticks"><i></i><i></i><i></i></div>
         <button class="btn" type="button" aria-label="Exposure handswitch: hold for prep, push further to expose"></button></div>
       <div class="con">
         <div class="rd"><span>81<small>kV</small></span><span>16<small>mAs</small></span><span class="n">000<small>EXP</small></span></div>

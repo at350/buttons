@@ -12,15 +12,14 @@ export default {
       position: relative; width: 90px; height: 146px; transform-style: preserve-3d;
       box-shadow: 0 0 0 5px #e8e2d6, 0 0 0 6px #b9b0a0, 0 8px 14px 4px rgba(0, 0, 0, .35);
     }
-    /* the room seen through the opening: back wall, floor and a lamp glow, painted in perspective */
+    /* the room seen through the opening: a real lamp-lit living room, warmed toward the light spilling out */
     .room {
       position: absolute; inset: 0; overflow: hidden;
       background:
-        radial-gradient(60px 50px at 62% 28%, rgba(255, 236, 190, .95), transparent 70%),
-        linear-gradient(180deg, #f6d9a2 0, #e9bd78 62%, #b77a3c 62%, #8f5b2a 100%);
+        radial-gradient(70px 60px at 50% 30%, rgba(255, 214, 150, .35), transparent 70%),
+        linear-gradient(180deg, rgba(255, 190, 110, .18), rgba(255, 170, 90, .28)),
+        #6b5a48 url(assets/real/interior-living-room.jpg) 48% 62% / auto 118% no-repeat;
     }
-    .room::before { content: ''; position: absolute; left: 18%; top: 22%; width: 26%; height: 30%; background: #fbe7bf; box-shadow: inset 0 0 0 3px #d9a964, 0 0 12px rgba(255, 240, 200, .8); }
-    .room::after { content: ''; position: absolute; left: 0; right: 0; top: 62%; height: 3px; background: rgba(90, 50, 20, .35); }
     .spill {
       position: absolute; left: 74px; width: 90px; top: calc(24px + 146px); height: 30px; pointer-events: none;
       background: linear-gradient(180deg, rgba(255, 214, 140, .55), transparent); clip-path: polygon(0 0, 100% 0, 128% 100%, -22% 100%);

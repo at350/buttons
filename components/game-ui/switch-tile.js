@@ -7,6 +7,8 @@ const GAMES = [
   ['The Legend of Zelda: Tears of the Kingdom', 'game-zelda-totk-cover.jpg'],
   ['Splatoon 3', 'game-splatoon-3-cover.jpg'],
   ['Super Mario Odyssey', 'game-mario-odyssey-cover.jpg'],
+  ['Metroid Dread', 'game-metroid-dread-cover.png'],
+  ['Pokémon Scarlet', 'game-pokemon-scarlet-violet-cover.png', 'left center'],
 ];
 const ICONS = [
   ['News', '#e60012', '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>'],
@@ -30,15 +32,16 @@ export default {
     .title { position: relative; height: 18px; margin: 8px 0 4px; overflow: hidden; }
     .title span { position: absolute; left: var(--x, 16px); top: 0; max-width: calc(100% - var(--x, 16px) - 12px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       font: 600 13px/18px 'Inter', system-ui, sans-serif; color: #0ab9e6; }
-    .row { display: flex; gap: 10px; padding: 6px 16px 8px; overflow: hidden; }
-    .tile { position: relative; flex: none; width: 66px; height: 66px; border: none; padding: 0; cursor: pointer; border-radius: 2px; background: #d6d6d6 var(--art) center / cover; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+    .rowwrap { container-type: inline-size; }
+    .row { display: flex; gap: clamp(10px, 1.6cqw, 16px); padding: 8px 16px 10px; overflow: hidden; }
+    .tile { position: relative; flex: none; width: clamp(72px, calc((100cqw - 32px) / 5.6), 168px); aspect-ratio: 1; border: none; padding: 0; cursor: pointer; border-radius: 2px; background: #d6d6d6 var(--art) var(--pos, center) / cover; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
     .tile::after { content: ""; position: absolute; inset: -6px; border: 3px solid #00c3e3; border-radius: 4px; opacity: 0; pointer-events: none; }
     .tile.sel::after { opacity: 1; animation: pulse 1.2s ease-in-out infinite alternate; }
     @keyframes pulse { from { border-color: #00b4e6; box-shadow: 0 0 0 0 rgba(0,195,227,0); } to { border-color: #7af2ff; box-shadow: 0 0 6px rgba(0,195,227,.55); } }
     .tile:focus-visible { outline: none; }
     .tile:focus-visible::after { opacity: 1; }
-    .icons { display: flex; justify-content: center; gap: 12px; padding: 8px 0 10px; }
-    .ic { width: 38px; height: 38px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: #fff; display: grid; place-items: center; box-shadow: 0 1px 2px rgba(0,0,0,.18); transition: transform 120ms; }
+    .icons { display: flex; justify-content: center; gap: 14px; padding: 6px 0 12px; }
+    .ic { width: 42px; height: 42px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: #fff; display: grid; place-items: center; box-shadow: 0 1px 2px rgba(0,0,0,.18); transition: transform 120ms; }
     .ic svg { width: 20px; height: 20px; }
     .ic:hover { transform: translateY(-1px); }
     .ic:focus-visible, .ic.sel { outline: 3px solid #00c3e3; outline-offset: 2px; }
@@ -53,9 +56,9 @@ export default {
     <div class="stage">
       <div class="top"><img class="user" src="assets/portraits/women-16.jpg" alt="" width="20" height="20"><span class="stat">12:34<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 0 0-6 0zm-4-4l2 2a7.074 7.074 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" transform="rotate(90 12 12)"/></svg></span></div>
       <div class="title"><span>${GAMES[0][0]}</span></div>
-      <div class="row" role="listbox" aria-label="Software">
-        ${GAMES.map(([n, art], i) => `<button class="tile${i === 0 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 0}" aria-label="${n}" style="--art:url(assets/real/${art})"></button>`).join('')}
-      </div>
+      <div class="rowwrap"><div class="row" role="listbox" aria-label="Software">
+        ${GAMES.map(([n, art, pos], i) => `<button class="tile${i === 0 ? ' sel' : ''}" type="button" role="option" aria-selected="${i === 0}" aria-label="${n}" style="--art:url(assets/real/${art})${pos ? ';--pos:' + pos : ''}"></button>`).join('')}
+      </div></div>
       <div class="icons">${ICONS.map(([n, c, p]) => `<button class="ic" type="button" aria-label="${n}"><svg viewBox="0 0 24 24" fill="${c}" aria-hidden="true">${p}</svg></button>`).join('')}</div>
       <div class="foot"><button class="fb opt" type="button"><span class="key">+</span>Options</button><button class="fb start" type="button" aria-pressed="false"><span class="key">A</span>Start</button></div>
     </div>`,

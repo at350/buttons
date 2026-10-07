@@ -21,12 +21,12 @@ export default {
     .cap { font: 700 7px/1 "Roboto Flex", "DM Sans", Arial, sans-serif; letter-spacing: .8px; color: #dfe5ea; text-align: center; margin-top: 3px; }
     .stick { position: relative; width: 150px; height: 112px; }
     .stick svg { position: absolute; left: 0; top: 0; width: 150px; height: 112px; }
-    .tk { position: absolute; left: 52px; top: 14px; width: 26px; height: 18px; border: 0; padding: 0; border-radius: 50% / 60%; cursor: pointer;
+    .tk { position: absolute; left: 58px; top: 11px; width: 24px; height: 15px; border: 0; padding: 0; border-radius: 50% / 60%; cursor: pointer;
       background: radial-gradient(circle at 45% 35%, #ff6656, #d4140f 55%, #7d0606); box-shadow: 0 3px 0 #4a0303, 0 4px 4px rgba(0,0,0,.5), inset 0 1px 1px rgba(255,255,255,.45);
       transform: rotate(-12deg); transition: transform .05s, box-shadow .05s; -webkit-tap-highlight-color: transparent; }
     .tk.down { transform: rotate(-12deg) translateY(2px); box-shadow: 0 1px 0 #4a0303, 0 1px 2px rgba(0,0,0,.5), inset 0 1px 1px rgba(255,255,255,.3); }
     .tk:focus-visible { outline: 2px solid #9fd0ff; outline-offset: 3px; }
-    .latch { position: absolute; left: 82px; top: 18px; width: 6px; height: 6px; border-radius: 50%; background: #20271f; transition: background .1s; }
+    .latch { position: absolute; left: 92px; top: 16px; width: 6px; height: 6px; border-radius: 50%; background: #20271f; transition: background .1s; }
     .stage.latched .latch { background: #38f05a; box-shadow: 0 0 4px #38f05a; }
   `,
   html: `
@@ -37,11 +37,27 @@ export default {
       </div>
       <div class="stick">
         <svg viewBox="0 0 150 112" aria-hidden="true">
-          <ellipse cx="78" cy="104" rx="46" ry="10" fill="#2c3238"/><ellipse cx="78" cy="100" rx="30" ry="7" fill="#15181b"/>
-          <path d="M60 104C58 80 52 62 50 44C48 26 54 12 70 10C88 8 98 18 100 30C102 44 96 54 94 70C92 84 94 96 96 104Z" fill="#26292c"/>
-          <path d="M60 104C58 80 52 62 50 44C48 26 54 12 70 10" fill="none" stroke="#4a4f54" stroke-width="2"/>
-          <path d="M98 40c8 2 10 10 6 16l-8-2z" fill="#1a1c1e"/>
-          <path d="M56 58c10 4 26 4 36 0" fill="none" stroke="#3a3e42" stroke-width="1.4"/>
+          <defs>
+            <linearGradient id="grip" x1="0" x2="1"><stop offset="0" stop-color="#4a5056"/><stop offset=".22" stop-color="#2c3034"/><stop offset=".7" stop-color="#1b1d20"/><stop offset="1" stop-color="#0f1012"/></linearGradient>
+            <linearGradient id="head" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#53595f"/><stop offset="1" stop-color="#25282b"/></linearGradient>
+            <radialGradient id="boot" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#2a2d30"/><stop offset="1" stop-color="#0c0d0e"/></radialGradient>
+          </defs>
+          <!-- console cutout and rubber gaiter -->
+          <rect x="30" y="86" width="96" height="26" rx="5" fill="#3b4650"/><rect x="33" y="89" width="90" height="24" rx="4" fill="#1a1d20"/>
+          <ellipse cx="78" cy="102" rx="40" ry="11" fill="url(#boot)"/>
+          <ellipse cx="78" cy="99" rx="31" ry="8" fill="none" stroke="#33373b" stroke-width="1.4"/>
+          <ellipse cx="78" cy="96.5" rx="23" ry="6" fill="none" stroke="#35393d" stroke-width="1.4"/>
+          <ellipse cx="78" cy="94.5" rx="17" ry="4.5" fill="#141618" stroke="#383c40" stroke-width="1.2"/>
+          <!-- grip: leans aft, palm swell on the left, finger grooves on the front -->
+          <path d="M66 96C65 84 62 72 59 60C55 46 52 32 55 22C58 12 70 6 84 8C97 10 104 19 103 31C102 41 98 48 97 56C96 66 95 76 93 86L92 96Z" fill="url(#grip)"/>
+          <path d="M86 58q7 3 11-1M86 67q7 3 10.5-1M85 76q7 3 9.5-1" fill="none" stroke="#3c4146" stroke-width="1.3" stroke-linecap="round"/><path d="M86 59.5q7 3 11-1M86 68.5q7 3 10.5-1M85 77.5q7 3 9.5-1" fill="none" stroke="#060708" stroke-width="1" stroke-linecap="round"/>
+          <path d="M60 60C56 46 53 32 56 22" fill="none" stroke="#6a7177" stroke-width="1.3" stroke-linecap="round" opacity=".7"/>
+          <!-- head with hand rest -->
+          <path d="M55 24C56 14 68 7 84 8C98 9 104 18 103 28C96 22 86 20 76 20C66 20 59 22 55 24Z" fill="url(#head)"/>
+          <!-- radio PTT trigger on the front -->
+          <path d="M101 32c7 0 11 6 9 12c-1 3-4 4-7 3l-4-2z" fill="#121315" stroke="#2f3337" stroke-width="1"/>
+          <!-- seam -->
+          <path d="M62 70c10 3 24 3 34 0" fill="none" stroke="#3a3e42" stroke-width="1"/>
         </svg>
         <button class="tk" type="button" aria-pressed="false" aria-label="Sidestick takeover pushbutton"></button><span class="latch"></span>
       </div>

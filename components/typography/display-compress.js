@@ -15,7 +15,7 @@ export default {
       background: transparent;
       color: #0a0a0a;
       border: 0;
-      padding: 6px 34px 6px 4px;
+      padding: 6px 40px 6px 4px;
       display: inline-grid;
       font: 900 56px/1 Unbounded, Syne, system-ui, sans-serif; letter-spacing: .02em;
     }
@@ -27,9 +27,7 @@ export default {
     }
     .btn:hover .v { transform: scaleX(1.04); }
     .btn:active .v { transform: scaleX(.6) scaleY(1.15); transition-duration: .12s; }
-    .btn.on .v { transform: scaleX(.72) scaleY(1.1); }
-    .btn.on:hover .v { transform: scaleX(.78) scaleY(1.08); }
-    .btn:focus-visible {
+        .btn:focus-visible {
       outline: 3px solid #0a0a0a;
       outline-offset: 4px;
       border-radius: 4px;
@@ -38,9 +36,9 @@ export default {
       grid-area: 1 / 1;
       justify-self: end;
       align-self: center;
-      width: 26px;
-      height: 26px;
-      margin-right: -32px;
+      width: 30px;
+      height: 30px;
+      margin-right: -34px;
       display: grid;
       opacity: 0;
       transform: translateX(-10px);

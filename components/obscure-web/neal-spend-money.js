@@ -10,7 +10,7 @@ export default {
     .stage { width: 320px; max-width: 100%; padding: 10px; background: #f1f2f6; border-radius: 12px; font: 400 16px/1.2 Roboto, "Roboto Flex", "Helvetica Neue", Arial, sans-serif; color: #333; }
     .money { background: linear-gradient(180deg, #2ecc71, #1abc9c); color: #fff; text-align: center; padding: 14px 8px; font: 700 26px/1 Roboto, "Roboto Flex", "Helvetica Neue", Arial, sans-serif; font-variant-numeric: tabular-nums; }
     .item { margin-top: 10px; background: #fff; padding: 14px 14px 16px; display: flex; flex-direction: column; align-items: center; }
-    .pic { width: 92px; height: 78px; }
+    .pic { width: 104px; height: 90px; object-fit: contain; display: block; }
     .name { margin-top: 8px; font: 700 20px/1.2 Roboto, "Roboto Flex", "Helvetica Neue", Arial, sans-serif; color: #333; }
     .price { color: #24c486; font: 400 18px/1.3 Roboto, "Roboto Flex", "Helvetica Neue", Arial, sans-serif; }
     .ctl { width: 100%; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
@@ -28,17 +28,7 @@ export default {
     <div class="stage">
       <div class="money" aria-live="polite">$100,000,000,000</div>
       <div class="item">
-        <svg class="pic" viewBox="0 0 92 78" aria-hidden="true">
-          <path d="M8 30c0-16 17-26 38-26s38 10 38 26z" fill="#d98a32"/><path d="M12 28c2-12 16-20 34-20s32 8 34 20" fill="none" stroke="#f0b35a" stroke-width="3" opacity=".6"/>
-          <g fill="#fff6dc"><ellipse cx="30" cy="14" rx="2" ry="1.1"/><ellipse cx="44" cy="10" rx="2" ry="1.1"/><ellipse cx="58" cy="14" rx="2" ry="1.1"/><ellipse cx="38" cy="20" rx="2" ry="1.1"/><ellipse cx="52" cy="21" rx="2" ry="1.1"/><ellipse cx="66" cy="22" rx="2" ry="1.1"/><ellipse cx="24" cy="22" rx="2" ry="1.1"/></g>
-          <path d="M5 33c10 4 20-3 30 1s20-3 30 1 18-2 22-1l-2 4H7z" fill="#7cc242"/>
-          <rect x="7" y="36" width="78" height="9" rx="4" fill="#5a3218"/>
-          <path d="M8 45h76l-6 6-8-4-10 5-10-5-10 5-10-5-8 4z" fill="#f7b928"/>
-          <rect x="9" y="47" width="74" height="7" rx="3" fill="#d98a32"/>
-          <path d="M6 55c10 3 22-2 32 1s22-2 32 1 12-1 16 0l-2 3H8z" fill="#7cc242"/>
-          <rect x="7" y="58" width="78" height="9" rx="4" fill="#5a3218"/>
-          <path d="M8 67h76c0 6-16 9-38 9S8 73 8 67z" fill="#c97a2a"/>
-        </svg>
+        <img class="pic" src="assets/real/ob-neal-big-mac.jpg" alt="Big Mac" width="104" height="90">
         <div class="name">Big Mac</div>
         <div class="price">$2</div>
         <div class="ctl">

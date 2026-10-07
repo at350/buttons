@@ -5,7 +5,7 @@ export default {
   css: `
     :host { display: inline-block; }
     .splash { position: relative; width: 300px; max-width: 100%; height: 170px; border-radius: 12px; overflow: hidden; background: #000 radial-gradient(ellipse at 50% 40%, #1a1a2e, #000 75%); font: 10px Verdana, Arial, sans-serif; color: #9ad; }
-    .ld { position: absolute; left: 40px; right: 40px; top: 66px; display: grid; gap: 6px; transition: opacity .4s; }
+    .ld { position: absolute; left: 40px; right: 40px; top: 72px; display: grid; gap: 6px; transition: opacity .4s; }
     .ld .t { display: flex; justify-content: space-between; letter-spacing: 2px; text-transform: uppercase; }
     .bar { height: 6px; border: 1px solid #357; background: #001; position: relative; }
     .bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #06c, #6cf); transition: width .3s; }
@@ -19,12 +19,9 @@ export default {
     .splash.skipped .ld, .splash.skipped .skip { opacity: 0; pointer-events: none; }
     .splash.in { background: #0b1b2b; }
     .splash.in .enter { border-color: #fc6; color: #fc6; text-shadow: 0 0 8px #fc6; box-shadow: 0 0 14px #c90; animation: none; }
-    .flash { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
-    .flash span { font: 900 42px/1 Impact, "Arial Black", sans-serif; letter-spacing: 6px; color: transparent; -webkit-text-stroke: 1px #345; opacity: .5; }
   `,
   html: `
     <div class="splash">
-      <div class="flash" aria-hidden="true"><span>INTRO</span></div>
       <div class="ld" aria-hidden="true"><div class="t"><span>Loading</span><span class="p">0%</span></div><div class="bar"><i></i></div></div>
       <button class="skip" type="button">SKIP INTRO &gt;&gt;</button>
       <button class="enter" type="button" tabindex="-1">ENTER SITE</button>

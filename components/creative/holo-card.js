@@ -27,9 +27,8 @@ export default {
     }
     .glare { background: radial-gradient(farthest-corner circle at var(--mx) var(--my), rgba(255, 255, 255, .7) 6%, rgba(255, 255, 255, .25) 24%, rgba(0, 0, 0, .35) 95%); mix-blend-mode: overlay; }
     .back {
-      transform: rotateY(180deg); border: 11px solid #f2c230;
-      background: radial-gradient(circle at 50% 50%, #fff 0 22px, #1a1a1a 23px 27px, #e63b2e 28px 50px, #1d4ea8 51px 58px, #2f6fd6 59px 90px, #1d4ea8 91px 100px, #3a80ec 101px);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, .55);
+      transform: rotateY(180deg); background: #1b3f86 url(assets/real/card-pokemon-back.jpg) center / cover no-repeat;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .25), 0 14px 30px rgba(0, 0, 0, .55);
     }
     .card:focus-visible { outline: 2px solid #ffe066; outline-offset: 5px; }
   `,

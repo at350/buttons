@@ -6,7 +6,7 @@ export default {
     :host { display: inline-block; }
     *, *::before, *::after { font-kerning: normal; text-rendering: optimizeLegibility; font-synthesis: none; -webkit-font-smoothing: antialiased; }
     .stage {
-      background: #ffe4e6;
+      background: #fecdd3;
       border-radius: 12px;
       padding: 20px 28px 26px;
     }
@@ -18,11 +18,11 @@ export default {
       color: #fff1f2;
       font: 900 54px/1 Inter, system-ui, sans-serif; letter-spacing: -.01em;
       transform: translate(0, 0); transition: transform .15s cubic-bezier(.34, 1.56, .64, 1), text-shadow .15s cubic-bezier(.34, 1.56, .64, 1), color .2s;
-      text-shadow: 1px 1px 0 #be123c, 2px 2px 0 #be123c, 3px 3px 0 #be123c, 4px 4px 0 #be123c, 5px 5px 0 #be123c, 6px 6px 0 #be123c, 7px 7px 0 #be123c, 8px 8px 0 #9f1239;
+      text-shadow: 0.5px 0.5px 0 #be123c, 1px 1px 0 #be123c, 1.5px 1.5px 0 #be123c, 2px 2px 0 #be123c, 2.5px 2.5px 0 #be123c, 3px 3px 0 #be123c, 3.5px 3.5px 0 #be123c, 4px 4px 0 #be123c, 4.5px 4.5px 0 #be123c, 5px 5px 0 #be123c, 5.5px 5.5px 0 #be123c, 6px 6px 0 #be123c, 6.5px 6.5px 0 #be123c, 7px 7px 0 #be123c, 7.5px 7.5px 0 #be123c, 8px 8px 0 #9f1239;
     }
     .btn:hover {
       transform: translate(-2px, -2px);
-      text-shadow: 1px 1px 0 #be123c, 2px 2px 0 #be123c, 3px 3px 0 #be123c, 4px 4px 0 #be123c, 5px 5px 0 #be123c, 6px 6px 0 #be123c, 7px 7px 0 #be123c, 8px 8px 0 #be123c, 9px 9px 0 #be123c, 10px 10px 0 #9f1239;
+      text-shadow: 0.5px 0.5px 0 #be123c, 1px 1px 0 #be123c, 1.5px 1.5px 0 #be123c, 2px 2px 0 #be123c, 2.5px 2.5px 0 #be123c, 3px 3px 0 #be123c, 3.5px 3.5px 0 #be123c, 4px 4px 0 #be123c, 4.5px 4.5px 0 #be123c, 5px 5px 0 #be123c, 5.5px 5.5px 0 #be123c, 6px 6px 0 #be123c, 6.5px 6.5px 0 #be123c, 7px 7px 0 #be123c, 7.5px 7.5px 0 #be123c, 8px 8px 0 #be123c, 8.5px 8.5px 0 #be123c, 9px 9px 0 #be123c, 9.5px 9.5px 0 #be123c, 10px 10px 0 #9f1239;
     }
     .btn:active, .btn.on {
       transform: translate(6px, 6px); color: #fff;

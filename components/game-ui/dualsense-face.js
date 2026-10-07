@@ -1,5 +1,5 @@
-// DualSense face buttons: glossy smoked-black caps set into the white shell, thin-stroke PlayStation
-// shapes in the brand colours (△ #40e2a0, ○ #ff6a81, ✕ #7cb7ff, □ #f7a7cb); press sinks 2px, toggled caps glow.
+// DualSense face buttons: glossy smoked-black caps set into the white shell. Unlike the DualShock 4, the PS5 pad's
+// △ ○ ✕ □ are colourless — clear, light-grey engraved shapes; press sinks 2px, toggled caps light up white.
 export default {
   id: 'gm-dualsense-face',
   credit: 'Sony DualSense (PS5) — the △ ○ ✕ □ face-button cluster on the white shell; caps sink when pressed and stay lit when toggled',
@@ -15,15 +15,15 @@ export default {
       box-shadow: 0 2px 0 #0a0a0d, 0 4px 6px rgba(0,0,0,.28), inset 0 1px 1px rgba(255,255,255,.22), inset 0 -2px 3px rgba(0,0,0,.5);
       transition: transform 60ms ease-out, box-shadow 60ms ease-out; }
     .fb::before { content: ""; position: absolute; left: 7px; right: 7px; top: 3px; height: 12px; border-radius: 50%; background: linear-gradient(rgba(255,255,255,.22), transparent); pointer-events: none; }
-    .fb svg { width: 22px; height: 22px; fill: none; stroke: var(--c); stroke-width: 1.7; stroke-linejoin: miter; stroke-linecap: butt; opacity: .88; transition: opacity 150ms, filter 150ms; }
-    .tri { left: 45px; top: 5px; --c: #40e2a0; }
-    .cir { left: 85px; top: 45px; --c: #ff6a81; }
-    .cro { left: 45px; top: 85px; --c: #7cb7ff; }
-    .squ { left: 5px; top: 45px; --c: #f7a7cb; }
+    .fb svg { width: 22px; height: 22px; fill: none; stroke: var(--c); stroke-width: 1.7; stroke-linejoin: miter; stroke-linecap: butt; opacity: .8; transition: opacity 150ms, filter 150ms; }
+    .tri { left: 45px; top: 5px; --c: #c7cad1; }
+    .cir { left: 85px; top: 45px; --c: #c7cad1; }
+    .cro { left: 45px; top: 85px; --c: #c7cad1; }
+    .squ { left: 5px; top: 45px; --c: #c7cad1; }
     .fb:hover svg { opacity: 1; }
     .fb:active, .fb.down { transform: translateY(2px); box-shadow: 0 0 0 #0a0a0d, 0 1px 2px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.12), inset 0 -1px 2px rgba(0,0,0,.5); }
-    .fb.on svg { opacity: 1; filter: drop-shadow(0 0 2px var(--c)) drop-shadow(0 0 5px var(--c)); }
-    .fb.on { box-shadow: 0 2px 0 #0a0a0d, 0 4px 6px rgba(0,0,0,.28), 0 0 0 2px color-mix(in srgb, var(--c) 45%, transparent), inset 0 1px 1px rgba(255,255,255,.22), inset 0 -2px 3px rgba(0,0,0,.5); }
+    .fb.on svg { opacity: 1; stroke: #fff; filter: drop-shadow(0 0 2px rgba(255,255,255,.9)) drop-shadow(0 0 5px rgba(160,200,255,.7)); }
+    .fb.on { box-shadow: 0 2px 0 #0a0a0d, 0 4px 6px rgba(0,0,0,.28), 0 0 0 2px rgba(0,112,204,.45), inset 0 1px 1px rgba(255,255,255,.22), inset 0 -2px 3px rgba(0,0,0,.5); }
     .fb:focus-visible { outline: 2px solid #0070cc; outline-offset: 2px; }
   `,
   html: `
