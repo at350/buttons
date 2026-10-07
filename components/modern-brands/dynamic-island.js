@@ -23,10 +23,11 @@ export default {
     .art { display: block; border-radius: 6px; background: #b8231c url(assets/square/57.webp) center / cover no-repeat; flex: none; }
     .mini .art { width: 23px; height: 23px; }
     .wave { display: flex; gap: 2px; align-items: center; height: 14px; }
-    .wave i { width: 2.5px; height: 30%; border-radius: 2px; background: #ff6b5e; animation: eq .9s ease-in-out infinite alternate; animation-play-state: paused; }
+    /* full-height bars clipped by a centred, rounded inset(): same pill at every height, and Chromium animates clip-path on the compositor (height re-ran layout every frame) */
+    .wave i { width: 2.5px; height: 100%; border-radius: 2px; background: #ff6b5e; clip-path: inset(35% 0 round 2px); animation: eq .9s ease-in-out infinite alternate; animation-play-state: paused; }
     .wave i:nth-child(2) { animation-delay: -.3s; } .wave i:nth-child(3) { animation-delay: -.6s; } .wave i:nth-child(4) { animation-delay: -.15s; } .wave i:nth-child(5) { animation-delay: -.45s; }
     .stage.play .wave i { animation-play-state: running; }
-    @keyframes eq { from { height: 22%; } to { height: 100%; } }
+    @keyframes eq { from { clip-path: inset(39% 0 round 2px); } to { clip-path: inset(0 round 2px); } }
     .big { position: absolute; left: 0; right: 0; top: 0; padding: 20px 22px 0; opacity: 0; transform: scale(.92); transform-origin: 50% 0; filter: blur(6px); pointer-events: none;
       transition: opacity .2s, transform .5s cubic-bezier(.32,.72,0,1), filter .3s; }
     .stage.open .big { opacity: 1; transform: none; filter: none; pointer-events: auto; transition: opacity .3s .12s, transform .55s .06s cubic-bezier(.32,.72,0,1), filter .35s .08s; }

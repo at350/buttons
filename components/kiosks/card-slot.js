@@ -19,10 +19,12 @@ export default {
     .slot:focus-visible { outline: 2px solid #2f6fd6; outline-offset: 3px; }
     .mouth { position: absolute; left: 20px; right: 20px; top: 12px; height: 9px; border-radius: 5px; background: #050505; box-shadow: inset 0 3px 3px #000, 0 1px 0 rgba(255,255,255,.25); }
     .led { position: absolute; left: 14px; right: 14px; top: 29px; height: 6px; border-radius: 3px; background: #1c4a22; transition: background .2s, box-shadow .2s; }
-    .stage:not(.in) .led { animation: blink 1s steps(1) infinite; }
-    @keyframes blink { 0%, 49% { background: #3cff6a; box-shadow: 0 0 10px 2px rgba(60,255,106,.7); } 50%, 100% { background: #1c4a22; box-shadow: none; } }
+    /* the lit lead-through light is an overlay with the colour and glow baked in; only its opacity blinks (compositor, no per-frame style recalc) */
+    .led::after { content: ''; position: absolute; inset: 0; border-radius: 3px; background: #3cff6a; box-shadow: 0 0 10px 2px rgba(60,255,106,.7); opacity: 0; }
+    .stage:not(.in) .led::after { animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
     .stage.in .card { transform: translateY(110px); }
-    .stage.busy .led { animation: none; background: #ffb020; box-shadow: 0 0 8px 1px rgba(255,176,32,.6); }
+    .stage.busy .led { background: #ffb020; box-shadow: 0 0 8px 1px rgba(255,176,32,.6); } .stage.busy .led::after { animation: none; }
     .slot:hover .mouth { box-shadow: inset 0 3px 3px #000, 0 1px 0 rgba(255,255,255,.45); }
     .slot:active { transform: translateY(1px); }
     .stage.busy .slot { cursor: progress; }

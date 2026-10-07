@@ -6,6 +6,7 @@ const BOFF = '<svg viewBox="0 0 24 24" class="bo"><path d="M8.7 3A6 6 0 0 1 18 8
 const ECG = 'M0 20h14l2-2 2 2h4l2 4 3-20 3 22 2-6h6l3-3 4 3h12l2-2 2 2h4l2 4 3-20 3 22 2-6h6l3-3 4 3h12';
 const PL = 'M0 18c6 0 7-14 13-14s6 9 9 9 4-3 6-3 5 8 10 8 7-14 13-14 6 9 9 9 4-3 6-3 5 8 10 8 7-14 13-14 6 9 9 9 4-3 6-3';
 const RS = 'M0 14c10 0 14-10 24-10s14 10 24 10 14-10 24-10 14 10 24 10 14-10 24-10';
+const MSG = '** SpO₂ Low', SPO2 = '89'; // shown in the html and again on the flashing (inverted) overlays in the css
 const num = (k, lbl, v, hi, lo, cls) => `<button class="n ${cls}" type="button" data-k="${k}" aria-pressed="false" aria-label="${lbl} alarms">
   <span class="l">${lbl}</span><span class="lim"><b>${hi}</b><b>${lo}</b></span>${BOFF}<span class="v">${v}</span></button>`;
 export default {
@@ -17,9 +18,11 @@ export default {
     .stage { display: inline-block; padding: 10px; border-radius: 12px; overflow: hidden; background: linear-gradient(170deg, #4a4f55, #2c3035); box-shadow: inset 0 1px 0 rgba(255,255,255,.12); }
     .scr { position: relative; width: 300px; background: #000; border-radius: 3px; font-family: Inter, Arial, sans-serif; box-shadow: 0 0 0 1px #000; }
     .bar { height: 15px; display: flex; align-items: center; justify-content: space-between; padding: 0 5px; background: #1a2733; font: 600 8px/1 Inter, Arial, sans-serif; color: #c8d2db; }
-    .msg { padding: 1px 5px; border-radius: 1px; background: #ffe600; color: #000; font-weight: 700; }
+    .msg { position: relative; padding: 1px 5px; border-radius: 1px; background: #ffe600; color: #000; font-weight: 700; }
     .msg.ack::after { content: ' \\2713'; }
-    .msg:not(.ack) { animation: fl .6s steps(2, jump-none) infinite; } @keyframes fl { 50% { background: #000; color: #ffe600; } }
+    /* the flashes are overlays with the inverted colours baked in; only their opacity animates (compositor, no per-frame style recalc) */
+    .msg:not(.ack)::before { content: '${MSG}'; position: absolute; inset: 0; padding: 1px 5px; border-radius: 1px; white-space: nowrap; background: #000; color: #ffe600;
+      opacity: 0; animation: fl .6s steps(2, jump-none) infinite; } @keyframes fl { 50% { opacity: 1; } }
     .msg.off { display: none; }
     .aoff { display: none; padding: 1px 5px; background: #e2231a; color: #fff; font-weight: 700; }
     .scr.all .aoff { display: inline; } .scr.all .msg { display: none; }
@@ -35,8 +38,9 @@ export default {
     .bo { position: absolute; left: 4px; top: 15px; width: 12px; height: 12px; fill: none; stroke: #e2231a; stroke-width: 2.4; stroke-linecap: round; display: none; }
     .n.off .lim, .scr.all .n .lim { display: none; } .n.off .bo, .scr.all .n .bo { display: block; }
     .hr { --c: #3cf23c; } .sp { --c: #34d3ff; } .rr { --c: #ffe600; }
-    .sp.alm .v { animation: fl2 .6s steps(2, jump-none) infinite; } .sp.alm.ack .v { animation: none; } @keyframes fl2 { 50% { color: #000; background: #ffe600; } }
-    .hr .l::after { content: ' \\2665'; animation: beat .83s steps(2, jump-none) infinite; } @keyframes beat { 50% { color: transparent; } }
+    .sp.alm:not(.ack) .v::after { content: '${SPO2}'; position: absolute; inset: 0; white-space: nowrap; color: #000; background: #ffe600;
+      opacity: 0; animation: fl2 .6s steps(2, jump-none) infinite; } @keyframes fl2 { 50% { opacity: 1; } }
+    .hr .l::after { content: ' \\2665'; display: inline-block; white-space: pre; animation: beat .83s steps(2, jump-none) infinite; } @keyframes beat { 50% { opacity: 0; } }
     .keys { display: flex; gap: 4px; padding: 4px; background: #11181e; }
     .sk { flex: 1; height: 20px; border: 0; border-radius: 3px; cursor: pointer; font: 600 8px/1 Inter, Arial, sans-serif; color: #e6edf3; white-space: nowrap;
       background: linear-gradient(#3d5568, #2a3e4f); box-shadow: inset 0 1px 0 rgba(255,255,255,.15); }
@@ -46,14 +50,14 @@ export default {
   `,
   html: `
     <div class="stage"><div class="scr">
-      <div class="bar"><span>Bed 12</span><span class="msg">** SpO₂ Low</span><span class="aoff">Alarms Off</span><span>Adult</span></div>
+      <div class="bar"><span>Bed 12</span><span class="msg">${MSG}</span><span class="aoff">Alarms Off</span><span>Adult</span></div>
       <div class="main">
         <div class="waves">
           <svg viewBox="0 0 120 26" preserveAspectRatio="none" stroke="#3cf23c"><text x="2" y="7" fill="#3cf23c">II</text><path d="${ECG}" transform="translate(0 0)"/></svg>
           <svg viewBox="0 0 120 26" preserveAspectRatio="none" stroke="#34d3ff"><text x="2" y="7" fill="#34d3ff">Pleth</text><path d="${PL}" transform="translate(0 2)"/></svg>
           <svg viewBox="0 0 120 26" preserveAspectRatio="none" stroke="#ffe600"><text x="2" y="7" fill="#ffe600">Resp</text><path d="${RS}" transform="translate(0 4)"/></svg>
         </div>
-        <div>${num('hr', 'HR', '72', '120', '50', 'hr')}${num('sp', 'SpO₂', '89', '100', '90', 'sp alm')}${num('rr', 'RR', '16', '30', '8', 'rr')}</div>
+        <div>${num('hr', 'HR', '72', '120', '50', 'hr')}${num('sp', 'SpO₂', SPO2, '100', '90', 'sp alm')}${num('rr', 'RR', '16', '30', '8', 'rr')}</div>
       </div>
       <div class="keys"><button class="sk sil" type="button">Silence</button><button class="sk ao" type="button" aria-pressed="false">Alarms Off</button><button class="sk ms" type="button">Main Screen</button></div>
     </div></div>`,

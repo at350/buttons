@@ -26,9 +26,11 @@ export default {
     .stage.paid .tk .stamp { opacity: 1; }
     .face { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; border-radius: 6px; background: linear-gradient(#6a7078, #3c4148); box-shadow: inset 0 1px 0 rgba(255,255,255,.25); }
     .face::before { content: ''; position: absolute; left: 14px; right: 14px; top: 0; height: 6px; border-radius: 0 0 3px 3px; background: #050505; }
-    .face::after { content: ''; position: absolute; left: 50%; bottom: 7px; width: 30px; height: 5px; margin-left: -15px; border-radius: 3px; background: #2bd94b; box-shadow: 0 0 6px #2bd94b; animation: bl 1s steps(1) infinite; }
-    .stage.in:not(.paid) .face::after { animation: none; background: #1f3322; box-shadow: none; }
-    @keyframes bl { 50% { background: #1f3322; box-shadow: none; } }
+    .face::after { content: ''; position: absolute; left: 50%; bottom: 7px; width: 30px; height: 5px; margin-left: -15px; border-radius: 3px; background: #1f3322; }
+    /* the lit LED sits on top of the dark one (same box, measured from the slot button) and only its opacity blinks: compositor, no per-frame style recalc */
+    .slotb::after { content: ''; position: absolute; left: 50%; bottom: 7px; width: 30px; height: 5px; margin-left: -15px; border-radius: 3px; background: #2bd94b; box-shadow: 0 0 6px #2bd94b; pointer-events: none; animation: bl 1s steps(1) infinite; }
+    .stage.in:not(.paid) .slotb::after { animation: none; opacity: 0; }
+    @keyframes bl { 50% { opacity: 0; } }
   `,
   html: `
     <div class="stage">

@@ -26,6 +26,7 @@ export const CATEGORIES = [
 // The page loads `bundle.js` (every component in one generated module, from `npm run build`) instead of
 // ~700 separate files. A dev server (localhost) keeps loading the per-file modules so edits show up without a
 // rebuild; `?bundle` / `?nobundle` override either way, and a missing or broken bundle falls back to the files.
+// (index.html preloads the bundle under the same rule.)
 function wantBundle() {
   const q = new URLSearchParams(location.search);
   if (q.has('nobundle')) return false;

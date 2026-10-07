@@ -18,12 +18,18 @@ export default {
     .lcd i::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: var(--p, 0%); background: #e8f1ff; }
     .lcd { padding-bottom: 9px; }
     .row { display: flex; gap: 22px; }
-    .b { position: relative; width: 62px; height: 62px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; display: grid; place-items: center; touch-action: none; -webkit-tap-highlight-color: transparent;
-      background: radial-gradient(circle at 50% 35%, #3b3d40, #18191b 70%); color: #f1f2f3;
-      box-shadow: 0 0 0 3px #0a0b0c, 0 0 0 5px var(--ring-off), 0 0 0 7px #0a0b0c, 0 4px 6px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.18); transition: transform .05s; }
-    .b.lit { box-shadow: 0 0 0 3px #0a0b0c, 0 0 0 5px var(--ring), 0 0 12px 5px var(--glow), 0 4px 6px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.18); }
-    .b.blink { animation: bl .5s steps(2, jump-none) infinite; }
-    @keyframes bl { 0% { box-shadow: 0 0 0 3px #0a0b0c, 0 0 0 5px var(--ring), 0 0 12px 5px var(--glow), 0 4px 6px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.18); } }
+    .b { position: relative; z-index: 0; width: 62px; height: 62px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; display: grid; place-items: center; touch-action: none; -webkit-tap-highlight-color: transparent;
+      background: none; color: #f1f2f3; transition: transform .05s; }
+    /* the rubber face + LED ring is drawn twice, under the label: ::before dark, ::after lit (ring colour + glow). Lit / blink only swap
+       their opacity, so exactly one is painted at a time and the blink runs on the compositor (no per-frame style recalc) */
+    .b::before, .b::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 50%; pointer-events: none; background: radial-gradient(circle at 50% 35%, #3b3d40, #18191b 70%); }
+    .b::before { box-shadow: 0 0 0 3px #0a0b0c, 0 0 0 5px var(--ring-off), 0 0 0 7px #0a0b0c, 0 4px 6px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.18); }
+    .b::after { box-shadow: 0 0 0 3px #0a0b0c, 0 0 0 5px var(--ring), 0 0 12px 5px var(--glow), 0 4px 6px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.18); opacity: 0; }
+    .b.lit::before { opacity: 0; } .b.lit::after { opacity: 1; }
+    .b.blink::before { animation: bl-off .5s steps(2, jump-none) infinite; }
+    .b.blink::after { animation: bl .5s steps(2, jump-none) infinite; }
+    @keyframes bl { 0% { opacity: 1; } }
+    @keyframes bl-off { 0% { opacity: 0; } }
     .b.down { transform: scale(.96); }
     .b:focus-visible { outline: 2px solid #fff; outline-offset: 9px; }
     .cue { --ring: #ff8a1a; --ring-off: #3a2208; --glow: rgba(255,140,30,.45); font: 800 13px/1 "DM Sans", Inter, Arial, sans-serif; letter-spacing: 1px; }

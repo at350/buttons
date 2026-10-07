@@ -10,9 +10,12 @@ export default {
       background: linear-gradient(#5d6f78, #47575f); box-shadow: inset 0 2px 0 #7f939c, inset 0 -3px 0 #2c363b; }
     .deck { background: linear-gradient(170deg, #121416, #050607 70%); border-radius: 6px 6px 18px 18px; padding: 12px 14px 14px; box-shadow: inset 0 0 0 2px #22282b, inset 0 8px 18px #000; }
     .chase { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
-    .chase i { --on: #ff2d1f; width: 10px; height: 6px; border-radius: 1px; background: #3a1010; animation: ch 1.6s steps(1) infinite; animation-delay: calc(var(--i) * -0.2s); }
+    .chase i { --on: #ff2d1f; position: relative; width: 10px; height: 6px; border-radius: 1px; background: #3a1010; }
     .chase i:nth-child(3n+2) { --on: #ffb000; background: #3a2a05; } .chase i:nth-child(3n) { --on: #18d35a; background: #0a2a13; }
-    @keyframes ch { 0%, 60% { background-color: var(--on); box-shadow: 0 0 6px var(--on); } }
+    /* lit lamp = an overlay with the colour and glow baked in; only its opacity animates (compositor, no per-frame style recalc) */
+    .chase i::after { content: ''; position: absolute; inset: 0; border-radius: 1px; background: var(--on); box-shadow: 0 0 6px var(--on); opacity: 0;
+      animation: ch 1.6s steps(1) infinite; animation-delay: calc(var(--i) * -0.2s); }
+    @keyframes ch { 0%, 60% { opacity: 1; } }
     .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px 8px; }
     .jw { --c: #ff2d1f; position: relative; height: 26px; border: 0; border-radius: 3px; cursor: pointer; padding: 0;
       background: linear-gradient(160deg, color-mix(in srgb, var(--c) 38%, #000), color-mix(in srgb, var(--c) 16%, #000));
@@ -24,7 +27,8 @@ export default {
       box-shadow: 0 0 10px var(--c), 0 0 22px color-mix(in srgb, var(--c) 50%, transparent), inset 0 -2px 3px rgba(0,0,0,.3), 0 2px 0 #000; }
     .jw:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
     .jw:focus-visible, .rk:focus-visible { outline: 2px solid #9fe7ff; outline-offset: 2px; }
-    .alert .chase i { --on: #ff2d1f; background: #3a1010; animation-duration: .5s; animation-delay: calc(var(--i) * -.04s); }
+    .alert .chase i { --on: #ff2d1f; background: #3a1010; }
+    .alert .chase i::after { animation-duration: .5s; animation-delay: calc(var(--i) * -.04s); }
     .alert .jw { animation: ra 1s steps(1) infinite; }
     @keyframes ra { 50% { filter: brightness(1.8) saturate(1.4); } }
     .slide { position: relative; height: 10px; margin: 12px 6px 0; border-radius: 5px; background: #000; box-shadow: inset 0 0 0 1px #2a2f33; cursor: ew-resize; }

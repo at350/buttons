@@ -21,12 +21,26 @@ export default {
     .lens { position: absolute; inset: 5px; border-radius: 50%; transition: background .08s, box-shadow .08s;
       background: repeating-radial-gradient(circle, rgba(255,255,255,.14) 0 1.2px, rgba(0,0,0,.1) 1.2px 2.4px), radial-gradient(circle at 50% 38%, var(--c2), var(--c1) 62%, var(--c0));
       box-shadow: inset 0 2px 2px rgba(255,255,255,.3), inset 0 -3px 4px rgba(0,0,0,.35), 0 0 0 1px #222; }
-    .on .lens, .pl.test .lens, .stage.test .lens {
+    /* a pilot lamp's dark and lit lens are two layers (::before / ::after) and on / test / flash only change their opacity,
+       so exactly one look is painted at a time and the flash runs on the compositor (no per-frame style recalc) */
+    .pl .lens { background: none; box-shadow: none; }
+    .pl .lens::before, .pl .lens::after { content: ''; position: absolute; inset: 0; border-radius: 50%; }
+    .pl .lens::before {
+      background: repeating-radial-gradient(circle, rgba(255,255,255,.14) 0 1.2px, rgba(0,0,0,.1) 1.2px 2.4px), radial-gradient(circle at 50% 38%, var(--c2), var(--c1) 62%, var(--c0));
+      box-shadow: inset 0 2px 2px rgba(255,255,255,.3), inset 0 -3px 4px rgba(0,0,0,.35), 0 0 0 1px #222; }
+    .pl .lens::after { opacity: 0; transition: opacity .08s;
       background: repeating-radial-gradient(circle, rgba(255,255,255,.28) 0 1.2px, rgba(255,255,255,0) 1.2px 2.4px), radial-gradient(circle at 50% 46%, #fff 0 10%, var(--l1) 40%, var(--l0) 95%);
       box-shadow: 0 0 0 1px #222, 0 0 12px 3px var(--glow), inset 0 0 6px rgba(255,255,255,.6); }
-    .flash .lens { animation: flash .8s steps(2, jump-none) infinite; }
-    .stage.test .flash .lens, .pl.flash.test .lens { animation: none; }
-    @keyframes flash { 50% { background: repeating-radial-gradient(circle, rgba(255,255,255,.14) 0 1.2px, rgba(0,0,0,.1) 1.2px 2.4px), radial-gradient(circle at 50% 38%, var(--c2), var(--c1) 62%, var(--c0)); box-shadow: inset 0 2px 2px rgba(255,255,255,.3), inset 0 -3px 4px rgba(0,0,0,.35), 0 0 0 1px #222; } }
+    .on .lens::after, .pl.test .lens::after, .stage.test .pl .lens::after { opacity: 1; }
+    .on .lens::before, .pl.test .lens::before, .stage.test .pl .lens::before { opacity: 0; transition: opacity 0s .08s; }
+    .stage.test .pb .lens {
+      background: repeating-radial-gradient(circle, rgba(255,255,255,.28) 0 1.2px, rgba(255,255,255,0) 1.2px 2.4px), radial-gradient(circle at 50% 46%, #fff 0 10%, var(--l1) 40%, var(--l0) 95%);
+      box-shadow: 0 0 0 1px #222, 0 0 12px 3px var(--glow), inset 0 0 6px rgba(255,255,255,.6); }
+    .flash .lens::after { animation: flash .8s steps(2, jump-none) infinite; }
+    .flash .lens::before { animation: flash-dark .8s steps(2, jump-none) infinite; }
+    .stage.test .flash .lens::after, .pl.flash.test .lens::after, .stage.test .flash .lens::before, .pl.flash.test .lens::before { animation: none; }
+    @keyframes flash { 50% { opacity: 0; } }
+    @keyframes flash-dark { 50% { opacity: 1; } }
     .w { --c0: #8d8f88; --c1: #c9cbc3; --c2: #eceee6; --l0: #f3ecd0; --l1: #fffdf2; --glow: rgba(255,250,225,.75); }
     .g { --c0: #0a4320; --c1: #177b3a; --c2: #36ad5f; --l0: #10b143; --l1: #6dff96; --glow: rgba(70,255,120,.6); }
     .a { --c0: #6b3a00; --c1: #c27406; --c2: #f0a43a; --l0: #ff9800; --l1: #ffd27a; --glow: rgba(255,170,30,.7); }

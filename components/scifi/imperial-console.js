@@ -13,9 +13,12 @@ export default {
       box-shadow: inset 0 0 0 1px #3c4044; display: grid; grid-template-columns: 1fr 34px 56px; gap: 12px; align-items: stretch; }
     .keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px; background: #050505; border-radius: 3px; box-shadow: inset 0 2px 6px #000, 0 0 0 1px #45494d; }
     .strip { grid-column: 1 / 4; display: flex; gap: 3px; margin-bottom: 4px; }
-    .strip i { flex: 1; height: 5px; background: #3a0b08; }
-    .strip i:nth-child(odd) { background: #4b0d08; animation: bl 2.4s steps(1) infinite; animation-delay: calc(var(--d) * -1s); }
-    @keyframes bl { 0%, 55% { background: #ff2a14; box-shadow: 0 0 5px #ff2a14; } }
+    .strip i { position: relative; flex: 1; height: 5px; background: #3a0b08; }
+    .strip i:nth-child(odd) { background: #4b0d08; }
+    /* lit lamp = an overlay with the colour and glow baked in; only its opacity animates (compositor, no per-frame style recalc) */
+    .strip i:nth-child(odd)::after { content: ''; position: absolute; inset: 0; background: #ff2a14; box-shadow: 0 0 5px #ff2a14; opacity: 0;
+      animation: bl 2.4s steps(1) infinite; animation-delay: calc(var(--d) * -1s); }
+    @keyframes bl { 0%, 55% { opacity: 1; } }
     .k { height: 38px; border: 0; padding: 0; cursor: pointer; border-radius: 2px; display: grid; place-items: center;
       background: linear-gradient(#6d7175, #4a4e52 50%, #3b3e41); box-shadow: inset 0 1px 0 #9aa0a5, inset 0 -2px 0 #222, 0 2px 0 #000; color: #15171a; transition: background .1s, box-shadow .15s; }
     .k svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: square; }

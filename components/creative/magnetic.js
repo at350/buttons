@@ -7,7 +7,7 @@ export default {
     .stage { position: relative; width: 270px; height: 150px; max-width: 100%; border-radius: 12px; background: #fff; display: grid; place-items: center; overflow: hidden; }
     .btn {
       position: relative; overflow: hidden; isolation: isolate; width: 156px; height: 60px; border: 1px solid rgba(0, 0, 0, .18); border-radius: 999px;
-      background: transparent; cursor: pointer; padding: 0; will-change: transform; color: #000;
+      background: transparent; cursor: pointer; padding: 0; color: #000;
       font: 500 16px/1 Inter, system-ui, sans-serif; letter-spacing: -.01em;
     }
     .fill {
@@ -15,7 +15,7 @@ export default {
       transform: translateY(76%) scaleY(.6); transition: transform .5s cubic-bezier(.4, 0, 0, 1), border-radius .5s cubic-bezier(.4, 0, 0, 1);
     }
     .btn:hover .fill, .btn:focus-visible .fill { transform: translateY(-25%) scaleY(1); border-radius: 0; }
-    .txt { display: inline-block; transition: color .3s cubic-bezier(.4, 0, 0, 1); will-change: transform; white-space: nowrap; }
+    .txt { display: inline-block; transition: color .3s cubic-bezier(.4, 0, 0, 1); white-space: nowrap; }
     .btn:hover .txt, .btn:focus-visible .txt { color: #fff; }
     .btn:active .fill { background: #262626; }
     .btn:focus-visible { outline: 2px solid #000; outline-offset: 4px; }
@@ -25,7 +25,8 @@ export default {
     const stage = root.querySelector('.stage'), btn = root.querySelector('.btn'), txt = root.querySelector('.txt');
     let tx = 0, ty = 0, x = 0, y = 0, vx = 0, vy = 0, raf = 0, over = false;
     const step = () => {
-      // damped spring: snappy follow while hovered, elastic overshoot on release
+      // damped spring: snappy follow while hovered, elastic overshoot on release. translate3d keeps btn/txt on their own
+      // layers only while the spring runs; the transform is cleared at rest, so no permanent will-change is needed
       const k = over ? .16 : .09, d = over ? .62 : .78;
       vx = vx * d + (tx - x) * k; vy = vy * d + (ty - y) * k;
       x += vx; y += vy;

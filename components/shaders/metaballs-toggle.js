@@ -58,18 +58,36 @@ function shade(cv, el, w, h, fs, o = {}) {
   const kick = () => { if (!raf && gl && !parked && !dead) { lastT = performance.now(); raf = requestAnimationFrame(tick); } };
   // The context is created on first approach to the viewport and parked (lost on purpose) while far away, so a
   // page with hundreds of live elements stays under the browser's active-context limit (16 in Chrome) and
-  // mounting into the hidden measuring area costs no GPU work at all.
+  // mounting into the hidden measuring area costs no GPU work at all. A context the browser evicts anyway waits
+  // in a shared list for the next slot a park() frees (Chrome restores evicted contexts only when another one
+  // is destroyed, not when one is lost on purpose).
+  const WAIT = (globalThis.__shadeWait ||= new Set());
+  let restoring = false;
+  const me = () => { WAIT.delete(me); if (vis && !dead && !parked && gl && gl.isContextLost()) { ensure(); return true; } return false; };
+  const free = () => { for (const f of WAIT) if (f()) break; }; // a slot was freed: give it to one evicted canvas still in view
+  const unpark = () => { cv.style.visibility = ''; const p = cv.parentNode; if (p && p.style) { p.style.backgroundImage = ''; p.style.backgroundSize = ''; } };
   const ensure = () => {
     if (dead) return;
-    clearTimeout(parkT); parkT = 0;
-    if (parked) { const x = parked; parked = null; x.restoreContext(); } // -> webglcontextrestored re-runs setup()
+    clearTimeout(parkT); parkT = 0; WAIT.delete(me);
+    if (parked) { const x = parked; parked = null; restoring = true; x.restoreContext(); } // -> webglcontextrestored re-runs setup()
     else if (!gl) { if (setup()) { cv.classList.remove('nogl'); draw(); } }
-    else if (gl.isContextLost() && lose) lose.restoreContext(); // evicted by the browser: ask for it back
+    else if (gl.isContextLost() && lose) { restoring = true; lose.restoreContext(); } // evicted by the browser: ask for it back
   };
   const park = () => {
     parkT = 0;
-    if (dead || !gl || parked || !lose || s.hoverT || s.down || gl.isContextLost()) return;
+    if (dead || !gl || parked || !lose || gl.isContextLost()) return;
+    if (s.hoverT || s.down) { parkT = setTimeout(park, 1500); return; } // still in use: try again later
+    // keep the last frame on the parent while the canvas is lost (a lost canvas repaints as a broken-image box)
+    draw();
+    try { const p = cv.parentNode; p.style.backgroundImage = `url(${cv.toDataURL()})`; p.style.backgroundSize = '100% 100%'; } catch {}
+    cv.style.visibility = 'hidden';
     parked = lose; cancelAnimationFrame(raf); raf = 0; lose.loseContext();
+    free();
+  };
+  const near = () => { // draw before the first paint of a freshly placed row (the observer would fire a frame later)
+    if (gl || dead) return;
+    const r = cv.getBoundingClientRect();
+    if (r.width && r.bottom > -200 && r.top < innerHeight + 200) ensure();
   };
   const pos = (e) => { const r = cv.getBoundingClientRect(); if (r.width) { s.mx = (e.clientX - r.left) / r.width; s.my = 1 - (e.clientY - r.top) / r.height; } };
   el.addEventListener('pointerenter', (e) => { pos(e); s.hoverT = 1; ensure(); kick(); });
@@ -80,9 +98,16 @@ function shade(cv, el, w, h, fs, o = {}) {
   el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { s.px = .5; s.py = .5; s.press = 1; ensure(); kick(); } });
   el.addEventListener('focus', () => { if (el.matches(':focus-visible')) { s.hoverT = 1; ensure(); kick(); } });
   el.addEventListener('blur', () => { if (!el.matches(':hover')) { s.hoverT = 0; kick(); } });
-  cv.addEventListener('webglcontextlost', (e) => { e.preventDefault(); cancelAnimationFrame(raf); raf = 0; if (!dead) cv.classList.add('nogl'); });
-  cv.addEventListener('webglcontextrestored', () => { if (!dead && setup()) { cv.classList.remove('nogl'); draw(); kick(); } });
+  cv.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault(); cancelAnimationFrame(raf); raf = 0;
+    if (dead) return;
+    if (restoring) { restoring = false; setTimeout(() => { if (!dead && lose && gl && gl.isContextLost()) lose.restoreContext(); }, 0); } // asked before this event: ask again now that it is allowed
+    else if (!parked) { cv.style.visibility = 'hidden'; if (vis) WAIT.add(me); } // evicted by the browser (a class change now would repaint it as a broken-image box)
+  });
+  cv.addEventListener('webglcontextrestored', () => { restoring = false; if (!dead && setup()) { cv.classList.remove('nogl'); draw(); unpark(); kick(); } });
   cv.classList.add('nogl'); // CSS poster until the first frame is drawn
+  const host = cv.getRootNode().host;
+  host && host.addEventListener('placed', near);
   if (typeof IntersectionObserver === 'function') {
     // near the viewport: hold a context (and animate, for idle shaders); far away for a while: park it
     io = new IntersectionObserver((en) => {
@@ -93,7 +118,12 @@ function shade(cv, el, w, h, fs, o = {}) {
     io.observe(cv);
   } else ensure();
   s.kick = kick; s.draw = draw;
-  s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; clearTimeout(parkT); io && io.disconnect(); if (gl && !parked && lose) lose.loseContext(); gl = null; lose = null; parked = null; };
+  s.destroy = () => {
+    dead = true; cancelAnimationFrame(raf); raf = 0; clearTimeout(parkT); io && io.disconnect(); WAIT.delete(me);
+    host && host.removeEventListener('placed', near);
+    if (gl && !parked && lose && !gl.isContextLost()) { lose.loseContext(); free(); }
+    gl = null; lose = null; parked = null;
+  };
   return s;
 }
 // Metaball switch: the thumb is two metaballs on springs — a fast lead and a slow trail. At rest they

@@ -15,11 +15,11 @@ export default {
     .btn:active { transform: scale(.96); }
     .btn:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
     .row { display: block; height: 48px; position: relative; }
-    .row i { display: inline-block; font-style: normal; white-space: pre; transition: transform .5s ${SPRING}, opacity .25s; transition-delay: calc(var(--i) * 28ms); will-change: transform; }
+    .row i { display: inline-block; font-style: normal; white-space: pre; transform: translateY(0); transition: transform .5s ${SPRING}, opacity .25s; transition-delay: calc(var(--i) * 28ms); } /* identity, not none: no relayout when a glyph starts/ends its hop */
     .row.b { position: absolute; left: 0; top: 0; width: 100%; text-align: center; }
     .row.b i { transform: translateY(110%); opacity: 0; }
     .btn:hover .row.a i, .btn.lift .row.a i { transform: translateY(-110%); opacity: 0; }
-    .btn:hover .row.b i, .btn.lift .row.b i { transform: none; opacity: 1; }
+    .btn:hover .row.b i, .btn.lift .row.b i { transform: translateY(0); opacity: 1; }
     .btn.lift { background: #111; color: #fff; }
     .row.b i { color: #fff; }
   `,

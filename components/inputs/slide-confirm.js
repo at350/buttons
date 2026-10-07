@@ -20,11 +20,19 @@ export default {
     .lbl {
       position: absolute; inset: 0 0 0 62px; display: grid; place-items: center; white-space: nowrap; pointer-events: none;
       font: 400 19px/1 system-ui, -apple-system, "SF Pro Text", sans-serif; letter-spacing: -.01em;
-      color: transparent; background: linear-gradient(100deg, rgba(255,255,255,.45) 40%, #fff 50%, rgba(255,255,255,.45) 60%) 0 0 / 300% 100%;
+      --shine: linear-gradient(100deg, rgba(255,255,255,.45) 40%, #fff 50%, rgba(255,255,255,.45) 60%);
+      color: transparent; background: var(--shine) 0 0 / 300% 100%;
       -webkit-background-clip: text; background-clip: text; animation: shine 2.6s linear infinite;
       opacity: calc(1 - var(--p, 0) * 2.2);
     }
     @keyframes shine { from { background-position: 100% 0; } to { background-position: 0 0; } }
+    /* Same shine on the compositor: the label's glyphs become the mask and a 3x-wide copy of the gradient slides under
+       them with transform (no per-frame style recalc). Browsers without mask-clip:text keep the version above. */
+    @supports (-webkit-mask-clip: text) {
+      .lbl { overflow: hidden; background: none; animation: none; -webkit-mask-image: linear-gradient(#000, #000); -webkit-mask-clip: text; }
+      .lbl::before { content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%; background: var(--shine); animation: shine-x 2.6s linear infinite; }
+      @keyframes shine-x { from { transform: translateX(-66.6667%); } to { transform: none; } }
+    }
     .knob {
       position: absolute; top: 4px; left: 4px; width: 54px; height: 54px; border-radius: 50%; border: 0; padding: 0; background: #fff;
       display: grid; place-items: center; cursor: grab; color: #ff3b30; box-shadow: 0 1px 4px rgba(0,0,0,.18);

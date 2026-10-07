@@ -46,7 +46,7 @@ export default {
     .task:active { box-shadow: inset 1px 1px #000, inset -1px -1px #fff, inset 2px 2px #808080, inset -2px -2px #dfdfdf; }
     .task:focus-visible span { outline: 1px dotted #000; }
     .stage.minimized .task { display: flex; }
-    @keyframes blink { 50% { visibility: hidden; } }
+    @keyframes blink { 50% { opacity: 0; } }
   `,
   html: `
     <div class="stage">

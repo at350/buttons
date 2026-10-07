@@ -10,6 +10,8 @@ const H_SLACK = 48;        // px a stack's first element may exceed the current 
 const LOOKAHEAD = 1200;    // px beyond the viewport at which we fill / refill
 const WIDE_BASIS = 420;    // packing width assumed for `wide` elements (they then grow)
 const FONT_WAIT = 1000;    // ms the first rows wait for the web fonts (boxes are measured once, so with the real font)
+const POOL_TARGET = POOL_MIN + 32; // the pool is topped up to this in idle time, so a fill rarely has to mount synchronously
+const PREFILL_CHUNK = 8;   // hosts mounted per idle slice
 // Base styles for every shadow root. `data-idle` is set by the shell while an element is far from the viewport
 // (or still in the measuring area): a CSS animation ticking anywhere on the page costs a full main frame over
 // all ~450 live elements, and Chromium does not throttle offscreen main-thread animations on its own.
@@ -17,6 +19,12 @@ const BASE_CSS = ':host{display:block;max-width:100%}*,*::before,*::after{box-si
   + ':host([data-idle]) *,:host([data-idle]) *::before,:host([data-idle]) *::after{animation-play-state:paused!important}'
   + '@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}';
 const IDLE_MARGIN = '200px 0px'; // how far outside the viewport animations keep running
+// One parsed stylesheet per element definition, shared by every instance (fewer nodes, less memory); older
+// engines get the same CSS as an inline <style>.
+const ADOPT = 'adoptedStyleSheets' in ShadowRoot.prototype && 'replaceSync' in CSSStyleSheet.prototype;
+const BASE_SHEET = ADOPT ? new CSSStyleSheet() : null;
+if (ADOPT) BASE_SHEET.replaceSync(BASE_CSS);
+const sheetOf = (def) => def._sheet || ((def._sheet = new CSSStyleSheet()).replaceSync(def.css || ''), def._sheet);
 
 const flow = document.getElementById('flow');
 const measure = document.getElementById('measure');
@@ -89,7 +97,9 @@ function mount(def) {
   if (def.credit) host.title = def.credit;
   const root = host.attachShadow({ mode: 'open' });
   // pictures load when the element is near the viewport, not while it waits in the measuring area
-  root.innerHTML = `<style>${BASE_CSS}${def.css || ''}</style>${(def.html || '').replace(/<img\b/g, '<img loading="lazy" decoding="async"')}`;
+  const html = (def.html || '').replace(/<img\b/g, '<img loading="lazy" decoding="async"');
+  if (ADOPT) { root.adoptedStyleSheets = [BASE_SHEET, sheetOf(def)]; root.innerHTML = html; }
+  else root.innerHTML = `<style>${BASE_CSS}${def.css || ''}</style>${html}`;
   if (typeof def.init === 'function') {
     try {
       const cleanup = def.init(root, host);
@@ -108,9 +118,9 @@ function unmount(host) {
 }
 
 // Mount a batch into the hidden measuring area and record each element's natural size.
-function fillPool() {
+function fillPool(n = POOL_FILL) {
   const fresh = [];
-  for (let i = 0; i < POOL_FILL; i++) {
+  for (let i = 0; i < n; i++) {
     const h = mount(next());
     measure.appendChild(h);
     fresh.push(h);
@@ -126,8 +136,22 @@ function fillPool() {
   pool.push(...fresh);
 }
 
+// Top the pool up in idle time, a few elements per slice, so a fill on the scroll path seldom has to mount and
+// measure 64 elements at once (that was the one long task left while scrolling).
+const onIdle = window.requestIdleCallback ? (f) => requestIdleCallback(f, { timeout: 1000 }) : (f) => setTimeout(f, 50);
+let prefillQueued = false;
+function schedulePrefill() {
+  if (prefillQueued || pool.length >= POOL_TARGET) return;
+  prefillQueued = true;
+  onIdle(() => { prefillQueued = false; if (pool.length < POOL_TARGET) fillPool(Math.min(PREFILL_CHUNK, POOL_TARGET - pool.length)); schedulePrefill(); });
+}
+
 // ---- packing ----------------------------------------------------------------
-const flowWidth = () => flow.clientWidth - 2 * parseFloat(getComputedStyle(flow).paddingLeft);
+// The row width only changes on resize (html{overflow-y:scroll} keeps the scrollbar from changing it), so read it
+// once: a read per row forced a layout per row, with the previous row's hosts freshly moved out of the pool.
+let flowW = 0;
+const flowWidth = () => flowW || (flowW = flow.clientWidth - 2 * parseFloat(getComputedStyle(flow).paddingLeft));
+const placedItems = (sel = '.item') => flow.querySelectorAll(`:scope > .row ${sel}`); // live hosts, not the pool
 const packW = (h) => (h._size === 'wide' ? Math.min(WIDE_BASIS, h._w) : h._w);
 
 // Lock an element to its measured box so later content changes overlay neighbours instead of reflowing.
@@ -230,8 +254,20 @@ function rowsFragment(n) {
 }
 
 // Heights of wide/full elements depend on their final row width, so lock them once the row is in the document.
+// Writes, then one read pass, then writes: one forced layout for all rows instead of one per element.
+function lockHeights(hosts) {
+  for (const h of hosts) if (h._size === 'wide') h.style.maxWidth = h._w + 'px'; // grow, but never past the natural width
+  const H = hosts.map((h) => Math.ceil(h.getBoundingClientRect().height)); // measured in the final row width
+  hosts.forEach((h, i) => { h.style.height = H[i] + 'px'; });
+}
 function lockRows(rows) {
-  for (const r of rows) for (const h of r.querySelectorAll('.item.size-wide, .item.size-full')) lock(h);
+  lockHeights(rows.flatMap((r) => [...r.querySelectorAll('.item.size-wide, .item.size-full')]));
+}
+
+// Tell the elements of freshly placed rows that they are in the document (shaders use it to draw before the first
+// paint; IntersectionObserver callbacks would come one frame later).
+function placed(rows) {
+  for (const r of rows) for (const h of r.querySelectorAll('.item')) h.dispatchEvent(new Event('placed'));
 }
 
 // ---- windowing --------------------------------------------------------------
@@ -243,14 +279,12 @@ function setSpacer(h) {
 }
 
 function evictTop() {
-  while (liveRows() > MAX_ROWS) {
-    const r = spacer.nextElementSibling;
-    if (!r) break;
-    const h = r.offsetHeight + GAP;
-    for (const host of r.querySelectorAll(".item")) unmount(host);
-    r.remove();
-    setSpacer(spacerH + h);
-  }
+  const out = [];
+  for (let r = spacer.nextElementSibling, k = liveRows() - MAX_ROWS; r && k > 0; r = r.nextElementSibling, k--) out.push(r);
+  if (!out.length) return;
+  const add = out.reduce((s, r) => s + r.offsetHeight + GAP, 0); // one read pass before the removals
+  for (const r of out) { for (const host of r.querySelectorAll('.item')) unmount(host); r.remove(); }
+  setSpacer(spacerH + add);
 }
 
 function evictBottom() {
@@ -266,7 +300,9 @@ function appendRows(n = ROWS_PER_FILL) {
   const { frag, rows } = rowsFragment(n);
   flow.appendChild(frag);
   lockRows(rows);
+  placed(rows);
   evictTop();
+  schedulePrefill();
 }
 
 function prependRows(n = ROWS_PER_FILL) {
@@ -275,10 +311,12 @@ function prependRows(n = ROWS_PER_FILL) {
   const { frag, rows } = rowsFragment(n);
   flow.insertBefore(frag, spacer.nextSibling);
   lockRows(rows);
+  placed(rows);
   const added = flow.offsetHeight - before;
   if (added <= spacerH) setSpacer(spacerH - added);
   else { const jump = added - spacerH; setSpacer(0); window.scrollBy(0, jump); }
   evictBottom();
+  schedulePrefill();
 }
 
 function check() {
@@ -299,28 +337,37 @@ function check() {
   }
 }
 
-// Re-measure every live element (used once if web fonts arrive after the first rows were locked).
+// Re-measure every live element (used once if web fonts arrive after the first rows were locked). A row was
+// packed with the old sizes: if the new ones no longer fit it, it keeps the old ones (a box locked a few px too
+// small overlays its neighbours, which is what locked boxes are for; a re-packed row would wrap).
 function relockAll() {
-  const hosts = [...flow.querySelectorAll('.item')];
-  for (const h of hosts) { h.style.width = ''; h.style.height = ''; if (h._size === 'wide') h.style.maxWidth = ''; }
-  for (const h of hosts) {
-    if (h._size === 'auto') { const b = h.getBoundingClientRect(); h._w = Math.ceil(b.width); h._h = Math.ceil(b.height); }
-    lock(h);
+  const W = flowWidth();
+  const rows = [...flow.querySelectorAll(':scope > .row')].map((r) => ({ r, hosts: [...r.querySelectorAll('.item')] }));
+  const all = rows.flatMap((x) => x.hosts);
+  const old = new Map(all.map((h) => [h, [h._w, h._h]]));
+  for (const h of all) { h.style.width = ''; h.style.height = ''; if (h._size === 'wide') h.style.maxWidth = ''; }
+  for (const h of all) if (h._size === 'auto') { const b = h.getBoundingClientRect(); h._w = Math.ceil(b.width); h._h = Math.ceil(b.height); } // one layout
+  for (const { r, hosts } of rows) {
+    const used = [...r.children].reduce((s, c) => s + Math.max(...[...(c.classList.contains('cell') ? c.children : [c])].map(packW)), 0) + GAP * (r.children.length - 1);
+    if (used > W) for (const h of hosts) [h._w, h._h] = old.get(h);
   }
+  for (const h of all) if (h._size === 'auto') lock(h);
+  lockHeights(all.filter((h) => h._size !== 'auto'));
 }
 
 // Re-lock responsive (wide/full) heights after the viewport width changes.
 function relock() {
-  const hosts = flow.querySelectorAll('.item.size-wide, .item.size-full');
+  const hosts = [...placedItems('.item.size-wide, :scope > .row .item.size-full')];
   for (const h of hosts) h.style.height = '';
-  for (const h of hosts) h.style.height = Math.ceil(h.getBoundingClientRect().height) + 'px';
+  const H = hosts.map((h) => Math.ceil(h.getBoundingClientRect().height)); // one layout
+  hosts.forEach((h, i) => { h.style.height = H[i] + 'px'; });
 }
 
 // ---- boot -------------------------------------------------------------------
 async function main() {
   allRegistry = await loadComponents();
-  boot.classList.add('hidden');
   if (!allRegistry.length) {
+    boot.classList.add('hidden');
     console.error('[buttons] no components loaded');
     return;
   }
@@ -332,6 +379,7 @@ async function main() {
   let fontsDone = false;
   await Promise.race([fontsReady.then(() => { fontsDone = true; }), new Promise((r) => setTimeout(r, FONT_WAIT))]);
   appendRows(ROWS_PER_FILL * 2);
+  boot.classList.add('hidden');
   if (!fontsDone) fontsReady.then(() => relockAll());
 
   const io = new IntersectionObserver((entries) => {
@@ -353,7 +401,7 @@ async function main() {
     if (innerWidth === lastW) return;
     lastW = innerWidth;
     clearTimeout(rt);
-    rt = setTimeout(() => { relock(); check(); }, 150);
+    rt = setTimeout(() => { flowW = 0; relock(); check(); }, 150);
   }, { passive: true });
 
   const fill = () => {
@@ -388,7 +436,7 @@ function filtered(set) {
 
 // Tear the feed down and start it again from the current registry.
 function resetFeed() {
-  for (const h of flow.querySelectorAll('.item')) unmount(h);
+  for (const h of placedItems()) unmount(h);
   for (const r of flow.querySelectorAll(':scope > .row')) r.remove();
   for (const h of pool.splice(0)) unmount(h);
   measure.innerHTML = '';

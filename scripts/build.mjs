@@ -5,14 +5,14 @@
 // The per-file modules stay deployed: they are the fallback, the dev path, and what long-press copies.
 //   node scripts/build.mjs          write components/bundle.js
 //   node scripts/build.mjs --check  exit 1 if components/bundle.js is stale (for validate / CI)
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, renameSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'components/bundle.js');
-const { CATEGORIES } = await import(join(ROOT, 'components/manifest.js'));
+const { CATEGORIES } = await import(pathToFileURL(join(ROOT, 'components/manifest.js')).href);
 
 const hash = createHash('sha256');
 let body = '';
@@ -21,6 +21,7 @@ const sources = {};
 let n = 0;
 for (const c of CATEGORIES) {
   const idx = readFileSync(join(ROOT, 'components', c, 'index.js'), 'utf8');
+  hash.update(`components/${c}/index.js\0` + idx + '\0'); // membership and order come from index.js
   const files = [...idx.matchAll(/from\s+['"]\.\/([^'"]+)['"]/g)].map((m) => m[1]);
   cats[c] = [];
   for (const f of files) {
@@ -44,8 +45,10 @@ if (process.argv.includes('--check')) {
   if (cur !== digest) { console.error(`components/bundle.js is stale (have ${cur}, want ${digest}); run: node scripts/build.mjs`); process.exit(1); }
   console.log('bundle up to date'); process.exit(0);
 }
-writeFileSync(OUT, out);
-const mod = await import(OUT + '?t=' + Date.now()); // sanity: the bundle parses and evaluates in Node (CONTRACT rule 2)
+const TMP = OUT.replace(/\.js$/, '.tmp.js');
+writeFileSync(TMP, out);
+const mod = await import(pathToFileURL(TMP).href + '?t=' + Date.now()); // sanity: the bundle parses and evaluates in Node (CONTRACT rule 2)
 const total = Object.values(mod.default).reduce((s, l) => s + l.filter(Boolean).length, 0);
 if (total !== n) throw new Error(`bundle evaluated ${total} of ${n} components`);
+renameSync(TMP, OUT); // only a bundle that evaluated replaces the old one
 console.log(`components/bundle.js: ${n} components, ${(out.length / 1024).toFixed(0)} KiB, hash ${digest}`);

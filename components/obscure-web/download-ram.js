@@ -18,7 +18,7 @@ export default {
     .free { position: absolute; right: -10px; top: -14px; width: 50px; height: 50px; z-index: 1; display: grid; place-items: center; color: #000; font: 900 11px "Arial Black", Arial, sans-serif; transform: rotate(14deg); pointer-events: none; animation: blink .5s steps(1) infinite; }
     .free svg { position: absolute; inset: 0; fill: #ffde00; }
     .free span { position: relative; }
-    @keyframes blink { 50% { visibility: hidden; } }
+    @keyframes blink { 50% { opacity: 0; } }
     .bar { height: 14px; border: 1px solid #fff; background: #000; position: relative; overflow: hidden; }
     .bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: repeating-linear-gradient(90deg, #39ff14 0 8px, #000 8px 10px); transition: width .25s linear; }
     .bar b { position: absolute; inset: 0; display: grid; place-items: center; font: 700 10px Verdana, sans-serif; color: #fff; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }

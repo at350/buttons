@@ -79,6 +79,14 @@ const out = await evaluate(async () => {
     area.appendChild(host);
     // fluid `wide` elements (content is width:100%) legitimately have no natural width in the measuring area
     if (host.offsetHeight === 0 || (host.offsetWidth === 0 && d.size !== 'wide')) zero.push(d.id);
+    // WebGL elements only create their context near the viewport (IntersectionObserver), so show canvas
+    // elements on screen for a couple of frames: the shader compiles and a compile error reaches console.error
+    if ((d.html || '').includes('<canvas')) {
+      host.style.cssText = 'position:fixed;left:0;top:0;z-index:9';
+      document.body.appendChild(host);
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await sleep(0);
+    }
     try { typeof cleanup === 'function' && cleanup(); } catch (e) { errors.push(`${d.id} cleanup: ${e.message}`); }
     host.remove();
   }

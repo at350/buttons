@@ -22,7 +22,7 @@ export default {
     .new:active svg { transform: scale(.94); }
     .new:focus-visible { outline: 2px dashed #fff; outline-offset: 2px; }
     @keyframes march { to { background-position: 22.6px 0; } }
-    @keyframes blink { 50% { visibility: hidden; } }
+    @keyframes blink { 50% { opacity: 0; } }
   `,
   html: `
     <div class="stage">

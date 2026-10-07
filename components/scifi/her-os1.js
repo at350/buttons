@@ -20,13 +20,18 @@ export default {
     .os:focus-visible { outline: 2px solid #fff; outline-offset: -8px; border-radius: 12px; }
     .loop { position: absolute; left: 50%; top: 50%; width: 46px; height: 92px; margin: -50px -23px; animation: sp 4.2s cubic-bezier(.6,0,.4,1) infinite; transition: opacity .45s, transform .45s; }
     .loop svg { width: 100%; height: 100%; overflow: visible; }
-    .loop path { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 150 60; animation: dr 2.1s linear infinite; }
+    /* the 3D turn (transform) runs on the compositor all the time; the gap travelling round the figure (stroke-dashoffset inside an <svg>
+       whose wrapper also turns) cost a style + layout pass every frame, so it travels while she is being looked at (hover / focus)
+       and holds where it stopped otherwise */
+    .loop path { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 150 60; animation: dr 2.1s linear infinite paused; }
     .loop path + path { stroke-width: 1; opacity: .35; stroke-dasharray: none; animation: none; }
+    .os:hover .loop path, .os:focus-visible .loop path { animation-play-state: running; }
     .os:hover .loop { animation-duration: 2.4s; }
     .os:hover .loop path { animation-duration: 1.2s; }
     @keyframes sp { from { transform: perspective(260px) rotateY(0) rotateZ(-10deg); } to { transform: perspective(260px) rotateY(360deg) rotateZ(-10deg); } }
     @keyframes dr { to { stroke-dashoffset: -210; } }
-    .wave { position: absolute; left: 18px; right: 18px; top: 50%; height: 64px; margin-top: -36px; overflow: hidden; opacity: 0; transition: opacity .5s .15s;
+    /* the voice line is display: none until she is awake (its <g> scaleY is a main-thread SVG animation); exit kept by allow-discrete */
+    .wave { position: absolute; left: 18px; right: 18px; top: 50%; height: 64px; margin-top: -36px; overflow: hidden; display: none; opacity: 0; transition: opacity .5s .15s, display .65s allow-discrete;
       mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); }
     .wave .sc { position: absolute; left: 0; top: 2px; width: 100%; height: 60px; transform: scaleY(var(--amp)); transition: transform .35s cubic-bezier(.3,1.4,.5,1); }
     .wave svg { position: absolute; left: 0; top: 0; width: 360px; height: 60px; animation: tx 1.6s linear infinite; }
@@ -37,7 +42,9 @@ export default {
     @keyframes tx { to { transform: translateX(-60px); } }
     @keyframes amp { 0% { transform: scaleY(.18); } 40% { transform: scaleY(.9); } 70% { transform: scaleY(.38); } 100% { transform: scaleY(1); } }
     .os[aria-pressed="true"] .loop { opacity: 0; transform: scale(.4); animation-play-state: paused; }
-    .os[aria-pressed="true"] .wave { opacity: 1; }
+    .os[aria-pressed="true"] .loop path { animation-play-state: paused; }
+    .os[aria-pressed="true"] .wave { display: block; opacity: 1; }
+    @starting-style { .os[aria-pressed="true"] .wave { opacity: 0; } }
     .os.boot .loop { animation-duration: .9s; }
     .lab { position: absolute; left: 0; right: 0; bottom: 18px; font: 300 12px 'DM Sans', system-ui, sans-serif; letter-spacing: .3em; opacity: .9; transition: opacity .4s; }
     .lab sup { font-size: 8px; letter-spacing: 0; }

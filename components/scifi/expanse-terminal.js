@@ -17,7 +17,7 @@ export default {
       background: radial-gradient(circle at 30% 20%, #3a2a1e, #120d0a 60%), #120d0a; font-family: 'Space Grotesk', system-ui, sans-serif; color: #eaf6ff; }
     .ht { position: relative; width: 168px; height: 262px; border-radius: 14px; padding: 12px 10px; overflow: hidden;
       background: linear-gradient(160deg, rgba(200,230,255,.16), rgba(120,170,220,.05) 60%, rgba(200,230,255,.1)); border: 1px solid rgba(220,240,255,.45);
-      box-shadow: inset 0 0 0 3px rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.6); backdrop-filter: blur(1px); }
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.6); }
     .ht::before { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.1) 42%, transparent 50%); pointer-events: none; }
     .sb { display: flex; justify-content: space-between; font: 500 9px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .1em; opacity: .75; }
     .hd { margin: 10px 0 10px; font-size: 11px; font-weight: 600; letter-spacing: .3em; }
@@ -28,9 +28,12 @@ export default {
     .t:hover { background: rgba(160,210,255,.18); border-color: #fff; }
     .t:nth-child(4) { color: #ffb36b; border-color: rgba(255,179,107,.5); }
     .t:focus-visible, .bk:focus-visible { outline: 2px solid #8fd3ff; outline-offset: 1px; }
-    .pane { position: absolute; left: 10px; right: 10px; top: 52px; bottom: 12px; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity .2s, transform .25s cubic-bezier(.2,.8,.2,1); }
+    /* closed pane is display: none (exit kept by allow-discrete, enter by @starting-style): its ECG trace and orbit are main-thread SVG
+       animations (stroke-dashoffset, transform on a <g>) that otherwise ran style + layout every frame behind the invisible pane */
+    .pane { position: absolute; left: 10px; right: 10px; top: 52px; bottom: 12px; display: none; opacity: 0; transform: translateX(20px); pointer-events: none; transition: opacity .2s, transform .25s cubic-bezier(.2,.8,.2,1), display .25s allow-discrete; }
     .open .grid { opacity: 0; transform: translateX(-20px); pointer-events: none; }
-    .open .pane { opacity: 1; transform: none; pointer-events: auto; }
+    .open .pane { display: block; opacity: 1; transform: none; pointer-events: auto; }
+    @starting-style { .open .pane { opacity: 0; transform: translateX(20px); } }
     .bk { display: flex; align-items: center; gap: 4px; border: 0; background: none; color: inherit; cursor: pointer; padding: 2px 0; font: 600 10px 'Space Grotesk', system-ui, sans-serif; letter-spacing: .24em; }
     .bk svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
     .viz { margin-top: 10px; height: 110px; border: 1px solid rgba(220,240,255,.25); border-radius: 4px; position: relative; overflow: hidden; }

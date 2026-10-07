@@ -12,9 +12,9 @@ export default {
     .row {
       position: absolute; left: 10px; right: 10px; top: 10px; height: 50px; display: flex; align-items: center; gap: 12px; padding: 0 12px 0 14px;
       border-radius: 10px; background: #fff; box-shadow: 0 0 0 rgba(0,0,0,.8), 0 0 0 1px rgba(0,0,0,.04); cursor: grab; user-select: none; -webkit-user-select: none;
-      transform: translateY(var(--y, 0px)); transition: transform .45s ${SPRING}, box-shadow .3s; will-change: transform;
+      transform: translateY(var(--y, 0px)); transition: transform .45s ${SPRING}, box-shadow .3s;
     }
-    .row.lift { transition: box-shadow .3s; box-shadow: -1px 1px 10px rgba(0,0,0,.3), 0 0 0 1px rgba(0,0,0,.04); cursor: grabbing; z-index: 2; }
+    .row.lift { transition: box-shadow .3s; box-shadow: -1px 1px 10px rgba(0,0,0,.3), 0 0 0 1px rgba(0,0,0,.04); cursor: grabbing; z-index: 2; will-change: transform; } /* own layer only while held (it tracks the pointer with no transition); settling rows composite via their transition */
     .row:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
     .grip { width: 16px; height: 16px; flex: none; fill: none; stroke: #111; stroke-width: 2; stroke-linecap: round; opacity: .35; transition: opacity .2s; }
     .row:hover .grip, .row.lift .grip { opacity: .8; }
