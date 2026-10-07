@@ -151,8 +151,8 @@ await evaluate(`(async () => {
       await Promise.all(imgs.map((im) => (im.complete ? Promise.resolve() : new Promise((r) => { im.addEventListener('load', r, { once: true }); im.addEventListener('error', r, { once: true }); setTimeout(r, 4000); }))));
       for (const im of imgs) if (!im.naturalWidth) bad.push('img ' + (im.getAttribute('src') || '').slice(0, 80));
       const urls = new Set();
-      for (const el of this.root.querySelectorAll('*')) { const bg = getComputedStyle(el).backgroundImage; for (const m of bg.matchAll(/url\(["']?([^"')]+)["']?\)/g)) if (!/^data:/.test(m[1])) urls.add(m[1]); }
-      for (const el of this.root.querySelectorAll('[style*="assets/"]')) for (const m of (el.getAttribute('style') || '').matchAll(/url\(["']?([^"')]+)["']?\)/g)) urls.add(m[1]);
+      for (const el of this.root.querySelectorAll('*')) { const bg = getComputedStyle(el).backgroundImage; for (const m of bg.matchAll(/url\\(["']?([^"')]+)["']?\\)/g)) if (!/^data:/.test(m[1])) urls.add(m[1]); }
+      for (const el of this.root.querySelectorAll('[style*="assets/"]')) for (const m of (el.getAttribute('style') || '').matchAll(/url\\(["']?([^"')]+)["']?\\)/g)) urls.add(m[1]);
       window.__urlCache = window.__urlCache || new Map();
       for (const u of urls) { if (!window.__urlCache.has(u)) window.__urlCache.set(u, fetch(u, { method: 'HEAD' }).then((r) => r.ok).catch(() => false)); if (!(await window.__urlCache.get(u))) bad.push('background ' + u.slice(0, 80)); }
       return bad;
