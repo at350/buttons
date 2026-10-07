@@ -13,7 +13,7 @@
 // to stderr. Durations are ms, heap is MB. Math.random is seeded in the page (--seed N, 0 = off) so every run
 // shows the same feed; otherwise run-to-run noise is mostly "which elements happened to come up".
 //
-// Usage: node scripts/perf.mjs [url] [--runs N] [--json out.json] [--seed N]   (default http://127.0.0.1:4173/, 3 runs)
+// Usage: node scripts/perf.mjs [url] [--runs N] [--json out.json] [--seed N]   (default http://127.0.0.1:4173/?bundle, 3 runs)
 // Needs the dev server and a Chromium binary: set CHROME=/path/to/binary, or it looks in the Playwright cache.
 import { spawn } from 'node:child_process';
 import { readdirSync, existsSync, writeFileSync } from 'node:fs';
@@ -25,7 +25,7 @@ const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? args.splice(i, 
 const RUNS = Math.max(1, +(flag('--runs') || 3));
 const jsonOut = flag('--json');
 const SEED = +(flag('--seed') ?? 1);
-const URL_ = args[0] || 'http://127.0.0.1:4173/';
+const URL_ = args[0] || 'http://127.0.0.1:4173/?bundle'; // ?bundle: load components/bundle.js like the deployed page does
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const r1 = (v) => Math.round(v * 10) / 10;
 const within = (p, ms, what) => { let t; return Promise.race([p, new Promise((_, j) => (t = setTimeout(() => j(new Error(what + ' timed out')), ms)))]).finally(() => clearTimeout(t)); };

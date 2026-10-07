@@ -5,6 +5,7 @@
   "description": "An endless page of buttons, menus, toggles and other interactive elements from across the web.",
   "scripts": {
     "dev": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "build": "node scripts/build.mjs",
     "validate": "node scripts/validate.mjs",
     "smoke": "node scripts/smoke.mjs",
     "audit": "node scripts/audit.mjs",

@@ -9,13 +9,33 @@ const WINDOW = 64;         // candidates the packer may choose from (keeps the f
 const H_SLACK = 48;        // px a stack's first element may exceed the current row height by
 const LOOKAHEAD = 1200;    // px beyond the viewport at which we fill / refill
 const WIDE_BASIS = 420;    // packing width assumed for `wide` elements (they then grow)
-const BASE_CSS = `:host{display:block;max-width:100%}*,*::before,*::after{box-sizing:border-box}`;
+const FONT_WAIT = 1000;    // ms the first rows wait for the web fonts (boxes are measured once, so with the real font)
+// Base styles for every shadow root. `data-idle` is set by the shell while an element is far from the viewport
+// (or still in the measuring area): a CSS animation ticking anywhere on the page costs a full main frame over
+// all ~450 live elements, and Chromium does not throttle offscreen main-thread animations on its own.
+const BASE_CSS = ':host{display:block;max-width:100%}*,*::before,*::after{box-sizing:border-box}'
+  + ':host([data-idle]) *,:host([data-idle]) *::before,:host([data-idle]) *::after{animation-play-state:paused!important}'
+  + '@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}';
+const IDLE_MARGIN = '200px 0px'; // how far outside the viewport animations keep running
 
 const flow = document.getElementById('flow');
 const measure = document.getElementById('measure');
 const sentinel = document.getElementById('sentinel');
 const boot = document.getElementById('boot');
 const GAP = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 18;
+
+// Ask for the web fonts now, while the components download. The font stylesheet loads without blocking
+// (index.html), and nothing requests a face before the first mount, so without this the first rows would be
+// measured with fallback fonts. The faces are the ones CONTRACT.md rule 1 allows (their latin subsets).
+const FACES = ['1em Inter', '1em "DM Sans"', '1em "Space Grotesk"', '1em "Bricolage Grotesque"', '1em Syne', '1em Unbounded',
+  '1em Fraunces', '1em "Playfair Display"', 'italic 1em "Playfair Display"', '1em "Instrument Serif"', 'italic 1em "Instrument Serif"',
+  '1em "JetBrains Mono"', '1em "IBM Plex Mono"', '600 1em "IBM Plex Mono"', '1em "Roboto Flex"'];
+const fontsReady = (async () => {
+  if (!document.fonts) return;
+  const link = document.getElementById('webfonts');
+  if (link && link.media !== 'all') await new Promise((r) => { for (const t of ['load', 'error']) link.addEventListener(t, r, { once: true }); });
+  await Promise.all(FACES.map((f) => document.fonts.load(f).catch(() => null)));
+})();
 
 // Height-preserving placeholder for evicted rows, so the scrollbar and scroll position stay put.
 const spacer = document.createElement('div');
@@ -53,15 +73,23 @@ function next() {
 }
 
 // ---- mounting ---------------------------------------------------------------
+// Pauses the CSS animations of elements that are not near the viewport (see BASE_CSS).
+const idleIO = new IntersectionObserver((entries) => {
+  for (const e of entries) e.target.toggleAttribute('data-idle', !e.isIntersecting);
+}, { rootMargin: IDLE_MARGIN });
+
 function mount(def) {
   const host = document.createElement('div');
   host.className = 'item size-' + (def.size || 'auto');
+  host.setAttribute('data-idle', ''); // paused until it comes near the viewport
+  idleIO.observe(host);
   host.dataset.id = def.id;
   host._size = def.size || 'auto';
   host._def = def;
   if (def.credit) host.title = def.credit;
   const root = host.attachShadow({ mode: 'open' });
-  root.innerHTML = `<style>${BASE_CSS}${def.css || ''}</style>${def.html || ''}`;
+  // pictures load when the element is near the viewport, not while it waits in the measuring area
+  root.innerHTML = `<style>${BASE_CSS}${def.css || ''}</style>${(def.html || '').replace(/<img\b/g, '<img loading="lazy" decoding="async"')}`;
   if (typeof def.init === 'function') {
     try {
       const cleanup = def.init(root, host);
@@ -74,6 +102,7 @@ function mount(def) {
 }
 
 function unmount(host) {
+  idleIO.unobserve(host);
   try { host._cleanup && host._cleanup(); } catch (err) { console.error(`[buttons] cleanup failed for "${host.dataset.id}"`, err); }
   host.remove();
 }
@@ -298,14 +327,12 @@ async function main() {
   registry = filtered(loadFilter());
   setupFilter();
   setupLongPress();
-  // Box locking depends on text metrics, so wait for the web fonts (bounded), and if they arrive
-  // later anyway, re-measure every live element once.
-  let fontsDone = !document.fonts || document.fonts.status === 'loaded';
-  if (!fontsDone) {
-    await Promise.race([document.fonts.ready.then(() => { fontsDone = true; }), new Promise((r) => setTimeout(r, 4000))]);
-  }
+  // Box locking depends on text metrics, so wait (bounded) for the web fonts requested at start-up, and if
+  // they arrive later anyway, re-measure every live element once.
+  let fontsDone = false;
+  await Promise.race([fontsReady.then(() => { fontsDone = true; }), new Promise((r) => setTimeout(r, FONT_WAIT))]);
   appendRows(ROWS_PER_FILL * 2);
-  if (!fontsDone && document.fonts) document.fonts.ready.then(() => relockAll());
+  if (!fontsDone) fontsReady.then(() => relockAll());
 
   const io = new IntersectionObserver((entries) => {
     if (entries.some((e) => e.isIntersecting)) appendRows();

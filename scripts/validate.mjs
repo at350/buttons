@@ -4,6 +4,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', 'components');
 const SIZES = new Set(['auto', 'wide', 'full']);
@@ -79,6 +80,12 @@ for (const cat of categories) {
   } catch (e) {
     fail(`${cat}/index.js: failed to import — ${e.message.split('\n')[0]}`);
   }
+}
+
+// the deployed page loads components/bundle.js (npm run build), so it must match the sources
+if (!requested.length) {
+  const r = spawnSync(process.execPath, [join(ROOT, '..', 'scripts', 'build.mjs'), '--check'], { stdio: 'inherit' });
+  if (r.status !== 0) errors++;
 }
 
 console.log(`\n${total} components, ${errors} error(s)`);

@@ -36,11 +36,11 @@ export default {
    `object-fit: cover`. Brand logos stay inline SVG.
    Icons must be inline SVG. Fonts: system stacks (`system-ui`, `ui-monospace`, `Georgia`…) **or one of the
    web fonts the page already loads** (use the family name directly, always with a fallback):
-   `Inter` (wght 100–900), `DM Sans` (opsz 9–40, wght 100–1000), `Space Grotesk` (300–700),
+   `Inter` (wght 100–900), `DM Sans` (wght 100–1000), `Space Grotesk` (300–700),
    `Bricolage Grotesque` (opsz 12–96, wdth 75–100, wght 200–800), `Syne` (400–800), `Unbounded` (200–900),
    `Fraunces` (opsz 9–144, wght 100–900, variable axes SOFT/WONK), `Playfair Display` (400–900 + italic),
    `Instrument Serif` (regular + italic), `JetBrains Mono` (100–800), `IBM Plex Mono` (400, 600),
-   `Roboto Flex` (full variable axes incl. wdth, GRAD, slnt). Variable-font axes animate (`font-variation-settings`).
+   `Roboto Flex` (variable axes wdth, GRAD, slnt; no opsz). Variable-font axes animate (`font-variation-settings`).
    Canvas / WebGL inside your html is allowed (see rule 7 for the run-only-while-hovered requirement).
    SVG filters are allowed: define them inline and reference with `url(#id)` from SVG attributes
    (`filter="url(#goo)"`). CSS `filter: url(#id)` on HTML elements is unreliable across browsers; avoid it.
