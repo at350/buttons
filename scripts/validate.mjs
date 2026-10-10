@@ -81,5 +81,12 @@ for (const cat of categories) {
   }
 }
 
+// The committed bundle (what the deployed page loads) must match the sources.
+if (!requested.length) {
+  const { sourceHash, bundleHash } = await import('./build.mjs');
+  const [src, bun] = [await sourceHash(), await bundleHash()];
+  if (src !== bun) fail(`components/bundle.js is ${bun ? 'stale' : 'missing'} — run: npm run build`);
+}
+
 console.log(`\n${total} components, ${errors} error(s)`);
 process.exit(errors ? 1 : 0);

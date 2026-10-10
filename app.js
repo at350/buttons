@@ -53,6 +53,29 @@ function next() {
 }
 
 // ---- mounting ---------------------------------------------------------------
+// One parsed stylesheet per definition, shared by every instance (a <style> per shadow root re-parses the
+// CSS on each mount). Falls back to inline <style> where constructable stylesheets are unavailable.
+const CONSTRUCTABLE = typeof CSSStyleSheet === 'function' && 'replaceSync' in CSSStyleSheet.prototype && 'adoptedStyleSheets' in ShadowRoot.prototype;
+const sheets = new WeakMap(); // def -> CSSStyleSheet
+function sheetFor(def) {
+  let s = sheets.get(def);
+  if (!s) {
+    s = new CSSStyleSheet();
+    s.replaceSync(BASE_CSS + (def.css || ''));
+    sheets.set(def, s);
+  }
+  return s;
+}
+
+// Images start downloading as soon as their markup is parsed, including the dozens of pooled elements
+// waiting off-screen; mark them lazy so only images near the viewport are fetched, and decode them off
+// the main thread. Boxes are measured and locked independently of image loading, so nothing shifts.
+const LAZY_IMG = /<img\b(?![^>]*\bloading=)/gi;
+function htmlFor(def) {
+  if (def._html === undefined) def._html = (def.html || '').replace(LAZY_IMG, '<img loading="lazy" decoding="async"');
+  return def._html;
+}
+
 function mount(def) {
   const host = document.createElement('div');
   host.className = 'item size-' + (def.size || 'auto');
@@ -61,7 +84,12 @@ function mount(def) {
   host._def = def;
   if (def.credit) host.title = def.credit;
   const root = host.attachShadow({ mode: 'open' });
-  root.innerHTML = `<style>${BASE_CSS}${def.css || ''}</style>${def.html || ''}`;
+  if (CONSTRUCTABLE) {
+    root.adoptedStyleSheets = [sheetFor(def)];
+    root.innerHTML = htmlFor(def);
+  } else {
+    root.innerHTML = `<style>${BASE_CSS}${def.css || ''}</style>${htmlFor(def)}`;
+  }
   if (typeof def.init === 'function') {
     try {
       const cleanup = def.init(root, host);
@@ -79,9 +107,9 @@ function unmount(host) {
 }
 
 // Mount a batch into the hidden measuring area and record each element's natural size.
-function fillPool() {
+function fillPool(n = POOL_FILL) {
   const fresh = [];
-  for (let i = 0; i < POOL_FILL; i++) {
+  for (let i = 0; i < n; i++) {
     const h = mount(next());
     measure.appendChild(h);
     fresh.push(h);
@@ -97,8 +125,25 @@ function fillPool() {
   pool.push(...fresh);
 }
 
+// Keep the pool topped up during idle time, in small batches, so a scroll-driven fill rarely has to
+// mount dozens of elements inside one task.
+const TOPUP = 16;
+let topupId = 0;
+const idle = window.requestIdleCallback ? (fn) => requestIdleCallback(fn, { timeout: 500 }) : (fn) => setTimeout(fn, 50);
+const cancelIdle = window.cancelIdleCallback ? (id) => cancelIdleCallback(id) : (id) => clearTimeout(id);
+function topUp() {
+  if (topupId || pool.length >= POOL_FILL) return;
+  topupId = idle(() => {
+    topupId = 0;
+    if (pool.length >= POOL_FILL) return;
+    fillPool(Math.min(TOPUP, POOL_FILL - pool.length));
+    topUp();
+  });
+}
+
 // ---- packing ----------------------------------------------------------------
-const flowWidth = () => flow.clientWidth - 2 * parseFloat(getComputedStyle(flow).paddingLeft);
+const PAD_L = parseFloat(getComputedStyle(flow).paddingLeft) || 0; // fixed by the stylesheet
+const flowWidth = () => flow.clientWidth - 2 * PAD_L;
 const packW = (h) => (h._size === 'wide' ? Math.min(WIDE_BASIS, h._w) : h._w);
 
 // Lock an element to its measured box so later content changes overlay neighbours instead of reflowing.
@@ -115,9 +160,8 @@ function lock(h) {
 // Build one row as a shelf of cells. A cell is a single element or a vertical stack of shorter
 // elements, so the space beside a tall element (a calendar, a tuner) is filled instead of left blank.
 // The first candidate is always taken (randomness); the rest are best-fit from a window of candidates.
-function buildRow() {
+function buildRow(W) {
   if (pool.length < POOL_MIN) fillPool();
-  const W = flowWidth();
   const row = document.createElement('div');
   row.className = 'row';
   // never place the same element right after itself (the packer can reorder across the shuffle seam)
@@ -196,17 +240,25 @@ function buildRow() {
 function rowsFragment(n) {
   const frag = document.createDocumentFragment();
   const rows = [];
-  for (let i = 0; i < n; i++) { const r = buildRow(); rows.push(r); frag.appendChild(r); }
+  const W = flowWidth(); // read once: locking pooled elements between rows would otherwise force a layout per row
+  for (let i = 0; i < n; i++) { const r = buildRow(W); rows.push(r); frag.appendChild(r); }
   return { frag, rows };
 }
 
-// Heights of wide/full elements depend on their final row width, so lock them once the row is in the document.
+// Heights of wide/full elements depend on their final row width, so lock them once the row is in the
+// document: all reads first, then all writes, so the batch costs one layout instead of one per element.
 function lockRows(rows) {
-  for (const r of rows) for (const h of r.querySelectorAll('.item.size-wide, .item.size-full')) lock(h);
+  const hosts = [];
+  for (const r of rows) hosts.push(...r.querySelectorAll('.item.size-wide, .item.size-full'));
+  const heights = hosts.map((h) => Math.ceil(h.getBoundingClientRect().height));
+  hosts.forEach((h, i) => {
+    if (h._size === 'wide') h.style.maxWidth = h._w + 'px';
+    h.style.height = heights[i] + 'px';
+  });
 }
 
 // ---- windowing --------------------------------------------------------------
-const liveRows = () => flow.querySelectorAll(':scope > .row').length;
+const liveRows = () => flow.childElementCount - 2; // children: #measure, the spacer, then rows
 
 function setSpacer(h) {
   spacerH = Math.max(0, h);
@@ -214,14 +266,13 @@ function setSpacer(h) {
 }
 
 function evictTop() {
-  while (liveRows() > MAX_ROWS) {
-    const r = spacer.nextElementSibling;
-    if (!r) break;
-    const h = r.offsetHeight + GAP;
-    for (const host of r.querySelectorAll(".item")) unmount(host);
-    r.remove();
-    setSpacer(spacerH + h);
-  }
+  const gone = [];
+  for (let r = spacer.nextElementSibling, n = liveRows(); r && n > MAX_ROWS; r = r.nextElementSibling, n--) gone.push(r);
+  if (!gone.length) return;
+  let h = 0;
+  for (const r of gone) h += r.offsetHeight + GAP; // measure everything before the first removal
+  for (const r of gone) { for (const host of r.querySelectorAll('.item')) unmount(host); r.remove(); }
+  setSpacer(spacerH + h);
 }
 
 function evictBottom() {
@@ -238,6 +289,7 @@ function appendRows(n = ROWS_PER_FILL) {
   flow.appendChild(frag);
   lockRows(rows);
   evictTop();
+  topUp();
 }
 
 function prependRows(n = ROWS_PER_FILL) {
@@ -250,6 +302,7 @@ function prependRows(n = ROWS_PER_FILL) {
   if (added <= spacerH) setSpacer(spacerH - added);
   else { const jump = added - spacerH; setSpacer(0); window.scrollBy(0, jump); }
   evictBottom();
+  topUp();
 }
 
 function check() {
@@ -274,10 +327,11 @@ function check() {
 function relockAll() {
   const hosts = [...flow.querySelectorAll('.item')];
   for (const h of hosts) { h.style.width = ''; h.style.height = ''; if (h._size === 'wide') h.style.maxWidth = ''; }
-  for (const h of hosts) {
-    if (h._size === 'auto') { const b = h.getBoundingClientRect(); h._w = Math.ceil(b.width); h._h = Math.ceil(b.height); }
-    lock(h);
-  }
+  const boxes = hosts.map((h) => h.getBoundingClientRect()); // all reads, then all writes
+  hosts.forEach((h, i) => {
+    if (h._size === 'auto') { h._w = Math.ceil(boxes[i].width); h._h = Math.ceil(boxes[i].height); lock(h); }
+    else { if (h._size === 'wide') h.style.maxWidth = h._w + 'px'; h.style.height = Math.ceil(boxes[i].height) + 'px'; }
+  });
 }
 
 // Re-lock responsive (wide/full) heights after the viewport width changes.
@@ -288,8 +342,11 @@ function relock() {
 }
 
 // ---- boot -------------------------------------------------------------------
+const mark = (n) => { try { performance.mark('buttons:' + n); } catch {} };
+
 async function main() {
   allRegistry = await loadComponents();
+  mark('components-loaded');
   boot.classList.add('hidden');
   if (!allRegistry.length) {
     console.error('[buttons] no components loaded');
@@ -304,7 +361,9 @@ async function main() {
   if (!fontsDone) {
     await Promise.race([document.fonts.ready.then(() => { fontsDone = true; }), new Promise((r) => setTimeout(r, 4000))]);
   }
+  mark('fonts-settled');
   appendRows(ROWS_PER_FILL * 2);
+  mark('first-rows');
   if (!fontsDone && document.fonts) document.fonts.ready.then(() => relockAll());
 
   const io = new IntersectionObserver((entries) => {
@@ -333,7 +392,7 @@ async function main() {
     if (document.documentElement.scrollHeight <= window.innerHeight + 200) {
       appendRows();
       requestAnimationFrame(fill);
-    }
+    } else mark('screen-filled');
   };
   requestAnimationFrame(fill);
 }
@@ -365,6 +424,7 @@ function resetFeed() {
   for (const r of flow.querySelectorAll(':scope > .row')) r.remove();
   for (const h of pool.splice(0)) unmount(h);
   measure.innerHTML = '';
+  if (topupId) { cancelIdle(topupId); topupId = 0; }
   order = []; cursor = 0; lastId = null;
   setSpacer(0);
   window.scrollTo(0, 0);

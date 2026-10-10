@@ -4,12 +4,18 @@ An endless page of buttons, menus, toggles, dials and other interactive elements
 No text, just things to click.
 
 ```
-npm run dev        # http://127.0.0.1:4173
-npm run validate   # checks every component against components/CONTRACT.md
+npm run dev        # http://127.0.0.1:4173 (zero-dependency static server: keep-alive + gzip)
+npm run build      # regenerates components/bundle.js (one request instead of ~700; the deployed page loads it)
+npm run validate   # checks every component against components/CONTRACT.md, and that the bundle is fresh
 npm run smoke      # headless Chromium: mounts every element, checks packing + infinite feed (needs the dev server)
+npm run bench      # headless Chromium: load timeline, scroll-stress frame times, idle CPU, heap (needs the dev server)
 npm run audit -- menus   # hover/click/leave every element in a category and report anything that escapes its box
 node scripts/sheet.mjs menus   # visual review: screenshots every element at rest + clicked into .sheets/ with contact sheets
 ```
+
+On localhost the page loads the per-file component modules (edit and reload); anywhere else it loads
+`components/bundle.js`, so run `npm run build` after changing components. `?bundle=1` / `?bundle=0`
+force either. `npm run bench -- --net=4g --profile` throttles the network and prints CPU profiles.
 
 Quality rules for elements (real icons, real colors, real motion, nothing escapes its box) are in
 [components/QUALITY.md](components/QUALITY.md).

@@ -7,11 +7,12 @@ function shade(cv, el, w, h, fs, o = {}) {
   const dpr = Math.min(2, globalThis.devicePixelRatio || 1);
   cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
   const s = { t: 0, hover: 0, hoverT: 0, press: 0, value: 0, valueT: 0, mx: .5, my: .5, px: .5, py: .5, down: false };
-  let gl = null, prog = null, U = null, raf = 0, lastT = 0, vis = false, dead = false, io = null;
+  let gl = null, prog = null, U = null, raf = 0, lastT = 0, vis = false, dead = false, io = null, nearIo = null, lose = null, near = false, noGl = false;
   const name = () => ((cv.getRootNode().host || {}).dataset || {}).id || '';
   const setup = () => {
     gl = cv.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true });
     if (!gl) return false;
+    lose = lose || gl.getExtension('WEBGL_lose_context');
     gl.getExtension('OES_standard_derivatives'); // fwidth() for pixel-exact anti-aliasing
     const sh = (type, src) => {
       const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
@@ -64,15 +65,27 @@ function shade(cv, el, w, h, fs, o = {}) {
   el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { s.px = .5; s.py = .5; s.press = 1; kick(); } });
   el.addEventListener('focus', () => { if (el.matches(':focus-visible')) { s.hoverT = 1; kick(); } });
   el.addEventListener('blur', () => { if (!el.matches(':hover')) { s.hoverT = 0; kick(); } });
-  cv.addEventListener('webglcontextlost', (e) => { e.preventDefault(); cancelAnimationFrame(raf); raf = 0; if (!dead) cv.classList.add('nogl'); });
+  cv.addEventListener('webglcontextlost', (e) => { e.preventDefault(); cancelAnimationFrame(raf); raf = 0; gl = null; if (!dead) { cv.classList.add('nogl'); if (near) acquire(); } });
   cv.addEventListener('webglcontextrestored', () => { if (!dead && setup()) { cv.classList.remove('nogl'); draw(); kick(); } });
-  if (setup()) draw(); else cv.classList.add('nogl');
+  // A WebGL context costs tens of ms to create and browsers keep only ~16 alive per page, so the shader
+  // holds one only while its canvas is near the viewport: acquired on approach, released (deliberately
+  // lost) once it has scrolled well away, restored when it comes back.
+  const acquire = () => {
+    if (dead || gl || noGl) return;
+    if (lose && cv.getContext('webgl').isContextLost()) { lose.restoreContext(); return; } // -> webglcontextrestored -> setup
+    if (setup()) { cv.classList.remove('nogl'); draw(); kick(); } else { noGl = true; cv.classList.add('nogl'); }
+  };
+  const release = () => { if (gl && lose) lose.loseContext(); }; // -> webglcontextlost
+  if (typeof IntersectionObserver === 'function') {
+    nearIo = new IntersectionObserver((en) => { near = en.some((x) => x.isIntersecting); if (near) acquire(); else release(); }, { rootMargin: '50% 0px' });
+    nearIo.observe(cv);
+  } else acquire();
   if (o.idle && typeof IntersectionObserver === 'function') {
     io = new IntersectionObserver((en) => { vis = en.some((x) => x.isIntersecting); if (vis) kick(); });
     io.observe(cv);
   }
   s.kick = kick; s.draw = draw;
-  s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); if (gl) { const x = gl.getExtension('WEBGL_lose_context'); x && x.loseContext(); } gl = null; };
+  s.destroy = () => { dead = true; cancelAnimationFrame(raf); raf = 0; io && io.disconnect(); nearIo && nearIo.disconnect(); if (gl && lose) lose.loseContext(); gl = null; };
   return s;
 }
 // Outrun sun: gradient disc (#ffd319 -> #ff2975) whose lower half is cut by horizontal gaps that get

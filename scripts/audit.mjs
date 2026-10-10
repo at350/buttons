@@ -33,7 +33,7 @@ function findChrome() {
 }
 
 const WIDTH = +(process.env.WIDTH || 1280); // viewport width; e.g. WIDTH=390 for a phone-width pass
-const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', `--window-size=${WIDTH},900`, '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', `--window-size=${WIDTH},900`, '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--no-default-browser-check', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
 const wsUrl = await new Promise((res, rej) => {
   let buf = '';
   chrome.stderr.on('data', (d) => { buf += d; const m = buf.match(/DevTools listening on (ws:\/\/\S+)/); if (m) res(m[1]); });

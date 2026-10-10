@@ -31,10 +31,12 @@
     padding: calc(var(--gap) * 1.5) 16px calc(var(--gap) * 4);
     margin: 0 auto;
   }
-  /* hidden measuring area: same width as a row, laid out but invisible */
+  /* hidden measuring area: same width as a row, laid out but invisible. Parked far above the page so
+     IntersectionObservers inside pooled elements (idle shaders, lazy images, WebGL contexts) never see
+     it as on-screen: visibility:hidden alone does not stop them from intersecting. */
   #measure {
     position: absolute;
-    left: 16px; right: 16px; top: 0;
+    left: 16px; right: 16px; top: -100000px;
     visibility: hidden;
     pointer-events: none;
     overflow: hidden; /* hidden content still counts toward the page's scroll width unless clipped */

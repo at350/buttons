@@ -96,9 +96,13 @@ import b from './ios-toggle.js';
 export default [a, b];
 ```
 
-## Validate
+## Validate and build
 
 ```
-node scripts/validate.mjs            # all categories
+node scripts/validate.mjs            # all categories (+ checks that components/bundle.js is fresh)
 node scripts/validate.mjs big-tech   # one category
+node scripts/build.mjs               # regenerate components/bundle.js after changing any component
 ```
+
+The deployed page loads `components/bundle.js` (one request) instead of ~700 modules; localhost loads the
+per-file modules so edits show up on reload. Commit the rebuilt bundle with your component changes.

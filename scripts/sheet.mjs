@@ -25,7 +25,7 @@ function findChrome() {
   }
   throw new Error('No Chromium found; set CHROME=/path/to/binary');
 }
-const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', '--force-device-scale-factor=2', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', '--force-device-scale-factor=2', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
 process.on('exit', () => chrome.kill());
 const wsUrl = await new Promise((res, rej) => { let b = ''; chrome.stderr.on('data', (d) => { b += d; const m = b.match(/DevTools listening on (ws:\/\/\S+)/); if (m) res(m[1]); }); setTimeout(() => rej(new Error('chrome did not start')), 20000); });
 const ws = new WebSocket(wsUrl); await new Promise((r) => (ws.onopen = r));
