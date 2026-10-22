@@ -11,13 +11,26 @@ export default {
     .pill:focus-visible { outline: 2px solid #a1a1a1; outline-offset: 3px; }
     .dark .pill { border-color: rgba(255,255,255,.05); background: #171717; }
     .dark .pill:hover { background: #262626; }
-    .sh { --shiny-width: 100px; display: inline-flex; align-items: center; justify-content: center; padding: 4px 16px; color: rgba(82,82,82,.7);
-      background-image: linear-gradient(to right, transparent, rgba(0,0,0,.8) 50%, transparent); background-size: var(--shiny-width) 100%; background-position: 0 0; background-repeat: no-repeat;
+    .sh { --shiny-width: 100px; --shine: linear-gradient(to right, transparent, rgba(0,0,0,.8) 50%, transparent);
+      display: inline-flex; align-items: center; justify-content: center; padding: 4px 16px; color: rgba(82,82,82,.7);
+      background-image: var(--shine); background-size: var(--shiny-width) 100%; background-position: 0 0; background-repeat: no-repeat;
       -webkit-background-clip: text; background-clip: text; animation: shiny-text 8s infinite; transition: color .15s cubic-bezier(0,0,.2,1); white-space: nowrap; }
     .pill:hover .sh { color: #525252; transition-duration: .3s; }
-    .dark .sh { color: rgba(163,163,163,.7); background-image: linear-gradient(to right, transparent, rgba(255,255,255,.8) 50%, transparent); }
+    .dark .sh { color: rgba(163,163,163,.7); --shine: linear-gradient(to right, transparent, rgba(255,255,255,.8) 50%, transparent); }
     .dark .pill:hover .sh { color: #a3a3a3; }
     @keyframes shiny-text { 0%, 90%, 100% { background-position: calc(-100% - var(--shiny-width)) 0; } 30%, 60% { background-position: calc(100% + var(--shiny-width)) 0; } }
+    /* Same sweep on the compositor. The label span's glyphs become a mask (its own text made transparent) over a layer the
+       size of .sh carrying the 100px highlight, slid from -100% to +100% with transform (= the background-position keyframes
+       above, same easing). The visible label is redrawn on top by .sh::after (same text, font and spot, hidden from
+       assistive tech), so the highlight still sits under the semi-transparent text exactly like background-clip:text.
+       Browsers without mask-clip:text or content alt text keep the version above. */
+    @supports (-webkit-mask-clip: text) and (content: "x" / "") {
+      .sh { position: relative; overflow: hidden; background: none; animation: none; }
+      .sh > span { color: transparent; -webkit-mask-image: linear-gradient(#000, #000); -webkit-mask-clip: text; }
+      .sh > span::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--shine) 0 0 / var(--shiny-width) 100% no-repeat; animation: shiny-x 8s infinite; }
+      .sh::after { content: "✨ Introducing Magic UI" / ""; position: absolute; top: 4px; left: 16px; pointer-events: none; }
+      @keyframes shiny-x { 0%, 90%, 100% { transform: translateX(-100%); } 30%, 60% { transform: translateX(100%); } }
+    }
     .sh svg { width: 12px; height: 12px; margin-left: 4px; transition: transform .3s cubic-bezier(.4,0,.2,1); }
     .pill:hover .sh svg { transform: translateX(2px); }
   `,

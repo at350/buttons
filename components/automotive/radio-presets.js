@@ -2,6 +2,7 @@ export default {
   id: 'au-radio-presets',
   credit: 'Car head unit — preset bar 1–6 (latching, hold to store), SEEK ‹ ›, and the volume knob: twist for level, push to mute; blue segment LCD',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { width: 330px; max-width: 100%; padding: 12px; border-radius: 12px; background: linear-gradient(#2e2f33, #18191b); font: 700 11px/1 Inter, 'Helvetica Neue', system-ui, sans-serif; color: #d8dbe0; user-select: none; }

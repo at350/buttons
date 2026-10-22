@@ -1,0 +1,31 @@
+# Checks pull requests and pushes to main: the component contract, a fresh components/bundle.js (the deployed
+# page loads only the bundle, so a stale one ships old code silently), and a headless smoke run of the page.
+# Other branches are checked through their pull request (an unfiltered push trigger runs twice per PR push).
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # no npm install: the repo has no dependencies
+      - name: Validate components and bundle freshness
+        run: npm run validate
+      - name: Smoke test the page in Chrome
+        env:
+          CHROME: google-chrome
+        run: |
+          node scripts/serve.mjs 4173 &
+          curl -sf --retry 20 --retry-delay 1 --retry-connrefused -o /dev/null http://127.0.0.1:4173/
+          # ?bundle=1: localhost would load the per-file modules; smoke what deploys instead
+          npm run smoke -- 'http://127.0.0.1:4173/?bundle=1'

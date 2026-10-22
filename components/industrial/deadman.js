@@ -9,6 +9,7 @@ export default {
   id: 'nd-dsd-controller',
   credit: 'Train combined power/brake controller with dead-man (DSD) — hold the T-handle, release out of brake and the DSD warning then emergency brake trip; reset in EB',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; gap: 14px; padding: 12px 16px; border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none;

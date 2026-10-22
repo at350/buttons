@@ -2,6 +2,7 @@ export default {
   id: 'cr-hold-confirm',
   credit: 'Press-and-hold to confirm — progress ring charges while held, drains on early release (Apple Watch / iOS "hold to" pattern)',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .btn {

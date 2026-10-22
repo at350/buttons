@@ -55,7 +55,7 @@ export default {
     .task:focus-visible span { outline: 1px dotted #000; }
     .tray { margin-left: auto; height: 22px; padding: 0 9px; display: flex; align-items: center; white-space: nowrap; flex: none;
       box-shadow: inset 1px 1px #808080, inset -1px -1px #fff; }
-    @keyframes blink { 50% { visibility: hidden; } }
+    @keyframes blink { 50% { opacity: 0; } }
   `,
   html: `
     <div class="stage">

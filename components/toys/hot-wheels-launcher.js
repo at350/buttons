@@ -7,6 +7,7 @@ export default {
   id: 'ty2-hot-wheels-launcher',
   credit: 'Hot Wheels orange track launcher — hold the launch pedal to wind the spring, let go and the car rips down the track off the jump ramp',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; position: relative; display: inline-block; width: 300px; height: 150px; border-radius: 12px; overflow: hidden;

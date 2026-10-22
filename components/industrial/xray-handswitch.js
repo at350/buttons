@@ -10,6 +10,7 @@ export default {
   id: 'nd-xray-handswitch',
   credit: 'Two-stage X-ray exposure handswitch — hold for PREP (rotor up, READY), push through for EXPOSE; dead-man release aborts. ISO 361 trefoil lamp',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; align-items: center; gap: 18px; padding: 10px 18px 0; border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none;

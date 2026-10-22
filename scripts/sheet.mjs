@@ -5,10 +5,9 @@
 //   node scripts/sheet.mjs <category> [more categories] [--out <dir>]
 // Output: <out>/<category>/<id>.png, <id>-click.png and <category>-sheet-N.png (default out: ./.sheets, gitignored).
 // Needs the dev server (http://127.0.0.1:4173/) and a Chromium (Playwright cache or CHROME=...).
-import { spawn } from 'node:child_process';
-import { readdirSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { homedir } from 'node:os';
+import { launchChrome } from './chrome.mjs';
 
 const args = process.argv.slice(2);
 const oi = args.indexOf('--out');
@@ -17,15 +16,7 @@ const cats = args;
 if (!cats.length) { console.error('usage: node scripts/sheet.mjs <category...> [--out dir]'); process.exit(2); }
 const BASE = process.env.BASE || 'http://127.0.0.1:4173/';
 
-function findChrome() {
-  if (process.env.CHROME) return process.env.CHROME;
-  const cache = join(homedir(), 'Library/Caches/ms-playwright');
-  if (existsSync(cache)) for (const d of readdirSync(cache).filter((d) => d.startsWith('chromium_headless_shell-')).sort().reverse()) {
-    const p = join(cache, d, 'chrome-headless-shell-mac-arm64/chrome-headless-shell'); if (existsSync(p)) return p;
-  }
-  throw new Error('No Chromium found; set CHROME=/path/to/binary');
-}
-const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', '--force-device-scale-factor=2', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+const chrome = launchChrome(['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', '--force-device-scale-factor=2', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--hide-scrollbars', 'about:blank']);
 process.on('exit', () => chrome.kill());
 const wsUrl = await new Promise((res, rej) => { let b = ''; chrome.stderr.on('data', (d) => { b += d; const m = b.match(/DevTools listening on (ws:\/\/\S+)/); if (m) res(m[1]); }); setTimeout(() => rej(new Error('chrome did not start')), 20000); });
 const ws = new WebSocket(wsUrl); await new Promise((r) => (ws.onopen = r));
@@ -40,7 +31,8 @@ const ev = async (expr) => { const r = await send('Runtime.evaluate', { expressi
 const shot = async (clip, file) => { const { result: { data } } = await send('Page.captureScreenshot', { format: 'png', clip: { ...clip, scale: 1 }, captureBeyondViewport: true }, sessionId); writeFileSync(file, Buffer.from(data, 'base64')); };
 const mouse = (type, x, y) => send('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 }, sessionId);
 
-await send('Page.navigate', { url: BASE + '?sheet=' + Date.now() }, sessionId);
+// ?harness: app.js starts no feed, so nothing repacks or refills rows under the harness (a full-page screenshot resizes the page)
+await send('Page.navigate', { url: BASE + '?harness&sheet=' + Date.now() }, sessionId);
 await sleep(3500);
 await ev(`(() => { const flow = document.getElementById('flow'); for (const n of flow.querySelectorAll(':scope > .row, :scope > .spacer')) n.remove(); const row = document.createElement('div'); row.className = 'row'; row.id = 'sheet-row'; flow.appendChild(row); 1 })()`);
 
@@ -103,7 +95,7 @@ for (const cat of cats) {
     await send('Page.navigate', { url: 'file://' + hp }, sessionId); await sleep(1500);
     const h = await ev('document.documentElement.scrollHeight');
     await shot({ x: 0, y: 0, width: 1280, height: h }, join(dir, `${cat}-sheet-${i / per + 1}.png`));
-    await send('Page.navigate', { url: BASE + '?sheet=' + Date.now() }, sessionId); await sleep(2500);
+    await send('Page.navigate', { url: BASE + '?harness&sheet=' + Date.now() }, sessionId); await sleep(2500);
     await ev(`(() => { const flow = document.getElementById('flow'); for (const n of flow.querySelectorAll(':scope > .row, :scope > .spacer')) n.remove(); const row = document.createElement('div'); row.className = 'row'; row.id = 'sheet-row'; flow.appendChild(row); 1 })()`);
     await ev(HARNESS);
   }

@@ -8,6 +8,7 @@ export default {
   id: 'nd-crane-pendant',
   credit: 'Telemecanique XAC-style crane pendant — latching E-stop, green ON, hold-to-run hoist ↑↓ and trolley ←→ driving the hook',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; gap: 14px; padding: 12px 14px; border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none;

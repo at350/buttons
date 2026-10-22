@@ -2,6 +2,7 @@ export default {
   id: 'ks-claw-machine',
   credit: 'Arcade claw crane — ball-top joystick steers the gantry, the DROP button lowers the three-prong claw into the plush pile; carry one to the chute to win',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; flex-direction: column; align-items: center; padding: 10px 12px 14px; border-radius: 12px;

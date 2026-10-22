@@ -13,6 +13,7 @@ export default {
   id: 'nd-eppendorf-5424',
   credit: 'Eppendorf 5424 microcentrifuge — lid-lock interlock, "open" and "start stop" keys, speed ▲▼, rotor spins up and the lid auto-opens at standstill',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; align-items: center; gap: 14px; padding: 14px; border-radius: 12px; overflow: hidden;

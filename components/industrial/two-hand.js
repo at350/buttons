@@ -6,6 +6,7 @@ export default {
   id: 'nd-two-hand',
   credit: 'Telemecanique XY2SB two-hand control station — EN 574 IIIC synchronous hold (0.5 s), stroke counter and latching E-stop',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { position: relative; display: inline-flex; align-items: center; gap: 18px; padding: 16px 20px; border-radius: 12px; overflow: hidden;

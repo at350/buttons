@@ -5,6 +5,7 @@ export default {
   id: 'rt-win95-scrollbar',
   credit: 'Windows 95 — list box with a vertical scrollbar: dithered track, proportional thumb, bevelled arrow buttons',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { background: #c0c0c0; padding: 12px; border-radius: 12px; display: inline-block; }

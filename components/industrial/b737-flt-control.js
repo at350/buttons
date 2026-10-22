@@ -16,6 +16,7 @@ export default {
   id: 'nd-b737-flt-control',
   credit: 'Boeing 737NG overhead FLT CONTROL panel — red-guarded 3-position A/B switches, amber Korry LOW PRESSURE and STBY RUD ON annunciators',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-block; padding: 10px; border-radius: 12px; overflow: hidden; background: #2a2f33; }

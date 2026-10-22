@@ -2,6 +2,7 @@ export default {
   id: 'ks-gas-grade',
   credit: 'US gas pump (Gilbarco / Wayne) — sale and gallons readout, yellow 87 / 89 / 93 octane grade buttons with their 9/10¢ prices; hold the nozzle lever to pump',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-block; padding: 14px; border-radius: 12px; background: linear-gradient(#2b2e33, #17191c); font-family: Inter, system-ui, sans-serif; }

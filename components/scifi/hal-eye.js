@@ -21,9 +21,14 @@ export default {
     .lens::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, transparent 60%, rgba(160,170,200,.12) 68%, transparent 72%); z-index: 1; }
     .rings { position: absolute; inset: 0; border-radius: 50%; z-index: 1; pointer-events: none;
       background: radial-gradient(circle, transparent 0 34%, rgba(255,255,255,.05) 35%, transparent 37% 52%, rgba(255,255,255,.06) 53%, transparent 55% 80%, rgba(255,255,255,.08) 82%, transparent 85%); }
-    .glow { animation: br 4s ease-in-out infinite; }
-    @keyframes br { 50% { filter: brightness(1.12); } }
-    .eye:hover .glow, .eye:focus-visible .glow { animation-duration: 1.6s; filter: brightness(1.2) saturate(1.1); }
+    /* idle breathing: the same gradient pre-brightened x1.12 cross-fades in and out (opacity on the compositor) instead of animating filter: brightness(),
+       which re-ran a filter pass every frame. Watching (hover / focus) keeps the original brightened, faster filter pulse. */
+    .glow::after { content: ''; position: absolute; inset: 0; border-radius: 50%; opacity: 0; animation: br 4s ease-in-out infinite;
+      background: radial-gradient(circle, #fffffb 0 2.2%, #ffff8b 3.73%, #fff253 4.5%, #ff4100 11%, #ff2500 16.2%, #d70000 23%, #5a0000 38%, #1d0000 52%, #000 62%); }
+    @keyframes br { 50% { opacity: 1; } }
+    @keyframes br-f { 50% { filter: brightness(1.12); } }
+    .eye:hover .glow, .eye:focus-visible .glow { animation: br-f 1.6s ease-in-out infinite; filter: brightness(1.2) saturate(1.1); }
+    .eye:hover .glow::after, .eye:focus-visible .glow::after { animation: none; opacity: 0; }
     .eye[aria-pressed="true"] .lens { filter: brightness(.2) saturate(.6); }
     .eye:focus-visible { outline: 2px solid #ff3a00; outline-offset: 3px; }
     .grille { position: relative; width: 108px; height: 54px; margin-top: 10px; border-radius: 2px; background: repeating-linear-gradient(90deg, #0a0a0a 0 2px, #333 2px 3px); box-shadow: inset 0 0 0 1px #000; }

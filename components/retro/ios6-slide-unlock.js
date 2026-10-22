@@ -13,9 +13,10 @@ export default {
     .slab { padding: 22px 16px; background: linear-gradient(180deg, rgba(58,58,62,.88) 0%, rgba(28,28,31,.88) 48%, rgba(0,0,0,.9) 52%, rgba(11,11,12,.92) 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.18); }
     .track { position: relative; height: 47px; max-width: 288px; margin: 0 auto; border-radius: 10px; overflow: hidden;
       background: linear-gradient(#000, #141416); box-shadow: inset 0 1px 3px rgba(0,0,0,1), 0 1px 0 rgba(255,255,255,.22); }
-    .label { position: absolute; inset: 0; display: grid; place-items: center; padding-left: 74px; user-select: none; pointer-events: none; white-space: nowrap;
+    .label { --glint: linear-gradient(90deg, #6d6d6d 0%, #6d6d6d 42%, #fff 50%, #6d6d6d 58%, #6d6d6d 100%);
+      position: absolute; inset: 0; display: grid; place-items: center; padding-left: 74px; user-select: none; pointer-events: none; white-space: nowrap;
       font: 300 22px "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: .2px;
-      background: linear-gradient(90deg, #6d6d6d 0%, #6d6d6d 42%, #fff 50%, #6d6d6d 58%, #6d6d6d 100%); background-size: 300% 100%;
+      background: var(--glint); background-size: 300% 100%;
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
       animation: glint 2.6s linear infinite; transition: opacity .15s; }
     .track.unlocked .label { opacity: 0 !important; }
@@ -25,6 +26,13 @@ export default {
     .knob:active { cursor: grabbing; transition: none; background: linear-gradient(#e8e8e8 0%, #dadada 45%, #c4c4c4 52%, #bcbcbc 100%); }
     .knob:focus-visible { box-shadow: 0 0 0 2px #4da3ff, 0 1px 2px rgba(0,0,0,.8); }
     @keyframes glint { from { background-position: 100% 0; } to { background-position: 0% 0; } }
+    /* Same glint on the compositor: the label's own glyphs become the mask and a 3x-wide copy of the gradient slides
+       under them with transform (no per-frame style recalc). Browsers without mask-clip:text keep the version above. */
+    @supports (-webkit-mask-clip: text) {
+      .label { overflow: hidden; background: none; animation: none; -webkit-mask-image: linear-gradient(#000, #000); -webkit-mask-clip: text; }
+      .label::before { content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%; background: var(--glint); animation: glint-x 2.6s linear infinite; }
+      @keyframes glint-x { from { transform: translateX(-66.6667%); } to { transform: none; } }
+    }
   `,
   html: `
     <div class="stage">

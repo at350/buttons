@@ -2,6 +2,7 @@ export default {
   id: 'gm-pokeball',
   credit: 'Niantic Pokémon GO — a wild Pikachu: hold the Poké Ball to charge the shrinking catch ring, release to throw; it flies, wobbles, and clicks shut (or breaks free)',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 200px; height: 200px; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #8fd3f4 0%, #c9efd5 46%, #7fcd63 46%, #4e9f44 100%); user-select: none; -webkit-user-select: none; }

@@ -4,6 +4,7 @@ export default {
   id: 'ty2-operation',
   credit: 'Milton Bradley Operation (1965) — lift the wishbone out of Cavity Sam: hold it steady to pull it, touch the metal edge and his red nose lights and buzzes',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; position: relative; display: inline-block; width: 236px; height: 212px; border-radius: 12px; overflow: hidden;

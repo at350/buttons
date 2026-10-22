@@ -2,29 +2,12 @@
 // Headless integration check: loads the live page, verifies every element mounts without errors,
 // measures row packing, and exercises the infinite feed (eviction + refill).
 // Usage: node scripts/smoke.mjs [url]   (default http://127.0.0.1:4173/)
-// Needs a Chromium binary: set CHROME=/path/to/binary, or it looks in the Playwright cache.
-import { spawn } from 'node:child_process';
-import { readdirSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { homedir } from 'node:os';
+// Needs a Chromium binary: set CHROME=/path/to/binary, or scripts/chrome.mjs looks for one.
+import { launchChrome } from './chrome.mjs';
 
 const URL_ = process.argv[2] || 'http://127.0.0.1:4173/';
 
-function findChrome() {
-  if (process.env.CHROME) return process.env.CHROME;
-  const cache = join(homedir(), 'Library/Caches/ms-playwright');
-  if (existsSync(cache)) {
-    const dirs = readdirSync(cache).filter((d) => d.startsWith('chromium_headless_shell-')).sort().reverse();
-    for (const d of dirs) {
-      const p = join(cache, d, 'chrome-headless-shell-mac-arm64/chrome-headless-shell');
-      if (existsSync(p)) return p;
-    }
-  }
-  for (const p of ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge']) if (existsSync(p)) return p;
-  throw new Error('No Chromium found; set CHROME=/path/to/binary');
-}
-
-const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--no-default-browser-check', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+const chrome = launchChrome(['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--no-default-browser-check', 'about:blank']);
 const wsUrl = await new Promise((res, rej) => {
   let buf = '';
   chrome.stderr.on('data', (d) => { buf += d; const m = buf.match(/DevTools listening on (ws:\/\/\S+)/); if (m) res(m[1]); });

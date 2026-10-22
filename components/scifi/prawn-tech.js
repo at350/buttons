@@ -20,9 +20,12 @@ export default {
     .g[aria-pressed="true"] { color: #d8ff7a; box-shadow: inset 0 0 0 2px #0d0c07, inset 0 0 14px rgba(190,255,90,.5), 0 0 14px rgba(190,255,90,.45); }
     .g[aria-pressed="true"] svg { filter: drop-shadow(0 0 3px #b8ff5a); }
     .g:focus-visible, .can:focus-visible { outline: 2px solid #d8ff7a; outline-offset: 2px; }
-    .node { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #9fd64a; box-shadow: 0 0 6px #9fd64a; opacity: .25; animation: nd 2.6s ease-in-out infinite; animation-delay: calc(var(--d) * -1s); }
+    /* the pulse dims the dot with opacity (on the near-black console that reads as brightness(.5), without a filter pass every frame);
+       it runs on ::before so the node keeps its own .25 / 1 opacity */
+    .node { position: absolute; width: 6px; height: 6px; opacity: .25; }
+    .node::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: #9fd64a; box-shadow: 0 0 6px #9fd64a; animation: nd 2.6s ease-in-out infinite; animation-delay: calc(var(--d) * -1s); }
     .on .node { opacity: 1; }
-    @keyframes nd { 50% { transform: scale(.5); filter: brightness(.5); } }
+    @keyframes nd { 50% { transform: scale(.5); opacity: .5; } }
     .vein { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: rgba(110,80,40,.5); stroke-width: 2; stroke-linecap: round; transition: stroke .5s; }
     .on .vein { stroke: rgba(160,220,90,.35); }
     .can.ej { animation: ej .9s cubic-bezier(.3,0,.2,1); }

@@ -9,6 +9,7 @@ export default {
   id: 'material-filled',            // unique kebab-case, lowercase. Prefix with your category style, e.g. 'retro-win95-ok'
   credit: 'Google Material 3 — filled button',  // 1 short line; shown ONLY as a hover tooltip. Name the site / designer / style it comes from.
   size: 'auto',                     // 'auto' (inline, default) | 'wide' (grows, ~420px basis) | 'full' (100% row width)
+  // hold: true,                    // OPTIONAL. Only if the element's own interaction is press-and-hold (rule 12)
   css: `
     :host { display: inline-block; }        /* the host wrapper. Base already sets box-sizing: border-box on everything */
     .btn { ... }
@@ -49,6 +50,9 @@ export default {
    `Fraunces` (opsz 9–144, wght 100–900, variable axes SOFT/WONK), `Playfair Display` (400–900 + italic),
    `Instrument Serif` (regular + italic), `JetBrains Mono` (100–800), `IBM Plex Mono` (400, 600),
    `Roboto Flex` (full variable axes incl. wdth, GRAD, slnt). Variable-font axes animate (`font-variation-settings`).
+   The web fonts' subsets have no box-drawing or block glyphs (U+2500–259F, ■): draw text-mode frames,
+   shadows and shade fills with CSS (QUALITY.md §2). A family added to the font URL in `index.html` must also
+   be added to `FACES` in `app.js`, which loads the faces before the first rows are measured.
    Canvas / WebGL inside your html is allowed (see rule 7 for the run-only-while-hovered requirement).
    SVG filters are allowed: define them inline and reference with `url(#id)` from SVG attributes
    (`filter="url(#goo)"`). CSS `filter: url(#id)` on HTML elements is unreliable across browsers; avoid it.
@@ -64,7 +68,8 @@ export default {
    Use `type="button"` on buttons; `href="#"` links must `preventDefault`.
 6. **Minimal text.** Labels that are part of the design are fine ("Submit", "Sign in", "OK"). No captions,
    headings, descriptions, or explanations anywhere in `html`. The credit goes in `credit` only.
-7. **Performance.** Prefer CSS transitions / animations. If you must use `requestAnimationFrame`,
+7. **Performance.** Prefer CSS transitions / animations, and compositor-only properties (`transform`, `opacity`)
+   for anything that animates while the element is idle (QUALITY.md §3). If you must use `requestAnimationFrame`,
    `setInterval`, or a canvas / WebGL render loop, only run it while the element is hovered / active /
    open (or, for an idle shader, only while visible via an IntersectionObserver AND at most ~30fps),
    and stop it afterwards. Return a cleanup function from `init` that stops everything and releases
@@ -74,6 +79,20 @@ export default {
    locks its box to that size, so nothing may grow lazily (no "appears after a timeout" layouts).
    Anything that expands later (open menus, growing labels) overlays its neighbours instead of
    pushing them — design for that.
+   **Offscreen means paused.** While an element is in the measuring area or more than 200px outside the viewport,
+   the page sets `data-idle` on its host and pauses every CSS animation in it (`animation-play-state: paused`);
+   they pick up where they stopped when it comes back. Don't depend on a CSS animation running offscreen. Web
+   Animations (`element.animate`), transitions and JS loops are not paused: stop those yourself, as above.
+   **WebGL shares one context budget.** Chrome keeps ~16 contexts per page, and with the shaders filter on more
+   shaders than that are on screen at once, so a WebGL element uses the `shade()` helper inlined in
+   `components/shaders/*.js` instead of holding its own context. It gets a context only within half a screen of
+   the viewport, and when the budget (`globalThis.__shadeCtx_v1`, at most 12 contexts) is full the least recently
+   seen holder that is not in use is parked (out of view before in view, and shaders with an idle loop last in
+   each): its last frame goes to a 2D canvas that replaces it. Lost contexts are never restored (each
+   acquire draws into a fresh `<canvas>`), so keep no reference to the canvas except for its size, listen for
+   input on the wrapper, and give it a `.cv.nogl` CSS fallback, shown before the first frame and whenever there is
+   no context. Other WebGL or 2D canvas elements that must survive a GPU reset handle `webglcontextlost` /
+   `contextlost` themselves.
 8. **Registered custom properties are page-global.** `@property` and `CSS.registerProperty` are not scoped by
    the shadow root: registering `--p` as a `<percentage>` in one element breaks every other element that uses
    `--p` for a colour. If you register a property, name it with your id prefix (`--mo-rhd-progress`, never
@@ -85,6 +104,11 @@ export default {
    `aria-pressed` / `aria-expanded` / `aria-checked` where relevant, visible `:focus-visible` ring.
 11. **Fidelity.** Reproduce the *recognizable* look of the source: exact-ish colors, radii, shadows,
     font weights, hover/press behaviour. Obscure / creative ones should be genuinely surprising.
+12. **Press-and-hold.** Holding any element for 600 ms copies its source to the clipboard. If the element's
+    own interaction is press-and-hold (hold-to-confirm, hold-to-run, a long-press menu, auto-repeat while held),
+    set `hold: true` in the definition and the page leaves its presses alone. A press in a text field, or whose
+    `pointerdown`, `mousedown` or `touchstart` handler calls `preventDefault()`, is skipped too. On touch the copy
+    happens on release, and the click that ends a long-press never reaches the element.
 
 ## Category index
 
@@ -99,10 +123,11 @@ export default [a, b];
 ## Validate and build
 
 ```
-node scripts/validate.mjs            # all categories (+ checks that components/bundle.js is fresh)
-node scripts/validate.mjs big-tech   # one category
+node scripts/validate.mjs            # all categories; fails if components/bundle.js is stale
+node scripts/validate.mjs big-tech   # one category; a stale bundle is only a warning (exit 0)
 node scripts/build.mjs               # regenerate components/bundle.js after changing any component
 ```
 
 The deployed page loads `components/bundle.js` (one request) instead of ~700 modules; localhost loads the
-per-file modules so edits show up on reload. Commit the rebuilt bundle with your component changes.
+per-file modules so edits show up on reload. Run `npm run build` and commit the rebuilt bundle with your
+component changes before pushing: CI runs the full validate and fails on a stale bundle.

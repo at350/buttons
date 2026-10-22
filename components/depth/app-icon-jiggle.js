@@ -2,6 +2,7 @@ export default {
   id: 'dp-app-icon-jiggle',
   credit: 'iOS home screen — Messages icon lifts under the pointer; long-press (or Enter) enters jiggle mode with the ±2° wobble and the grey “−” remove badge; tap the wallpaper to finish',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage {

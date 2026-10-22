@@ -2,6 +2,7 @@ export default {
   id: 'gm-rocket-boost',
   credit: 'Psyonix Rocket League — the HUD boost gauge: hold the button to burn boost (arc drains, flame glows), release and drive over the pad to refill',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { background: radial-gradient(ellipse at 50% 100%, #1e2a44, #0a0f1d 70%); padding: 18px 26px 16px; border-radius: 12px; display: flex; gap: 18px; align-items: center; font-family: 'Unbounded', 'Syne', system-ui, sans-serif; user-select: none; -webkit-user-select: none; }

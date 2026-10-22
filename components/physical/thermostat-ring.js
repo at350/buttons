@@ -39,7 +39,7 @@ export default {
     .disp line.room { stroke: #fff; stroke-width: 1.6; }
     .mode { position: relative; height: 9px; font: 600 6.5px/9px "DM Sans", Inter, Arial, sans-serif; letter-spacing: 1.4px; color: rgba(255,255,255,.85); visibility: hidden; }
     .disp.heat .mode, .disp.cool .mode { visibility: visible; }
-    .num { position: relative; font: 300 40px/1 "DM Sans", Inter, "Helvetica Neue", sans-serif; font-variation-settings: "opsz" 40; letter-spacing: -1.5px; color: #fff; font-variant-numeric: tabular-nums; }
+    .num { position: relative; font: 300 40px/1 "DM Sans", Inter, "Helvetica Neue", sans-serif; letter-spacing: -1.5px; color: #fff; font-variant-numeric: tabular-nums; }
     .roomt { position: absolute; font: 600 7px/1 "DM Sans", Inter, Arial, sans-serif; color: #fff; transform: translate(-50%, -50%); }
     .glare { position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,0) 40%); }
   `,

@@ -6,6 +6,7 @@ export default {
   id: 'sf-jaeger-drift',
   credit: 'Pacific Rim (2013) — Gipsy Danger Conn-Pod HUD: hold INITIATE to start the neural handshake; left and right hemisphere loads climb (watch for the rabbit), let go early and the Drift collapses; reach 100% and it locks',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 300px; height: 200px; max-width: 100%; border-radius: 12px; overflow: hidden; padding: 14px 16px; background: radial-gradient(ellipse at 50% 30%, #0b2433, #02080d 70%);

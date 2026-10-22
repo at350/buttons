@@ -9,6 +9,7 @@ export default {
   id: 'in-clap-button',
   credit: 'Medium clap button — hands fill black, confetti strokes pop, a black +N bubble rises; hold to keep clapping',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .w { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 46px 12px 6px 6px; font: 400 13px/20px "Söhne", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #6b6b6b; }

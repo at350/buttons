@@ -49,9 +49,15 @@ Pull up the actual product or design-system page (WebFetch / WebSearch) and comp
   UI icons: Lucide (`https://unpkg.com/lucide-static@latest/icons/<name>.svg`, ISC), Material Symbols,
   or the system's own icon set when it is open (Primer Octicons, Fluent UI System Icons, Radix Icons,
   Heroicons, Phosphor, Tabler). Never hand-draw an approximation of a known icon. Keep inline SVG only.
+  When an icon nests an `<svg>` inside the tile's `<svg>`, size only the outer one with a child selector
+  (`.ic > svg`): a descendant selector also sets the inner svg's width / height, which shifts and clips the glyph.
 - **Typography**: the family the product actually uses, from the loaded set in `CONTRACT.md` rule 1 (Inter
   for Linear/Vercel/GitHub-ish, DM Sans, Space Grotesk, Roboto Flex for Google/Material, system-ui for
   Apple, JetBrains Mono / IBM Plex Mono for code), with the real weight, size, letter-spacing and casing.
+  The Google Fonts subsets of those families (the monospaces too) have no box-drawing (U+2500–257F), block
+  elements (U+2580–259F) or geometric shapes like ■ (U+25A0): they fall back to each platform's own font, so
+  ║═╔ frames and █░▄▀ fills come apart. Draw text-mode frames, shadows and shade fills with CSS
+  (`border: 3px double`, `box-shadow: 2ch 1lh 0 #000`, conic-gradient dot patterns), as rt-dos-dialog does.
 - **Geometry**: real radii, heights (e.g. Material 3 buttons are 40px tall, pill radius; GitHub 32px, 6px
   radius; iOS switch 51×31), paddings, border widths, shadows (elevation tokens).
 - **Labels**: the real words the product uses. No placeholder text like "Hover me", "Button", "Click".
@@ -74,16 +80,53 @@ Pull up the actual product or design-system page (WebFetch / WebSearch) and comp
 - **States**: hover, pressed, focus-visible, disabled where relevant, and the persistent toggled state, each
   matching the real product.
 
-## 3. Look at it
+## 3. At rest it stays off the main thread
+
+Hundreds of elements are live at once. Offscreen CSS animations are paused by the page (`CONTRACT.md` rule 7);
+an animation that runs in view while nobody touches the element must touch only `opacity` and `transform`, so
+it runs on the compositor with no style recalc per frame:
+
+- Blink with `opacity` keyframes and `steps()`, never `visibility` or a colour. With `steps(1)` the off value needs
+  its own keyframe: `0%, 60% { lit }` alone stays lit for the whole cycle.
+- Light lamps, pulses, glows and chases by fading an overlay that already has its colour and glow (or a
+  pre-brightened copy), not by animating `box-shadow`, `background` or `filter`.
+- Move shimmers, glints and gradients by translating an oversized gradient layer inside a clipping box
+  (`mask-clip: text` for text), not by animating `background-position`. Put `-webkit-mask-clip: text` behind
+  `@supports` with the `background-clip: text` version as the fallback: Firefox lacks the mask `text` value.
+- Prefer `transform` keyframes to `offset-path` or `left` / `top` / `width` / `height`; clip with `clip-path`
+  instead of animating `width` / `height`.
+- A transform that animates at rest and also transitions starts from an identity value (`translateY(0)`,
+  `scale(1)`), not `none`, which costs layouts at both ends of the transition (letter-lift: 27 per hover with
+  `none`, 0 with the identity).
+- Hidden animated parts are `display: none`, like closed panels (§1). A `transition` shorthand with
+  `allow-discrete` is dropped whole by browsers older than Chrome 117 / Firefox 129 / Safari 17.4, so the fades
+  are lost there; that is acceptable.
+- No permanent `will-change`: set it only on the item being dragged or held.
+- A pseudo-element that repeats visible text (a flashing inverted copy of a label) gets empty alt text,
+  `content: 'x'; content: 'x' / '';`, so assistive tech does not read the text twice.
+
+Check: with the element on screen and no input, CDP `Performance.getMetrics` `RecalcStyleCount` must not grow
+over 2 s.
+
+## 4. Presses land
+
+- A press effect that moves the control (a `transform` on `:active`) must not move it out from under the pointer,
+  or a mousedown near its edge never becomes a click. Apply the shift after the click, as rt-dos-dialog's `.down`
+  class does, or move an inner element or pseudo-element instead of the hit-tested control.
+- Press-and-hold elements set `hold: true` (or `preventDefault()` their `pointerdown`) so the page's long-press
+  does not overwrite the clipboard mid-hold (`CONTRACT.md` rule 12).
+
+## 5. Look at it
 
 `node scripts/sheet.mjs <category>` screenshots every element at rest and after its first click and composes
 contact sheets in `.sheets/<category>/`. Open them and judge each element against the real thing: a car drawn
 as a box, an invented card, a placeholder bar, a crude icon, clipped text, an empty state after the click or a
 flat "3D" object all fail, even when every automated check passes.
 
-## 4. Verify before reporting
+## 6. Verify before reporting
 
 ```
-node scripts/validate.mjs <category>    # 0 errors
+node scripts/validate.mjs <category>    # 0 errors (a stale-bundle ⚠ is only a warning here)
 node scripts/audit.mjs <category>       # 0 findings (data-open popovers are already excluded)
+npm run build                           # then commit components/bundle.js: CI fails on a stale one
 ```

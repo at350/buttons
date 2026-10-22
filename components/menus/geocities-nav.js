@@ -17,7 +17,7 @@ export default {
     .lk.v:hover { color: #ff0000; }
     .lk:focus-visible { outline: 1px dotted #000; outline-offset: -5px; }
     .new { position: absolute; top: -7px; right: -4px; padding: 1px 3px; background: #ff0000; color: #ffff00; font: bold 10px/1 Arial, sans-serif; text-decoration: none; animation: blink 1s steps(1, end) infinite; transform: rotate(8deg); }
-    @keyframes blink { 50% { visibility: hidden; } }
+    @keyframes blink { 50% { opacity: 0; } }
     .cnt { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; min-width: 520px; font: 13px/1 "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive; color: #0f0; }
     .odo { display: inline-flex; gap: 1px; padding: 2px; background: #333; border: 1px solid #888; }
     .odo b { width: 12px; height: 17px; display: grid; place-items: center; background: linear-gradient(#000, #222 50%, #000 50%, #1a1a1a); color: #fff; font: bold 13px/1 "Courier New", Courier, monospace; }

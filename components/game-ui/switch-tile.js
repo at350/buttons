@@ -35,11 +35,16 @@ export default {
     .rowwrap { container-type: inline-size; }
     .row { display: flex; gap: clamp(10px, 1.6cqw, 16px); padding: 8px 16px 10px; overflow: hidden; }
     .tile { position: relative; flex: none; width: clamp(72px, calc((100cqw - 32px) / 5.6), 168px); aspect-ratio: 1; border: none; padding: 0; cursor: pointer; border-radius: 2px; background: #d6d6d6 var(--art) var(--pos, center) / cover; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
-    .tile::after { content: ""; position: absolute; inset: -6px; border: 3px solid #00c3e3; border-radius: 4px; opacity: 0; pointer-events: none; }
-    .tile.sel::after { opacity: 1; animation: pulse 1.2s ease-in-out infinite alternate; }
-    @keyframes pulse { from { border-color: #00b4e6; box-shadow: 0 0 0 0 rgba(0,195,227,0); } to { border-color: #7af2ff; box-shadow: 0 0 6px rgba(0,195,227,.55); } }
+    /* selection frame: ::before is the frame at the start of the pulse, ::after the frame at its peak (light border + glow);
+       the pulse crossfades ::after by opacity only (compositor, no per-frame style recalc) */
+    .tile::before, .tile::after { content: ""; position: absolute; inset: -6px; border: 3px solid #00c3e3; border-radius: 4px; opacity: 0; pointer-events: none; }
+    .tile.sel::before { opacity: 1; border-color: #00b4e6; }
+    .tile::after { border-color: #7af2ff; box-shadow: 0 0 6px rgba(0,195,227,.55); }
+    .tile.sel::after { animation: pulse 1.2s ease-in-out infinite alternate; }
+    @keyframes pulse { from { opacity: 0; } to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .tile.sel::before { border-color: #00c3e3; } } /* the still frame the colour animation used to settle on */
     .tile:focus-visible { outline: none; }
-    .tile:focus-visible::after { opacity: 1; }
+    .tile:focus-visible::before { opacity: 1; }
     .icons { display: flex; justify-content: center; gap: 14px; padding: 6px 0 12px; }
     .ic { width: 42px; height: 42px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: #fff; display: grid; place-items: center; box-shadow: 0 1px 2px rgba(0,0,0,.18); transition: transform 120ms; }
     .ic svg { width: 20px; height: 20px; }

@@ -22,6 +22,7 @@ export default {
   id: 'nd-omron-e5cc',
   credit: 'Omron E5CC PID temperature controller — white PV / green SV, OUT1 · STOP · MANU indicators, Level / Mode / ▼ / ▲ keys',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-block; padding: 14px; border-radius: 12px; overflow: hidden;

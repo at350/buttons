@@ -12,6 +12,7 @@ export default {
   id: 'nd-adec-touchpad',
   credit: 'A-dec 500-style dental chair touchpad — hold-to-drive base and backrest, programmed positions 0 / 1 / 2 / LP and the operatory light',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; overflow: hidden; background: linear-gradient(170deg, #eef1f2, #d5dbde); box-shadow: inset 0 1px 0 #fff; }

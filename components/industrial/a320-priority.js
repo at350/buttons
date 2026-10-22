@@ -7,6 +7,7 @@ export default {
   id: 'nd-a320-priority',
   credit: 'Airbus A320 sidestick takeover pushbutton with glareshield SIDE STICK PRIORITY lights — green CAPT, red arrow on the F/O side; hold to latch',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 14px 0; border-radius: 12px; overflow: hidden;

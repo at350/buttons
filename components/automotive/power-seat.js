@@ -2,6 +2,7 @@ export default {
   id: 'au-power-seat',
   credit: 'Power seat controls on the seat side — cushion-shaped switch (slide fore/aft, lift up/down), backrest-shaped switch (recline), plus M / 1 / 2 memory keys',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: flex; align-items: center; gap: 10px; width: 320px; max-width: 100%; height: 170px; padding: 12px; border-radius: 12px; background: linear-gradient(#24211f, #141210); user-select: none; }

@@ -6,6 +6,7 @@ export default {
   id: 'ty2-slot-car',
   credit: 'Scalextric-style slot car set — press and hold the hand controller\'s plunger to squeeze the throttle (drag toward the grip for fine control); take the bends too hot and it deslots',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; position: relative; display: inline-block; width: 300px; height: 150px; border-radius: 12px; overflow: hidden; background: radial-gradient(circle at 30% 40%, #4f9a45, #2f6b2a 80%); }

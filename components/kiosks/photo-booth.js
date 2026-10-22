@@ -4,10 +4,10 @@ export default {
   size: 'auto',
   css: `
     :host { display: inline-block; }
-    .stage { display: inline-flex; gap: 12px; align-items: stretch; padding: 14px; border-radius: 12px; background: linear-gradient(#20242b, #121418); font-family: Unbounded, Inter, system-ui, sans-serif; }
+    .stage { display: inline-flex; gap: 12px; align-items: stretch; padding: 14px; border-radius: 12px; background: linear-gradient(#20242b, #121418); font-family: Unbounded, Inter, system-ui, sans-serif; isolation: isolate; }
     .curtain { position: relative; width: 38px; border-top: 4px solid #a9adb3; border-radius: 0 0 3px 3px; background: linear-gradient(90deg, rgba(0,0,0,.25), transparent 30%, transparent 70%, rgba(0,0,0,.45)), repeating-linear-gradient(90deg, #6e0910 0, #a8131c 2px, #d92a34 4px, #e8414a 4.6px, #c11d27 5.6px, #8a0d15 7.4px, #6e0910 8px);
       -webkit-mask: radial-gradient(4px 5px at 50% 100%, transparent 98%, #000) 0 0 / 6.5px 100% repeat-x; mask: radial-gradient(4px 5px at 50% 100%, transparent 98%, #000) 0 0 / 6.5px 100% repeat-x; }
-    .main { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .main { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .scr { position: relative; width: 150px; height: 112px; border-radius: 6px; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #3b4a5c, #151b24 75%); box-shadow: 0 0 0 4px #000, 0 0 0 6px #555; display: grid; place-items: center; }
     .scr img.me { grid-area: 1 / 1; display: block; width: 150px; height: 112px; object-fit: cover; object-position: 50% 24%; transform: scaleX(-1); }
     .cd { grid-area: 1 / 1; font-size: 52px; font-weight: 800; color: #fff; text-shadow: 0 0 12px rgba(255,255,255,.6); opacity: 0; }
@@ -17,12 +17,24 @@ export default {
     .flash.on { animation: fl .35s ease-out; }
     @keyframes fl { 0% { opacity: 1; } 100% { opacity: 0; } }
     .go { width: 78px; height: 78px; border: 0; border-radius: 50%; cursor: pointer; font: 800 13px/1 Unbounded, Inter, sans-serif; letter-spacing: .04em; color: #fff;
-      background: radial-gradient(circle at 50% 35%, #ff6b5a, #e3261a 60%, #9d140c); box-shadow: 0 0 0 5px #d9dbde, 0 0 0 7px #7a7d82, 0 5px 0 7px #2b2d31, 0 0 18px 8px rgba(255,70,50,.35);
-      transition: transform .06s, box-shadow .06s; animation: pulse 1.6s ease-in-out infinite; -webkit-tap-highlight-color: transparent; }
-    @keyframes pulse { 50% { box-shadow: 0 0 0 5px #d9dbde, 0 0 0 7px #7a7d82, 0 5px 0 7px #2b2d31, 0 0 26px 12px rgba(255,70,50,.55); } }
+      background: radial-gradient(circle at 50% 35%, #ff6b5a, #e3261a 60%, #9d140c); box-shadow: 0 0 0 5px #d9dbde, 0 0 0 7px #7a7d82, 0 5px 0 7px #2b2d31;
+      transition: transform .06s, box-shadow .06s; -webkit-tap-highlight-color: transparent; }
+    /* START's glow: two layers behind the button (z-index -1 inside the isolated stage, so under the chrome rings and the screen
+       like the original last box-shadow), the resting glow and the peak glow, crossfaded by opacity only (compositor, no per-frame style recalc) */
+    .main::before, .main::after { content: ''; position: absolute; left: 50%; top: 124px; width: 78px; height: 78px; margin-left: -39px; border-radius: 50%;
+      z-index: -1; pointer-events: none; transition: transform .06s; animation: pulse 1.6s ease-in-out infinite; }
+    .main::before { box-shadow: 0 0 18px 8px rgba(255,70,50,.35); animation-name: pulse-rest; }
+    .main::after { box-shadow: 0 0 26px 12px rgba(255,70,50,.55); opacity: 0; }
+    @keyframes pulse { 50% { opacity: 1; } }
+    @keyframes pulse-rest { 50% { opacity: 0; } }
     .go:active { transform: translateY(4px); }
+    .main:has(.go:active)::before, .main:has(.go:active)::after { transform: translateY(4px); }
     .go:focus-visible { outline: 2px solid #fff; outline-offset: 11px; }
-    .go:disabled { animation: none; filter: brightness(.6); cursor: default; }
+    .go:disabled { filter: brightness(.6); cursor: default; }
+    .main:has(.go:disabled)::before { animation: none; box-shadow: 0 0 18px 8px rgba(153,42,30,.35); } /* the resting glow through brightness(.6) */
+    .main:has(.go:disabled)::after { animation: none; }
+    /* pressed (transform) or disabled (filter), the original button and its glow paint above the screen: keep that order */
+    .main:has(.go:active) .scr, .main:has(.go:disabled) .scr { z-index: -2; }
     .strip { display: flex; flex-direction: column; gap: 4px; padding: 5px 5px 14px; width: 50px; border-radius: 1px; background: #f7f5ef; box-shadow: 0 2px 6px rgba(0,0,0,.5); }
     .strip { align-self: center; }
     .strip i { flex: none; height: 44px; background: #ece9e1; overflow: hidden; }

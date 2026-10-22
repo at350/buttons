@@ -8,6 +8,7 @@ export default {
   id: 'au-cluster-rev',
   credit: 'Digital instrument cluster — press and hold to floor it: the tachometer arc sweeps, gears upshift at the redline and the speed climbs; let go and it coasts back to idle',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { position: relative; width: 220px; height: 200px; border-radius: 12px; background: radial-gradient(circle at 50% 45%, #10161f, #020304 72%); cursor: pointer; user-select: none; touch-action: none; -webkit-tap-highlight-color: transparent; }

@@ -23,7 +23,7 @@ export default {
     .in svg { flex: none; opacity: .5; }
     input { flex: 1; min-width: 0; height: 40px; padding: 12px 0; border: 0; background: transparent; color: #09090b; font: inherit; outline: none; }
     input::placeholder { color: #71717a; }
-    .list { max-height: 300px; overflow-x: hidden; overflow-y: auto; scroll-padding: 4px 0; }
+    .list { position: relative; max-height: 300px; overflow-x: hidden; overflow-y: auto; scroll-padding: 4px 0; }
     .grp { padding: 4px; }
     .it { position: relative; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; cursor: default; user-select: none; white-space: nowrap; }
     .it[data-selected="true"] { background: #f4f4f5; color: #18181b; }
@@ -56,7 +56,11 @@ export default {
       const v = visible(); hl = Math.max(0, Math.min(hl, v.length - 1));
       items.forEach((x) => { x.dataset.selected = 'false'; x.setAttribute('aria-selected', 'false'); });
       const t = v[hl];
-      if (t) { t.dataset.selected = 'true'; t.setAttribute('aria-selected', 'true'); input.setAttribute('aria-activedescendant', t.id); if (scroll) t.scrollIntoView({ block: 'nearest' }); }
+      if (t) {
+        t.dataset.selected = 'true'; t.setAttribute('aria-selected', 'true'); input.setAttribute('aria-activedescendant', t.id);
+        // scroll only the list (its offsetParent; 4px scroll-padding): scrollIntoView would also scroll the page
+        if (scroll) { const top = t.offsetTop - 4, bot = top + t.offsetHeight + 8; if (top < list.scrollTop) list.scrollTop = top; else if (bot > list.scrollTop + list.clientHeight) list.scrollTop = bot - list.clientHeight; }
+      }
       else input.removeAttribute('aria-activedescendant');
       list.classList.toggle('none', !v.length);
     };

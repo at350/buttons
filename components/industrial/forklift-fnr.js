@@ -7,6 +7,7 @@ export default {
   id: 'nd-forklift-fnr',
   credit: 'Electric forklift dash — F / N / R direction rocker with display, reversing beacon, and hold-to-sound horn (ISO 7000-0244)',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none;

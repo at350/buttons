@@ -9,9 +9,9 @@ export default {
     .pushable:hover { filter: brightness(110%); }
     .pushable:focus:not(:focus-visible) { outline: none; }
     .pushable:focus-visible { outline: 2px solid hsl(345deg 100% 47%); }
-    .shadow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; background: hsl(0deg 0% 0% / .25); will-change: transform; transform: translateY(2px); transition: transform 600ms cubic-bezier(.3,.7,.4,1); }
+    .shadow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; background: hsl(0deg 0% 0% / .25); transform: translateY(2px); transition: transform 600ms cubic-bezier(.3,.7,.4,1); }
     .edge { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; background: linear-gradient(to left, hsl(340deg 100% 16%) 0%, hsl(340deg 100% 32%) 8%, hsl(340deg 100% 32%) 92%, hsl(340deg 100% 16%) 100%); }
-    .front { display: block; position: relative; padding: 12px 42px; border-radius: 12px; font: 400 1.25rem/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; color: white; background: hsl(345deg 100% 47%); will-change: transform; transform: translateY(-4px); transition: transform 600ms cubic-bezier(.3,.7,.4,1); white-space: nowrap; }
+    .front { display: block; position: relative; padding: 12px 42px; border-radius: 12px; font: 400 1.25rem/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; color: white; background: hsl(345deg 100% 47%); transform: translateY(-4px); transition: transform 600ms cubic-bezier(.3,.7,.4,1); white-space: nowrap; }
     .pushable:hover .front { transform: translateY(-6px); transition: transform 250ms cubic-bezier(.3,.7,.4,1.5); }
     .pushable:active .front { transform: translateY(-2px); transition: transform 34ms; }
     .pushable:hover .shadow { transform: translateY(4px); transition: transform 250ms cubic-bezier(.3,.7,.4,1.5); }

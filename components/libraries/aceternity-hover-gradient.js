@@ -9,11 +9,13 @@ export default {
     .hb:focus-visible { outline: 2px solid #3275f8; outline-offset: 3px; }
     .glow { position: absolute; inset: 0; z-index: 0; border-radius: inherit; overflow: hidden; filter: blur(2px); }
     .dot { position: absolute; left: 50%; top: 0; width: 41.4%; height: 100%; translate: -50% -50%; background: radial-gradient(closest-side, #fff 0%, rgba(255,255,255,0) 100%); animation: orbit 4s linear infinite; transition: opacity 1s linear; }
+    /* the same four radial states (centre left/top 50%/0 -> 100%/50% -> 50%/100% -> 0/50%, size 41.4x100 -> 32.4x82.4 -> 41.4x100 -> 33.2x86.2 % of the button)
+       expressed as translate + scale of the fixed 41.4% x 100% dot (translate % = of the dot: 50% of the button = 120.773% of its width), so it tweens on the compositor */
     @keyframes orbit {
-      0%, 100% { left: 50%; top: 0%; width: 41.4%; height: 100%; }
-      25% { left: 100%; top: 50%; width: 32.4%; height: 82.4%; }
-      50% { left: 50%; top: 100%; width: 41.4%; height: 100%; }
-      75% { left: 0%; top: 50%; width: 33.2%; height: 86.2%; }
+      0%, 100% { transform: translate(0, 0) scale(1, 1); }
+      25% { transform: translate(120.773%, 50%) scale(.78261, .824); }
+      50% { transform: translate(0, 100%) scale(1, 1); }
+      75% { transform: translate(-120.773%, 50%) scale(.80193, .862); }
     }
     .flood { position: absolute; inset: 0; background: radial-gradient(75% 181.16% at 50% 50%, #3275f8 0%, rgba(255,255,255,0) 100%); opacity: 0; transition: opacity 1s linear; }
     .hb:hover .dot, .hb:focus-visible .dot { animation-play-state: paused; opacity: 0; }

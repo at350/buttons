@@ -15,7 +15,7 @@ export default {
     .grid { position: relative; height: 128px; margin: 6px 0; border-top: 1px solid rgba(168,229,255,.5); border-bottom: 1px solid rgba(168,229,255,.5); outline: none;
       display: grid; grid-template-columns: repeat(${COLS}, 1fr); grid-template-rows: repeat(${ROWS}, 1fr); align-items: center; justify-items: center; cursor: default; }
     .grid:focus-visible { background: rgba(168,229,255,.06); }
-    .grid span { font-size: 12px; line-height: 1; transition: transform .12s ease-out, opacity .5s; will-change: transform; }
+    .grid span { font-size: 12px; line-height: 1; transform: scale(1); transition: transform .12s ease-out, opacity .5s; } /* identity, not none: hover scaling stays a transform-only change (no relayout) with no permanent layer */
     .grid span.bad { animation: wig .5s ease-in-out infinite alternate; cursor: pointer; }
     .grid span.bad:nth-child(odd) { animation-duration: .37s; }
     @keyframes wig { from { translate: -.6px -.4px; } to { translate: .7px .5px; } }

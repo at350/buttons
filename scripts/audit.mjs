@@ -7,10 +7,8 @@
 //   default: prints only elements with findings; --all prints every element.
 // Needs the dev server (http://127.0.0.1:4173/) and a Chromium (Playwright cache or CHROME=...).
 // WIDTH=390 runs the pass at phone width (any element wider than the screen then fails).
-import { spawn } from 'node:child_process';
-import { readdirSync, existsSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { homedir } from 'node:os';
+import { writeFileSync } from 'node:fs';
+import { launchChrome } from './chrome.mjs';
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? args.splice(i, 2)[1] : null; };
@@ -21,19 +19,8 @@ const restOnly = args.includes('--rest'); if (restOnly) args.splice(args.indexOf
 const BASE = process.env.BASE || 'http://127.0.0.1:4173/';
 const categories = args.length ? args : null;
 
-function findChrome() {
-  if (process.env.CHROME) return process.env.CHROME;
-  const cache = join(homedir(), 'Library/Caches/ms-playwright');
-  if (existsSync(cache)) {
-    const dirs = readdirSync(cache).filter((d) => d.startsWith('chromium_headless_shell-')).sort().reverse();
-    for (const d of dirs) { const p = join(cache, d, 'chrome-headless-shell-mac-arm64/chrome-headless-shell'); if (existsSync(p)) return p; }
-  }
-  for (const p of ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge']) if (existsSync(p)) return p;
-  throw new Error('No Chromium found; set CHROME=/path/to/binary');
-}
-
 const WIDTH = +(process.env.WIDTH || 1280); // viewport width; e.g. WIDTH=390 for a phone-width pass
-const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', `--window-size=${WIDTH},900`, '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--no-default-browser-check', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+const chrome = launchChrome(['--headless=new', '--remote-debugging-port=0', `--window-size=${WIDTH},900`, '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--use-mock-keychain', '--no-default-browser-check', '--hide-scrollbars', 'about:blank']);
 const wsUrl = await new Promise((res, rej) => {
   let buf = '';
   chrome.stderr.on('data', (d) => { buf += d; const m = buf.match(/DevTools listening on (ws:\/\/\S+)/); if (m) res(m[1]); });
@@ -49,7 +36,8 @@ const send = (method, params = {}, sessionId) => new Promise((res) => { const i 
 const { result: { targetId } } = await send('Target.createTarget', { url: 'about:blank' });
 const { result: { sessionId } } = await send('Target.attachToTarget', { targetId, flatten: true });
 await send('Page.enable', {}, sessionId);
-await send('Page.navigate', { url: BASE + '?audit=' + Date.now() }, sessionId);
+// ?harness: app.js starts no feed, so nothing repacks or refills rows under the harness
+await send('Page.navigate', { url: BASE + '?harness&audit=' + Date.now() }, sessionId);
 await new Promise((r) => setTimeout(r, 3500));
 const evaluate = async (expr) => {
   const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true }, sessionId);

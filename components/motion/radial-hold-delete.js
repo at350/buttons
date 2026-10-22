@@ -4,6 +4,7 @@ export default {
   id: 'mo-radial-hold-delete',
   credit: 'Hold-to-delete (the long-press confirm pattern from iOS / Linear) — an @property-animated conic ring fills while the Lucide bin trembles, completes with a burst; let go early and it rewinds',
   size: 'auto',
+  hold: true,
   css: `
     @property --mo-rhd-p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
     :host { display: inline-block; }

@@ -3,11 +3,10 @@
 // (requests, bytes, time to first rows), scroll-stress frame times and long tasks, idle CPU
 // (animation loops running while nobody interacts) and heap / DOM size after the stress.
 // Usage: node scripts/bench.mjs [url] [--runs=3] [--net=local|4g|3g] [--json=file]
-// Needs a Chromium binary: set CHROME=/path/to/binary, or it looks in the Playwright cache.
-import { spawn } from 'node:child_process';
-import { readdirSync, existsSync, writeFileSync, rmSync } from 'node:fs';
+// Needs a Chromium binary: set CHROME=/path/to/binary, or scripts/chrome.mjs looks for one.
+import { writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
+import { launchChrome } from './chrome.mjs';
 
 const args = process.argv.slice(2);
 const opt = (k, d) => { const a = args.find((x) => x.startsWith(`--${k}=`)); return a ? a.slice(k.length + 3) : d; };
@@ -22,26 +21,12 @@ const NETS = {
   '3g': { latency: 150, downloadThroughput: (1.6 * 1024 * 1024) / 8, uploadThroughput: (750 * 1024) / 8 },
 };
 
-// Prefer a full Chromium (new headless mode has a real compositor, so requestAnimationFrame ticks at
-// display rate); chrome-headless-shell only produces frames on demand, which skews frame-time metrics.
-function findChrome() {
-  if (process.env.CHROME) return process.env.CHROME;
-  const cache = join(homedir(), 'Library/Caches/ms-playwright');
-  if (existsSync(cache)) {
-    const dirs = readdirSync(cache).filter((d) => d.startsWith('chromium-')).sort().reverse();
-    for (const d of dirs) {
-      const p = join(cache, d, 'chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing');
-      if (existsSync(p)) return p;
-    }
-  }
-  for (const p of ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge']) if (existsSync(p)) return p;
-  throw new Error('No Chromium found; set CHROME=/path/to/binary');
-}
-
 const PROFILE = args.includes('--profile');
 // --swiftshader forces software WebGL (deterministic but ~100x slower context creation than a GPU)
 const GL = args.includes('--swiftshader') ? ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [];
-const chrome = spawn(findChrome(), ['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', ...GL, '--no-first-run', '--use-mock-keychain', '--no-default-browser-check', '--disable-background-timer-throttling', '--user-data-dir=' + join(process.env.TMPDIR || '/tmp', 'buttons-bench-' + process.pid), 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+// Prefer a full Chromium (new headless mode has a real compositor, so requestAnimationFrame ticks at
+// display rate); chrome-headless-shell only produces frames on demand, which skews frame-time metrics.
+const chrome = launchChrome(['--headless=new', '--remote-debugging-port=0', '--window-size=1280,900', ...GL, '--no-first-run', '--use-mock-keychain', '--no-default-browser-check', '--disable-background-timer-throttling', '--user-data-dir=' + join(process.env.TMPDIR || '/tmp', 'buttons-bench-' + process.pid), 'about:blank'], { preferFull: true });
 const cleanup = () => { try { chrome.kill(); } catch {} try { rmSync(join(process.env.TMPDIR || '/tmp', 'buttons-bench-' + process.pid), { recursive: true, force: true }); } catch {} };
 process.on('exit', cleanup);
 process.on('uncaughtException', (e) => { console.error(e); cleanup(); process.exit(1); });

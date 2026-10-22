@@ -16,6 +16,7 @@ export default {
   id: 'au-window-switches',
   credit: 'Driver-door power window switch pack — four rockers: push down to lower, pull up to raise, push through the second detent for one-touch AUTO; window lock kills the rears',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: flex; gap: 12px; align-items: center; width: 290px; max-width: 100%; padding: 14px; border-radius: 12px; background: radial-gradient(circle at 30% 20%, #34302c, #1b1816 70%); user-select: none; }

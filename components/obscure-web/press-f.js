@@ -2,6 +2,7 @@ export default {
   id: 'ob-press-f',
   credit: '"Press F to Pay Respects" — Call of Duty: Advanced Warfare (2014) key prompt: hold F (or the mouse) to fill the ring; respects are counted',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .hud { position: relative; width: 260px; max-width: 100%; height: 150px; border-radius: 12px; background: radial-gradient(ellipse at 50% 60%, #3a3a3a, #0d0d0d 70%); display: grid; place-items: center; overflow: hidden; }

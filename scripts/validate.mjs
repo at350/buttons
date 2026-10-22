@@ -81,12 +81,14 @@ for (const cat of categories) {
   }
 }
 
-// The committed bundle (what the deployed page loads) must match the sources.
-if (!requested.length) {
-  const { sourceHash, bundleHash } = await import('./build.mjs');
-  const [src, bun] = [await sourceHash(), await bundleHash()];
-  if (src !== bun) fail(`components/bundle.js is ${bun ? 'stale' : 'missing'} — run: npm run build`);
-}
+// The committed bundle (what the deployed page loads) must match the sources. A per-category run only
+// warns (other categories may be mid-edit), but still says so: the deploy ships the bundle, not the sources.
+const { sourceHash, bundleHash } = await import('./build.mjs');
+const [src, bun] = [await sourceHash(), await bundleHash()];
+const stale = src !== bun ? `components/bundle.js is ${bun ? 'stale' : 'missing'} — run: npm run build` : '';
+const warned = Boolean(stale && requested.length);
+if (warned) console.warn(`  ⚠ ${stale} (a warning here; the full run fails on it)`);
+else if (stale) fail(stale);
 
-console.log(`\n${total} components, ${errors} error(s)`);
+console.log(`\n${total} components, ${errors} error(s)${warned ? ', 1 warning' : ''}`);
 process.exit(errors ? 1 : 0);

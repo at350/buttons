@@ -5,6 +5,7 @@ export default {
   id: 'nd-on-air',
   credit: 'Broadcast studio ON AIR sign driven by a latching illuminated MIC LIVE key, with a momentary COUGH key',
   size: 'auto',
+  hold: true,
   css: `
     :host { display: inline-block; }
     .stage { display: inline-flex; flex-direction: column; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none;
